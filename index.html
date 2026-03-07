@@ -26,3 +26,27 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 </body>
 </html>
+<script>
+
+var map = L.map('map').setView([-25.4284, -49.2733], 8);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: 'Mapa OpenStreetMap'
+}).addTo(map);
+
+// clicar no mapa e criar ocorrência
+map.on('click', function(e){
+
+var tipo = prompt("Tipo de ocorrência: acidente, obra, animal, veículo quebrado");
+
+if(tipo){
+
+var marker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(map);
+
+marker.bindPopup("Ocorrência: " + tipo).openPopup();
+
+}
+
+});
+
+</script>
