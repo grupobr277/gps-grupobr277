@@ -1,13 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>GPS BR 277</title>
+<title>GPS Grupo BR 277</title>
 <meta charset="utf-8" />
+
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
 <style>
-#map { height: 100vh; }
+#map {
+height: 100vh;
+}
 </style>
+
 </head>
 
 <body>
@@ -19,25 +24,12 @@
 var map = L.map('map').setView([-25.4284, -49.2733], 8);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: 'Mapa OpenStreetMap'
+attribution: 'Mapa OpenStreetMap'
 }).addTo(map);
 
-</script>
-
-</body>
-</html>
-<script>
-
-var map = L.map('map').setView([-25.4284, -49.2733], 8);
-
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: 'Mapa OpenStreetMap'
-}).addTo(map);
-
-// clicar no mapa e criar ocorrência
 map.on('click', function(e){
 
-var tipo = prompt("Tipo de ocorrência: acidente, obra, animal, veículo quebrado");
+var tipo = prompt("Digite a ocorrência: acidente, obra, animal, veículo quebrado");
 
 if(tipo){
 
@@ -50,3 +42,6 @@ marker.bindPopup("Ocorrência: " + tipo).openPopup();
 });
 
 </script>
+
+</body>
+</html>
