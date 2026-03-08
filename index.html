@@ -9,6 +9,15 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  var userId = localStorage.getItem("userId");
+
+if(!userId){
+userId = "user_" + Math.random().toString(36).substr(2,9);
+localStorage.setItem("userId", userId);
+}
+
+var usuariosRef = firebase.database().ref("usuarios");
+var marcadores = {};
 
 <style>
 body{margin:0;font-family:Arial}
@@ -80,23 +89,41 @@ navigator.geolocation.watchPosition(function(pos){
 
 var lat = pos.coords.latitude;
 var lng = pos.coords.longitude;
+var velocidade = pos.coords.speed || 0;
 
-minhaPosicao = [lat,lng];
+minhaPosicao=[lat,lng];
 
-if(primeiraLocalizacao){
+usuariosRef.child(userId).set({
 
-map.setView([lat,lng],15);
+lat:lat,
+lng:lng,
+velocidade:velocidade,
+tempo:Date.now()
 
-L.marker([lat,lng]).addTo(map)
-.bindPopup("Você está aqui")
-.openPopup();
+});
 
-primeiraLocalizacao = false;
+});
+  usuariosRef.on("value",function(snapshot){
+
+var dados = snapshot.val();
+
+for(var id in dados){
+
+var u = dados[id];
+
+if(!marcadores[id]){
+
+marcadores[id] = L.marker([u.lat,u.lng]).addTo(map);
+
+}else{
+
+marcadores[id].setLatLng([u.lat,u.lng]);
+
+}
 
 }
 
 });
-
 var lat = pos.coords.latitude;
 var lng = pos.coords.longitude;
 
