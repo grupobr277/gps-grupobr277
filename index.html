@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="utf-8">
-    <title>BR-277 | MONITORAMENTO ELITE</title>
+    <title>BR-277 | MONITORAMENTO OFICIAL</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -10,80 +10,58 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
 
     <style>
-        html, body, #map { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; font-family: 'Segoe UI', sans-serif; }
+        html, body, #map { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; font-family: Arial, sans-serif; }
         
+        /* LOGIN BLOQUEADO */
+        #login-screen { position: fixed; inset: 0; background: #075e54; z-index: 9999; display: flex; align-items: center; justify-content: center; }
+        .login-box { background: white; padding: 30px; border-radius: 20px; width: 85%; max-width: 320px; text-align: center; border: 4px solid #d4af37; }
+
         /* BUSCA E ROTA */
-        .leaflet-control-geocoder { border: 2px solid #b8860b !important; border-radius: 10px !important; }
-        
-        /* BOTÃO X DA ROTA (EMBAIXO DO PAINEL) */
-        .leaflet-routing-container { position: relative; }
-        #btn-close-route { 
-            background: #000; color: gold; border: 2px solid gold; 
-            width: 35px; height: 35px; border-radius: 50%; 
-            font-weight: bold; font-size: 20px; 
-            display: none; align-items: center; justify-content: center;
-            margin: 5px auto; cursor: pointer;
-        }
+        .leaflet-control-geocoder { width: 300px !important; border: 2px solid #075e54 !important; border-radius: 10px !important; margin-top: 10px !important; }
+        #btn-fechar-rota { background: black; color: gold; border: 2px solid gold; border-radius: 50%; width: 35px; height: 35px; font-weight: bold; cursor: pointer; margin-top: 5px; }
 
-        /* PAINEL 10 ALERTAS VERTICAL CROMADO */
-        .painel-alertas { 
-            position: absolute; top: 70px; left: 10px; z-index: 1000; 
-            display: flex; flex-direction: column; gap: 4px; 
-        }
+        /* 10 ALERTAS ELITE */
+        .painel-alertas { position: absolute; top: 70px; left: 10px; z-index: 1000; display: flex; flex-direction: column; gap: 5px; }
         .btn-alerta { 
-            background: linear-gradient(145deg, #222, #000); 
-            border: 2px solid #d4af37; /* Dourado */
-            padding: 5px; border-radius: 8px; width: 75px; 
-            display: flex; flex-direction: column; align-items: center; 
-            box-shadow: 0 0 5px rgba(212,175,55,0.5), inset 0 0 5px #fff;
-            cursor: pointer;
+            background: #1a1a1a; border: 2px solid #d4af37; padding: 6px; border-radius: 10px; 
+            width: 80px; display: flex; flex-direction: column; align-items: center; cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
-        .btn-alerta span { font-size: 18px; }
-        .btn-alerta b { font-size: 8px; color: #d4af37; text-transform: uppercase; margin-top: 2px; text-shadow: 1px 1px #000; }
+        .btn-alerta span { font-size: 20px; }
+        .btn-alerta b { font-size: 9px; color: white; text-transform: uppercase; margin-top: 2px; text-shadow: 1px 1px 2px #000; }
 
-        /* BÚSSOLA LADO ESQUERDO */
-        .btn-bussola { 
-            position: absolute; bottom: 100px; left: 15px; z-index: 1000; 
-            background: #fff; border: 2px solid #d4af37; width: 50px; height: 50px; 
-            border-radius: 50%; font-size: 28px; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-        }
+        /* BÚSSOLA ESQUERDA */
+        .btn-bussola { position: absolute; bottom: 100px; left: 15px; z-index: 1000; background: white; border: 2px solid #d4af37; width: 50px; height: 50px; border-radius: 50%; font-size: 28px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
 
-        /* CHAT ELITE */
+        /* CHAT FLUTUANTE COM NOTIFICAÇÃO */
+        #btn-chat-flutuante { position: fixed; bottom: 20px; right: 20px; z-index: 4001; width: 65px; height: 65px; border-radius: 50%; background: #25d366; color: white; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
+        #notif-badge { position: absolute; top: 0; right: 0; background: red; color: white; border-radius: 50%; width: 22px; height: 22px; font-size: 12px; font-weight: bold; display: none; align-items: center; justify-content: center; border: 2px solid white; }
+
+        /* CHAT BOX */
         #chat-box { position: fixed; right: -100%; top: 0; width: 90%; max-width: 380px; height: 100%; background: #e5ddd5; z-index: 4000; transition: 0.4s; display: flex; flex-direction: column; }
         #chat-box.aberto { right: 0; }
-        .balao { padding: 12px; border-radius: 12px; font-size: 15px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); max-width: 85%; }
+        .balao { padding: 12px; border-radius: 15px; margin-bottom: 10px; max-width: 85%; font-size: 15px; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
         .balao-eu { background: #dcf8c6; align-self: flex-end; }
-        .balao-outro { background: #fff; align-self: flex-start; }
+        .balao-outro { background: white; align-self: flex-start; }
+        .acoes-msg { font-size: 11px; font-weight: bold; border-bottom: 1px solid #ddd; margin-bottom: 5px; display: flex; gap: 10px; justify-content: flex-end; }
         
-        .acoes-msg { display: flex; justify-content: flex-end; gap: 12px; margin-bottom: 5px; border-bottom: 1px solid #ddd; padding-bottom: 3px; }
-        .btn-msg-acao { color: #000 !important; font-weight: bold; border: none; background: none; cursor: pointer; font-size: 11px; }
-
-        #btn-chat-flutuante { 
-            position: fixed; bottom: 20px; right: 20px; z-index: 4001; 
-            width: 60px; height: 60px; border-radius: 50%; background: #25d366; 
-            color: #fff; display: flex; align-items: center; justify-content: center; 
-            font-size: 28px; box-shadow: 0 4px 10px rgba(0,0,0,0.4); 
-        }
-
-        /* LOGIN */
-        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 5000; display: flex; align-items: center; justify-content: center; }
-        .login-box { background: #fff; padding: 25px; border-radius: 15px; text-align: center; border: 3px solid #d4af37; }
+        /* POPUP ALERTAS */
+        .popup-chat { max-height: 120px; overflow-y: auto; background: #eee; padding: 5px; border-radius: 5px; margin: 5px 0; }
     </style>
 </head>
 <body>
 
 <div id="login-screen">
     <div class="login-box">
-        <h2 style="color:#000; margin:0">SISTEMA BR-277</h2>
-        <input type="text" id="user-name" style="width:90%; padding:12px; margin:15px 0; border:2px solid #d4af37;" placeholder="Nome do Operador">
-        <button onclick="salvarNome()" style="width:90%; padding:12px; background:#000; color:gold; font-weight:bold; border:none; border-radius:10px;">INICIAR</button>
+        <h2 style="color:#075e54">GRUPO BR-277</h2>
+        <p>Acesso Obrigatório</p>
+        <input type="text" id="user-name" style="width:90%; padding:12px; margin:10px 0; border-radius:10px; border:1px solid #ccc;" placeholder="Seu Nome Completo">
+        <button onclick="salvarNome()" style="width:90%; padding:12px; background:#075e54; color:white; border:none; border-radius:10px; font-weight:bold;">ENTRAR NO SISTEMA</button>
     </div>
 </div>
 
 <div id="map"></div>
 <button class="btn-bussola" onclick="recentralizar()">🧭</button>
-<div id="btn-chat-flutuante">💬</div>
 
 <div class="painel-alertas">
     <button class="btn-alerta" onclick="enviarAlerta('Acidente', '⚠️')"><span>⚠️</span><b>Acidente</b></button>
@@ -98,19 +76,19 @@
     <button class="btn-alerta" onclick="enviarAlerta('Carga', '📦')"><span>📦</span><b>Carga</b></button>
 </div>
 
+<div id="btn-chat-flutuante">💬<div id="notif-badge">0</div></div>
+
 <div id="chat-box">
-    <div style="padding:15px; background:#000; color:gold; display:flex; justify-content:space-between; align-items:center;">
-        <b id="exibir-nome">...</b>
-        <span onclick="document.getElementById('chat-box').classList.remove('aberto')" style="cursor:pointer; font-size:25px;">✕</span>
+    <div style="padding:15px; background:#075e54; color:white; display:flex; justify-content:space-between; align-items:center;">
+        <b>🔔 <span id="exibir-nome">...</span></b>
+        <span onclick="fecharChat()" style="cursor:pointer; font-size:25px;">✕</span>
     </div>
     <div id="mensagens" style="flex:1; overflow-y:auto; padding:15px; display:flex; flex-direction:column;"></div>
     <div style="padding:15px; background:#eee; display:flex; gap:8px;">
-        <input type="text" id="chat-input" style="flex:1; padding:12px; border-radius:20px;" placeholder="Mensagem...">
-        <button onclick="mandarChat()" style="background:#000; color:gold; border:none; border-radius:50%; width:45px; height:45px;">➤</button>
+        <input type="text" id="chat-input" style="flex:1; padding:12px; border-radius:25px;" placeholder="Mensagem...">
+        <button onclick="mandarChat()" style="background:#075e54; color:white; border-radius:50%; width:45px; height:45px; border:none;">➤</button>
     </div>
 </div>
-
-<button id="btn-close-route" onclick="limparRota()">✕</button>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
@@ -126,21 +104,24 @@ const db = firebase.database();
 const map = L.map('map', { zoomControl: false }).setView([-25.4284, -49.2733], 13);
 L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png').addTo(map);
 
-let meuLatLng, meuMarker, rMachine;
+let meuLatLng, meuMarker, rMachine, notifCount = 0;
 let meuNome = localStorage.getItem('br277_nome') || "";
 
 if(meuNome) { document.getElementById('login-screen').style.display = 'none'; iniciarApp(); }
 
 function salvarNome() {
     const n = document.getElementById('user-name').value.trim();
-    if(n.length < 3) return;
+    if(n.length < 3) return alert("Digite o nome completo!");
     meuNome = n;
     localStorage.setItem('br277_nome', n);
-    document.getElementById('login-screen').style.display = 'none';
-    iniciarApp();
+    location.reload();
 }
 
-const geocoder = L.Control.geocoder({ defaultMarkGeocode: false, collapsed: false, placeholder: "Para onde vamos?" }).on('markgeocode', function(e) {
+// BUSCA INTELIGENTE
+const geocoder = L.Control.geocoder({ 
+    defaultMarkGeocode: false, collapsed: false, placeholder: "Para onde vamos?",
+    geocoder: L.Control.Geocoder.nominatim({ geocodingQueryParams: { countrycodes: 'br', viewbox: '-54.6,-26.7,-48.0,-22.5', bounded: 1 } })
+}).on('markgeocode', function(e) {
     const dest = e.geocode.center;
     if (rMachine) map.removeControl(rMachine);
     rMachine = L.Routing.control({ 
@@ -148,18 +129,14 @@ const geocoder = L.Control.geocoder({ defaultMarkGeocode: false, collapsed: fals
         lineOptions: { styles: [{ color: '#1a73e8', weight: 8 }] },
         createMarker: () => null
     }).addTo(map);
-    document.getElementById('btn-close-route').style.display = 'flex';
-    // Mover o botão para baixo do painel que o Leaflet cria
     setTimeout(() => {
-        const container = document.querySelector('.leaflet-routing-container');
-        if(container) container.appendChild(document.getElementById('btn-close-route'));
+        const c = document.querySelector('.leaflet-routing-container');
+        const btn = document.createElement('button');
+        btn.innerHTML = "✕"; btn.id="btn-fechar-rota";
+        btn.onclick = () => { map.removeControl(rMachine); };
+        if(c) c.appendChild(btn);
     }, 500);
 }).addTo(map);
-
-function limparRota() {
-    if (rMachine) map.removeControl(rMachine);
-    document.getElementById('btn-close-route').style.display = 'none';
-}
 
 function iniciarApp() {
     document.getElementById('exibir-nome').innerText = meuNome;
@@ -170,22 +147,39 @@ function iniciarApp() {
             map.setView(meuLatLng, 17);
         } else { meuMarker.setLatLng(meuLatLng); }
     });
-    carregarAlertas();
+    carregarAlertasNoMapa();
 }
 
+// ALERTAS COM CHAT INDIVIDUAL
 function enviarAlerta(tipo, emoji) {
     if (!meuLatLng) return;
     db.ref("alertas").push({ tipo, emoji, lat: meuLatLng.lat, lng: meuLatLng.lng, autor: meuNome, t: Date.now() });
 }
 
-function carregarAlertas() {
+function carregarAlertasNoMapa() {
     db.ref("alertas").on("child_added", snap => {
         const a = snap.val(); const key = snap.key;
-        L.marker([a.lat, a.lng], { icon: L.divIcon({ html: `<span style="font-size:30px">${a.emoji}</span>`, className: '' }) }).addTo(map)
-        .bindPopup(`<b>${a.tipo}</b><br><small>Por: ${a.autor}</small>`);
+        const marker = L.marker([a.lat, a.lng], { icon: L.divIcon({ html: `<span style="font-size:30px">${a.emoji}</span>`, className: '' }) }).addTo(map);
+        marker.on('click', () => {
+            const popupHtml = `<div style="width:200px"><b>${a.tipo}</b><div id="chat-pop-${key}" class="popup-chat"></div><input type="text" id="in-pop-${key}" style="width:75%"><button onclick="mandarMsgPop('${key}')">➤</button></div>`;
+            marker.bindPopup(popupHtml).openPopup();
+            db.ref("alertas/"+key+"/conversa").on("value", cSnap => {
+                const div = document.getElementById("chat-pop-"+key);
+                if(div){ div.innerHTML = ""; const d = cSnap.val(); if(d) Object.entries(d).forEach(([mk, c]) => {
+                    div.innerHTML += `<div style="font-size:11px"><b>${c.u}</b>: ${c.m}</div>`;
+                }); div.scrollTop = div.scrollHeight; }
+            });
+        });
     });
 }
 
+function mandarMsgPop(key) {
+    const inp = document.getElementById("in-pop-"+key);
+    if(inp.value) db.ref("alertas/"+key+"/conversa").push({ u: meuNome, m: inp.value });
+    inp.value = "";
+}
+
+// CHAT PRINCIPAL
 function mandarChat() {
     const inp = document.getElementById('chat-input'); if (!inp.value) return;
     db.ref("chat").push({ u: meuNome, m: inp.value, t: Date.now() });
@@ -194,26 +188,33 @@ function mandarChat() {
 
 db.ref("chat").limitToLast(30).on("value", snap => {
     const b = document.getElementById('mensagens');
+    const isAberto = document.getElementById('chat-box').classList.contains('aberto');
     b.innerHTML = "";
     const dados = snap.val();
     if(dados) {
         Object.entries(dados).forEach(([key, c]) => {
-            const xBtn = `<button class="btn-msg-acao" onclick="db.ref('chat/${key}').remove()">✕ Apagar</button>`;
-            const respBtn = c.u !== meuNome ? `<button class="btn-msg-acao" onclick="responder('${c.u}')">↶ Responder</button>` : "";
+            if(!isAberto && c.u !== meuNome) { notifCount++; atualizarSino(); }
+            const xBtn = `<span onclick="db.ref('chat/${key}').remove()">✕ Apagar</span>`;
+            const respBtn = c.u !== meuNome ? `<span onclick="responder('${c.u}')">↶ Responder</span>` : "";
+            const msgFormatada = c.m.replace(/(@[A-Za-zÀ-ÖØ-öø-ÿ\s]+)(?=\s|$)/g, '<span style="color:blue;font-weight:bold">$1</span>');
             
-            b.innerHTML += `
-                <div class="balao ${c.u === meuNome ? 'balao-eu' : 'balao-outro'}">
-                    <div class="acoes-msg">${respBtn} ${xBtn}</div>
-                    <b style="color:#000; font-size:12px;">${c.u}</b><br>
-                    ${c.m.replace(/(@[A-Za-z\s]+)/g, '<span style="color:blue;font-weight:bold">$1</span>')}
-                    <span style="display:block; text-align:right; font-size:9px; color:#999;">${new Date(c.t).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span>
-                </div>`;
+            b.innerHTML += `<div class="balao ${c.u === meuNome ? 'balao-eu' : 'balao-outro'}">
+                <div class="acoes-msg">${respBtn} ${xBtn}</div>
+                <b style="color:#075e54; font-size:12px">${c.u}</b><br>${msgFormatada}
+                <div style="text-align:right; font-size:9px; color:#999; margin-top:5px;">${new Date(c.t).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div>
+            </div>`;
         });
         b.scrollTop = b.scrollHeight;
     }
 });
 
+function atualizarSino() { 
+    const badge = document.getElementById('notif-badge');
+    if(notifCount > 0) { badge.innerText = notifCount; badge.style.display = 'flex'; }
+}
+
 function responder(n) { document.getElementById('chat-input').value = `@${n} `; document.getElementById('chat-input').focus(); }
+function fecharChat() { document.getElementById('chat-box').classList.remove('aberto'); notifCount = 0; document.getElementById('notif-badge').style.display = 'none'; }
 function recentralizar() { if (meuLatLng) map.flyTo(meuLatLng, 17); }
 document.getElementById('btn-chat-flutuante').onclick = () => document.getElementById('chat-box').classList.toggle('aberto');
 </script>
