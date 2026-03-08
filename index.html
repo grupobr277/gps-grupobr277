@@ -2,46 +2,49 @@
 <html lang="pt-br">
 <head>
     <meta charset="utf-8">
-    <title>BR-277 | OPERACIONAL V10</title>
+    <title>BR-277 | MONITORAMENTO V11</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
-
     <style>
         :root { --ws-green: #075e54; --ws-light: #dcf8c6; }
-        html, body, #map { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; font-family: sans-serif; background: #000; }
+        html, body, #map { margin: 0; padding: 0; height: 100%; width: 100%; background: #000; font-family: sans-serif; }
         
-        /* 10 ALERTAS FIXOS */
+        /* FILTRO NOTURNO MANTENDO CORES DO TRÂNSITO */
+        .map-dark { filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%); }
+
+        /* PAINEL ALERTAS */
         .painel-alertas { position: absolute; top: 100px; left: 10px; z-index: 1000; display: flex; flex-direction: column; gap: 4px; }
         .btn-a { border: 2px solid #d4af37; padding: 7px; border-radius: 8px; width: 85px; display: flex; flex-direction: column; align-items: center; cursor: pointer; color: white; font-weight: bold; font-size: 10px; text-shadow: 1px 1px #000; }
         .bg-r { background: #b00020; } .bg-o { background: #ff6d00; } .bg-b { background: #1a1a1a; }
 
-        /* BOTÕES MÓVEIS */
+        /* VEÍCULO PULSANTE */
+        .pulse-loc { border-radius: 50%; animation: pulse-blue 2s infinite; background: rgba(0, 122, 255, 0.4); border: 2px solid white; }
+        @keyframes pulse-blue { 0% { box-shadow: 0 0 0 0px rgba(0, 122, 255, 0.7); } 100% { box-shadow: 0 0 0 20px rgba(0, 122, 255, 0); } }
+
+        /* BOTÕES FLUTUANTES */
         .f-btn { position: fixed; z-index: 4001; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.4); cursor: pointer; border: 2px solid white; background: white; touch-action: none; }
         #chat-trigger { width: 65px; height: 65px; background: #25d366; color: white; right: 20px; bottom: 20px; font-size: 30px; }
         #btn-luz { width: 45px; height: 45px; background: #ffcc00; right: 25px; top: 160px; font-size: 22px; }
 
-        /* CHAT ESTILO ZAP */
+        /* CHAT PRINCIPAL */
         #chat-box { position: fixed; right: -100%; top: 0; width: 100%; max-width: 400px; height: 100%; background: #e5ddd5; z-index: 5000; transition: 0.3s; display: flex; flex-direction: column; }
         #chat-box.aberto { right: 0; }
-        #mensagens { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
-        .balao { padding: 10px; border-radius: 12px; max-width: 85%; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+        #mensagens { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 8px; }
+        
+        .balao { padding: 10px; border-radius: 12px; max-width: 85%; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.2); cursor: pointer; }
         .balao-eu { background: var(--ws-light); align-self: flex-end; }
         .balao-outro { background: white; align-self: flex-start; }
         
-        /* REAÇÕES */
-        .reacoes { display: flex; gap: 8px; margin-top: 5px; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 5px; }
-        .reacoes span { cursor: pointer; font-size: 16px; transition: 0.2s; }
-        .reacoes span:hover { transform: scale(1.3); }
-
-        .btn-del { color: red; font-size: 10px; cursor: pointer; float: right; margin-left: 10px; }
-        .hora { font-size: 9px; color: #666; display: block; margin-top: 2px; }
+        .reacao-tag { position: absolute; bottom: -10px; right: 10px; background: white; border-radius: 10px; padding: 2px 5px; font-size: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+        .menu-reacoes { display: none; position: absolute; background: white; border-radius: 20px; padding: 5px 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); z-index: 6000; gap: 10px; }
     </style>
 </head>
 <body>
 
 <div id="map"></div>
+<div id="menu-reacoes" class="menu-reacoes">
+    <span onclick="aplicarReacao('👍')">👍</span> <span onclick="aplicarReacao('❤️')">❤️</span> <span onclick="aplicarReacao('⚠️')">⚠️</span> <span onclick="aplicarReacao('✅')">✅</span>
+</div>
 
 <div class="painel-alertas">
     <div class="btn-a bg-r" onclick="enviarAlerta('Acidente', '⚠️')">⚠️ ACIDENTE</div>
@@ -60,12 +63,12 @@
 <div id="chat-trigger" class="f-btn">💬</div>
 
 <div id="chat-box">
-    <div style="padding:15px; background:var(--ws-green); color:white; display:flex; justify-content:space-between;">
-        <b>CHAT BR-277</b>
-        <span onclick="document.getElementById('chat-box').classList.remove('aberto')" style="cursor:pointer; font-size:20px;">✕</span>
+    <div style="padding:15px; background:var(--ws-green); color:white; display:flex; justify-content:space-between; align-items:center;">
+        <b>BR-277 MONITOR</b>
+        <span onclick="document.getElementById('chat-box').classList.remove('aberto')" style="cursor:pointer; font-size:25px;">✕</span>
     </div>
     <div id="mensagens"></div>
-    <div style="padding:10px; background:#f0f0f0; display:flex; gap:10px;">
+    <div style="padding:10px; background:#f0f0f0; display:flex; gap:5px;">
         <input type="text" id="chat-input" placeholder="Mensagem..." style="flex:1; padding:12px; border-radius:20px; border:1px solid #ccc;">
         <button onclick="mandarChat()" style="background:var(--ws-green); color:white; border-radius:50%; width:45px; height:45px; border:none;">➤</button>
     </div>
@@ -80,44 +83,42 @@ const firebaseConfig = { databaseURL: "https://gps-br277-default-rtdb.firebaseio
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// MAPAS GOOGLE TRAFFIC
-const camClara = L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}');
-const camEscura = L.tileLayer('https://mt1.google.com/vt/lyrs=r,traffic&x={x}&y={y}&z={z}'); // Modo Road Suave
+const map = L.map('map', { zoomControl: false }).setView([-25.4284, -49.2733], 13);
+const googleTraffic = L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(map);
 
-const map = L.map('map', { zoomControl: false, layers: [camClara] }).setView([-25.4284, -49.2733], 13);
-let modoNoite = false;
-
+let isNight = false;
 document.getElementById('btn-luz').onclick = () => {
-    if(!modoNoite) { map.removeLayer(camClara); camEscura.addTo(map); }
-    else { map.removeLayer(camEscura); camClara.addTo(map); }
-    modoNoite = !modoNoite;
+    isNight = !isNight;
+    document.getElementById('map').classList.toggle('map-dark', isNight);
 };
 
-let user = JSON.parse(localStorage.getItem('br277_v10')) || { n: "Danilo", id: "u123", v: "🚗" };
+let meuLatLng, meuMarker, user = { n: "Danilo", id: "u1", v: "🚗" };
+let msgAtiva = null;
 
-// LÓGICA DE MOVER + CLIQUE DUPLO
-function dragAndDouble(id, onDouble) {
-    const el = document.getElementById(id);
-    let lastTap = 0, sX, sY, movido = false;
+// LOCALIZAÇÃO PULSANTE VOLTOU
+navigator.geolocation.watchPosition(pos => {
+    meuLatLng = L.latLng(pos.coords.latitude, pos.coords.longitude);
+    const html = `<div class="pulse-loc" style="width:40px;height:40px;position:absolute;left:-5px;top:-5px;"></div><div style="font-size:35px;filter:drop-shadow(2px 2px 2px #000);">${user.v}</div>`;
+    if(!meuMarker) { meuMarker = L.marker(meuLatLng, { icon: L.divIcon({ html, className: '', iconSize:[40,40] }) }).addTo(map); map.setView(meuLatLng, 16); }
+    else { meuMarker.setLatLng(meuLatLng); }
+});
 
+// CLIQUE DUPLO PARA O CHAT
+function bindChatBtn() {
+    const el = document.getElementById('chat-trigger');
+    let last = 0, sX, sY;
     el.addEventListener('touchstart', (e) => {
-        movido = false;
         const now = Date.now();
-        if (now - lastTap < 300) { onDouble(); return; }
-        lastTap = now;
-        sX = e.touches[0].clientX - el.offsetLeft;
-        sY = e.touches[0].clientY - el.offsetTop;
+        if(now - last < 300) document.getElementById('chat-box').classList.toggle('aberto');
+        last = now;
+        sX = e.touches[0].clientX - el.offsetLeft; sY = e.touches[0].clientY - el.offsetTop;
     });
-
     el.addEventListener('touchmove', (e) => {
-        movido = true;
-        el.style.left = (e.touches[0].clientX - sX) + 'px';
-        el.style.top = (e.touches[0].clientY - sY) + 'px';
-        el.style.right = 'auto'; el.style.bottom = 'auto';
+        el.style.left = (e.touches[0].clientX - sX) + 'px'; el.style.top = (e.touches[0].clientY - sY) + 'px';
+        el.style.right='auto'; el.style.bottom='auto';
     });
 }
-
-dragAndDouble('chat-trigger', () => document.getElementById('chat-box').classList.toggle('aberto'));
+bindChatBtn();
 
 function mandarChat() {
     const i = document.getElementById('chat-input'); if(!i.value) return;
@@ -125,33 +126,60 @@ function mandarChat() {
     i.value = "";
 }
 
-function reagir(key, emoji) {
-    db.ref(`chat/${key}/reacao`).set(emoji);
+// REAÇÕES OCULTAS
+function mostrarReacoes(e, key) {
+    e.preventDefault();
+    msgAtiva = key;
+    const menu = document.getElementById('menu-reacoes');
+    menu.style.display = 'flex';
+    menu.style.top = (e.clientY || e.touches[0].clientY) + 'px';
+    menu.style.left = '50px';
+}
+
+function aplicarReacao(emoji) {
+    if(msgAtiva) db.ref(`chat/${msgAtiva}/r`).set(emoji);
+    document.getElementById('menu-reacoes').style.display = 'none';
 }
 
 db.ref("chat").limitToLast(30).on("value", snap => {
-    const box = document.getElementById('mensagens'); box.innerHTML = "";
-    const data = snap.val();
-    if(data) Object.entries(data).forEach(([key, msg]) => {
-        const eu = (msg.uid === user.id);
-        const hora = new Date(msg.t).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-        box.innerHTML += `
-            <div class="balao ${eu?'balao-eu':'balao-outro'}">
-                <b style="font-size:11px; color:#075e54">${msg.u}</b> ${eu?`<span class="btn-del" onclick="db.ref('chat/${key}').remove()">✕</span>`:''}
-                <br>${msg.m}
-                ${msg.reacao ? `<div style="font-size:14px; margin-top:3px;">${msg.reacao}</div>` : ''}
-                <div class="reacoes">
-                    <span onclick="reagir('${key}', '👍')">👍</span>
-                    <span onclick="reagir('${key}', '❤️')">❤️</span>
-                    <span onclick="reagir('${key}', '⚠️')">⚠️</span>
-                </div>
-                <span class="hora">${hora}</span>
+    const b = document.getElementById('mensagens'); b.innerHTML = "";
+    const d = snap.val();
+    if(d) Object.entries(d).forEach(([key, m]) => {
+        const eu = (m.uid === user.id);
+        const html = `
+            <div class="balao ${eu?'balao-eu':'balao-outro'}" onclick="mostrarReacoes(event, '${key}')">
+                <b style="font-size:11px;">${m.u}</b> ${eu?`<span onclick="db.ref('chat/${key}').remove()" style="color:red;float:right">✕</span>`:''}
+                <br>${m.m}
+                ${m.r ? `<div class="reacao-tag">${m.r}</div>` : ''}
             </div>`;
+        b.innerHTML += html;
     });
-    box.scrollTop = box.scrollHeight;
+    b.scrollTop = b.scrollHeight;
 });
 
-function enviarAlerta(tipo, emoji) { alert("Alerta " + tipo + " enviado!"); }
+// CHAT DENTRO DOS ALERTAS
+function enviarAlerta(tipo, emoji) {
+    if(!meuLatLng) return;
+    const id = "alt_" + Date.now();
+    db.ref("alertas/" + id).set({ tipo, emoji, lat: meuLatLng.lat, lng: meuLatLng.lng, autor: user.n });
+}
+
+db.ref("alertas").on("child_added", snap => {
+    const a = snap.val();
+    const marker = L.marker([a.lat, a.lng], { icon: L.divIcon({ html: `<div style="font-size:35px;">${a.emoji}</div>`, className: '' }) }).addTo(map);
+    marker.bindPopup(`
+        <div style="width:200px">
+            <b>${a.tipo}</b> (Por: ${a.autor})<br>
+            <div id="mini-chat-${snap.key}" style="max-height:100px; overflow:auto; font-size:11px; margin:5px 0;"></div>
+            <input type="text" id="in-${snap.key}" style="width:70%" placeholder="Comentar...">
+            <button onclick="comentarAlerta('${snap.key}')">➤</button>
+        </div>`);
+});
+
+function comentarAlerta(id) {
+    const txt = document.getElementById('in-'+id).value;
+    if(txt) db.ref(`alertas/${id}/comentarios`).push({u: user.n, m: txt});
+}
 </script>
 </body>
 </html>
