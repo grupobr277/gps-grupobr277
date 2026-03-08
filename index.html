@@ -25,7 +25,7 @@
         }
         @keyframes pulsar { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(2.5); opacity: 0; } }
 
-        /* Estilo dos Botões de Alerta (Mantendo o que você aprovou) */
+        /* Painel de Alertas Lateral */
         .painel-alertas { position: absolute; top: 100px; left: 10px; z-index: 1000; display: flex; flex-direction: column; gap: 8px; }
         .btn-alerta { 
             background: white; border: none; padding: 8px; border-radius: 12px; 
@@ -34,6 +34,13 @@
         }
         .btn-alerta b { font-size: 8px; text-transform: uppercase; margin-top: 3px; color: #333; }
         
+        /* Contador Online - INFERIOR ESQUERDO */
+        #contador { 
+            position: absolute; bottom: 20px; left: 10px; z-index: 1000; 
+            background: rgba(0,0,0,0.7); color: white; padding: 6px 12px; 
+            border-radius: 20px; font-size: 11px; font-weight: bold;
+        }
+
         /* Chat WhatsApp */
         #chat-box { position: fixed; right: -100%; top: 0; width: 85%; max-width: 350px; height: 100%; background: #e5ddd5; z-index: 2000; transition: 0.4s; display: flex; flex-direction: column; box-shadow: -5px 0 15px rgba(0,0,0,0.2); }
         #chat-box.aberto { right: 0; }
@@ -41,9 +48,7 @@
         .msg-eu { background: #dcf8c6; align-self: flex-end; }
         .msg-outro { background: white; align-self: flex-start; }
 
-        /* Ajustes de Interface */
         .leaflet-routing-container { display: none; }
-        #contador { position: absolute; top: 15px; right: 15px; z-index: 1000; background: rgba(0,0,0,0.7); color: white; padding: 5px 12px; border-radius: 20px; font-size: 11px; }
     </style>
 </head>
 <body>
@@ -78,19 +83,16 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-// CONEXÃO FIREBASE
 const firebaseConfig = { databaseURL: "https://gps-br277-default-rtdb.firebaseio.com" };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// MAPA
 const map = L.map('map', { zoomControl: false }).setView([-25.4284, -49.2733], 13);
 L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png').addTo(map);
 
 let meuLatLng, meuMarker, rMachine;
 const meuID = "M_" + Math.random().toString(36).substr(2, 4).toUpperCase();
 
-// LUPA DE PESQUISA (Local Padrão para não quebrar)
 const searchControl = L.Control.geocoder({
     defaultMarkGeocode: false,
     placeholder: "Pra onde vamos motorista?",
@@ -106,13 +108,12 @@ const searchControl = L.Control.geocoder({
     map.fitBounds(L.latLngBounds([meuLatLng, dest]), { padding: [80, 80] });
 }).addTo(map);
 
-// GPS COM ZOOM
 function iniciarGPS() {
     navigator.geolocation.watchPosition(pos => {
         meuLatLng = L.latLng(pos.coords.latitude, pos.coords.longitude);
         if (!meuMarker) {
             meuMarker = L.marker(meuLatLng, { icon: L.divIcon({ className: 'ponto-azul' }) }).addTo(map);
-            map.setView(meuLatLng, 16); // ZOOM DE APROXIMAÇÃO
+            map.setView(meuLatLng, 16);
         } else {
             meuMarker.setLatLng(meuLatLng);
         }
@@ -121,13 +122,11 @@ function iniciarGPS() {
     }, null, { enableHighAccuracy: true });
 }
 
-// ALERTAS SALVANDO NO FIREBASE
 function enviarFirebase(tipo, emoji) {
     if (!meuLatLng) return;
     db.ref("alertas").push({ tipo, emoji, lat: meuLatLng.lat, lng: meuLatLng.lng });
 }
 
-// CARREGA ALERTAS DO BANCO (Persistente)
 db.ref("alertas").on("child_added", snap => {
     const a = snap.val();
     L.marker([a.lat, a.lng], {
@@ -135,7 +134,6 @@ db.ref("alertas").on("child_added", snap => {
     }).addTo(map).bindPopup(a.tipo);
 });
 
-// CHAT COM MEMÓRIA
 function mandarChat() {
     const inp = document.getElementById('chat-input');
     if (!inp.value) return;
@@ -151,7 +149,6 @@ db.ref("chat").limitToLast(20).on("child_added", snap => {
     b.scrollTop = b.scrollHeight;
 });
 
-// CONTADOR
 db.ref("vivos").on("value", snap => {
     document.getElementById("online").innerText = snap.val() ? Object.keys(snap.val()).length : 1;
 });
