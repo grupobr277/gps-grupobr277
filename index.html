@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="utf-8">
-    <title>BR-277 | TECNOLOGIA ELITE V3</title>
+    <title>BR-277 | TECNOLOGIA HÍBRIDA (PC & CELULAR)</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -10,75 +10,71 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
 
     <style>
-        :root { --whatsapp-green: #075e54; --whatsapp-light: #dcf8c6; --danger: #ff3b30; }
-        html, body, #map { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background: #000; }
+        :root { --ws-green: #075e54; --ws-light: #dcf8c6; }
+        html, body, #map { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; font-family: Arial, sans-serif; background: #000; }
         
-        /* LOGIN REFORÇADO */
-        .overlay { position: fixed; inset: 0; background: var(--whatsapp-green); z-index: 9999; display: flex; align-items: center; justify-content: center; color: white; }
-        .box { background: white; padding: 25px; border-radius: 25px; width: 90%; max-width: 380px; color: #333; text-align: center; border: 5px solid #d4af37; }
-        .box input { width: 100%; padding: 15px; margin: 10px 0; border: 2px solid #eee; border-radius: 12px; font-size: 16px; }
+        /* LOGIN / PERFIL */
+        .overlay { position: fixed; inset: 0; background: var(--ws-green); z-index: 9999; display: flex; align-items: center; justify-content: center; color: white; }
+        .box { background: white; padding: 20px; border-radius: 20px; width: 90%; max-width: 350px; color: #333; text-align: center; border: 4px solid #d4af37; }
+        .box input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 10px; font-size: 16px; box-sizing: border-box; }
         
-        /* SELEÇÃO DE VEÍCULO GRANDE */
-        .veiculos-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 15px 0; }
-        .v-opt { font-size: 35px; padding: 10px; border: 3px solid #f0f0f0; border-radius: 15px; cursor: pointer; transition: 0.2s; background: #fafafa; }
-        .v-opt.selected { border-color: var(--whatsapp-green); background: #e8f5e9; transform: scale(1.1); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .veiculos-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 10px 0; }
+        .v-opt { font-size: 30px; padding: 8px; border: 2px solid #eee; border-radius: 12px; cursor: pointer; background: #f9f9f9; }
+        .v-opt.selected { border-color: var(--ws-green); background: #e8f5e9; transform: scale(1.1); }
 
-        /* ALERTAS LADO ESQUERDO */
-        .painel-alertas { position: absolute; top: 110px; left: 10px; z-index: 1000; display: flex; flex-direction: column; gap: 5px; }
-        .btn-a { border: 2px solid #d4af37; padding: 8px; border-radius: 10px; width: 75px; display: flex; flex-direction: column; align-items: center; cursor: pointer; color: white; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        /* PAINEL ALERTAS */
+        .painel-alertas { position: absolute; top: 120px; left: 10px; z-index: 1000; display: flex; flex-direction: column; gap: 5px; }
+        .btn-a { border: 2px solid #d4af37; padding: 8px; border-radius: 10px; width: 75px; display: flex; flex-direction: column; align-items: center; cursor: pointer; color: white; font-weight: bold; text-shadow: 1px 1px #000; }
         .bg-r { background: #b00020; } .bg-o { background: #ff6d00; } .bg-b { background: #1a1a1a; }
 
-        /* PULSAÇÃO PARA ALERTAS CRÍTICOS */
-        .pulse-danger { border-radius: 50%; animation: pulse-red 1.5s infinite; }
-        @keyframes pulse-red { 0% { box-shadow: 0 0 0 0px rgba(255, 59, 48, 0.7); } 100% { box-shadow: 0 0 0 25px rgba(255, 59, 48, 0); } }
+        /* PULSAÇÃO */
+        .pulse-critico { animation: pulse-red 1.5s infinite; border-radius: 50%; }
+        @keyframes pulse-red { 0% { box-shadow: 0 0 0 0px rgba(255, 0, 0, 0.7); } 100% { box-shadow: 0 0 0 20px rgba(255, 0, 0, 0); } }
 
-        /* BOTÕES FLUTUANTES */
-        .f-btn { position: fixed; z-index: 4001; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 15px rgba(0,0,0,0.4); touch-action: none; cursor: move; border: 2px solid white; }
-        #chat-trigger { width: 70px; height: 70px; background: #25d366; color: white; right: 20px; bottom: 20px; font-size: 35px; }
-        #btn-perfil { width: 55px; height: 55px; background: #333; color: white; right: 25px; top: 125px; font-size: 28px; }
-        #btn-bussola { width: 60px; height: 60px; background: white; border: 3px solid #d4af37; left: 20px; bottom: 20px; font-size: 32px; }
+        /* BOTÕES FLUTUANTES (HÍBRIDOS PC/MOBILE) */
+        .f-btn { 
+            position: fixed; z-index: 4001; border-radius: 50%; display: flex; 
+            align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.4); 
+            cursor: grab; border: 2px solid white; user-select: none;
+        }
+        .f-btn:active { cursor: grabbing; }
+        #chat-trigger { width: 65px; height: 65px; background: #25d366; color: white; right: 20px; bottom: 20px; font-size: 30px; }
+        #btn-perfil { width: 50px; height: 50px; background: #333; color: white; right: 25px; top: 130px; font-size: 25px; }
+        #btn-bussola { width: 55px; height: 55px; background: white; border: 2px solid #d4af37; left: 20px; bottom: 20px; font-size: 30px; }
 
-        /* CHAT PADRÃO WHATSAPP */
-        #chat-box { position: fixed; right: -100%; top: 0; width: 100%; max-width: 450px; height: 100%; background: #e5ddd5; z-index: 5000; transition: 0.4s; display: flex; flex-direction: column; }
+        /* CHAT */
+        #chat-box { position: fixed; right: -100%; top: 0; width: 100%; max-width: 400px; height: 100%; background: #e5ddd5; z-index: 5000; transition: 0.4s; display: flex; flex-direction: column; }
         #chat-box.aberto { right: 0; }
-        .mensagens-area { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 8px; }
-        .balao { padding: 8px 12px; border-radius: 12px; max-width: 85%; position: relative; font-size: 15px; box-shadow: 0 1px 1px rgba(0,0,0,0.2); }
-        .balao-eu { background: var(--whatsapp-light); align-self: flex-end; border-top-right-radius: 2px; }
-        .balao-outro { background: white; align-self: flex-start; border-top-left-radius: 2px; }
-        .balao-info { font-size: 11px; display: flex; justify-content: space-between; margin-top: 4px; color: #666; }
-        
-        /* FOOTER CHAT (ÁUDIO + TEXTO) */
-        .chat-footer { padding: 10px; background: #f0f0f0; display: flex; align-items: center; gap: 8px; }
-        .input-msg { flex: 1; padding: 12px; border-radius: 25px; border: 1px solid #ccc; outline: none; }
-        .btn-send { background: var(--whatsapp-green); color: white; border: none; border-radius: 50%; width: 45px; height: 45px; font-size: 20px; }
-        .btn-mic { background: #333; color: white; border: none; border-radius: 50%; width: 45px; height: 45px; font-size: 20px; }
+        .balao { padding: 10px; border-radius: 12px; margin-bottom: 8px; max-width: 85%; font-size: 14px; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+        .balao-eu { background: var(--ws-light); align-self: flex-end; }
+        .balao-outro { background: white; align-self: flex-start; }
+        .btn-resp { font-size: 22px; color: #000; cursor: pointer; font-weight: bold; margin-right: 10px; }
 
-        #painel-rota { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 4000; background: rgba(0,0,0,0.9); padding: 10px 25px; border-radius: 35px; border: 2px solid #d4af37; color: white; display: none; align-items: center; gap: 15px; }
+        #painel-rota { position: fixed; top: 15px; left: 50%; transform: translateX(-50%); z-index: 4000; background: #000; padding: 10px 20px; border-radius: 30px; border: 2px solid #d4af37; color: white; display: none; align-items: center; gap: 10px; }
     </style>
 </head>
 <body>
 
 <div id="login-screen" class="overlay">
     <div class="box">
-        <h2 style="margin:0 0 5px 0;">TECNOLOGIA BR-277</h2>
-        <p style="font-size:12px; color: #666; margin-bottom:15px;">SEGURANÇA E MONITORAMENTO EM TEMPO REAL</p>
+        <h2 style="margin:0">BR-277 TECNOLOGIA</h2>
+        <p style="font-size:11px; color:#666">CADASTRO OBRIGATÓRIO DE SEGURANÇA</p>
         <input type="text" id="u-nome" placeholder="Nome Completo">
-        <input type="tel" id="u-tel" placeholder="WhatsApp (Verificação)">
+        <input type="text" id="u-tel" value="+55 ">
         <input type="text" id="u-cidade" placeholder="Cidade">
-        <p style="font-size:14px; font-weight:bold; margin:10px 0;">Selecione seu Veículo:</p>
         <div class="veiculos-grid" id="v-grid-login"></div>
-        <button onclick="verificarESalvar()" style="width:100%; padding:16px; background:var(--whatsapp-green); color:white; border:none; border-radius:12px; font-weight:bold; font-size:16px; cursor:pointer;">VERIFICAR E ACESSAR</button>
+        <button onclick="salvarCadastro()" style="width:100%; padding:15px; background:var(--ws-green); color:white; border:none; border-radius:12px; font-weight:bold; cursor:pointer;">VERIFICAR E ENTRAR</button>
     </div>
 </div>
 
 <div id="map"></div>
 
-<div id="btn-perfil" class="f-btn" title="Editar Perfil">⚙️</div>
-<div id="btn-bussola" class="f-btn" title="Recentralizar">🧭</div>
+<div id="btn-perfil" class="f-btn">⚙️</div>
+<div id="btn-bussola" class="f-btn">🧭</div>
 <div id="chat-trigger" class="f-btn">💬</div>
 
 <div id="painel-rota">
-    <span>Navegando pela BR-277</span>
+    <span>ROTA BR-277 ATIVA</span>
     <b onclick="limparRota()" style="color:red; cursor:pointer; font-size:22px;">✕</b>
 </div>
 
@@ -86,25 +82,21 @@
     <button class="btn-a bg-r" onclick="enviarAlerta('Acidente', '⚠️')"><span>⚠️</span><b>Acidente</b></button>
     <button class="btn-a bg-r" onclick="enviarAlerta('Bloqueio', '🚫')"><span>🚫</span><b>Bloqueio</b></button>
     <button class="btn-a bg-o" onclick="enviarAlerta('Obra', '🚧')"><span>🚧</span><b>Obra</b></button>
-    <button class="btn-a bg-o" onclick="enviarAlerta('Lentidão', '🚗')"><span>🚗</span><b>Lentidão</b></button>
     <button class="btn-a bg-b" onclick="enviarAlerta('Animal', '🐕')"><span>🐕</span><b>Animal</b></button>
-    <button class="btn-a bg-b" onclick="enviarAlerta('Buraco', '🕳️')"><span>🕳️</span><b>Buraco</b></button>
-    <button class="btn-a bg-b" onclick="enviarAlerta('Neblina', '🌫️')"><span>🌫️</span><b>Neblina</b></button>
-    <button class="btn-a bg-b" onclick="enviarAlerta('Queda', '⛰️')"><span>⛰️</span><b>Queda</b></button>
     <button class="btn-a bg-b" onclick="enviarAlerta('Pane', '🛠️')"><span>🛠️</span><b>Pane</b></button>
     <button class="btn-a bg-b" onclick="enviarAlerta('Carga', '📦')"><span>📦</span><b>Carga</b></button>
 </div>
 
 <div id="chat-box">
-    <div style="padding:15px; background:var(--whatsapp-green); color:white; display:flex; justify-content:space-between; align-items:center;">
-        <b>BR-277 | GRUPO OFICIAL</b>
-        <span onclick="document.getElementById('chat-box').classList.remove('aberto')" style="cursor:pointer; font-size:30px;">✕</span>
+    <div style="padding:15px; background:var(--ws-green); color:white; display:flex; justify-content:space-between; align-items:center;">
+        <b>CHAT OPERACIONAL</b>
+        <span onclick="document.getElementById('chat-box').classList.remove('aberto')" style="cursor:pointer; font-size:25px;">✕</span>
     </div>
-    <div id="mensagens" class="mensagens-area"></div>
-    <div class="chat-footer">
-        <button class="btn-mic" onclick="alert('Gravando Áudio...')">🎤</button>
-        <input type="text" id="chat-input" class="input-msg" placeholder="Mensagem">
-        <button class="btn-send" onclick="mandarChat()">➤</button>
+    <div id="mensagens" style="flex:1; overflow-y:auto; padding:15px; display:flex; flex-direction:column;"></div>
+    <div style="padding:10px; background:#f0f0f0; display:flex; gap:10px; align-items:center;">
+        <button style="background:none; border:none; font-size:22px;">🎤</button>
+        <input type="text" id="chat-input" style="flex:1; padding:10px; border-radius:20px; border:1px solid #ccc;">
+        <button onclick="mandarChat()" style="background:var(--ws-green); color:white; border-radius:50%; width:40px; height:40px; border:none;">➤</button>
     </div>
 </div>
 
@@ -123,19 +115,19 @@ const map = L.map('map', { zoomControl: false }).setView([-25.4284, -49.2733], 1
 L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png').addTo(map);
 
 let meuLatLng, meuMarker, rMachine, vSel = "🚗";
-let user = JSON.parse(localStorage.getItem('br277_v3')) || null;
+let user = JSON.parse(localStorage.getItem('br277_v4')) || null;
 
-// BUSCA
+// LUPA
 const geocoder = L.Control.geocoder({ defaultMarkGeocode: false, collapsed: false, placeholder: "Buscar Destino..." })
-.on('markgeocode', function(e) {
+.on('markgeocode', e => {
     if (rMachine) map.removeControl(rMachine);
-    rMachine = L.Routing.control({ waypoints: [meuLatLng, e.geocode.center], lineOptions: { styles: [{ color: '#1a73e8', weight: 7 }] }, createMarker: () => null }).addTo(map);
+    rMachine = L.Routing.control({ waypoints: [meuLatLng, e.geocode.center], lineOptions: { styles: [{ color: '#1a73e8', weight: 8 }] }, createMarker: () => null }).addTo(map);
     document.getElementById('painel-rota').style.display = 'flex';
 }).addTo(map);
 
 function limparRota() { if(rMachine) map.removeControl(rMachine); document.getElementById('painel-rota').style.display = 'none'; }
 
-// VEICULOS GRID GRANDE
+// GRID VEICULOS
 const veiculos = ['🚛','🏍️','🚗','🚐','🚌','🚑','🚕','🚔'];
 function renderV() {
     const grid = document.getElementById('v-grid-login'); grid.innerHTML = "";
@@ -146,79 +138,112 @@ function renderV() {
 }
 renderV();
 
-if(user) { document.getElementById('login-screen').style.display = 'none'; iniciarApp(); }
+// PREENCHER PERFIL SE JÁ EXISTIR
+if(user) {
+    document.getElementById('login-screen').style.display = 'none';
+    vSel = user.v;
+    iniciarApp();
+}
 
-function verificarESalvar() {
+function salvarCadastro() {
     const n = document.getElementById('u-nome').value.trim();
     const t = document.getElementById('u-tel').value.trim();
-    if(!n || !t) return alert("Preencha Nome e Telefone!");
+    const c = document.getElementById('u-cidade').value.trim();
+    if(!n || t === "+55 " || !c) return alert("Preencha todos os campos!");
     
-    // Simulação de verificação de segurança
-    const token = Math.floor(1000 + Math.random() * 9000);
-    const valid = prompt("SEGURANÇA: Enviamos um código para seu WhatsApp. Digite os 4 dígitos para validar seu acesso:");
-    
-    if(valid) {
-        user = { n, t, v: vSel, adm: n.toLowerCase().includes("danilo") };
-        localStorage.setItem('br277_v3', JSON.stringify(user));
-        location.reload();
-    }
+    user = { n, t, c, v: vSel, adm: n.toLowerCase().includes("danilo") };
+    localStorage.setItem('br277_v4', JSON.stringify(user));
+    location.reload();
 }
 
 function iniciarApp() {
     navigator.geolocation.watchPosition(pos => {
         meuLatLng = L.latLng(pos.coords.latitude, pos.coords.longitude);
-        const html = `<div class="pulse-danger" style="background:rgba(0,123,255,0.5);width:25px;height:25px;position:absolute;left:-2px;top:-2px;"></div><div style="font-size:32px;position:relative;">${user.v}</div>`;
-        if(!meuMarker) { meuMarker = L.marker(meuLatLng, { icon: L.divIcon({ html, className: '', iconSize:[35,35] }) }).addTo(map); map.setView(meuLatLng, 17); }
+        const iconHtml = `<div style="font-size:32px; filter: drop-shadow(0 0 5px white);">${user.v}</div>`;
+        if(!meuMarker) { meuMarker = L.marker(meuLatLng, { icon: L.divIcon({ html: iconHtml, className: '', iconSize:[35,35] }) }).addTo(map); map.setView(meuLatLng, 17); }
         else { meuMarker.setLatLng(meuLatLng); }
         db.ref("vivos/" + user.n).set({ lat: pos.coords.latitude, lng: pos.coords.longitude, v: user.v, t: Date.now() });
     });
     carregarAlertas();
 }
 
-function tornarMovel(id, func) {
+// FUNÇÃO HÍBRIDA (MOUSE E TOUCH) PARA MOVER BOTÕES
+function configurarBotao(id, acao) {
     const el = document.getElementById(id);
-    let isD = false, sX, sY;
-    el.ontouchstart = (e) => { isD = false; sX = e.touches[0].clientX - el.offsetLeft; sY = e.touches[0].clientY - el.offsetTop; };
-    el.ontouchmove = (e) => { isD = true; el.style.left = (e.touches[0].clientX - sX) + 'px'; el.style.top = (e.touches[0].clientY - sY) + 'px'; el.style.right='auto'; el.style.bottom='auto'; };
-    el.ontouchend = () => { if(!isD) func(); };
+    let x = 0, y = 0, isMoviendo = false, inicioX, inicioY;
+
+    const iniciar = (e) => {
+        isMoviendo = false;
+        inicioX = (e.type === 'touchstart') ? e.touches[0].clientX : e.clientX;
+        inicioY = (e.type === 'touchstart') ? e.touches[0].clientY : e.clientY;
+        x = inicioX - el.offsetLeft;
+        y = inicioY - el.offsetTop;
+        document.addEventListener('mousemove', mover);
+        document.addEventListener('mouseup', parar);
+        document.addEventListener('touchmove', mover, {passive: false});
+        document.addEventListener('touchend', parar);
+    };
+
+    const mover = (e) => {
+        e.preventDefault();
+        isMoviendo = true;
+        const curX = (e.type === 'touchmove') ? e.touches[0].clientX : e.clientX;
+        const curY = (e.type === 'touchmove') ? e.touches[0].clientY : e.clientY;
+        el.style.left = (curX - x) + 'px';
+        el.style.top = (curY - y) + 'px';
+        el.style.right = 'auto'; el.style.bottom = 'auto';
+    };
+
+    const parar = () => {
+        document.removeEventListener('mousemove', mover);
+        document.removeEventListener('mouseup', parar);
+        document.removeEventListener('touchmove', mover);
+        document.removeEventListener('touchend', parar);
+        if (!isMoviendo) acao();
+    };
+
+    el.addEventListener('mousedown', iniciar);
+    el.addEventListener('touchstart', iniciar, {passive: true});
 }
 
-tornarMovel('chat-trigger', () => document.getElementById('chat-box').classList.toggle('aberto'));
-tornarMovel('btn-bussola', () => { if(meuLatLng) map.flyTo(meuLatLng, 17); });
-tornarMovel('btn-perfil', () => { if(confirm("Deseja editar seu perfil?")) { localStorage.removeItem('br277_v3'); location.reload(); } });
+configurarBotao('chat-trigger', () => document.getElementById('chat-box').classList.toggle('aberto'));
+configurarBotao('btn-bussola', () => { if(meuLatLng) map.flyTo(meuLatLng, 17); });
+configurarBotao('btn-perfil', () => {
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('u-nome').value = user.n;
+    document.getElementById('u-tel').value = user.t;
+    document.getElementById('u-cidade').value = user.c;
+    renderV();
+});
 
 function enviarAlerta(tipo, emoji) { if(meuLatLng) db.ref("alertas").push({ tipo, emoji, lat: meuLatLng.lat, lng: meuLatLng.lng, autor: user.n, t: Date.now() }); }
 
 function carregarAlertas() {
     db.ref("alertas").on("child_added", snap => {
-        const a = snap.val(); const k = snap.key;
-        const isPerigo = (a.tipo === 'Acidente' || a.tipo === 'Bloqueio');
-        const iconHtml = `<div class="${isPerigo?'pulse-danger':''}" style="font-size:35px; text-align:center;">${a.emoji}</div>`;
-        const m = L.marker([a.lat, a.lng], { icon: L.divIcon({ html: iconHtml, className: '', iconSize:[40,40] }) }).addTo(map);
+        const a = snap.val(), k = snap.key;
+        const critico = (a.tipo === 'Acidente' || a.tipo === 'Bloqueio') ? 'pulse-critico' : '';
+        const m = L.marker([a.lat, a.lng], { icon: L.divIcon({ html: `<div class="${critico}" style="font-size:35px; text-align:center;">${a.emoji}</div>`, className: '' }) }).addTo(map);
         
         m.on('click', () => {
             const html = `
-                <div style="width:260px; font-family:sans-serif;">
-                    <div style="background:var(--whatsapp-green);color:white;padding:10px;text-align:center;border-radius:10px 10px 0 0;"><b>${a.tipo}</b></div>
+                <div style="width:250px;">
+                    <div style="background:var(--ws-green);color:white;padding:8px;text-align:center;"><b>${a.tipo}</b></div>
                     <div id="p-chat-${k}" style="background:#e5ddd5; padding:10px; max-height:150px; overflow-y:auto; display:flex; flex-direction:column; gap:5px;"></div>
-                    <div style="display:flex;padding:8px;background:#eee;">
-                        <input id="p-in-${k}" style="flex:1;padding:8px;border-radius:10px;border:1px solid #ccc;">
-                        <button onclick="mandarPop('${k}')" style="background:var(--whatsapp-green);color:white;border:none;margin-left:5px;border-radius:50%;width:35px;height:35px;">➤</button>
+                    <div style="display:flex;padding:5px;background:#eee;">
+                        <input id="p-in-${k}" style="flex:1;border-radius:5px;border:1px solid #ccc;">
+                        <button onclick="mandarPop('${k}')" style="background:var(--ws-green);color:white;border:none;margin-left:5px;border-radius:50%;width:30px;height:30px;">➤</button>
                     </div>
                 </div>`;
             m.bindPopup(html).openPopup();
             db.ref("alertas/"+k+"/conversa").on("value", s => {
                 const dv = document.getElementById("p-chat-"+k);
-                if(dv){ dv.innerHTML = ""; const val = s.val(); if(val) Object.entries(val).forEach(([mk, v]) => {
-                    const eu = v.u === user.n;
-                    dv.innerHTML += `<div class="balao ${eu?'balao-eu':'balao-outro'}" style="font-size:12px; padding:5px 8px;"><b style="font-size:10px; color:${eu?'#075e54':'#1a73e8'}">${v.u}</b><br>${v.m}</div>`;
-                }); dv.scrollTop = dv.scrollHeight; }
+                if(dv){ dv.innerHTML = ""; const v = s.val(); if(v) Object.values(v).forEach(x => dv.innerHTML+=`<div style="font-size:12px;background:white;padding:5px;border-radius:5px;"><b>${x.u}:</b> ${x.m}</div>`); dv.scrollTop=dv.scrollHeight; }
             });
         });
     });
 }
 
-function mandarPop(k) { const i = document.getElementById("p-in-"+k); if(i.value) db.ref("alertas/"+k+"/conversa").push({u:user.n, m:i.value}); i.value=""; }
+function mandarPop(k) { const i=document.getElementById("p-in-"+k); if(i.value) db.ref("alertas/"+k+"/conversa").push({u:user.n, m:i.value}); i.value=""; }
 
 function mandarChat() {
     const i = document.getElementById('chat-input'); if(!i.value) return;
@@ -229,18 +254,15 @@ db.ref("chat").limitToLast(40).on("value", snap => {
     const b = document.getElementById('mensagens'); b.innerHTML = "";
     const d = snap.val();
     if(d) Object.entries(d).forEach(([k, c]) => {
-        const eu = c.u === user.n;
-        const time = new Date(c.t).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-        const date = new Date(c.t).toLocaleDateString([], {day:'2-digit', month:'2-digit'});
-        const del = (eu || user.adm) ? `<span onclick="db.ref('chat/${k}').remove()" style="color:red; cursor:pointer;">✕</span>` : "";
-        const resp = !eu ? `<span onclick="document.getElementById('chat-input').value='@${c.u} '; document.getElementById('chat-input').focus();" style="color:blue; cursor:pointer;">⤺</span>` : "";
-        
+        const eu = (c.u === user.n);
+        const del = (eu || user.adm) ? `<span onclick="db.ref('chat/${k}').remove()" style="color:red;cursor:pointer;">✕</span>` : "";
+        const resp = !eu ? `<span class="btn-resp" onclick="document.getElementById('chat-input').value='@${c.u} '; document.getElementById('chat-input').focus();">⤺</span>` : "";
         b.innerHTML += `
             <div class="balao ${eu?'balao-eu':'balao-outro'}">
-                <b style="font-size:12px; color:${eu?'#075e54':'#1a73e8'}">${c.u} ${c.adm?'(ADM)':''}</b><br>${c.m}
-                <div class="balao-info">
+                <b style="font-size:11px;color:${eu? '#075e54':'#1a73e8'}">${c.u} ${c.adm?'(ADM)':''}</b><br>${c.m}
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:5px; font-size:10px; color:#666;">
                     <span>${resp} ${del}</span>
-                    <span>${date} ${time}</span>
+                    <span>${new Date(c.t).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span>
                 </div>
             </div>`;
     }); b.scrollTop = b.scrollHeight;
