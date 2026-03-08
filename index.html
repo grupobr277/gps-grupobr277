@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="utf-8">
-    <title>BR-277 | TECNOLOGIA ELITE</title>
+    <title>BR-277 | TECNOLOGIA ELITE V3</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -10,87 +10,85 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
 
     <style>
-        html, body, #map { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; font-family: 'Segoe UI', Arial, sans-serif; background: #000; }
+        :root { --whatsapp-green: #075e54; --whatsapp-light: #dcf8c6; --danger: #ff3b30; }
+        html, body, #map { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background: #000; }
         
-        /* TELAS DE ACESSO */
-        .overlay { position: fixed; inset: 0; background: #075e54; z-index: 9999; display: flex; align-items: center; justify-content: center; color: white; }
-        .box { background: white; padding: 25px; border-radius: 20px; width: 85%; max-width: 350px; color: #333; text-align: center; border: 4px solid #d4af37; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .box h2 { color: #075e54; margin-top: 0; font-size: 18px; }
-        .box input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 10px; box-sizing: border-box; }
+        /* LOGIN REFORÇADO */
+        .overlay { position: fixed; inset: 0; background: var(--whatsapp-green); z-index: 9999; display: flex; align-items: center; justify-content: center; color: white; }
+        .box { background: white; padding: 25px; border-radius: 25px; width: 90%; max-width: 380px; color: #333; text-align: center; border: 5px solid #d4af37; }
+        .box input { width: 100%; padding: 15px; margin: 10px 0; border: 2px solid #eee; border-radius: 12px; font-size: 16px; }
         
-        /* 10 ALERTAS LADO ESQUERDO */
-        .painel-alertas { position: absolute; top: 110px; left: 10px; z-index: 1000; display: flex; flex-direction: column; gap: 4px; }
-        .btn-a { border: 2px solid #d4af37; padding: 5px; border-radius: 8px; width: 75px; display: flex; flex-direction: column; align-items: center; cursor: pointer; color: white; font-weight: bold; }
-        .btn-a b { font-size: 7px; text-transform: uppercase; margin-top: 2px; }
+        /* SELEÇÃO DE VEÍCULO GRANDE */
+        .veiculos-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 15px 0; }
+        .v-opt { font-size: 35px; padding: 10px; border: 3px solid #f0f0f0; border-radius: 15px; cursor: pointer; transition: 0.2s; background: #fafafa; }
+        .v-opt.selected { border-color: var(--whatsapp-green); background: #e8f5e9; transform: scale(1.1); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+
+        /* ALERTAS LADO ESQUERDO */
+        .painel-alertas { position: absolute; top: 110px; left: 10px; z-index: 1000; display: flex; flex-direction: column; gap: 5px; }
+        .btn-a { border: 2px solid #d4af37; padding: 8px; border-radius: 10px; width: 75px; display: flex; flex-direction: column; align-items: center; cursor: pointer; color: white; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
         .bg-r { background: #b00020; } .bg-o { background: #ff6d00; } .bg-b { background: #1a1a1a; }
 
-        /* BOTÕES FLUTUANTES (MOVE TUDO) */
-        .f-btn { position: fixed; z-index: 4001; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3); touch-action: none; cursor: move; }
-        #chat-trigger { width: 65px; height: 65px; background: #25d366; color: white; right: 20px; bottom: 20px; font-size: 32px; }
-        #btn-perfil { width: 50px; height: 50px; background: #333; color: white; right: 20px; top: 120px; font-size: 24px; }
-        #btn-bussola { width: 55px; height: 55px; background: white; border: 2px solid #d4af37; left: 20px; bottom: 20px; font-size: 30px; }
+        /* PULSAÇÃO PARA ALERTAS CRÍTICOS */
+        .pulse-danger { border-radius: 50%; animation: pulse-red 1.5s infinite; }
+        @keyframes pulse-red { 0% { box-shadow: 0 0 0 0px rgba(255, 59, 48, 0.7); } 100% { box-shadow: 0 0 0 25px rgba(255, 59, 48, 0); } }
 
-        /* CHAT WHATSAPP POPUP NO ÍCONE */
-        .leaflet-popup-content-wrapper { padding: 0; border-radius: 15px; overflow: hidden; width: 260px; }
-        .pop-chat { background: #e5ddd5; padding: 10px; max-height: 150px; overflow-y: auto; display: flex; flex-direction: column; }
-        .p-balao { padding: 6px 10px; border-radius: 10px; margin-bottom: 5px; font-size: 12px; position: relative; max-width: 85%; box-shadow: 0 1px 1px rgba(0,0,0,0.1); }
-        .p-eu { background: #dcf8c6; align-self: flex-end; }
-        .p-outro { background: white; align-self: flex-start; }
-        .p-nome { font-weight: bold; font-size: 10px; display: block; margin-bottom: 2px; }
-        .p-del { color: red; font-weight: bold; margin-left: 8px; cursor: pointer; }
+        /* BOTÕES FLUTUANTES */
+        .f-btn { position: fixed; z-index: 4001; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 15px rgba(0,0,0,0.4); touch-action: none; cursor: move; border: 2px solid white; }
+        #chat-trigger { width: 70px; height: 70px; background: #25d366; color: white; right: 20px; bottom: 20px; font-size: 35px; }
+        #btn-perfil { width: 55px; height: 55px; background: #333; color: white; right: 25px; top: 125px; font-size: 28px; }
+        #btn-bussola { width: 60px; height: 60px; background: white; border: 3px solid #d4af37; left: 20px; bottom: 20px; font-size: 32px; }
 
-        /* CHAT PRINCIPAL */
-        #chat-box { position: fixed; right: -100%; top: 0; width: 95%; max-width: 400px; height: 100%; background: #e5ddd5; z-index: 5000; transition: 0.4s; display: flex; flex-direction: column; }
+        /* CHAT PADRÃO WHATSAPP */
+        #chat-box { position: fixed; right: -100%; top: 0; width: 100%; max-width: 450px; height: 100%; background: #e5ddd5; z-index: 5000; transition: 0.4s; display: flex; flex-direction: column; }
         #chat-box.aberto { right: 0; }
-        .balao { padding: 10px; border-radius: 12px; margin-bottom: 10px; max-width: 85%; font-size: 14px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-        .balao-eu { background: #dcf8c6; align-self: flex-end; }
-        .balao-outro { background: white; align-self: flex-start; }
-
-        /* FECHAR ROTA NO MEIO */
-        #painel-rota { position: fixed; top: 15px; left: 50%; transform: translateX(-50%); z-index: 4000; background: rgba(0,0,0,0.8); padding: 8px 20px; border-radius: 30px; border: 2px solid #d4af37; color: white; display: none; align-items: center; gap: 15px; }
-        #painel-rota span { font-size: 14px; font-weight: bold; }
-        #painel-rota b { cursor: pointer; color: #ff3b30; font-size: 20px; }
-
-        /* BUSCA LUPA */
-        .leaflet-control-geocoder { margin-top: 15px !important; margin-left: 15px !important; border: 2px solid #d4af37 !important; }
+        .mensagens-area { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 8px; }
+        .balao { padding: 8px 12px; border-radius: 12px; max-width: 85%; position: relative; font-size: 15px; box-shadow: 0 1px 1px rgba(0,0,0,0.2); }
+        .balao-eu { background: var(--whatsapp-light); align-self: flex-end; border-top-right-radius: 2px; }
+        .balao-outro { background: white; align-self: flex-start; border-top-left-radius: 2px; }
+        .balao-info { font-size: 11px; display: flex; justify-content: space-between; margin-top: 4px; color: #666; }
         
-        .pulse { background: rgba(0, 123, 255, 0.6); border-radius: 50%; width: 22px; height: 22px; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); animation: pulse-kf 2s infinite; }
-        @keyframes pulse-kf { 0% { box-shadow: 0 0 0 0px rgba(0, 123, 255, 0.7); } 100% { box-shadow: 0 0 0 20px rgba(0, 123, 255, 0); } }
+        /* FOOTER CHAT (ÁUDIO + TEXTO) */
+        .chat-footer { padding: 10px; background: #f0f0f0; display: flex; align-items: center; gap: 8px; }
+        .input-msg { flex: 1; padding: 12px; border-radius: 25px; border: 1px solid #ccc; outline: none; }
+        .btn-send { background: var(--whatsapp-green); color: white; border: none; border-radius: 50%; width: 45px; height: 45px; font-size: 20px; }
+        .btn-mic { background: #333; color: white; border: none; border-radius: 50%; width: 45px; height: 45px; font-size: 20px; }
+
+        #painel-rota { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 4000; background: rgba(0,0,0,0.9); padding: 10px 25px; border-radius: 35px; border: 2px solid #d4af37; color: white; display: none; align-items: center; gap: 15px; }
     </style>
 </head>
 <body>
 
 <div id="login-screen" class="overlay">
     <div class="box">
-        <h2 style="margin-bottom:5px;">BEM-VINDO AO BR-277</h2>
-        <p style="font-size:11px; margin-bottom:15px; font-weight:bold; color:#666;">A MELHOR NAVEGAÇÃO DE OCORRÊNCIAS DO PARANÁ<br>A MELHOR TECNOLOGIA DA ATUALIDADE</p>
+        <h2 style="margin:0 0 5px 0;">TECNOLOGIA BR-277</h2>
+        <p style="font-size:12px; color: #666; margin-bottom:15px;">SEGURANÇA E MONITORAMENTO EM TEMPO REAL</p>
         <input type="text" id="u-nome" placeholder="Nome Completo">
-        <input type="text" id="u-cidade" placeholder="Sua Cidade">
-        <input type="tel" id="u-tel" placeholder="Telefone (DDD)">
-        <p style="font-size:12px; margin:10px 0 5px 0; font-weight:bold;">Selecione seu Veículo:</p>
+        <input type="tel" id="u-tel" placeholder="WhatsApp (Verificação)">
+        <input type="text" id="u-cidade" placeholder="Cidade">
+        <p style="font-size:14px; font-weight:bold; margin:10px 0;">Selecione seu Veículo:</p>
         <div class="veiculos-grid" id="v-grid-login"></div>
-        <button onclick="salvarCadastro()" style="width:100%; padding:15px; background:#075e54; color:white; border:none; border-radius:12px; font-weight:bold; margin-top:10px; cursor:pointer;">ACESSAR TECNOLOGIA</button>
+        <button onclick="verificarESalvar()" style="width:100%; padding:16px; background:var(--whatsapp-green); color:white; border:none; border-radius:12px; font-weight:bold; font-size:16px; cursor:pointer;">VERIFICAR E ACESSAR</button>
     </div>
 </div>
 
 <div id="map"></div>
 
-<div id="btn-perfil" class="f-btn">⚙️</div>
-<div id="btn-bussola" class="f-btn">🧭</div>
+<div id="btn-perfil" class="f-btn" title="Editar Perfil">⚙️</div>
+<div id="btn-bussola" class="f-btn" title="Recentralizar">🧭</div>
 <div id="chat-trigger" class="f-btn">💬</div>
 
 <div id="painel-rota">
-    <span>ROTA ATIVA</span>
-    <b onclick="limparRota()">✕</b>
+    <span>Navegando pela BR-277</span>
+    <b onclick="limparRota()" style="color:red; cursor:pointer; font-size:22px;">✕</b>
 </div>
 
 <div class="painel-alertas">
     <button class="btn-a bg-r" onclick="enviarAlerta('Acidente', '⚠️')"><span>⚠️</span><b>Acidente</b></button>
-    <button class="btn-a bg-o" onclick="enviarAlerta('Obra', '🚧')"><span>🚧</span><b>Obra</b></button>
     <button class="btn-a bg-r" onclick="enviarAlerta('Bloqueio', '🚫')"><span>🚫</span><b>Bloqueio</b></button>
+    <button class="btn-a bg-o" onclick="enviarAlerta('Obra', '🚧')"><span>🚧</span><b>Obra</b></button>
     <button class="btn-a bg-o" onclick="enviarAlerta('Lentidão', '🚗')"><span>🚗</span><b>Lentidão</b></button>
     <button class="btn-a bg-b" onclick="enviarAlerta('Animal', '🐕')"><span>🐕</span><b>Animal</b></button>
-    <button class="btn-a bg-o" onclick="enviarAlerta('Buraco', '🕳️')"><span>🕳️</span><b>Buraco</b></button>
+    <button class="btn-a bg-b" onclick="enviarAlerta('Buraco', '🕳️')"><span>🕳️</span><b>Buraco</b></button>
     <button class="btn-a bg-b" onclick="enviarAlerta('Neblina', '🌫️')"><span>🌫️</span><b>Neblina</b></button>
     <button class="btn-a bg-b" onclick="enviarAlerta('Queda', '⛰️')"><span>⛰️</span><b>Queda</b></button>
     <button class="btn-a bg-b" onclick="enviarAlerta('Pane', '🛠️')"><span>🛠️</span><b>Pane</b></button>
@@ -98,14 +96,15 @@
 </div>
 
 <div id="chat-box">
-    <div style="padding:15px; background:#075e54; color:white; display:flex; justify-content:space-between; align-items:center;">
-        <b>BR-277 CHAT ELITE</b>
-        <span onclick="document.getElementById('chat-box').classList.remove('aberto')" style="cursor:pointer; font-size:25px;">✕</span>
+    <div style="padding:15px; background:var(--whatsapp-green); color:white; display:flex; justify-content:space-between; align-items:center;">
+        <b>BR-277 | GRUPO OFICIAL</b>
+        <span onclick="document.getElementById('chat-box').classList.remove('aberto')" style="cursor:pointer; font-size:30px;">✕</span>
     </div>
-    <div id="mensagens" style="flex:1; overflow-y:auto; padding:15px; display:flex; flex-direction:column;"></div>
-    <div style="padding:10px; background:#eee; display:flex; gap:5px;">
-        <input type="text" id="chat-input" style="flex:1; padding:10px; border-radius:20px; border:1px solid #ccc;">
-        <button onclick="mandarChat()" style="background:#075e54; color:white; border-radius:50%; width:40px; height:40px; border:none;">➤</button>
+    <div id="mensagens" class="mensagens-area"></div>
+    <div class="chat-footer">
+        <button class="btn-mic" onclick="alert('Gravando Áudio...')">🎤</button>
+        <input type="text" id="chat-input" class="input-msg" placeholder="Mensagem">
+        <button class="btn-send" onclick="mandarChat()">➤</button>
     </div>
 </div>
 
@@ -124,22 +123,19 @@ const map = L.map('map', { zoomControl: false }).setView([-25.4284, -49.2733], 1
 L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png').addTo(map);
 
 let meuLatLng, meuMarker, rMachine, vSel = "🚗";
-let userData = JSON.parse(localStorage.getItem('br277_user')) || null;
+let user = JSON.parse(localStorage.getItem('br277_v3')) || null;
 
-// LUPA DE BUSCA
-const geocoder = L.Control.geocoder({ 
-    defaultMarkGeocode: false, collapsed: false, placeholder: "Buscar Cidade/Rua...",
-    geocoder: L.Control.Geocoder.nominatim({ geocodingQueryParams: { countrycodes: 'br' } })
-}).on('markgeocode', function(e) {
-    const dest = e.geocode.center;
+// BUSCA
+const geocoder = L.Control.geocoder({ defaultMarkGeocode: false, collapsed: false, placeholder: "Buscar Destino..." })
+.on('markgeocode', function(e) {
     if (rMachine) map.removeControl(rMachine);
-    rMachine = L.Routing.control({ waypoints: [meuLatLng, dest], lineOptions: { styles: [{ color: '#1a73e8', weight: 8 }] }, createMarker: () => null }).addTo(map);
+    rMachine = L.Routing.control({ waypoints: [meuLatLng, e.geocode.center], lineOptions: { styles: [{ color: '#1a73e8', weight: 7 }] }, createMarker: () => null }).addTo(map);
     document.getElementById('painel-rota').style.display = 'flex';
 }).addTo(map);
 
 function limparRota() { if(rMachine) map.removeControl(rMachine); document.getElementById('painel-rota').style.display = 'none'; }
 
-// VEICULOS GRID
+// VEICULOS GRID GRANDE
 const veiculos = ['🚛','🏍️','🚗','🚐','🚌','🚑','🚕','🚔'];
 function renderV() {
     const grid = document.getElementById('v-grid-login'); grid.innerHTML = "";
@@ -150,87 +146,103 @@ function renderV() {
 }
 renderV();
 
-if(userData) { document.getElementById('login-screen').style.display = 'none'; iniciarApp(); }
+if(user) { document.getElementById('login-screen').style.display = 'none'; iniciarApp(); }
 
-function salvarCadastro() {
-    const nome = document.getElementById('u-nome').value.trim();
-    const cidade = document.getElementById('u-cidade').value.trim();
-    const tel = document.getElementById('u-tel').value.trim();
-    if(!nome || !cidade || !tel) return alert("Preencha todos os campos obrigatórios!");
+function verificarESalvar() {
+    const n = document.getElementById('u-nome').value.trim();
+    const t = document.getElementById('u-tel').value.trim();
+    if(!n || !t) return alert("Preencha Nome e Telefone!");
     
-    userData = { nome, cidade, tel, veiculo: vSel, isAdmin: nome.toLowerCase().includes("danilo") };
-    localStorage.setItem('br277_user', JSON.stringify(userData));
-    location.reload();
+    // Simulação de verificação de segurança
+    const token = Math.floor(1000 + Math.random() * 9000);
+    const valid = prompt("SEGURANÇA: Enviamos um código para seu WhatsApp. Digite os 4 dígitos para validar seu acesso:");
+    
+    if(valid) {
+        user = { n, t, v: vSel, adm: n.toLowerCase().includes("danilo") };
+        localStorage.setItem('br277_v3', JSON.stringify(user));
+        location.reload();
+    }
 }
 
 function iniciarApp() {
     navigator.geolocation.watchPosition(pos => {
         meuLatLng = L.latLng(pos.coords.latitude, pos.coords.longitude);
-        const html = `<div class="pulse"></div><div style="font-size:28px;position:relative;">${userData.veiculo}</div>`;
-        if(!meuMarker) { meuMarker = L.marker(meuLatLng, { icon: L.divIcon({ html, className: '', iconSize:[30,30] }) }).addTo(map); map.setView(meuLatLng, 16); }
+        const html = `<div class="pulse-danger" style="background:rgba(0,123,255,0.5);width:25px;height:25px;position:absolute;left:-2px;top:-2px;"></div><div style="font-size:32px;position:relative;">${user.v}</div>`;
+        if(!meuMarker) { meuMarker = L.marker(meuLatLng, { icon: L.divIcon({ html, className: '', iconSize:[35,35] }) }).addTo(map); map.setView(meuLatLng, 17); }
         else { meuMarker.setLatLng(meuLatLng); }
-        db.ref("vivos/" + userData.nome).set({ lat: pos.coords.latitude, lng: pos.coords.longitude, v: userData.veiculo, t: Date.now() });
+        db.ref("vivos/" + user.n).set({ lat: pos.coords.latitude, lng: pos.coords.longitude, v: user.v, t: Date.now() });
     });
     carregarAlertas();
 }
 
-// LOGICA DE ARRASTAR BOTÕES FLUTUANTES
-function tornarMovel(id, cliqueFunc) {
+function tornarMovel(id, func) {
     const el = document.getElementById(id);
     let isD = false, sX, sY;
     el.ontouchstart = (e) => { isD = false; sX = e.touches[0].clientX - el.offsetLeft; sY = e.touches[0].clientY - el.offsetTop; };
     el.ontouchmove = (e) => { isD = true; el.style.left = (e.touches[0].clientX - sX) + 'px'; el.style.top = (e.touches[0].clientY - sY) + 'px'; el.style.right='auto'; el.style.bottom='auto'; };
-    el.ontouchend = () => { if(!isD) cliqueFunc(); };
+    el.ontouchend = () => { if(!isD) func(); };
 }
 
 tornarMovel('chat-trigger', () => document.getElementById('chat-box').classList.toggle('aberto'));
 tornarMovel('btn-bussola', () => { if(meuLatLng) map.flyTo(meuLatLng, 17); });
-tornarMovel('btn-perfil', () => { if(confirm("Deseja editar seu perfil?")) { localStorage.removeItem('br277_user'); location.reload(); } });
+tornarMovel('btn-perfil', () => { if(confirm("Deseja editar seu perfil?")) { localStorage.removeItem('br277_v3'); location.reload(); } });
 
-function enviarAlerta(tipo, emoji) { if(meuLatLng) db.ref("alertas").push({ tipo, emoji, lat: meuLatLng.lat, lng: meuLatLng.lng, autor: userData.nome, t: Date.now() }); }
+function enviarAlerta(tipo, emoji) { if(meuLatLng) db.ref("alertas").push({ tipo, emoji, lat: meuLatLng.lat, lng: meuLatLng.lng, autor: user.n, t: Date.now() }); }
 
 function carregarAlertas() {
     db.ref("alertas").on("child_added", snap => {
         const a = snap.val(); const k = snap.key;
-        const m = L.marker([a.lat, a.lng], { icon: L.divIcon({ html: `<span style="font-size:30px">${a.emoji}</span>`, className: '' }) }).addTo(map);
+        const isPerigo = (a.tipo === 'Acidente' || a.tipo === 'Bloqueio');
+        const iconHtml = `<div class="${isPerigo?'pulse-danger':''}" style="font-size:35px; text-align:center;">${a.emoji}</div>`;
+        const m = L.marker([a.lat, a.lng], { icon: L.divIcon({ html: iconHtml, className: '', iconSize:[40,40] }) }).addTo(map);
+        
         m.on('click', () => {
-            const btnX = userData.isAdmin ? `<button onclick="db.ref('alertas/${k}').remove(); location.reload();" style="width:100%;background:red;color:white;border:none;margin-top:5px;">ENCERRAR</button>` : "";
             const html = `
-                <div style="width:250px">
-                    <div style="background:#075e54;color:white;padding:8px;text-align:center;"><b>${a.tipo}</b></div>
-                    <div id="p-chat-${k}" class="pop-chat"></div>
-                    <div style="display:flex;padding:5px;background:#eee;">
-                        <input id="p-in-${k}" style="flex:1;border:1px solid #ccc;border-radius:5px;padding:5px;">
-                        <button onclick="mandarPop('${k}')" style="background:#075e54;color:white;border:none;margin-left:5px;border-radius:5px;padding:5px 10px;">➤</button>
-                    </div>${btnX}
+                <div style="width:260px; font-family:sans-serif;">
+                    <div style="background:var(--whatsapp-green);color:white;padding:10px;text-align:center;border-radius:10px 10px 0 0;"><b>${a.tipo}</b></div>
+                    <div id="p-chat-${k}" style="background:#e5ddd5; padding:10px; max-height:150px; overflow-y:auto; display:flex; flex-direction:column; gap:5px;"></div>
+                    <div style="display:flex;padding:8px;background:#eee;">
+                        <input id="p-in-${k}" style="flex:1;padding:8px;border-radius:10px;border:1px solid #ccc;">
+                        <button onclick="mandarPop('${k}')" style="background:var(--whatsapp-green);color:white;border:none;margin-left:5px;border-radius:50%;width:35px;height:35px;">➤</button>
+                    </div>
                 </div>`;
             m.bindPopup(html).openPopup();
             db.ref("alertas/"+k+"/conversa").on("value", s => {
-                const div = document.getElementById("p-chat-"+k);
-                if(div){ div.innerHTML = ""; const val = s.val(); if(val) Object.entries(val).forEach(([mk, v]) => {
-                    const eu = v.u === userData.nome;
-                    const del = (eu || userData.isAdmin) ? `<span class="p-del" onclick="db.ref('alertas/${k}/conversa/${mk}').remove()">✕</span>` : "";
-                    div.innerHTML += `<div class="p-balao ${eu?'p-eu':'p-outro'}"><span class="p-nome" style="color:${eu?'#075e54':'#1a73e8'}">${v.u}</span>${v.m}${del}</div>`;
-                }); div.scrollTop = div.scrollHeight; }
+                const dv = document.getElementById("p-chat-"+k);
+                if(dv){ dv.innerHTML = ""; const val = s.val(); if(val) Object.entries(val).forEach(([mk, v]) => {
+                    const eu = v.u === user.n;
+                    dv.innerHTML += `<div class="balao ${eu?'balao-eu':'balao-outro'}" style="font-size:12px; padding:5px 8px;"><b style="font-size:10px; color:${eu?'#075e54':'#1a73e8'}">${v.u}</b><br>${v.m}</div>`;
+                }); dv.scrollTop = dv.scrollHeight; }
             });
         });
     });
 }
 
-function mandarPop(k) { const i = document.getElementById("p-in-"+k); if(i.value) db.ref("alertas/"+k+"/conversa").push({u:userData.nome, m:i.value}); i.value=""; }
+function mandarPop(k) { const i = document.getElementById("p-in-"+k); if(i.value) db.ref("alertas/"+k+"/conversa").push({u:user.n, m:i.value}); i.value=""; }
 
 function mandarChat() {
     const i = document.getElementById('chat-input'); if(!i.value) return;
-    db.ref("chat").push({ u: userData.nome, m: i.value, t: Date.now(), adm: userData.isAdmin }); i.value = "";
+    db.ref("chat").push({ u: user.n, m: i.value, t: Date.now(), adm: user.adm }); i.value = "";
 }
 
-db.ref("chat").limitToLast(30).on("value", snap => {
+db.ref("chat").limitToLast(40).on("value", snap => {
     const b = document.getElementById('mensagens'); b.innerHTML = "";
     const d = snap.val();
     if(d) Object.entries(d).forEach(([k, c]) => {
-        const eu = c.u === userData.nome;
-        const del = (eu || userData.isAdmin) ? `<span onclick="db.ref('chat/${k}').remove()" style="color:red;font-size:10px;cursor:pointer;">✕ APAGAR</span>` : "";
-        b.innerHTML += `<div class="balao ${eu?'balao-eu':'balao-outro'}"><b style="font-size:11px;">${c.u} ${c.adm?'(ADM)':''}</b><br>${c.m}<div style="margin-top:5px;display:flex;justify-content:space-between;">${del} <span style="font-size:9px;">${new Date(c.t).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span></div></div>`;
+        const eu = c.u === user.n;
+        const time = new Date(c.t).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+        const date = new Date(c.t).toLocaleDateString([], {day:'2-digit', month:'2-digit'});
+        const del = (eu || user.adm) ? `<span onclick="db.ref('chat/${k}').remove()" style="color:red; cursor:pointer;">✕</span>` : "";
+        const resp = !eu ? `<span onclick="document.getElementById('chat-input').value='@${c.u} '; document.getElementById('chat-input').focus();" style="color:blue; cursor:pointer;">⤺</span>` : "";
+        
+        b.innerHTML += `
+            <div class="balao ${eu?'balao-eu':'balao-outro'}">
+                <b style="font-size:12px; color:${eu?'#075e54':'#1a73e8'}">${c.u} ${c.adm?'(ADM)':''}</b><br>${c.m}
+                <div class="balao-info">
+                    <span>${resp} ${del}</span>
+                    <span>${date} ${time}</span>
+                </div>
+            </div>`;
     }); b.scrollTop = b.scrollHeight;
 });
 </script>
