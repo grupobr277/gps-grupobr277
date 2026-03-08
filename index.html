@@ -9,15 +9,6 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-  var userId = localStorage.getItem("userId");
-
-if(!userId){
-userId = "user_" + Math.random().toString(36).substr(2,9);
-localStorage.setItem("userId", userId);
-}
-
-var usuariosRef = firebase.database().ref("usuarios");
-var marcadores = {};
 
 <style>
 body{margin:0;font-family:Arial}
@@ -47,14 +38,12 @@ padding:8px;
 <body>
 
 <div class="menu">
-
 <b>Registrar ocorrência</b>
 
 <button onclick="registrar('🚨 Acidente')">🚨 Acidente</button>
 <button onclick="registrar('🚧 Obra')">🚧 Obra</button>
 <button onclick="registrar('🚓 Polícia')">🚓 Polícia</button>
 <button onclick="registrar('🐄 Animal')">🐄 Animal</button>
-
 </div>
 
 <div id="map"></div>
@@ -74,6 +63,8 @@ appId: "1:459366791706:web:a8771a8981acf5d3c8afa3"
 firebase.initializeApp(firebaseConfig);
 
 var db = firebase.database();
+var usuariosRef = db.ref("usuarios");
+var ocorrenciasRef = db.ref("ocorrencias");
 
 var map = L.map('map').setView([-25.42,-49.27],7);
 
@@ -82,8 +73,15 @@ maxZoom:19
 }).addTo(map);
 
 var minhaPosicao;
+var meuMarcador;
+var marcadores = {};
 
-var primeiraLocalizacao = true;
+var userId = localStorage.getItem("userId");
+
+if(!userId){
+userId = "user_" + Math.random().toString(36).substr(2,9);
+localStorage.setItem("userId", userId);
+}
 
 navigator.geolocation.watchPosition(function(pos){
 
@@ -94,20 +92,34 @@ var velocidade = pos.coords.speed || 0;
 minhaPosicao=[lat,lng];
 
 usuariosRef.child(userId).set({
-
 lat:lat,
 lng:lng,
 velocidade:velocidade,
 tempo:Date.now()
+});
+
+if(!meuMarcador){
+
+meuMarcador = L.marker([lat,lng]).addTo(map)
+.bindPopup("Você");
+
+map.setView([lat,lng],14);
+
+}else{
+
+meuMarcador.setLatLng([lat,lng]);
+
+}
 
 });
 
-});
-  usuariosRef.on("value",function(snapshot){
+usuariosRef.on("value",function(snapshot){
 
 var dados = snapshot.val();
 
 for(var id in dados){
+
+if(id === userId) continue;
 
 var u = dados[id];
 
@@ -124,17 +136,6 @@ marcadores[id].setLatLng([u.lat,u.lng]);
 }
 
 });
-var lat = pos.coords.latitude;
-var lng = pos.coords.longitude;
-
-minhaPosicao=[lat,lng];
-
-map.setView([lat,lng],12);
-
-L.marker([lat,lng]).addTo(map)
-.bindPopup("Você está aqui");
-
-});
 
 function registrar(tipo){
 
@@ -143,18 +144,16 @@ alert("Aguardando GPS");
 return;
 }
 
-firebase.database().ref("ocorrencias").push({
-
+ocorrenciasRef.push({
 tipo:tipo,
 lat:minhaPosicao[0],
 lng:minhaPosicao[1],
 data:Date.now()
-
 });
 
 }
 
-firebase.database().ref("ocorrencias").on("child_added",function(snapshot){
+ocorrenciasRef.on("child_added",function(snapshot){
 
 var d=snapshot.val();
 
