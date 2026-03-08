@@ -12,54 +12,67 @@
     <style>
         html, body, #map { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; font-family: 'Segoe UI', Arial, sans-serif; }
         
-        /* LOGIN */
+        /* LOGIN E VEÍCULO */
         #login-screen { position: fixed; inset: 0; background: #075e54; z-index: 9999; display: flex; align-items: center; justify-content: center; }
-        .login-box { background: white; padding: 25px; border-radius: 15px; width: 85%; max-width: 300px; text-align: center; border: 4px solid #d4af37; }
+        .login-box { background: white; padding: 20px; border-radius: 15px; width: 85%; max-width: 320px; text-align: center; border: 4px solid #d4af37; }
+        .veiculos-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 15px 0; }
+        .veiculo-opt { font-size: 24px; padding: 8px; border: 2px solid #eee; border-radius: 10px; cursor: pointer; }
+        .veiculo-opt.selected { border-color: #075e54; background: #e8f5e9; }
 
         /* ALERTAS ESQUERDA */
-        .painel-alertas { position: absolute; top: 75px; left: 10px; z-index: 1000; display: flex; flex-direction: column; gap: 5px; }
-        .btn-alerta { 
-            background: #1a1a1a; border: 2px solid #d4af37; padding: 6px; border-radius: 10px; 
-            width: 80px; display: flex; flex-direction: column; align-items: center; cursor: pointer;
-        }
-        .btn-alerta span { font-size: 20px; }
-        .btn-alerta b { font-size: 9px; color: white; text-transform: uppercase; margin-top: 2px; }
+        .painel-alertas { position: absolute; top: 75px; left: 10px; z-index: 1000; display: flex; flex-direction: column; gap: 4px; }
+        .btn-alerta { background: #1a1a1a; border: 2px solid #d4af37; padding: 5px; border-radius: 8px; width: 75px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+        .btn-alerta b { font-size: 8px; color: white; text-transform: uppercase; margin-top: 2px; }
 
-        /* BOTÕES FIXOS FUNCIONAIS */
-        #btn-chat-flutuante { position: fixed; bottom: 20px; right: 20px; z-index: 4001; width: 65px; height: 65px; border-radius: 50%; background: #25d366; color: white; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); cursor: pointer; }
-        #btn-bussola { position: fixed; bottom: 20px; left: 15px; z-index: 1000; background: white; border: 2px solid #d4af37; width: 55px; height: 55px; border-radius: 50%; font-size: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        #notif-badge { position: absolute; top: 0; right: 0; background: red; color: white; border-radius: 50%; width: 22px; height: 22px; font-size: 12px; font-weight: bold; display: none; align-items: center; justify-content: center; border: 2px solid white; }
+        /* BOTÃO CHAT ARRASTÁVEL */
+        #chat-trigger { 
+            position: fixed; bottom: 20px; right: 20px; z-index: 4001; 
+            width: 65px; height: 65px; border-radius: 50%; background: #25d366; 
+            color: white; display: flex; align-items: center; justify-content: center; 
+            font-size: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); 
+            touch-action: none; cursor: move;
+        }
+
+        /* EFEITO PULSANTE AZUL */
+        .pulse-blue {
+            background: rgba(0, 123, 255, 0.6); border-radius: 50%; width: 20px; height: 20px;
+            position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+            animation: pulse-animation 2s infinite; pointer-events: none;
+        }
+        @keyframes pulse-animation { 0% { box-shadow: 0 0 0 0px rgba(0, 123, 255, 0.7); } 100% { box-shadow: 0 0 0 20px rgba(0, 123, 255, 0); } }
 
         /* CHAT WHATSAPP */
         #chat-box { position: fixed; right: -100%; top: 0; width: 90%; max-width: 380px; height: 100%; background: #e5ddd5; z-index: 5000; transition: 0.4s; display: flex; flex-direction: column; }
         #chat-box.aberto { right: 0; }
-        .balao { padding: 10px; border-radius: 15px; margin-bottom: 8px; max-width: 85%; font-size: 14px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .balao { padding: 10px; border-radius: 12px; margin-bottom: 8px; max-width: 85%; font-size: 14px; position: relative; }
         .balao-eu { background: #dcf8c6; align-self: flex-end; border-top-right-radius: 2px; }
         .balao-outro { background: white; align-self: flex-start; border-top-left-radius: 2px; }
-        
-        /* POPUP ALERTAS ESTILO WHATSAPP */
-        .leaflet-popup-content-wrapper { padding: 0; border-radius: 12px; overflow: hidden; }
-        .pop-head { background: #075e54; color: white; padding: 8px; font-weight: bold; text-align: center; font-size: 14px; }
-        .pop-chat { background: #e5ddd5; max-height: 120px; overflow-y: auto; padding: 8px; font-size: 12px; }
-        .pop-msg { background: white; padding: 4px 8px; border-radius: 8px; margin-bottom: 4px; box-shadow: 0 1px 1px rgba(0,0,0,0.1); }
 
-        #btn-fechar-rota { position: fixed; bottom: 90px; left: 15px; z-index: 3000; background: #000; color: #fff; border: 2px solid #d4af37; border-radius: 50%; width: 40px; height: 40px; display: none; align-items: center; justify-content: center; cursor: pointer; }
+        #btn-bussola { position: fixed; bottom: 20px; left: 15px; z-index: 1000; background: white; border: 2px solid #d4af37; width: 55px; height: 55px; border-radius: 50%; font-size: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div id="login-screen">
     <div class="login-box">
-        <h2 style="color:#075e54; margin-top:0">BR-277 ELITE</h2>
-        <input type="text" id="user-name" style="width:90%; padding:12px; margin-bottom:15px; border-radius:8px; border:1px solid #ccc;" placeholder="Nome Completo">
-        <button onclick="salvarNome()" style="width:90%; padding:12px; background:#075e54; color:white; border:none; border-radius:8px; font-weight:bold;">ACESSAR MAPA</button>
+        <h3 style="margin:0">IDENTIFICAÇÃO</h3>
+        <input type="text" id="user-name" style="width:90%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:8px;" placeholder="Seu Nome">
+        <div class="veiculos-grid" id="v-grid">
+            <div class="veiculo-opt" onclick="selV(this, '🚛')">🚛</div>
+            <div class="veiculo-opt" onclick="selV(this, '🏍️')">🏍️</div>
+            <div class="veiculo-opt" onclick="selV(this, '🚗')">🚗</div>
+            <div class="veiculo-opt" onclick="selV(this, '🚐')">🚐</div>
+            <div class="veiculo-opt" onclick="selV(this, '🚌')">🚌</div>
+            <div class="veiculo-opt" onclick="selV(this, '🚑')">🚑</div>
+            <div class="veiculo-opt" onclick="selV(this, '🚕')">🚕</div>
+        </div>
+        <button onclick="salvarAcesso()" style="width:100%; padding:12px; background:#075e54; color:white; border:none; border-radius:10px; font-weight:bold;">ACESSAR RODOVIA</button>
     </div>
 </div>
 
 <div id="map"></div>
 <button id="btn-bussola" onclick="recentralizar()">🧭</button>
-<button id="btn-fechar-rota" onclick="limparRota()">✕</button>
-<div id="btn-chat-flutuante" onclick="document.getElementById('chat-box').classList.toggle('aberto')">💬<div id="notif-badge">0</div></div>
+<div id="chat-trigger">💬</div>
 
 <div class="painel-alertas">
     <button class="btn-alerta" onclick="enviarAlerta('Acidente', '⚠️')"><span>⚠️</span><b>Acidente</b></button>
@@ -77,7 +90,7 @@
 <div id="chat-box">
     <div style="padding:15px; background:#075e54; color:white; display:flex; justify-content:space-between; align-items:center;">
         <b>CHAT BR-277</b>
-        <span onclick="fecharChat()" style="cursor:pointer; font-size:25px;">✕</span>
+        <span onclick="document.getElementById('chat-box').classList.remove('aberto')" style="cursor:pointer; font-size:25px;">✕</span>
     </div>
     <div id="mensagens" style="flex:1; overflow-y:auto; padding:15px; display:flex; flex-direction:column;"></div>
     <div style="padding:10px; background:#eee; display:flex; gap:5px;">
@@ -88,7 +101,6 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
-<script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
@@ -100,41 +112,58 @@ const db = firebase.database();
 const map = L.map('map', { zoomControl: false }).setView([-25.4284, -49.2733], 13);
 L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png').addTo(map);
 
-let meuLatLng, meuMarker, rMachine, notifCount = 0;
+let meuLatLng, meuMarker, meuVeiculo = "🚗", vSel = "";
 let meuNome = localStorage.getItem('br277_nome') || "";
+let iconAtivo = localStorage.getItem('br277_veiculo') || "🚗";
 
 if(meuNome) { document.getElementById('login-screen').style.display = 'none'; iniciarApp(); }
 
-function salvarNome() {
-    const n = document.getElementById('user-name').value.trim();
-    if(n.length < 2) return;
-    meuNome = n;
-    localStorage.setItem('br277_nome', n);
-    location.reload();
+function selV(el, emoji) {
+    document.querySelectorAll('.veiculo-opt').forEach(x => x.classList.remove('selected'));
+    el.classList.add('selected');
+    vSel = emoji;
 }
 
-const geocoder = L.Control.geocoder({ 
-    defaultMarkGeocode: false, collapsed: false, placeholder: "Para onde vamos?",
-    geocoder: L.Control.Geocoder.nominatim({ geocodingQueryParams: { countrycodes: 'br', viewbox: '-54.6,-26.7,-48.0,-22.5', bounded: 1 } })
-}).on('markgeocode', function(e) {
-    const dest = e.geocode.center;
-    if (rMachine) map.removeControl(rMachine);
-    rMachine = L.Routing.control({ waypoints: [meuLatLng, dest], lineOptions: { styles: [{ color: '#1a73e8', weight: 8 }] }, createMarker: () => null }).addTo(map);
-    document.getElementById('btn-fechar-rota').style.display = 'flex';
-}).addTo(map);
-
-function limparRota() { if(rMachine) map.removeControl(rMachine); document.getElementById('btn-fechar-rota').style.display = 'none'; }
+function salvarAcesso() {
+    const n = document.getElementById('user-name').value.trim();
+    if(n.length < 2 || !vSel) return alert("Preencha o nome e escolha o veículo!");
+    localStorage.setItem('br277_nome', n);
+    localStorage.setItem('br277_veiculo', vSel);
+    location.reload();
+}
 
 function iniciarApp() {
     navigator.geolocation.watchPosition(pos => {
         meuLatLng = L.latLng(pos.coords.latitude, pos.coords.longitude);
+        const htmlIcon = `<div class="pulse-blue"></div><div style="font-size:28px; position:relative;">${iconAtivo}</div>`;
         if(!meuMarker) {
-            meuMarker = L.marker(meuLatLng, { icon: L.divIcon({ html: `🚗`, className: '', iconSize:[25,25] }) }).addTo(map);
+            meuMarker = L.marker(meuLatLng, { icon: L.divIcon({ html: htmlIcon, className: '', iconSize:[30,30] }) }).addTo(map);
             map.setView(meuLatLng, 17);
         } else { meuMarker.setLatLng(meuLatLng); }
     });
     carregarAlertas();
 }
+
+// LOGICA DO BOTÃO ARRASTÁVEL QUE FUNCIONA O CLIQUE
+const dragger = document.getElementById('chat-trigger');
+let isDragging = false, startX, startY;
+
+dragger.addEventListener('touchstart', (e) => {
+    isDragging = false;
+    startX = e.touches[0].clientX - dragger.offsetLeft;
+    startY = e.touches[0].clientY - dragger.offsetTop;
+}, {passive: true});
+
+dragger.addEventListener('touchmove', (e) => {
+    isDragging = true;
+    dragger.style.left = (e.touches[0].clientX - startX) + 'px';
+    dragger.style.top = (e.touches[0].clientY - startY) + 'px';
+    dragger.style.right = 'auto'; dragger.style.bottom = 'auto';
+}, {passive: true});
+
+dragger.addEventListener('touchend', (e) => {
+    if (!isDragging) document.getElementById('chat-box').classList.toggle('aberto');
+});
 
 function enviarAlerta(tipo, emoji) {
     if (!meuLatLng) return;
@@ -145,33 +174,18 @@ function carregarAlertas() {
     db.ref("alertas").on("child_added", snap => {
         const a = snap.val(); const key = snap.key;
         const marker = L.marker([a.lat, a.lng], { icon: L.divIcon({ html: `<span style="font-size:30px">${a.emoji}</span>`, className: '' }) }).addTo(map);
-        
         marker.on('click', () => {
-            const popupHtml = `
-                <div style="width:200px">
-                    <div class="pop-head">${a.tipo}</div>
-                    <div id="chat-pop-${key}" class="pop-chat">Carregando...</div>
-                    <div style="display:flex; padding:5px; background:#eee">
-                        <input type="text" id="in-pop-${key}" style="flex:1; border:1px solid #ccc; border-radius:5px;">
-                        <button onclick="mandarMsgPop('${key}')" style="background:#075e54; color:white; border:none; border-radius:5px; margin-left:3px;">➤</button>
-                    </div>
-                </div>`;
+            const popupHtml = `<div style="width:200px"><div style="background:#075e54;color:white;padding:5px;text-align:center;font-weight:bold">${a.tipo}</div><div id="pop-${key}" style="max-height:100px;overflow-y:auto;background:#eee;padding:5px;font-size:12px"></div><div style="display:flex;padding:5px"><input id="in-${key}" style="flex:1"><button onclick="mandarPop('${key}')">➤</button></div></div>`;
             marker.bindPopup(popupHtml).openPopup();
-            db.ref("alertas/"+key+"/conversa").on("value", cSnap => {
-                const div = document.getElementById("chat-pop-"+key);
-                if(div){ div.innerHTML = ""; const d = cSnap.val(); if(d) Object.entries(d).forEach(([mk, c]) => {
-                    div.innerHTML += `<div class="pop-msg"><b>${c.u}</b>: ${c.m}</div>`;
-                }); div.scrollTop = div.scrollHeight; }
+            db.ref("alertas/"+key+"/conversa").on("value", s => {
+                const d = document.getElementById("pop-"+key);
+                if(d){ d.innerHTML = ""; const v = s.val(); if(v) Object.values(v).forEach(m => d.innerHTML+=`<div><b>${m.u}</b>: ${m.m}</div>`); d.scrollTop=d.scrollHeight; }
             });
         });
     });
 }
 
-function mandarMsgPop(key) {
-    const inp = document.getElementById("in-pop-"+key);
-    if(inp.value) db.ref("alertas/"+key+"/conversa").push({ u: meuNome, m: inp.value });
-    inp.value = "";
-}
+function mandarPop(k) { const i=document.getElementById("in-"+k); if(i.value) db.ref("alertas/"+k+"/conversa").push({u:meuNome, m:i.value}); i.value=""; }
 
 function mandarChat() {
     const inp = document.getElementById('chat-input'); if (!inp.value) return;
@@ -181,32 +195,15 @@ function mandarChat() {
 
 db.ref("chat").limitToLast(30).on("value", snap => {
     const b = document.getElementById('mensagens');
-    const isAberto = document.getElementById('chat-box').classList.contains('aberto');
     b.innerHTML = "";
     const dados = snap.val();
-    if(dados) {
-        Object.entries(dados).forEach(([key, c]) => {
-            if(!isAberto && c.u !== meuNome) { notifCount++; }
-            const delBtn = c.u === meuNome ? `<span onclick="db.ref('chat/${key}').remove()" style="color:red; cursor:pointer; font-weight:bold; margin-right:10px;">✕ Apagar</span>` : "";
-            const dataStr = new Date(c.t).toLocaleDateString() === new Date().toLocaleDateString() ? "Hoje" : new Date(c.t).toLocaleDateString([], {day:'2-digit', month:'2-digit'});
-            
-            b.innerHTML += `
-                <div class="balao ${c.u === meuNome ? 'balao-eu' : 'balao-outro'}">
-                    <b style="color:#075e54; font-size:11px">${c.u}</b><br>${c.m.replace(/(@[A-Za-zÀ-ÖØ-öø-ÿ\s]+)(?=\s|$)/g, '<span style="color:blue;font-weight:bold">$1</span>')}
-                    <div style="font-size:9px; color:#666; display:flex; justify-content:space-between; margin-top:5px;">
-                        ${delBtn} <span>${dataStr} ${new Date(c.t).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span>
-                    </div>
-                </div>`;
-        });
-        b.scrollTop = b.scrollHeight;
-        if(notifCount > 0 && !isAberto) { 
-            document.getElementById('notif-badge').innerText = notifCount; 
-            document.getElementById('notif-badge').style.display = 'flex'; 
-        }
-    }
+    if(dados) Object.entries(dados).forEach(([key, c]) => {
+        const del = c.u === meuNome ? `<span onclick="db.ref('chat/${key}').remove()" style="color:red;font-size:10px;font-weight:bold">✕ APAGAR</span>` : "";
+        b.innerHTML += `<div class="balao ${c.u === meuNome ? 'balao-eu' : 'balao-outro'}"><b style="font-size:11px;color:#075e54">${c.u}</b><br>${c.m}<div style="display:flex;justify-content:space-between;margin-top:5px;">${del} <span style="font-size:9px;color:#666">${new Date(c.t).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span></div></div>`;
+    });
+    b.scrollTop = b.scrollHeight;
 });
 
-function fecharChat() { document.getElementById('chat-box').classList.remove('aberto'); notifCount = 0; document.getElementById('notif-badge').style.display = 'none'; }
 function recentralizar() { if (meuLatLng) map.flyTo(meuLatLng, 17); }
 </script>
 </body>
