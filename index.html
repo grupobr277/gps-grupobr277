@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="utf-8">
-    <title>BR-277 | COMUNIDADE PRO</title>
+    <title>BR-277 | MONITORAMENTO OFICIAL</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -10,76 +10,74 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
 
     <style>
-        :root { --blue: #1a73e8; --green: #34a853; --grey: #5f6368; }
-        html, body { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; font-family: 'Roboto', sans-serif; }
+        :root { --primary: #075e54; --accent: #25d366; --blue-maps: #1a73e8; }
+        html, body { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; font-family: 'Segoe UI', sans-serif; }
         #map { position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 1; }
 
-        /* Contador de Usuários */
-        #user-count { position: absolute; top: 10px; right: 10px; z-index: 1000; background: rgba(0,0,0,0.7); color: white; padding: 5px 12px; border-radius: 20px; font-size: 12px; }
+        /* Painel de Usuários */
+        #status-bar { position: absolute; top: 10px; right: 10px; z-index: 1000; background: rgba(0,0,0,0.8); color: white; padding: 6px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; }
 
-        /* Marcador de Posição */
-        .meu-gps { width: 18px; height: 18px; background: var(--blue); border-radius: 50%; border: 3px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
-
-        /* Grade de Alertas (Scroll Vertical) */
-        .menu-alertas { 
-            position: absolute; top: 80px; left: 10px; z-index: 1000; 
-            display: flex; flex-direction: column; gap: 6px; 
-            max-height: 70vh; overflow-y: auto; padding-right: 5px;
+        /* Botões de Alerta com Texto */
+        .grid-alertas { 
+            position: absolute; top: 70px; left: 10px; z-index: 1000; 
+            display: grid; grid-template-columns: 1fr; gap: 8px; 
+            max-height: 75vh; overflow-y: auto; padding-right: 10px;
         }
-        .btn-alerta { 
-            background: white; border: none; padding: 10px 5px; border-radius: 10px; 
-            box-shadow: 0 2px 6px rgba(0,0,0,0.3); width: 85px; cursor: pointer; 
-            text-align: center; font-size: 9px; font-weight: bold; line-height: 1.2;
+        .btn-acao { 
+            background: white; border: none; padding: 10px; border-radius: 10px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3); width: 90px; cursor: pointer; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
-        .btn-alerta span { font-size: 18px; display: block; margin-bottom: 2px; }
+        .btn-acao span { font-size: 20px; margin-bottom: 3px; }
+        .btn-acao b { font-size: 8px; color: #333; text-transform: uppercase; text-align: center; }
 
-        /* Chat Estilo WhatsApp */
-        #chat-lateral { 
+        /* Chat WhatsApp Style */
+        #chat-app { 
             position: fixed; right: -100%; top: 0; width: 85%; max-width: 350px; 
-            height: 100%; background: #e5ddd5; z-index: 2000; transition: 0.3s; 
-            display: flex; flex-direction: column; 
+            height: 100%; background: #e5ddd5; z-index: 2000; transition: 0.4s; 
+            display: flex; flex-direction: column; box-shadow: -5px 0 20px rgba(0,0,0,0.3); 
         }
-        #chat-lateral.aberto { right: 0; }
-        .chat-header { padding: 15px; background: #075e54; color: white; font-weight: bold; display: flex; justify-content: space-between; }
-        #mensagens { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+        #chat-app.aberto { right: 0; }
+        .header-chat { padding: 15px; background: var(--primary); color: white; display: flex; justify-content: space-between; align-items: center; }
+        #area-mensagens { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
         
-        .balao { padding: 8px 12px; border-radius: 10px; font-size: 14px; max-width: 80%; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
-        .balao-outro { background: white; align-self: flex-start; }
-        .balao-eu { background: #dcf8c6; align-self: flex-end; }
-        .user-id { font-size: 10px; color: #888; display: block; margin-bottom: 2px; }
+        .msg { padding: 8px 12px; border-radius: 12px; font-size: 14px; max-width: 80%; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .msg-outro { background: white; align-self: flex-start; border-top-left-radius: 0; }
+        .msg-eu { background: #dcf8c6; align-self: flex-end; border-top-right-radius: 0; }
+        .msg-user { font-size: 9px; font-weight: bold; color: #075e54; display: block; }
 
-        .entrada-chat { padding: 10px; background: #f0f0f0; display: flex; align-items: center; }
-        .entrada-chat input { flex: 1; padding: 10px; border-radius: 20px; border: 1px solid #ddd; outline: none; }
+        .footer-chat { padding: 10px; background: #f0f0f0; display: flex; gap: 8px; }
+        .footer-chat input { flex: 1; padding: 10px 15px; border-radius: 25px; border: 1px solid #ddd; outline: none; }
 
-        /* Busca */
-        .leaflet-control-geocoder { border-radius: 24px !important; box-shadow: 0 2px 6px rgba(0,0,0,0.2) !important; }
-        .leaflet-routing-container { display: none; }
+        /* Marcadores */
+        .meu-gps { width: 18px; height: 18px; background: var(--blue-maps); border-radius: 50%; border: 3px solid white; box-shadow: 0 0 8px rgba(0,0,0,0.5); }
+        .leaflet-routing-container { display: none; } /* Deixa visual limpo igual Maps */
     </style>
 </head>
 <body>
 
-<div id="user-count">🚗 <span id="count">1</span> motoristas online</div>
+<div id="status-bar">🛰️ <span id="online-count">1</span> Motoristas na BR-277</div>
 <div id="map"></div>
 
-<div class="menu-alertas">
-    <button class="btn-alerta" onclick="registrar('Acidente', '⚠️')"><span>⚠️</span>ACIDENTE</button>
-    <button class="btn-alerta" onclick="registrar('Obras', '🚧')"><span>🚧</span>OBRAS</button>
-    <button class="btn-alerta" onclick="registrar('Congestionamento', '🚗')"><span>🚗</span>LENTIDÃO</button>
-    <button class="btn-alerta" onclick="registrar('Clima', '☁️')"><span>☁️</span>CLIMA</button>
-    <button class="btn-alerta" onclick="registrar('Animal', '🐕')"><span>🐕</span>ANIMAL</button>
-    <button class="btn-alerta" onclick="registrar('Barreira', '⛰️')"><span>⛰️</span>QUEDA</button>
-    <button class="btn-alerta" onclick="registrar('Bloqueio', '🚫')"><span>🚫</span>BLOQUEIO</button>
-    <button class="btn-alerta" onclick="registrar('Buraco', '🕳️')"><span>🕳️</span>BURACO</button>
+<div class="grid-alertas">
+    <button class="btn-acao" onclick="enviarAlerta('Acidente', '⚠️')"><span>⚠️</span><b>Acidente</b></button>
+    <button class="btn-acao" onclick="enviarAlerta('Obras', '🚧')"><span>🚧</span><b>Obras</b></button>
+    <button class="btn-acao" onclick="enviarAlerta('Lentidão', '🚗')"><span>🚗</span><b>Lentidão</b></button>
+    <button class="btn-acao" onclick="enviarAlerta('Clima', '☁️')"><span>☁️</span><b>Neblina</b></button>
+    <button class="btn-acao" onclick="enviarAlerta('Animal', '🐕')"><span>🐕</span><b>Animal</b></button>
+    <button class="btn-acao" onclick="enviarAlerta('Barreira', '⛰️')"><span>⛰️</span><b>Barreira</b></button>
+    <button class="btn-acao" onclick="enviarAlerta('Bloqueio', '🚫')"><span>🚫</span><b>Bloqueio</b></button>
+    <button class="btn-acao" onclick="enviarAlerta('Buraco', '🕳️')"><span>🕳️</span><b>Buraco</b></button>
 </div>
 
-<button onclick="toggleChat()" style="position:fixed; bottom:20px; right:20px; z-index:1001; width:60px; height:60px; border-radius:50%; background:#25d366; color:white; border:none; font-size:30px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); cursor:pointer">💬</button>
+<button onclick="document.getElementById('chat-app').classList.toggle('aberto')" style="position:fixed; bottom:20px; right:20px; z-index:1001; width:65px; height:65px; border-radius:50%; background:var(--accent); color:white; border:none; font-size:30px; cursor:pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.3)">💬</button>
 
-<div id="chat-lateral">
-    <div class="chat-header"><span>CHAT COMUNIDADE</span><span onclick="toggleChat()" style="cursor:pointer">✕</span></div>
-    <div id="mensagens"></div>
-    <div class="entrada-chat">
-        <input type="text" id="input-chat" placeholder="Escreva uma mensagem...">
-        <button onclick="enviarChat()" style="background:#075e54; color:white; border:none; border-radius:50%; width:40px; height:40px; margin-left:8px;">➤</button>
+<div id="chat-app">
+    <div class="header-chat"><span>GRUPO BR-277</span><span onclick="document.getElementById('chat-app').classList.remove('aberto')" style="cursor:pointer">✕</span></div>
+    <div id="area-mensagens"></div>
+    <div class="footer-chat">
+        <input type="text" id="msg-input" placeholder="Conversar com o grupo...">
+        <button onclick="enviarMensagem()" style="background:var(--primary); color:white; border:none; border-radius:50%; width:40px; height:40px;">➤</button>
     </div>
 </div>
 
@@ -90,7 +88,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-// --- CONFIG FIREBASE ---
+// --- CONEXÃO FIREBASE (SUBSTITUA PELOS SEUS DADOS) ---
 const firebaseConfig = { 
     apiKey: "SUA_API_KEY", 
     databaseURL: "https://SEU-PROJETO.firebaseio.com", 
@@ -99,22 +97,17 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// --- SETUP MAPA ---
-const map = L.map('map', { zoomControl: false }).setView([-25.4284, -49.2733], 13);
+// --- SETUP DO MAPA ---
+const map = L.map('map', { zoomControl: false }).setView([-25.4284, -49.2733], 12);
 L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png').addTo(map);
 
-const iconeCarro = L.icon({ iconUrl: 'https://cdn-icons-png.flaticon.com/512/744/744465.png', iconSize: [25, 25] });
+const iconeOutros = L.icon({ iconUrl: 'https://cdn-icons-png.flaticon.com/512/744/744465.png', iconSize: [24, 24] });
 
-let meuLatLng, meuMarker, routingControl;
-let marcadoresOcorrencia = {};
-let motoristasOnline = {};
-const meuID = "User_" + Math.random().toString(36).substr(2, 4).toUpperCase();
+let meuLatLng, meuMarker, rControl;
+const meuID = "Mtr_" + Math.random().toString(36).substr(2, 4).toUpperCase();
 
-// --- USUÁRIOS ONLINE E MOVIMENTO ---
-function atualizarPresenca() {
-    const refPresenca = db.ref("usuarios/" + meuID);
-    refPresenca.onDisconnect().remove();
-    
+// --- GPS E MOTORISTAS ONLINE ---
+function carregarGPS() {
     navigator.geolocation.watchPosition(pos => {
         meuLatLng = L.latLng(pos.coords.latitude, pos.coords.longitude);
         if (!meuMarker) {
@@ -122,80 +115,83 @@ function atualizarPresenca() {
             map.setView(meuLatLng, 15);
         } else { meuMarker.setLatLng(meuLatLng); }
         
-        refPresenca.set({ lat: pos.coords.latitude, lng: pos.coords.longitude, time: Date.now() });
+        db.ref("vivos/" + meuID).set({ lat: pos.coords.latitude, lng: pos.coords.longitude, t: Date.now() });
+        db.ref("vivos/" + meuID).onDisconnect().remove();
     }, null, { enableHighAccuracy: true });
 }
 
-db.ref("usuarios").on("value", snap => {
-    const users = snap.val() || {};
-    const ids = Object.keys(users);
-    document.getElementById("count").innerText = ids.length;
-
-    ids.forEach(id => {
-        if (id === meuID) return;
-        const u = users[id];
-        if (motoristasOnline[id]) { motoristasOnline[id].setLatLng([u.lat, u.lng]); }
-        else { motoristasOnline[id] = L.marker([u.lat, u.lng], { icon: iconeCarro }).addTo(map); }
-    });
+let outrosMarkers = {};
+db.ref("vivos").on("value", snap => {
+    const d = snap.val() || {};
+    document.getElementById("online-count").innerText = Object.keys(d).length;
+    for (let id in d) {
+        if (id === meuID) continue;
+        if (outrosMarkers[id]) { outrosMarkers[id].setLatLng([d[id].lat, d[id].lng]); }
+        else { outrosMarkers[id] = L.marker([d[id].lat, d[id].lng], { icon: iconeOutros }).addTo(map); }
+    }
 });
 
-// --- ROTA COMPLETA (ESTILO MAPS) ---
-const geocoder = L.Control.geocoder({
+// --- ROTA COMPLETA (FIX PARA SAÍDA E CHEGADA) ---
+const buscador = L.Control.geocoder({
     defaultMarkGeocode: false,
-    placeholder: "Para onde você vai?"
+    placeholder: "Para onde vamos hoje?"
 }).on('markgeocode', function(e) {
-    const dest = e.geocode.center;
-    if (routingControl) map.removeControl(routingControl);
+    const destino = e.geocode.center;
+    if (rControl) map.removeControl(rControl);
 
-    routingControl = L.Routing.control({
-        waypoints: [meuLatLng, dest],
+    rControl = L.Routing.control({
+        waypoints: [meuLatLng, destino],
         router: L.Routing.osrmv1({ serviceUrl: 'https://router.project-osrm.org/route/v1', language: 'pt' }),
         lineOptions: { styles: [{ color: '#1a73e8', opacity: 0.8, weight: 8 }], extendToWaypoints: true },
         createMarker: (i, wp) => i === 1 ? L.marker(wp.latLng).bindPopup("Chegada") : null
     }).addTo(map);
-    map.fitBounds(L.latLngBounds([meuLatLng, dest]), { padding: [50, 50] });
+    
+    // Força o mapa a mostrar a rota inteira
+    const bounds = L.latLngBounds([meuLatLng, destino]);
+    map.fitBounds(bounds, { padding: [50, 50] });
 }).addTo(map);
 
-// --- OCORRÊNCIAS PERSISTENTES ---
-function registrar(tipo, emoji) {
+// --- SALVAR ALERTAS (FIREBASE FIX) ---
+function enviarAlerta(tipo, emoji) {
     if (!meuLatLng) return;
-    const id = "Ocorr_" + Date.now();
-    db.ref("alertas/" + id).set({ id, tipo, emoji, lat: meuLatLng.lat, lng: meuLatLng.lng });
+    const id = "Alert_" + Date.now();
+    db.ref("alertas_ativos/" + id).set({
+        id, tipo, emoji, lat: meuLatLng.lat, lng: meuLatLng.lng, t: Date.now()
+    }).then(() => alert("Alerta de " + tipo + " compartilhado!"));
 }
 
-db.ref("alertas").on("child_added", snap => {
-    const o = snap.val();
-    const iconHTML = `<div style="text-align:center"><span style="font-size:24px">${o.emoji}</span></div>`;
-    L.marker([o.lat, o.lng], {
-        icon: L.divIcon({ html: iconHTML, iconSize: [40, 40], className: '' })
-    }).addTo(map).bindPopup(`<b>${o.tipo}</b>`);
+// Carrega alertas para todos
+db.ref("alertas_ativos").on("child_added", snap => {
+    const a = snap.val();
+    const htmlIcon = `<div style="text-align:center"><span style="font-size:25px">${a.emoji}</span></div>`;
+    L.marker([a.lat, a.lng], {
+        icon: L.divIcon({ html: htmlIcon, iconSize: [40, 40], className: '' })
+    }).addTo(map).bindPopup("<b>" + a.tipo + "</b>");
 });
 
-// --- CHAT EM TEMPO REAL ---
-function toggleChat() { document.getElementById('chat-lateral').classList.toggle('aberto'); }
-
-function enviarChat() {
-    const input = document.getElementById('input-chat');
+// --- CHAT PERSISTENTE ---
+function enviarMensagem() {
+    const input = document.getElementById('msg-input');
     if (!input.value) return;
-    db.ref("chat").push({ user: meuID, msg: input.value, time: Date.now() });
+    db.ref("mensagens_grupo").push({ u: meuID, m: input.value, t: Date.now() });
     input.value = "";
 }
 
-db.ref("chat").limitToLast(20).on("child_added", snap => {
-    const c = snap.val();
-    const box = document.getElementById('mensagens');
-    const classeBalao = c.user === meuID ? "balao-eu" : "balao-outro";
+db.ref("mensagens_grupo").limitToLast(30).on("child_added", snap => {
+    const v = snap.val();
+    const area = document.getElementById('area-mensagens');
+    const lado = v.u === meuID ? "msg-eu" : "msg-outro";
     
-    box.innerHTML += `
-        <div class="balao ${classeBalao}">
-            <span class="user-id">${c.user}</span>
-            ${c.msg}
+    area.innerHTML += `
+        <div class="msg ${lado}">
+            <span class="msg-user">${v.u}</span>
+            ${v.m}
         </div>
     `;
-    box.scrollTop = box.scrollHeight;
+    area.scrollTop = area.scrollHeight;
 });
 
-atualizarPresenca();
+carregarGPS();
 </script>
 </body>
 </html>
