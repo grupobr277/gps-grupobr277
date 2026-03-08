@@ -2,46 +2,59 @@
 <html lang="pt-br">
 <head>
     <meta charset="utf-8">
-    <title>BR-277 | Monitoramento Real-Time</title>
+    <title>BR-277 | Oficial Grupo</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
     <style>
-        body { margin: 0; font-family: 'Segoe UI', Arial; overflow: hidden; background: #222; }
-        #map { height: 100vh; width: 100vw; }
+        :root {
+            --primary: #2c3e50;
+            --danger: #e74c3c;
+            --warning: #f1c40f;
+            --success: #27ae60;
+            --info: #3498db;
+        }
+        body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: #eee; }
+        #map { height: 100vh; width: 100vw; z-index: 1; }
+
+        /* Painel de Alertas Profissional */
+        .grid-alertas {
+            position: absolute; top: 10px; left: 10px; z-index: 1000;
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;
+            background: rgba(255,255,255,0.95); padding: 12px; border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); width: 220px;
+        }
+        .btn-alerta {
+            border: none; border-radius: 8px; padding: 12px 5px; color: white;
+            font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.2s;
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+        }
+        .btn-alerta:active { transform: scale(0.95); }
         
-        /* Interface Superior */
-        .painel-alertas {
-            position: absolute; top: 10px; left: 10px; z-index: 1001;
-            display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
-            background: rgba(255,255,255,0.9); padding: 10px; border-radius: 12px;
-        }
-        .btn {
-            border: none; border-radius: 6px; padding: 10px; color: white;
-            font-weight: bold; cursor: pointer; font-size: 12px;
-        }
-        .btn-acidente { background: #ff4444; }
-        .btn-radar { background: #33b5e5; }
-        .btn-animal { background: #ffbb33; }
-        .btn-obras { background: #888; }
+        /* Cores dos Tipos */
+        .bg-acidente { background: var(--danger); }
+        .bg-pane { background: #9b59b6; }
+        .bg-obra { background: #e67e22; }
+        .bg-clima { background: var(--info); }
+        .bg-bloqueio { background: #000; }
+        .bg-animal { background: #7f8c8d; }
 
         /* Chat Lateral */
-        #chat-window {
+        #chat-lateral {
             position: absolute; right: -320px; top: 0; width: 300px; height: 100vh;
-            background: white; z-index: 1005; transition: 0.4s;
-            display: flex; flex-direction: column; box-shadow: -5px 0 15px rgba(0,0,0,0.3);
+            background: white; z-index: 2000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; flex-direction: column; box-shadow: -5px 0 20px rgba(0,0,0,0.3);
         }
-        #chat-window.open { right: 0; }
-        #msg-container { flex: 1; overflow-y: auto; padding: 15px; background: #f9f9f9; }
-        .msg { margin-bottom: 12px; padding: 8px; border-radius: 8px; background: #eee; font-size: 13px; }
-        .msg-bot { background: #e3f2fd; border-left: 4px solid #2196f3; }
-        .chat-input-box { padding: 10px; display: flex; border-top: 1px solid #ddd; }
+        #chat-lateral.open { right: 0; }
+        .chat-header { background: var(--primary); color: white; padding: 20px; font-weight: bold; display: flex; justify-content: space-between; }
+        #mensagens { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
+        .msg { padding: 10px; border-radius: 10px; background: #f1f1f1; max-width: 85%; font-size: 13px; }
+        .msg-bot { background: #d1ecf1; border-left: 5px solid var(--info); }
+        .input-area { padding: 15px; border-top: 1px solid #ddd; display: flex; gap: 5px; }
         
-        /* Botão flutuante do Chat */
-        .fab-chat {
-            position: absolute; bottom: 20px; right: 20px; z-index: 1001;
-            width: 60px; height: 60px; background: #28a745; border-radius: 50%;
-            border: none; color: white; font-size: 24px; cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        .btn-toggle-chat {
+            position: absolute; bottom: 30px; right: 20px; z-index: 1000;
+            width: 60px; height: 60px; border-radius: 50%; background: var(--success);
+            color: white; border: none; font-size: 24px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
     </style>
 </head>
@@ -49,31 +62,35 @@
 
 <div id="map"></div>
 
-<div class="painel-alertas">
-    <button class="btn btn-acidente" onclick="alerta('⚠️ Acidente')">ACIDENTE</button>
-    <button class="btn btn-radar" onclick="alerta('📸 Radar Fixo')">RADAR</button>
-    <button class="btn btn-animal" onclick="alerta('🦌 Animal')">ANIMAL</button>
-    <button class="btn btn-obras" onclick="alerta('🚧 Obras')">OBRAS</button>
+<div class="grid-alertas">
+    <button class="btn-alerta bg-acidente" onclick="enviarAlerta('Acidente Grave')">⚠️<span>Acidente</span></button>
+    <button class="btn-alerta bg-pane" onclick="enviarAlerta('Pane Mecânica')">🚛<span>Pane</span></button>
+    <button class="btn-alerta bg-obra" onclick="enviarAlerta('Obras na Pista')">🚧<span>Obras</span></button>
+    <button class="btn-alerta bg-clima" onclick="enviarAlerta('Neblina/Chuva')">☁️<span>Clima</span></button>
+    <button class="btn-alerta bg-bloqueio" onclick="enviarAlerta('Bloqueio Total')">🚫<span>Bloqueio</span></button>
+    <button class="btn-alerta bg-animal" onclick="enviarAlerta('Animal na Pista')">🦌<span>Animal</span></button>
 </div>
 
-<button class="fab-chat" onclick="document.getElementById('chat-window').classList.toggle('open')">💬</button>
+<button class="btn-toggle-chat" onclick="toggleChat()">💬</button>
 
-<div id="chat-window">
-    <div style="padding: 15px; background: #28a745; color: white; font-weight: bold;">GRUPO BR-277</div>
-    <div id="msg-container"></div>
-    <div class="chat-input-box">
-        <input type="text" id="chat-in" placeholder="Escreva aqui..." style="flex:1; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
-        <button onclick="enviarChat()" style="margin-left:5px; background:#28a745; color:white; border:none; border-radius:4px; padding: 0 10px;">></button>
+<div id="chat-lateral">
+    <div class="chat-header">
+        <span>CONVERSA AO VIVO</span>
+        <span style="cursor:pointer" onclick="toggleChat()">✖</span>
+    </div>
+    <div id="mensagens"></div>
+    <div class="input-area">
+        <input type="text" id="campo-msg" placeholder="Digite aqui..." style="flex:1; padding:10px; border:1px solid #ddd; border-radius:5px;">
+        <button onclick="mandarMsg()" style="padding:10px; background:var(--success); color:white; border:none; border-radius:5px;">➤</button>
     </div>
 </div>
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/leaflet-rotatedmarker@0.2.0/leaflet.rotatedMarker.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-// --- INICIALIZAÇÃO FIREBASE ---
+// --- FIREBASE CONFIG (USE AS SUAS CHAVES) ---
 const firebaseConfig = {
     apiKey: "SUA_API_KEY",
     databaseURL: "https://SEU-PROJETO.firebaseio.com",
@@ -82,105 +99,91 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// --- CONFIG MAPA ---
-let map = L.map('map', {zoomControl: false}).setView([-25.4284, -49.2733], 13);
+// --- INICIALIZAÇÃO DO MAPA ---
+var map = L.map('map', { zoomControl: false }).setView([-25.4284, -49.2733], 13);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-const carroIcon = L.icon({
-    iconUrl: "https://i.imgur.com/39N246L.png", // Ícone de carro visto de cima
-    iconSize: [40, 40], iconAnchor: [20, 20]
-});
+var meuID = "User_" + Math.random().toString(36).substr(2, 4).toUpperCase();
+var meuMarker = null;
+var motoristas = {};
 
-let meuID = "User_" + Math.random().toString(36).substr(2, 4).toUpperCase();
-let meuMarker;
-let motoristas = {};
-
-// --- GEOLOCALIZAÇÃO ---
-function iniciarGPS() {
+function iniciarLocalizacao() {
     navigator.geolocation.watchPosition(pos => {
-        const { latitude, longitude, heading } = pos.coords;
-        const latlng = [latitude, longitude];
-        const direcao = heading || 0;
-
+        const latlng = [pos.coords.latitude, pos.coords.longitude];
+        
         if (!meuMarker) {
-            meuMarker = L.marker(latlng, {icon: carroIcon, rotationAngle: direcao}).addTo(map);
+            // Círculo azul profissional em vez de imagem que pode quebrar
+            meuMarker = L.circleMarker(latlng, {
+                radius: 10, fillOpacity: 1, color: 'white', weight: 3, fillColor: '#007bff'
+            }).addTo(map);
             map.panTo(latlng);
         } else {
             meuMarker.setLatLng(latlng);
-            meuMarker.setRotationAngle(direcao);
         }
 
-        // Envia para o Firebase e limpa ao sair
-        db.ref("usuarios/" + meuID).set({ lat: latitude, lon: longitude, dir: direcao });
+        db.ref("usuarios/" + meuID).set({ lat: latlng[0], lon: latlng[1], time: Date.now() });
         db.ref("usuarios/" + meuID).onDisconnect().remove();
-    }, null, { enableHighAccuracy: true });
+    }, err => alert("Ative o GPS para o mapa funcionar!"), { enableHighAccuracy: true });
 }
 
-// Sincronizar motoristas
+// Sincronizar outros usuários
 db.ref("usuarios").on("value", snap => {
-    const data = snap.val() || {};
-    for (let id in data) {
+    const lista = snap.val() || {};
+    for (let id in lista) {
         if (id === meuID) continue;
-        const u = data[id];
-        if (motoristas[id]) {
-            motoristas[id].setLatLng([u.lat, u.lon]);
-            motoristas[id].setRotationAngle(u.dir);
+        const u = lista[id];
+        if (!motoristas[id]) {
+            motoristas[id] = L.circleMarker([u.lat, u.lon], { radius: 8, fillColor: '#6c757d', color: 'white', weight: 2, fillOpacity: 0.8 }).addTo(map);
         } else {
-            motoristas[id] = L.marker([u.lat, u.lon], {icon: carroIcon, rotationAngle: u.dir}).addTo(map);
+            motoristas[id].setLatLng([u.lat, u.lon]);
         }
-    }
-    // Remover quem saiu
-    for (let id in motoristas) {
-        if (!data[id]) { map.removeLayer(motoristas[id]); delete motoristas[id]; }
     }
 });
 
 // --- ALERTAS ---
-function alerta(tipo) {
-    if (!meuMarker) return alert("GPS desligado");
-    const p = meuMarker.getLatLng();
-    db.ref("ocorrencias").push({ tipo, lat: p.lat, lon: p.lng, time: Date.now() });
+function enviarAlerta(tipo) {
+    if (!meuMarker) return;
+    const pos = meuMarker.getLatLng();
+    db.ref("ocorrencias").push({ tipo, lat: pos.lat, lng: pos.lng, user: meuID, time: Date.now() });
 }
 
 db.ref("ocorrencias").on("child_added", snap => {
     const o = snap.val();
-    const markerOcorrencia = L.marker([o.lat, o.lon]).addTo(map).bindPopup(o.tipo).openPopup();
-    // Auto-remover do mapa após 1 hora (limpeza visual)
-    setTimeout(() => map.removeLayer(markerOcorrencia), 3600000);
+    const iconeAlerta = L.marker([o.lat, o.lng]).addTo(map)
+        .bindPopup(`<b>${o.tipo}</b><br><small>Relatado por: ${o.user}</small>`).openPopup();
+    
+    // Alerta sonoro ou vibração se estiver perto (opcional)
+    setTimeout(() => map.removeLayer(iconeAlerta), 7200000); // 2 horas de duração
 });
 
-// --- CHAT COM IA BÁSICA ---
-function enviarChat() {
-    const el = document.getElementById("chat-in");
-    const texto = el.value.trim();
-    if (!texto) return;
+// --- CHAT ---
+function toggleChat() { document.getElementById('chat-lateral').classList.toggle('open'); }
 
-    db.ref("chat").push({ user: meuID, msg: texto, time: Date.now() });
+function mandarMsg() {
+    const input = document.getElementById('campo-msg');
+    if (!input.value) return;
+    db.ref("chat").push({ user: meuID, msg: input.value, time: Date.now() });
     
-    // Simulação de IA (Inteligência Simples de Estrada)
-    if (texto.toLowerCase().includes("condição") || texto.toLowerCase().includes("serra")) {
+    // IA - Resposta Automática
+    if(input.value.toLowerCase().includes("ajuda")) {
         setTimeout(() => {
-            db.ref("chat").push({ 
-                user: "🤖 ASSISTENTE BR-277", 
-                msg: "Motorista, verifique os alertas no mapa. Neblina intensa na serra é comum agora!", 
-                time: Date.now() 
-            });
-        }, 1500);
+            db.ref("chat").push({ user: "🤖 ASSISTENTE", msg: "Como posso ajudar? Se vir perigo na pista, use os botões à esquerda.", time: Date.now() });
+        }, 1000);
     }
-    el.value = "";
+    input.value = "";
 }
 
-db.ref("chat").limitToLast(15).on("child_added", snap => {
-    const c = snap.val();
-    const box = document.getElementById("msg-container");
-    const div = document.createElement("div");
-    div.className = "msg" + (c.user.includes("🤖") ? " msg-bot" : "");
-    div.innerHTML = `<strong>${c.user}:</strong> ${c.msg}`;
-    box.appendChild(div);
-    box.scrollTop = box.scrollHeight;
+db.ref("chat").limitToLast(10).on("child_added", snap => {
+    const d = snap.val();
+    const container = document.getElementById('mensagens');
+    const div = document.createElement('div');
+    div.className = "msg " + (d.user === "🤖 ASSISTENTE" ? "msg-bot" : "");
+    div.innerHTML = `<b>${d.user}:</b> ${d.msg}`;
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
 });
 
-iniciarGPS();
+iniciarLocalizacao();
 </script>
 </body>
 </html>
