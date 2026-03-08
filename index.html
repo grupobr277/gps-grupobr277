@@ -2,188 +2,130 @@
 <html lang="pt-br">
 <head>
     <meta charset="utf-8">
-    <title>BR-277 | Oficial Grupo</title>
+    <title>BR-277 GPS Profissional</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
     <style>
-        :root {
-            --primary: #2c3e50;
-            --danger: #e74c3c;
-            --warning: #f1c40f;
-            --success: #27ae60;
-            --info: #3498db;
-        }
-        body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: #eee; }
-        #map { height: 100vh; width: 100vw; z-index: 1; }
+        :root { --primary: #2c3e50; --danger: #e74c3c; --warning: #f1c40f; --success: #27ae60; }
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; }
+        #map { height: 100vh; width: 100vw; }
 
-        /* Painel de Alertas Profissional */
-        .grid-alertas {
-            position: absolute; top: 10px; left: 10px; z-index: 1000;
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;
-            background: rgba(255,255,255,0.95); padding: 12px; border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2); width: 220px;
+        /* Barra de Busca de Destino */
+        .search-container {
+            position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+            z-index: 1000; width: 90%; max-width: 400px; display: flex; gap: 5px;
         }
-        .btn-alerta {
-            border: none; border-radius: 8px; padding: 12px 5px; color: white;
-            font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.2s;
-            display: flex; flex-direction: column; align-items: center; gap: 4px;
+        #destination-input {
+            flex: 1; padding: 12px; border-radius: 25px; border: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); outline: none;
         }
-        .btn-alerta:active { transform: scale(0.95); }
-        
-        /* Cores dos Tipos */
-        .bg-acidente { background: var(--danger); }
-        .bg-pane { background: #9b59b6; }
-        .bg-obra { background: #e67e22; }
-        .bg-clima { background: var(--info); }
-        .bg-bloqueio { background: #000; }
-        .bg-animal { background: #7f8c8d; }
 
-        /* Chat Lateral */
-        #chat-lateral {
-            position: absolute; right: -320px; top: 0; width: 300px; height: 100vh;
-            background: white; z-index: 2000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex; flex-direction: column; box-shadow: -5px 0 20px rgba(0,0,0,0.3);
+        /* Grade de Alertas Lateral */
+        .alert-sidebar {
+            position: absolute; top: 70px; left: 10px; z-index: 1000;
+            display: flex; flex-direction: column; gap: 10px;
+            background: rgba(255,255,255,0.9); padding: 10px; border-radius: 12px;
         }
-        #chat-lateral.open { right: 0; }
-        .chat-header { background: var(--primary); color: white; padding: 20px; font-weight: bold; display: flex; justify-content: space-between; }
-        #mensagens { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
-        .msg { padding: 10px; border-radius: 10px; background: #f1f1f1; max-width: 85%; font-size: 13px; }
-        .msg-bot { background: #d1ecf1; border-left: 5px solid var(--info); }
-        .input-area { padding: 15px; border-top: 1px solid #ddd; display: flex; gap: 5px; }
-        
-        .btn-toggle-chat {
-            position: absolute; bottom: 30px; right: 20px; z-index: 1000;
-            width: 60px; height: 60px; border-radius: 50%; background: var(--success);
-            color: white; border: none; font-size: 24px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        .btn-mini {
+            border: none; border-radius: 50%; width: 45px; height: 45px;
+            color: white; font-size: 20px; cursor: pointer; display: flex;
+            align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
     </style>
 </head>
 <body>
 
+<div class="search-container">
+    <input type="text" id="destination-input" placeholder="Para onde vamos? (Ex: Curitiba)">
+    <button onclick="buscarRota()" style="border:none; background:var(--success); color:white; border-radius:50%; width:45px; cursor:pointer">Go</button>
+</div>
+
+<div class="alert-sidebar">
+    <button title="Acidente" class="btn-mini" style="background:var(--danger)" onclick="enviarAlerta('acidente')">⚠️</button>
+    <button title="Pane Mecânica" class="btn-mini" style="background:#9b59b6" onclick="enviarAlerta('pane')">🚛</button>
+    <button title="Obras" class="btn-mini" style="background:#e67e22" onclick="enviarAlerta('obra')">🚧</button>
+    <button title="Bloqueio" class="btn-mini" style="background:#000" onclick="enviarAlerta('bloqueio')">🚫</button>
+</div>
+
 <div id="map"></div>
-
-<div class="grid-alertas">
-    <button class="btn-alerta bg-acidente" onclick="enviarAlerta('Acidente Grave')">⚠️<span>Acidente</span></button>
-    <button class="btn-alerta bg-pane" onclick="enviarAlerta('Pane Mecânica')">🚛<span>Pane</span></button>
-    <button class="btn-alerta bg-obra" onclick="enviarAlerta('Obras na Pista')">🚧<span>Obras</span></button>
-    <button class="btn-alerta bg-clima" onclick="enviarAlerta('Neblina/Chuva')">☁️<span>Clima</span></button>
-    <button class="btn-alerta bg-bloqueio" onclick="enviarAlerta('Bloqueio Total')">🚫<span>Bloqueio</span></button>
-    <button class="btn-alerta bg-animal" onclick="enviarAlerta('Animal na Pista')">🦌<span>Animal</span></button>
-</div>
-
-<button class="btn-toggle-chat" onclick="toggleChat()">💬</button>
-
-<div id="chat-lateral">
-    <div class="chat-header">
-        <span>CONVERSA AO VIVO</span>
-        <span style="cursor:pointer" onclick="toggleChat()">✖</span>
-    </div>
-    <div id="mensagens"></div>
-    <div class="input-area">
-        <input type="text" id="campo-msg" placeholder="Digite aqui..." style="flex:1; padding:10px; border:1px solid #ddd; border-radius:5px;">
-        <button onclick="mandarMsg()" style="padding:10px; background:var(--success); color:white; border:none; border-radius:5px;">➤</button>
-    </div>
-</div>
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-// --- FIREBASE CONFIG (USE AS SUAS CHAVES) ---
-const firebaseConfig = {
-    apiKey: "SUA_API_KEY",
-    databaseURL: "https://SEU-PROJETO.firebaseio.com",
-    projectId: "SEU-PROJETO"
-};
+// CONFIGURAÇÕES
+const firebaseConfig = { apiKey: "SUA_API_KEY", databaseURL: "https://SEU-PROJETO.firebaseio.com", projectId: "SEU-PROJETO" };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// --- INICIALIZAÇÃO DO MAPA ---
-var map = L.map('map', { zoomControl: false }).setView([-25.4284, -49.2733], 13);
+const map = L.map('map', { zoomControl: false }).setView([-25.4284, -49.2733], 13);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-var meuID = "User_" + Math.random().toString(36).substr(2, 4).toUpperCase();
-var meuMarker = null;
-var motoristas = {};
+// Mapeamento de Ícones Profissionais
+const iconesModerna = {
+    'acidente': '⚠️',
+    'pane': '🚛',
+    'obra': '🚧',
+    'bloqueio': '🚫'
+};
 
-function iniciarLocalizacao() {
+let meuMarker;
+let meuID = "Drive_" + Math.random().toString(36).substr(2, 4).toUpperCase();
+
+// INICIAR GPS COM MOVIMENTO REAL
+function iniciarGPS() {
     navigator.geolocation.watchPosition(pos => {
         const latlng = [pos.coords.latitude, pos.coords.longitude];
         
         if (!meuMarker) {
-            // Círculo azul profissional em vez de imagem que pode quebrar
-            meuMarker = L.circleMarker(latlng, {
-                radius: 10, fillOpacity: 1, color: 'white', weight: 3, fillColor: '#007bff'
-            }).addTo(map);
-            map.panTo(latlng);
+            meuMarker = L.marker(latlng).addTo(map);
+            map.setView(latlng, 15);
         } else {
             meuMarker.setLatLng(latlng);
+            map.panTo(latlng); // Segue o carro em tempo real
         }
 
         db.ref("usuarios/" + meuID).set({ lat: latlng[0], lon: latlng[1], time: Date.now() });
-        db.ref("usuarios/" + meuID).onDisconnect().remove();
-    }, err => alert("Ative o GPS para o mapa funcionar!"), { enableHighAccuracy: true });
+    }, null, { enableHighAccuracy: true });
 }
 
-// Sincronizar outros usuários
-db.ref("usuarios").on("value", snap => {
-    const lista = snap.val() || {};
-    for (let id in lista) {
-        if (id === meuID) continue;
-        const u = lista[id];
-        if (!motoristas[id]) {
-            motoristas[id] = L.circleMarker([u.lat, u.lon], { radius: 8, fillColor: '#6c757d', color: 'white', weight: 2, fillOpacity: 0.8 }).addTo(map);
-        } else {
-            motoristas[id].setLatLng([u.lat, u.lon]);
-        }
-    }
-});
-
-// --- ALERTAS ---
+// REGISTRAR COM ÍCONES INTELIGENTES
 function enviarAlerta(tipo) {
     if (!meuMarker) return;
     const pos = meuMarker.getLatLng();
-    db.ref("ocorrencias").push({ tipo, lat: pos.lat, lng: pos.lng, user: meuID, time: Date.now() });
+    db.ref("ocorrencias").push({ 
+        tipo: tipo, 
+        icone: iconesModerna[tipo],
+        lat: pos.lat, 
+        lng: pos.lng, 
+        time: Date.now() 
+    });
 }
 
+// EXIBIR OCORRÊNCIAS COM ÍCONES ESPECÍFICOS
 db.ref("ocorrencias").on("child_added", snap => {
     const o = snap.val();
-    const iconeAlerta = L.marker([o.lat, o.lng]).addTo(map)
-        .bindPopup(`<b>${o.tipo}</b><br><small>Relatado por: ${o.user}</small>`).openPopup();
-    
-    // Alerta sonoro ou vibração se estiver perto (opcional)
-    setTimeout(() => map.removeLayer(iconeAlerta), 7200000); // 2 horas de duração
+    const customIcon = L.divIcon({
+        html: `<div style="font-size:24px; background:white; border-radius:50%; padding:5px; border:2px solid red; box-shadow:0 2px 5px rgba(0,0,0,0.3)">${o.icone}</div>`,
+        className: 'custom-div-icon',
+        iconSize: [40, 40]
+    });
+
+    L.marker([o.lat, o.lng], { icon: customIcon }).addTo(map).bindPopup(`<b>${o.tipo.toUpperCase()}</b>`);
 });
 
-// --- CHAT ---
-function toggleChat() { document.getElementById('chat-lateral').classList.toggle('open'); }
-
-function mandarMsg() {
-    const input = document.getElementById('campo-msg');
-    if (!input.value) return;
-    db.ref("chat").push({ user: meuID, msg: input.value, time: Date.now() });
-    
-    // IA - Resposta Automática
-    if(input.value.toLowerCase().includes("ajuda")) {
-        setTimeout(() => {
-            db.ref("chat").push({ user: "🤖 ASSISTENTE", msg: "Como posso ajudar? Se vir perigo na pista, use os botões à esquerda.", time: Date.now() });
-        }, 1000);
+// SIMULAÇÃO DE BUSCA E ROTA (Para Curitiba)
+function buscarRota() {
+    const destino = document.getElementById("destination-input").value;
+    if (destino.toLowerCase().includes("curitiba")) {
+        alert("Traçando rota para Curitiba via BR-277...");
+        map.flyTo([-25.4269, -49.2652], 14); // Coordenadas de Curitiba
+        // Aqui integraria a API de Directions do Google no futuro
     }
-    input.value = "";
 }
 
-db.ref("chat").limitToLast(10).on("child_added", snap => {
-    const d = snap.val();
-    const container = document.getElementById('mensagens');
-    const div = document.createElement('div');
-    div.className = "msg " + (d.user === "🤖 ASSISTENTE" ? "msg-bot" : "");
-    div.innerHTML = `<b>${d.user}:</b> ${d.msg}`;
-    container.appendChild(div);
-    container.scrollTop = container.scrollHeight;
-});
-
-iniciarLocalizacao();
+iniciarGPS();
 </script>
 </body>
 </html>
