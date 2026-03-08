@@ -5,12 +5,13 @@
 <title>GPS BR277</title>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
 <style>
+
 body{margin:0;font-family:Arial}
 #map{height:100vh}
 
@@ -30,7 +31,13 @@ display:block;
 width:160px;
 margin:5px 0;
 padding:8px;
+cursor:pointer;
 }
+
+.carIcon{
+font-size:24px;
+}
+
 </style>
 
 </head>
@@ -38,12 +45,14 @@ padding:8px;
 <body>
 
 <div class="menu">
+
 <b>Registrar ocorrência</b>
 
 <button onclick="registrar('🚨 Acidente')">🚨 Acidente</button>
 <button onclick="registrar('🚧 Obra')">🚧 Obra</button>
 <button onclick="registrar('🚓 Polícia')">🚓 Polícia</button>
 <button onclick="registrar('🐄 Animal')">🐄 Animal</button>
+
 </div>
 
 <div id="map"></div>
@@ -63,6 +72,7 @@ appId: "1:459366791706:web:a8771a8981acf5d3c8afa3"
 firebase.initializeApp(firebaseConfig);
 
 var db = firebase.database();
+
 var usuariosRef = db.ref("usuarios");
 var ocorrenciasRef = db.ref("ocorrencias");
 
@@ -75,6 +85,7 @@ maxZoom:19
 var minhaPosicao;
 var meuMarcador;
 var marcadores = {};
+var ocorrencias = [];
 
 var userId = localStorage.getItem("userId");
 
@@ -83,33 +94,65 @@ userId = "user_" + Math.random().toString(36).substr(2,9);
 localStorage.setItem("userId", userId);
 }
 
+function criarCarroIcon(angulo){
+
+return L.divIcon({
+className:'',
+html:'<div class="carIcon" style="transform:rotate('+angulo+'deg)">🚗</div>',
+iconSize:[30,30]
+});
+
+}
+
+var ultimoLat;
+var ultimoLng;
+
 navigator.geolocation.watchPosition(function(pos){
 
 var lat = pos.coords.latitude;
 var lng = pos.coords.longitude;
-var velocidade = pos.coords.speed || 0;
 
 minhaPosicao=[lat,lng];
 
+var angulo=0;
+
+if(ultimoLat){
+
+var dy = lat - ultimoLat;
+var dx = lng - ultimoLng;
+
+angulo = Math.atan2(dy,dx)*180/Math.PI;
+
+}
+
+ultimoLat=lat;
+ultimoLng=lng;
+
 usuariosRef.child(userId).set({
+
 lat:lat,
 lng:lng,
-velocidade:velocidade,
+angulo:angulo,
 tempo:Date.now()
+
 });
 
 if(!meuMarcador){
 
-meuMarcador = L.marker([lat,lng]).addTo(map)
-.bindPopup("Você");
+meuMarcador = L.marker([lat,lng],{
+icon:criarCarroIcon(angulo)
+}).addTo(map).bindPopup("Você");
 
-map.setView([lat,lng],14);
+map.setView([lat,lng],15);
 
 }else{
 
 meuMarcador.setLatLng([lat,lng]);
+meuMarcador.setIcon(criarCarroIcon(angulo));
 
 }
+
+verificarAlertas();
 
 });
 
@@ -119,17 +162,20 @@ var dados = snapshot.val();
 
 for(var id in dados){
 
-if(id === userId) continue;
+if(id===userId) continue;
 
 var u = dados[id];
 
 if(!marcadores[id]){
 
-marcadores[id] = L.marker([u.lat,u.lng]).addTo(map);
+marcadores[id] = L.marker([u.lat,u.lng],{
+icon:criarCarroIcon(u.angulo)
+}).addTo(map);
 
 }else{
 
 marcadores[id].setLatLng([u.lat,u.lng]);
+marcadores[id].setIcon(criarCarroIcon(u.angulo));
 
 }
 
@@ -145,10 +191,12 @@ return;
 }
 
 ocorrenciasRef.push({
+
 tipo:tipo,
 lat:minhaPosicao[0],
 lng:minhaPosicao[1],
 data:Date.now()
+
 });
 
 }
@@ -157,10 +205,56 @@ ocorrenciasRef.on("child_added",function(snapshot){
 
 var d=snapshot.val();
 
+ocorrencias.push(d);
+
 L.marker([d.lat,d.lng]).addTo(map)
 .bindPopup(d.tipo);
 
 });
+
+function distancia(lat1,lon1,lat2,lon2){
+
+var R=6371;
+
+var dLat=(lat2-lat1)*Math.PI/180;
+var dLon=(lon2-lon1)*Math.PI/180;
+
+var a=
+Math.sin(dLat/2)*Math.sin(dLat/2)+
+Math.cos(lat1*Math.PI/180)*
+Math.cos(lat2*Math.PI/180)*
+Math.sin(dLon/2)*Math.sin(dLon/2);
+
+var c=2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+
+return R*c;
+
+}
+
+function verificarAlertas(){
+
+if(!minhaPosicao) return;
+
+for(var i=0;i<ocorrencias.length;i++){
+
+var o = ocorrencias[i];
+
+var d = distancia(
+minhaPosicao[0],
+minhaPosicao[1],
+o.lat,
+o.lng
+);
+
+if(d<0.5){
+
+alert("⚠️ Atenção: "+o.tipo+" próximo!");
+
+}
+
+}
+
+}
 
 </script>
 
