@@ -6,58 +6,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
 
     <style>
-        html, body, #map { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; background: #e5ddd5; font-family: 'Segoe UI', Helvetica, Arial, sans-serif; }
+        html, body, #map { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; font-family: 'Segoe UI', Arial, sans-serif; }
         
         /* LOGIN */
         #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #075e54; z-index: 5000; display: flex; align-items: center; justify-content: center; }
-        .login-box { background: white; padding: 25px; border-radius: 15px; width: 85%; max-width: 320px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .login-box input { width: 100%; padding: 12px; margin: 15px 0; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; font-size: 16px; }
+        .login-box { background: white; padding: 25px; border-radius: 15px; width: 85%; max-width: 320px; text-align: center; }
+        .login-box input { width: 100%; padding: 12px; margin: 15px 0; border: 1px solid #ddd; border-radius: 10px; font-size: 16px; }
         .login-box button { background: #25d366; color: white; border: none; padding: 12px; border-radius: 10px; width: 100%; font-weight: bold; cursor: pointer; }
 
-        /* PAINEL DE ALERTAS (CORRIGIDO) */
-        .painel-alertas { position: absolute; top: 10px; left: 10px; z-index: 1000; display: flex; flex-direction: column; gap: 6px; }
-        .btn-alerta { background: white; border: none; padding: 8px; border-radius: 10px; width: 85px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); cursor: pointer; display: flex; flex-direction: column; align-items: center; transition: 0.2s; }
-        .btn-alerta:active { transform: scale(0.9); }
-        .btn-alerta span { font-size: 20px; }
-        .btn-alerta b { font-size: 9px; text-transform: uppercase; color: #333; margin-top: 2px; display: block; }
+        /* BUSCA (UPA / CIDADES) - REATIVADA */
+        .leaflet-top.leaflet-right { top: 10px !important; right: 10px !important; }
+        .leaflet-control-geocoder { box-shadow: 0 4px 15px rgba(0,0,0,0.3) !important; border-radius: 10px !important; width: 280px !important; }
 
-        /* DESIGN WHATSAPP NO CHAT */
+        /* PAINEL DE ALERTAS */
+        .painel-alertas { position: absolute; top: 70px; left: 10px; z-index: 1000; display: flex; flex-direction: column; gap: 6px; }
+        .btn-alerta { background: white; border: none; padding: 8px; border-radius: 10px; width: 85px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); cursor: pointer; display: flex; flex-direction: column; align-items: center; }
+        .btn-alerta span { font-size: 20px; }
+        .btn-alerta b { font-size: 9px; text-transform: uppercase; color: #333; margin-top: 2px; }
+
+        /* INTERFACE MAPA */
+        #btn-chat-flutuante { position: fixed; bottom: 20px; right: 20px; z-index: 2001; width: 60px; height: 60px; border-radius: 50%; background: #25d366; color: white; display: flex; align-items: center; justify-content: center; font-size: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); cursor: move; touch-action: none; }
+        .btn-recentralizar { position: absolute; bottom: 60px; left: 15px; z-index: 1000; background: white; border: none; width: 45px; height: 45px; border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.2); font-size: 22px; cursor: pointer; }
+        #contador { position: absolute; bottom: 20px; left: 10px; z-index: 1000; background: rgba(0,0,0,0.8); color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; }
+
+        /* CHAT WHATSAPP STYLE */
         #chat-box { position: fixed; right: -100%; top: 0; width: 90%; max-width: 380px; height: 100%; background: #e5ddd5; z-index: 2000; transition: 0.3s; display: flex; flex-direction: column; }
         #chat-box.aberto { right: 0; }
         .chat-header { padding: 15px; background: #075e54; color: white; display: flex; justify-content: space-between; align-items: center; }
         .msg-container { display: flex; flex-direction: column; padding: 10px; gap: 8px; flex: 1; overflow-y: auto; }
         
-        .balao { padding: 8px 12px; border-radius: 12px; font-size: 14px; max-width: 85%; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.15); }
+        .balao { padding: 10px; border-radius: 12px; font-size: 14px; max-width: 85%; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
         .balao-eu { background: #dcf8c6; align-self: flex-end; border-top-right-radius: 2px; }
         .balao-outro { background: #ffffff; align-self: flex-start; border-top-left-radius: 2px; }
-        .data-tag { background: #d1ebf7; padding: 4px 12px; border-radius: 8px; font-size: 11px; color: #555; text-align: center; align-self: center; margin: 10px 0; font-weight: bold; }
         
-        .user-tag { font-size: 11px; font-weight: bold; color: #075e54; display: block; }
-        .hora-tag { font-size: 9px; color: #888; float: right; margin-top: 4px; }
-        .btn-msg-acao { border: none; background: none; color: #bbb; cursor: pointer; font-size: 12px; margin-left: 5px; }
+        /* BOTÕES DE AÇÃO (X E RESPONDER) - AGORA VISÍVEIS */
+        .acoes-msg { display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 4px; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 2px; }
+        .btn-msg-acao { color: #000000 !important; font-weight: bold; border: none; background: none; cursor: pointer; font-size: 11px; opacity: 1 !important; display: flex; align-items: center; gap: 3px; }
+        
+        .user-tag { font-size: 11px; font-weight: bold; color: #075e54; display: block; margin-bottom: 3px; }
+        .hora-tag { font-size: 9px; color: #666; float: right; margin-top: 5px; }
+        .data-tag { background: #d1ebf7; padding: 4px 12px; border-radius: 8px; font-size: 11px; align-self: center; margin: 10px 0; font-weight: bold; }
 
-        /* INTERFACE MAPA */
-        #btn-chat-flutuante { position: fixed; bottom: 20px; right: 20px; z-index: 2001; width: 60px; height: 60px; border-radius: 50%; background: #25d366; color: white; display: flex; align-items: center; justify-content: center; font-size: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); cursor: move; touch-action: none; }
-        .btn-recentralizar { position: absolute; bottom: 90px; right: 25px; z-index: 1000; background: white; border: none; width: 45px; height: 45px; border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.2); font-size: 22px; }
-        
         .popup-msg-box { max-height: 150px; overflow-y: auto; background: #e5ddd5; padding: 5px; display: flex; flex-direction: column; gap: 4px; border-radius: 5px; }
-        .leaflet-routing-container { display: none; }
     </style>
 </head>
 <body>
 
 <div id="login-screen">
     <div class="login-box">
-        <h2 style="color:#075e54; margin-bottom:5px;">GRUPO BR-277</h2>
-        <p style="font-size:12px; color:#666;">Sistema de Monitoramento</p>
-        <input type="text" id="user-name" placeholder="Digite seu Nome">
+        <h2 style="color:#075e54; margin:0">GRUPO BR-277</h2>
+        <input type="text" id="user-name" placeholder="Seu Nome">
         <button onclick="salvarNome()">ENTRAR</button>
     </div>
 </div>
 
+<div id="contador">🚗 <span id="online">1</span> Online</div>
 <button class="btn-recentralizar" onclick="recentralizar()">🎯</button>
 <div id="map"></div>
 
@@ -74,7 +80,7 @@
 
 <div id="chat-box">
     <div class="chat-header">
-        <div><b id="exibir-nome">...</b><br><small id="status-online">1 Online</small></div>
+        <div><b id="exibir-nome">...</b><br><small id="status-online-chat">1 Online</small></div>
         <div>
             <button onclick="logout()" style="background:none; border:1px solid white; color:white; border-radius:5px; font-size:10px; padding:3px 8px; cursor:pointer;">SAIR</button>
             <span onclick="document.getElementById('chat-box').classList.remove('aberto')" style="cursor:pointer; font-size:25px; margin-left:10px;">✕</span>
@@ -82,13 +88,13 @@
     </div>
     <div id="mensagens" class="msg-container"></div>
     <div style="padding:10px; background:#f0f0f0; display:flex; align-items:center; gap:8px;">
-        <input type="text" id="chat-input" style="flex:1; padding:12px; border-radius:25px; border:1px solid #ddd;" placeholder="Mensagem">
+        <input type="text" id="chat-input" style="flex:1; padding:12px; border-radius:25px; border:1px solid #ddd;" placeholder="Escreva uma mensagem...">
         <button onclick="mandarChat()" style="background:#075e54; color:white; border:none; border-radius:50%; width:45px; height:45px;">➤</button>
     </div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
@@ -99,6 +105,9 @@ const db = firebase.database();
 
 const map = L.map('map', { zoomControl: false }).setView([-25.4284, -49.2733], 13);
 L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png').addTo(map);
+
+// PESQUISA DE CIDADES/UPAS REATIVADA
+L.Control.geocoder({ defaultMarkGeocode: true, placeholder: "Buscar UPA ou Cidade..." }).addTo(map);
 
 let meuLatLng, meuMarker;
 let meuNome = localStorage.getItem('br277_nome') || "";
@@ -116,17 +125,7 @@ function salvarNome() {
 }
 
 function logout() { localStorage.removeItem('br277_nome'); location.reload(); }
-
 function formatarTempo(t) { return new Date(t).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
-
-function formatarDataCabecalho(t) {
-    const d = new Date(t).toDateString();
-    const hoje = new Date().toDateString();
-    const ontem = new Date(Date.now() - 86400000).toDateString();
-    if(d === hoje) return "Hoje";
-    if(d === ontem) return "Ontem";
-    return new Date(t).toLocaleDateString();
-}
 
 function iniciarApp() {
     document.getElementById('exibir-nome').innerText = meuNome;
@@ -146,7 +145,7 @@ function iniciarGPS() {
     navigator.geolocation.watchPosition(pos => {
         meuLatLng = L.latLng(pos.coords.latitude, pos.coords.longitude);
         if (!meuMarker) {
-            meuMarker = L.marker(meuLatLng, { icon: L.divIcon({ html: `<div style="width:15px;height:15px;background:#1a73e8;border:2px solid white;border-radius:50%;"></div>`, className:'' }) }).addTo(map);
+            meuMarker = L.marker(meuLatLng, { icon: L.divIcon({ html: `<div style="width:16px;height:16px;background:#1a73e8;border:3px solid white;border-radius:50%;box-shadow:0 0 5px rgba(0,0,0,0.5)"></div>`, className:'' }) }).addTo(map);
             map.setView(meuLatLng, 17);
         } else { meuMarker.setLatLng(meuLatLng); }
         db.ref("vivos/" + meuNome).set({ lat: pos.coords.latitude, lng: pos.coords.longitude });
@@ -154,9 +153,8 @@ function iniciarGPS() {
     }, null, { enableHighAccuracy: true });
 }
 
-function apagarItem(caminho) { if(confirm("Deseja apagar?")) db.ref(caminho).remove(); }
+function apagarItem(caminho) { if(confirm("Deseja apagar esta mensagem?")) db.ref(caminho).remove(); }
 
-// ALERTAS
 function enviarAlerta(tipo, emoji) {
     if (!meuLatLng) return;
     db.ref("alertas").push({ tipo, emoji, lat: meuLatLng.lat, lng: meuLatLng.lng, autor: meuNome, t: Date.now() });
@@ -166,22 +164,15 @@ function carregarAlertas() {
     db.ref("alertas").on("child_added", snap => {
         const a = snap.val(); const key = snap.key;
         const marker = L.marker([a.lat, a.lng], { icon: L.divIcon({ html: `<span style="font-size:30px">${a.emoji}</span>`, className: '' }) }).addTo(map);
-
         marker.on('click', function() {
-            const btnDel = (meuNome === ADMIN_NAME) ? `<button onclick="apagarItem('alertas/${key}')" style="float:right;border:none;background:none;color:red;cursor:pointer;">🗑️</button>` : "";
-            const chatHtml = `<div style="width:230px;">
-                ${btnDel} <b style="color:#075e54">${a.tipo}</b>
-                <div id="msgs-${key}" class="popup-msg-box"></div>
-                <div style="display:flex;margin-top:8px;gap:5px;"><input type="text" id="in-${key}" style="flex:1;border-radius:15px;border:1px solid #ddd;padding:5px;"><button onclick="mandarMsgIcone('${key}')" style="border:none;background:none;font-size:18px;cursor:pointer;">➤</button></div>
-            </div>`;
+            const btnDel = (meuNome === ADMIN_NAME) ? `<button onclick="apagarItem('alertas/${key}')" style="float:right;border:none;background:none;color:red;font-size:18px;">🗑️</button>` : "";
+            const chatHtml = `<div style="width:230px;">${btnDel} <b style="color:#075e54">${a.tipo}</b><div id="msgs-${key}" class="popup-msg-box"></div><div style="display:flex;margin-top:8px;gap:5px;"><input type="text" id="in-${key}" style="flex:1;border-radius:15px;border:1px solid #ddd;padding:5px;"><button onclick="mandarMsgIcone('${key}')" style="border:none;background:none;font-size:18px;">➤</button></div></div>`;
             marker.bindPopup(chatHtml).openPopup();
-            
             db.ref("alertas/" + key + "/conversa").on("value", cSnap => {
                 const div = document.getElementById("msgs-" + key);
                 if(div) { div.innerHTML = ""; const dados = cSnap.val(); if (dados) { Object.entries(dados).forEach(([mKey, c]) => {
                     const classe = c.u === meuNome ? "balao-eu" : "balao-outro";
-                    const x = (meuNome === ADMIN_NAME || c.u === meuNome) ? `<button class="btn-msg-acao" onclick="apagarItem('alertas/${key}/conversa/${mKey}')">✕</button>` : "";
-                    div.innerHTML += `<div class="balao ${classe}" style="font-size:11px;padding:5px;">${x}<b>${c.u}</b>: ${c.m}<span class="hora-tag">${formatarTempo(c.t)}</span></div>`;
+                    div.innerHTML += `<div class="balao ${classe}" style="font-size:11px;padding:5px;"><b>${c.u}</b>: ${c.m}</div>`;
                 }); div.scrollTop = div.scrollHeight; } }
             });
         });
@@ -194,7 +185,6 @@ function mandarMsgIcone(key) {
     inp.value = "";
 }
 
-// CHAT GERAL
 function mandarChat() {
     const inp = document.getElementById('chat-input'); if (!inp.value) return;
     db.ref("chat").push({ u: meuNome, m: inp.value, t: Date.now() });
@@ -207,16 +197,27 @@ db.ref("chat").limitToLast(50).on("value", snap => {
     const dados = snap.val();
     let ultimaData = "";
     if(dados) { Object.entries(dados).forEach(([key, c]) => {
-        const dCabecalho = formatarDataCabecalho(c.t);
-        if(dCabecalho !== ultimaData) { b.innerHTML += `<div class="data-tag">${dCabecalho}</div>`; ultimaData = dCabecalho; }
+        const dataH = new Date(c.t).toLocaleDateString();
+        if(dataH !== ultimaData) { b.innerHTML += `<div class="data-tag">${dataH === new Date().toLocaleDateString() ? "Hoje" : dataH}</div>`; ultimaData = dataH; }
         const classe = c.u === meuNome ? "balao-eu" : "balao-outro";
-        const x = (meuNome === ADMIN_NAME || c.u === meuNome) ? `<button class="btn-msg-acao" onclick="apagarItem('chat/${key}')">✕</button>` : "";
-        const resp = c.u !== meuNome ? `<button class="btn-msg-acao" onclick="document.getElementById('chat-input').value='@${c.u} ';document.getElementById('chat-input').focus()">↶</button>` : "";
-        b.innerHTML += `<div class="balao ${classe}">${x}${resp}<span class="user-tag">${c.u}</span>${c.m}<span class="hora-tag">${formatarTempo(c.t)}</span></div>`;
+        const xBtn = (meuNome === ADMIN_NAME || c.u === meuNome) ? `<button class="btn-msg-acao" onclick="apagarItem('chat/${key}')">✕ Apagar</button>` : "";
+        const respBtn = c.u !== meuNome ? `<button class="btn-msg-acao" onclick="document.getElementById('chat-input').value='@${c.u} ';document.getElementById('chat-input').focus()">↶ Responder</button>` : "";
+        
+        b.innerHTML += `
+            <div class="balao ${classe}">
+                <div class="acoes-msg">${respBtn} ${xBtn}</div>
+                <span class="user-tag">${c.u}</span>
+                ${c.m}
+                <span class="hora-tag">${formatarTempo(c.t)}</span>
+            </div>`;
     }); b.scrollTop = b.scrollHeight; }
 });
 
-db.ref("vivos").on("value", snap => { document.getElementById("status-online").innerText = (snap.val() ? Object.keys(snap.val()).length : 1) + " Online"; });
+db.ref("vivos").on("value", snap => { 
+    const count = snap.val() ? Object.keys(snap.val()).length : 1;
+    document.getElementById("online").innerText = count; 
+    document.getElementById("status-online-chat").innerText = count + " Online";
+});
 </script>
 </body>
 </html>
