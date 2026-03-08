@@ -4,11 +4,9 @@
 <meta charset="utf-8">
 <title>GPS BR277</title>
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 
 <style>
 
@@ -21,248 +19,247 @@ font-family:Arial;
 height:100vh;
 }
 
-.menu{
+.painel{
 position:absolute;
 top:10px;
 left:10px;
+z-index:999;
 background:white;
 padding:10px;
 border-radius:10px;
-z-index:1000;
 box-shadow:0 0 10px rgba(0,0,0,0.3);
 }
 
-.menu button{
-display:block;
-width:180px;
-margin:5px 0;
+button{
 padding:8px;
+margin:4px;
+border:none;
+border-radius:6px;
+background:#007bff;
+color:white;
+font-weight:bold;
 cursor:pointer;
 }
 
-.car{
-width:40px;
-height:40px;
-transform-origin:center;
+button:hover{
+background:#0056b3;
+}
+
+.online{
+font-size:12px;
+margin-top:5px;
 }
 
 </style>
 
 </head>
-
 <body>
 
-<div class="menu">
+<div id="map"></div>
 
-<b>GPS BR-277</b>
+<div class="painel">
 
-<button onclick="registrar('🚨 Acidente')">🚨 Acidente</button>
-<button onclick="registrar('🚧 Obra')">🚧 Obra</button>
-<button onclick="registrar('🚓 Polícia')">🚓 Polícia</button>
-<button onclick="registrar('🐄 Animal')">🐄 Animal</button>
+<button onclick="registrarOcorrencia()">⚠ Acidente</button>
+<button onclick="registrarRadar()">📷 Radar</button>
+<button onclick="centralizar()">📍 Minha posição</button>
+
+<div class="online">
+Usuários online: <span id="online">0</span>
+</div>
 
 </div>
 
-<div id="map"></div>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
 
 const firebaseConfig = {
-apiKey: "AIzaSyCjJLUgRZowkeTmpua6-uXhzOM5hqn6chI",
-authDomain: "gps-br277.firebaseapp.com",
-databaseURL: "https://gps-br277-default-rtdb.firebaseio.com",
-projectId: "gps-br277",
-storageBucket: "gps-br277.firebasestorage.app",
-messagingSenderId: "459366791706",
-appId: "1:459366791706:web:a8771a8981acf5d3c8afa3"
+
+apiKey: "SUA_API_KEY",
+authDomain: "SEU_PROJETO.firebaseapp.com",
+databaseURL: "https://SEU_PROJETO.firebaseio.com",
+projectId: "SEU_PROJETO",
+storageBucket: "SEU_PROJETO.appspot.com",
+messagingSenderId: "XXXX",
+appId: "XXXX"
+
 };
 
 firebase.initializeApp(firebaseConfig);
 
-var db = firebase.database();
+const db = firebase.database();
 
-var usuariosRef = db.ref("usuarios");
-var ocorrenciasRef = db.ref("ocorrencias");
-
-var map = L.map('map').setView([-25.42,-49.27],7);
+let map = L.map('map').setView([-25.4284,-49.2733],13);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
 maxZoom:19
 }).addTo(map);
 
-var minhaPosicao;
-var meuMarcador;
+let meuID = "user_"+Math.random().toString(36).substr(2,9);
 
-var marcadores={};
-var ocorrencias=[];
-
-var userId = localStorage.getItem("userId");
-
-if(!userId){
-userId="user_"+Math.random().toString(36).substr(2,9);
-localStorage.setItem("userId",userId);
-}
-
-function criarIcone(angulo){
-
-return L.divIcon({
-
-className:'',
-html:'<img class="car" style="transform:rotate('+angulo+'deg)" src="https://cdn-icons-png.flaticon.com/512/744/744465.png">',
+let carroIcon = L.icon({
+iconUrl:"https://cdn-icons-png.flaticon.com/512/743/743922.png",
 iconSize:[40,40],
 iconAnchor:[20,20]
+});
+
+let marker;
+
+function centralizar(){
+
+navigator.geolocation.getCurrentPosition(function(pos){
+
+let lat = pos.coords.latitude;
+let lon = pos.coords.longitude;
+
+map.setView([lat,lon],16);
 
 });
 
 }
 
-var ultimoLat;
-var ultimoLng;
+function iniciarGPS(){
 
 navigator.geolocation.watchPosition(function(pos){
 
-var lat = pos.coords.latitude;
-var lng = pos.coords.longitude;
+let lat = pos.coords.latitude;
+let lon = pos.coords.longitude;
+let dir = pos.coords.heading || 0;
 
-minhaPosicao=[lat,lng];
+if(!marker){
 
-var angulo=0;
+marker = L.marker([lat,lon],{icon:carroIcon}).addTo(map);
 
-if(ultimoLat){
+}else{
 
-var dy=lat-ultimoLat;
-var dx=lng-ultimoLng;
-
-angulo=Math.atan2(dy,dx)*180/Math.PI;
+marker.setLatLng([lat,lon]);
 
 }
 
-ultimoLat=lat;
-ultimoLng=lng;
+let el = marker.getElement();
 
-usuariosRef.child(userId).set({
+if(el){
+el.style.transform = "rotate("+dir+"deg)";
+}
+
+db.ref("usuarios/"+meuID).set({
 
 lat:lat,
-lng:lng,
-angulo:angulo,
-tempo:Date.now()
+lon:lon,
+dir:dir,
+time:Date.now()
 
 });
 
-if(!meuMarcador){
+});
 
-meuMarcador=L.marker([lat,lng],{
-icon:criarIcone(angulo)
-}).addTo(map);
+}
 
-map.setView([lat,lng],15);
+iniciarGPS();
+
+let usuariosMarkers={};
+
+db.ref("usuarios").on("value",(snap)=>{
+
+let data = snap.val();
+
+if(!data)return;
+
+let total=0;
+
+for(let id in data){
+
+if(id==meuID)continue;
+
+total++;
+
+let u=data[id];
+
+if(!usuariosMarkers[id]){
+
+usuariosMarkers[id]=L.marker(
+[u.lat,u.lon],
+{icon:carroIcon}
+).addTo(map);
 
 }else{
 
-meuMarcador.setLatLng([lat,lng]);
-meuMarcador.setIcon(criarIcone(angulo));
+usuariosMarkers[id].setLatLng([u.lat,u.lon]);
 
 }
 
-verificarAlertas();
+}
+
+document.getElementById("online").innerText=total+1;
 
 });
 
-usuariosRef.on("value",function(snapshot){
+function registrarOcorrencia(){
 
-var dados=snapshot.val();
+if(!marker)return;
 
-for(var id in dados){
+let pos = marker.getLatLng();
 
-if(id===userId) continue;
+db.ref("ocorrencias").push({
 
-var u=dados[id];
-
-if(!marcadores[id]){
-
-marcadores[id]=L.marker([u.lat,u.lng],{
-icon:criarIcone(u.angulo)
-}).addTo(map);
-
-}else{
-
-marcadores[id].setLatLng([u.lat,u.lng]);
-marcadores[id].setIcon(criarIcone(u.angulo));
-
-}
-
-}
-
-});
-
-function registrar(tipo){
-
-if(!minhaPosicao){
-alert("Aguardando GPS");
-return;
-}
-
-ocorrenciasRef.push({
-
-tipo:tipo,
-lat:minhaPosicao[0],
-lng:minhaPosicao[1],
-data:Date.now()
+tipo:"acidente",
+lat:pos.lat,
+lon:pos.lng,
+time:Date.now()
 
 });
 
 }
 
-ocorrenciasRef.on("child_added",function(snapshot){
+function registrarRadar(){
 
-var d=snapshot.val();
+if(!marker)return;
 
-ocorrencias.push(d);
+let pos = marker.getLatLng();
 
-L.marker([d.lat,d.lng]).addTo(map)
-.bindPopup(d.tipo);
+db.ref("ocorrencias").push({
+
+tipo:"radar",
+lat:pos.lat,
+lon:pos.lng,
+time:Date.now()
 
 });
 
-function distancia(lat1,lon1,lat2,lon2){
-
-var R=6371;
-
-var dLat=(lat2-lat1)*Math.PI/180;
-var dLon=(lon2-lon1)*Math.PI/180;
-
-var a=
-Math.sin(dLat/2)*Math.sin(dLat/2)+
-Math.cos(lat1*Math.PI/180)*
-Math.cos(lat2*Math.PI/180)*
-Math.sin(dLon/2)*Math.sin(dLon/2);
-
-var c=2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
-
-return R*c;
-
 }
 
-function verificarAlertas(){
+let ocorrenciasLayer = L.layerGroup().addTo(map);
 
-if(!minhaPosicao) return;
+db.ref("ocorrencias").on("child_added",(snap)=>{
 
-for(var i=0;i<ocorrencias.length;i++){
+let o=snap.val();
 
-var o=ocorrencias[i];
+let icon="⚠";
 
-var d=distancia(
-minhaPosicao[0],
-minhaPosicao[1],
-o.lat,
-o.lng
-);
+if(o.tipo=="radar") icon="📷";
 
-if(d<0.5){
+let m=L.marker([o.lat,o.lon]).addTo(ocorrenciasLayer);
 
-alert("⚠️ Atenção: "+o.tipo+" próximo!");
+m.bindPopup(icon+" "+o.tipo);
 
-}
+verificarProximidade(o);
+
+});
+
+function verificarProximidade(o){
+
+if(!marker)return;
+
+let pos=marker.getLatLng();
+
+let d = map.distance([o.lat,o.lon],[pos.lat,pos.lng]);
+
+if(d<500){
+
+alert("⚠ Atenção ocorrência próxima!");
 
 }
 
