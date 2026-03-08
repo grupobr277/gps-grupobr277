@@ -12,8 +12,14 @@
 
 <style>
 
-body{margin:0;font-family:Arial}
-#map{height:100vh}
+body{
+margin:0;
+font-family:Arial;
+}
+
+#map{
+height:100vh;
+}
 
 .menu{
 position:absolute;
@@ -28,14 +34,16 @@ box-shadow:0 0 10px rgba(0,0,0,0.3);
 
 .menu button{
 display:block;
-width:160px;
+width:180px;
 margin:5px 0;
 padding:8px;
 cursor:pointer;
 }
 
-.carIcon{
-font-size:24px;
+.car{
+width:40px;
+height:40px;
+transform-origin:center;
 }
 
 </style>
@@ -46,7 +54,7 @@ font-size:24px;
 
 <div class="menu">
 
-<b>Registrar ocorrência</b>
+<b>GPS BR-277</b>
 
 <button onclick="registrar('🚨 Acidente')">🚨 Acidente</button>
 <button onclick="registrar('🚧 Obra')">🚧 Obra</button>
@@ -84,22 +92,26 @@ maxZoom:19
 
 var minhaPosicao;
 var meuMarcador;
-var marcadores = {};
-var ocorrencias = [];
+
+var marcadores={};
+var ocorrencias=[];
 
 var userId = localStorage.getItem("userId");
 
 if(!userId){
-userId = "user_" + Math.random().toString(36).substr(2,9);
-localStorage.setItem("userId", userId);
+userId="user_"+Math.random().toString(36).substr(2,9);
+localStorage.setItem("userId",userId);
 }
 
-function criarCarroIcon(angulo){
+function criarIcone(angulo){
 
 return L.divIcon({
+
 className:'',
-html:'<div class="carIcon" style="transform:rotate('+angulo+'deg)">🚗</div>',
-iconSize:[30,30]
+html:'<img class="car" style="transform:rotate('+angulo+'deg)" src="https://cdn-icons-png.flaticon.com/512/744/744465.png">',
+iconSize:[40,40],
+iconAnchor:[20,20]
+
 });
 
 }
@@ -118,10 +130,10 @@ var angulo=0;
 
 if(ultimoLat){
 
-var dy = lat - ultimoLat;
-var dx = lng - ultimoLng;
+var dy=lat-ultimoLat;
+var dx=lng-ultimoLng;
 
-angulo = Math.atan2(dy,dx)*180/Math.PI;
+angulo=Math.atan2(dy,dx)*180/Math.PI;
 
 }
 
@@ -139,16 +151,16 @@ tempo:Date.now()
 
 if(!meuMarcador){
 
-meuMarcador = L.marker([lat,lng],{
-icon:criarCarroIcon(angulo)
-}).addTo(map).bindPopup("Você");
+meuMarcador=L.marker([lat,lng],{
+icon:criarIcone(angulo)
+}).addTo(map);
 
 map.setView([lat,lng],15);
 
 }else{
 
 meuMarcador.setLatLng([lat,lng]);
-meuMarcador.setIcon(criarCarroIcon(angulo));
+meuMarcador.setIcon(criarIcone(angulo));
 
 }
 
@@ -158,24 +170,24 @@ verificarAlertas();
 
 usuariosRef.on("value",function(snapshot){
 
-var dados = snapshot.val();
+var dados=snapshot.val();
 
 for(var id in dados){
 
 if(id===userId) continue;
 
-var u = dados[id];
+var u=dados[id];
 
 if(!marcadores[id]){
 
-marcadores[id] = L.marker([u.lat,u.lng],{
-icon:criarCarroIcon(u.angulo)
+marcadores[id]=L.marker([u.lat,u.lng],{
+icon:criarIcone(u.angulo)
 }).addTo(map);
 
 }else{
 
 marcadores[id].setLatLng([u.lat,u.lng]);
-marcadores[id].setIcon(criarCarroIcon(u.angulo));
+marcadores[id].setIcon(criarIcone(u.angulo));
 
 }
 
@@ -237,9 +249,9 @@ if(!minhaPosicao) return;
 
 for(var i=0;i<ocorrencias.length;i++){
 
-var o = ocorrencias[i];
+var o=ocorrencias[i];
 
-var d = distancia(
+var d=distancia(
 minhaPosicao[0],
 minhaPosicao[1],
 o.lat,
