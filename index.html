@@ -13,45 +13,37 @@
         
         /* LOGIN */
         #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #075e54; z-index: 5000; display: flex; align-items: center; justify-content: center; }
-        .login-box { background: white; padding: 25px; border-radius: 15px; width: 85%; max-width: 320px; text-align: center; }
-        .login-box input { width: 100%; padding: 12px; margin: 15px 0; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; }
+        .login-box { background: white; padding: 25px; border-radius: 15px; width: 85%; max-width: 320px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .login-box input { width: 100%; padding: 12px; margin: 15px 0; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; font-size: 16px; }
         .login-box button { background: #25d366; color: white; border: none; padding: 12px; border-radius: 10px; width: 100%; font-weight: bold; cursor: pointer; }
 
-        /* DESIGN WHATSAPP */
-        .msg-container { display: flex; flex-direction: column; padding: 10px; gap: 10px; }
-        .data-linha { text-align: center; margin: 15px 0; position: relative; }
-        .data-tag { background: #d1ebf7; padding: 4px 12px; border-radius: 8px; font-size: 11px; color: #555; text-transform: uppercase; font-weight: bold; box-shadow: 0 1px 1px rgba(0,0,0,0.1); }
+        /* PAINEL DE ALERTAS (CORRIGIDO) */
+        .painel-alertas { position: absolute; top: 10px; left: 10px; z-index: 1000; display: flex; flex-direction: column; gap: 6px; }
+        .btn-alerta { background: white; border: none; padding: 8px; border-radius: 10px; width: 85px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); cursor: pointer; display: flex; flex-direction: column; align-items: center; transition: 0.2s; }
+        .btn-alerta:active { transform: scale(0.9); }
+        .btn-alerta span { font-size: 20px; }
+        .btn-alerta b { font-size: 9px; text-transform: uppercase; color: #333; margin-top: 2px; display: block; }
+
+        /* DESIGN WHATSAPP NO CHAT */
+        #chat-box { position: fixed; right: -100%; top: 0; width: 90%; max-width: 380px; height: 100%; background: #e5ddd5; z-index: 2000; transition: 0.3s; display: flex; flex-direction: column; }
+        #chat-box.aberto { right: 0; }
+        .chat-header { padding: 15px; background: #075e54; color: white; display: flex; justify-content: space-between; align-items: center; }
+        .msg-container { display: flex; flex-direction: column; padding: 10px; gap: 8px; flex: 1; overflow-y: auto; }
         
-        .balao { padding: 8px 12px; border-radius: 12px; font-size: 14px; max-width: 85%; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.15); line-height: 1.4; }
+        .balao { padding: 8px 12px; border-radius: 12px; font-size: 14px; max-width: 85%; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.15); }
         .balao-eu { background: #dcf8c6; align-self: flex-end; border-top-right-radius: 2px; }
         .balao-outro { background: #ffffff; align-self: flex-start; border-top-left-radius: 2px; }
+        .data-tag { background: #d1ebf7; padding: 4px 12px; border-radius: 8px; font-size: 11px; color: #555; text-align: center; align-self: center; margin: 10px 0; font-weight: bold; }
         
-        .user-tag { font-size: 11px; font-weight: bold; color: #075e54; display: block; margin-bottom: 2px; }
-        .hora-tag { font-size: 10px; color: #888; float: right; margin-top: 5px; margin-left: 8px; }
-        
-        .btn-msg-acao { background: none; border: none; cursor: pointer; font-size: 12px; color: #bbb; visibility: hidden; }
-        .balao:hover .btn-msg-acao { visibility: visible; }
-        .mencao { color: #1a73e8; font-weight: bold; }
+        .user-tag { font-size: 11px; font-weight: bold; color: #075e54; display: block; }
+        .hora-tag { font-size: 9px; color: #888; float: right; margin-top: 4px; }
+        .btn-msg-acao { border: none; background: none; color: #bbb; cursor: pointer; font-size: 12px; margin-left: 5px; }
 
-        /* MAPA E INTERFACE */
-        .painel-alertas { position: absolute; top: 10px; left: 10px; z-index: 1000; display: flex; flex-wrap: wrap; width: 100px; gap: 5px; }
-        .btn-alerta { background: white; border: none; padding: 5px; border-radius: 10px; width: 45px; height: 45px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-size: 20px; }
-        
-        #chat-box { position: fixed; right: -100%; top: 0; width: 90%; max-width: 380px; height: 100%; background: #e5ddd5; z-index: 2000; transition: 0.3s; display: flex; flex-direction: column; border-left: 1px solid #ccc; }
-        #chat-box.aberto { right: 0; }
-        
+        /* INTERFACE MAPA */
         #btn-chat-flutuante { position: fixed; bottom: 20px; right: 20px; z-index: 2001; width: 60px; height: 60px; border-radius: 50%; background: #25d366; color: white; display: flex; align-items: center; justify-content: center; font-size: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); cursor: move; touch-action: none; }
-
-        .chat-header { padding: 15px; background: #075e54; color: white; display: flex; justify-content: space-between; align-items: center; }
-        .chat-footer { padding: 10px; background: #f0f0f0; display: flex; align-items: center; gap: 8px; }
-        .chat-footer input { flex: 1; padding: 12px; border-radius: 25px; border: 1px solid #ddd; outline: none; }
-
-        .btn-recentralizar { position: absolute; bottom: 90px; right: 25px; z-index: 1000; background: white; border: none; width: 45px; height: 45px; border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.2); font-size: 22px; cursor: pointer; }
-
-        /* Chat do Ícone */
-        .popup-chat { width: 230px; border-radius: 10px; }
-        .popup-msg-box { max-height: 150px; overflow-y: auto; background: #e5ddd5; padding: 8px; display: flex; flex-direction: column; gap: 5px; border-radius: 5px; }
-
+        .btn-recentralizar { position: absolute; bottom: 90px; right: 25px; z-index: 1000; background: white; border: none; width: 45px; height: 45px; border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.2); font-size: 22px; }
+        
+        .popup-msg-box { max-height: 150px; overflow-y: auto; background: #e5ddd5; padding: 5px; display: flex; flex-direction: column; gap: 4px; border-radius: 5px; }
         .leaflet-routing-container { display: none; }
     </style>
 </head>
@@ -59,9 +51,10 @@
 
 <div id="login-screen">
     <div class="login-box">
-        <h2 style="color:#075e54; margin:0">GRUPO BR-277</h2>
-        <input type="text" id="user-name" placeholder="Seu Nome">
-        <button onclick="salvarNome()">ENTRAR NO GRUPO</button>
+        <h2 style="color:#075e54; margin-bottom:5px;">GRUPO BR-277</h2>
+        <p style="font-size:12px; color:#666;">Sistema de Monitoramento</p>
+        <input type="text" id="user-name" placeholder="Digite seu Nome">
+        <button onclick="salvarNome()">ENTRAR</button>
     </div>
 </div>
 
@@ -69,31 +62,28 @@
 <div id="map"></div>
 
 <div class="painel-alertas">
-    <button class="btn-alerta" onclick="enviarAlerta('Acidente', '⚠️')">⚠️</button>
-    <button class="btn-alerta" onclick="enviarAlerta('Obras', '🚧')">🚧</button>
-    <button class="btn-alerta" onclick="enviarAlerta('Lentidão', '🚗')">🚗</button>
-    <button class="btn-alerta" onclick="enviarAlerta('Animal', '🐕')">🐕</button>
-    <button class="btn-alerta" onclick="enviarAlerta('Bloqueio', '🚫')">🚫</button>
-    <button class="btn-alerta" onclick="enviarAlerta('Buraco', '🕳️')">🕳️</button>
+    <button class="btn-alerta" onclick="enviarAlerta('Acidente', '⚠️')"><span>⚠️</span><b>Acidente</b></button>
+    <button class="btn-alerta" onclick="enviarAlerta('Obras', '🚧')"><span>🚧</span><b>Obras</b></button>
+    <button class="btn-alerta" onclick="enviarAlerta('Lentidão', '🚗')"><span>🚗</span><b>Lentidão</b></button>
+    <button class="btn-alerta" onclick="enviarAlerta('Animal', '🐕')"><span>🐕</span><b>Animal</b></button>
+    <button class="btn-alerta" onclick="enviarAlerta('Bloqueio', '🚫')"><span>🚫</span><b>Bloqueio</b></button>
+    <button class="btn-alerta" onclick="enviarAlerta('Buraco', '🕳️')"><span>🕳️</span><b>Buraco</b></button>
 </div>
 
 <div id="btn-chat-flutuante">💬</div>
 
 <div id="chat-box">
     <div class="chat-header">
-        <div>
-            <b id="exibir-nome">Carregando...</b><br>
-            <small style="font-size:10px; opacity:0.8;" id="status-online">1 Online</small>
-        </div>
+        <div><b id="exibir-nome">...</b><br><small id="status-online">1 Online</small></div>
         <div>
             <button onclick="logout()" style="background:none; border:1px solid white; color:white; border-radius:5px; font-size:10px; padding:3px 8px; cursor:pointer;">SAIR</button>
             <span onclick="document.getElementById('chat-box').classList.remove('aberto')" style="cursor:pointer; font-size:25px; margin-left:10px;">✕</span>
         </div>
     </div>
-    <div id="mensagens" class="msg-container" style="flex:1; overflow-y:auto;"></div>
-    <div class="chat-footer">
-        <input type="text" id="chat-input" placeholder="Mensagem">
-        <button onclick="mandarChat()" style="background:#075e54; color:white; border:none; border-radius:50%; width:45px; height:45px; font-size:20px;">➤</button>
+    <div id="mensagens" class="msg-container"></div>
+    <div style="padding:10px; background:#f0f0f0; display:flex; align-items:center; gap:8px;">
+        <input type="text" id="chat-input" style="flex:1; padding:12px; border-radius:25px; border:1px solid #ddd;" placeholder="Mensagem">
+        <button onclick="mandarChat()" style="background:#075e54; color:white; border:none; border-radius:50%; width:45px; height:45px;">➤</button>
     </div>
 </div>
 
@@ -127,19 +117,15 @@ function salvarNome() {
 
 function logout() { localStorage.removeItem('br277_nome'); location.reload(); }
 
-function formatarTempo(timestamp) {
-    const d = new Date(timestamp);
-    return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-}
+function formatarTempo(t) { return new Date(t).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
 
-function formatarDataCabecalho(timestamp) {
-    const d = new Date(timestamp);
-    const hoje = new Date();
-    const ontem = new Date(); ontem.setDate(hoje.getDate() - 1);
-    
-    if(d.toDateString() === hoje.toDateString()) return "Hoje";
-    if(d.toDateString() === ontem.toDateString()) return "Ontem";
-    return d.toLocaleDateString();
+function formatarDataCabecalho(t) {
+    const d = new Date(t).toDateString();
+    const hoje = new Date().toDateString();
+    const ontem = new Date(Date.now() - 86400000).toDateString();
+    if(d === hoje) return "Hoje";
+    if(d === ontem) return "Ontem";
+    return new Date(t).toLocaleDateString();
 }
 
 function iniciarApp() {
@@ -148,7 +134,7 @@ function iniciarApp() {
     carregarAlertas();
 }
 
-// ARRASTAR BOTÃO FLUTUANTE
+// BOTÃO CHAT ARRASTÁVEL
 const btnFlutuante = document.getElementById('btn-chat-flutuante');
 let drag = false;
 btnFlutuante.onpointermove = (e) => { if(e.buttons > 0){ drag = true; btnFlutuante.style.left = e.clientX-30+'px'; btnFlutuante.style.top = e.clientY-30+'px'; btnFlutuante.style.bottom='auto'; btnFlutuante.style.right='auto'; } };
@@ -160,13 +146,15 @@ function iniciarGPS() {
     navigator.geolocation.watchPosition(pos => {
         meuLatLng = L.latLng(pos.coords.latitude, pos.coords.longitude);
         if (!meuMarker) {
-            meuMarker = L.marker(meuLatLng, { icon: L.divIcon({ className: '', html: `<div style="width:20px;height:20px;background:#1a73e8;border:3px solid white;border-radius:50%;box-shadow:0 0 10px rgba(0,0,0,0.5)"></div>` }) }).addTo(map);
+            meuMarker = L.marker(meuLatLng, { icon: L.divIcon({ html: `<div style="width:15px;height:15px;background:#1a73e8;border:2px solid white;border-radius:50%;"></div>`, className:'' }) }).addTo(map);
             map.setView(meuLatLng, 17);
         } else { meuMarker.setLatLng(meuLatLng); }
         db.ref("vivos/" + meuNome).set({ lat: pos.coords.latitude, lng: pos.coords.longitude });
         db.ref("vivos/" + meuNome).onDisconnect().remove();
     }, null, { enableHighAccuracy: true });
 }
+
+function apagarItem(caminho) { if(confirm("Deseja apagar?")) db.ref(caminho).remove(); }
 
 // ALERTAS
 function enviarAlerta(tipo, emoji) {
@@ -180,20 +168,20 @@ function carregarAlertas() {
         const marker = L.marker([a.lat, a.lng], { icon: L.divIcon({ html: `<span style="font-size:30px">${a.emoji}</span>`, className: '' }) }).addTo(map);
 
         marker.on('click', function() {
-            const btnDel = (meuNome === ADMIN_NAME) ? `<button onclick="apagarItem('alertas/${key}')" style="float:right;border:none;background:none;color:red;">🗑️</button>` : "";
-            const chatHtml = `<div class="popup-chat">
-                ${btnDel} <b>${a.tipo}</b>
+            const btnDel = (meuNome === ADMIN_NAME) ? `<button onclick="apagarItem('alertas/${key}')" style="float:right;border:none;background:none;color:red;cursor:pointer;">🗑️</button>` : "";
+            const chatHtml = `<div style="width:230px;">
+                ${btnDel} <b style="color:#075e54">${a.tipo}</b>
                 <div id="msgs-${key}" class="popup-msg-box"></div>
-                <div style="display:flex;margin-top:5px;"><input type="text" id="in-${key}" style="flex:1;border-radius:15px;border:1px solid #ddd;padding:5px;"><button onclick="mandarMsgIcone('${key}')" style="border:none;background:none;font-size:18px;">➤</button></div>
+                <div style="display:flex;margin-top:8px;gap:5px;"><input type="text" id="in-${key}" style="flex:1;border-radius:15px;border:1px solid #ddd;padding:5px;"><button onclick="mandarMsgIcone('${key}')" style="border:none;background:none;font-size:18px;cursor:pointer;">➤</button></div>
             </div>`;
             marker.bindPopup(chatHtml).openPopup();
             
             db.ref("alertas/" + key + "/conversa").on("value", cSnap => {
                 const div = document.getElementById("msgs-" + key);
-                if(div) { div.innerHTML = ""; const dados = cSnap.val(); if (dados) { Object.entries(dados).forEach(([msgKey, c]) => {
+                if(div) { div.innerHTML = ""; const dados = cSnap.val(); if (dados) { Object.entries(dados).forEach(([mKey, c]) => {
                     const classe = c.u === meuNome ? "balao-eu" : "balao-outro";
-                    const xDel = (meuNome === ADMIN_NAME || c.u === meuNome) ? `<button onclick="apagarItem('alertas/${key}/conversa/${msgKey}')" style="border:none;background:none;color:#ccc;font-size:10px;">✕</button>` : "";
-                    div.innerHTML += `<div class="balao ${classe}" style="font-size:11px;">${xDel} <b>${c.u}</b><br>${c.m}<span class="hora-tag">${formatarTempo(c.t)}</span></div>`;
+                    const x = (meuNome === ADMIN_NAME || c.u === meuNome) ? `<button class="btn-msg-acao" onclick="apagarItem('alertas/${key}/conversa/${mKey}')">✕</button>` : "";
+                    div.innerHTML += `<div class="balao ${classe}" style="font-size:11px;padding:5px;">${x}<b>${c.u}</b>: ${c.m}<span class="hora-tag">${formatarTempo(c.t)}</span></div>`;
                 }); div.scrollTop = div.scrollHeight; } }
             });
         });
@@ -206,51 +194,29 @@ function mandarMsgIcone(key) {
     inp.value = "";
 }
 
-// CHAT PRINCIPAL WHATSAPP
+// CHAT GERAL
 function mandarChat() {
     const inp = document.getElementById('chat-input'); if (!inp.value) return;
     db.ref("chat").push({ u: meuNome, m: inp.value, t: Date.now() });
     inp.value = "";
 }
 
-function responderUser(nome) { document.getElementById('chat-input').value = `@${nome} `; document.getElementById('chat-input').focus(); }
-
-function apagarItem(caminho) { if(confirm("Apagar?")) db.ref(caminho).remove(); }
-
 db.ref("chat").limitToLast(50).on("value", snap => {
     const b = document.getElementById('mensagens');
     b.innerHTML = "";
     const dados = snap.val();
     let ultimaData = "";
-
-    if(dados) {
-        Object.entries(dados).forEach(([key, c]) => {
-            const dataAtual = formatarDataCabecalho(c.t);
-            if(dataAtual !== ultimaData) {
-                b.innerHTML += `<div class="data-linha"><span class="data-tag">${dataAtual}</span></div>`;
-                ultimaData = dataAtual;
-            }
-            const classe = c.u === meuNome ? "balao-eu" : "balao-outro";
-            const xDel = (meuNome === ADMIN_NAME || c.u === meuNome) ? `<button class="btn-msg-acao" onclick="apagarItem('chat/${key}')">✕</button>` : "";
-            const btnResp = c.u !== meuNome ? `<button class="btn-msg-acao" onclick="responderUser('${c.u}')">↶</button>` : "";
-            
-            // Highlight para menções @
-            const textoFormatado = c.m.replace(/(@\w+)/g, '<span class="mencao">$1</span>');
-
-            b.innerHTML += `
-                <div class="balao ${classe}">
-                    ${xDel} ${btnResp}
-                    <span class="user-tag">${c.u}</span>
-                    ${textoFormatado}
-                    <span class="hora-tag">${formatarTempo(c.t)}</span>
-                </div>`;
-        });
-        b.scrollTop = b.scrollHeight;
-    }
+    if(dados) { Object.entries(dados).forEach(([key, c]) => {
+        const dCabecalho = formatarDataCabecalho(c.t);
+        if(dCabecalho !== ultimaData) { b.innerHTML += `<div class="data-tag">${dCabecalho}</div>`; ultimaData = dCabecalho; }
+        const classe = c.u === meuNome ? "balao-eu" : "balao-outro";
+        const x = (meuNome === ADMIN_NAME || c.u === meuNome) ? `<button class="btn-msg-acao" onclick="apagarItem('chat/${key}')">✕</button>` : "";
+        const resp = c.u !== meuNome ? `<button class="btn-msg-acao" onclick="document.getElementById('chat-input').value='@${c.u} ';document.getElementById('chat-input').focus()">↶</button>` : "";
+        b.innerHTML += `<div class="balao ${classe}">${x}${resp}<span class="user-tag">${c.u}</span>${c.m}<span class="hora-tag">${formatarTempo(c.t)}</span></div>`;
+    }); b.scrollTop = b.scrollHeight; }
 });
 
 db.ref("vivos").on("value", snap => { document.getElementById("status-online").innerText = (snap.val() ? Object.keys(snap.val()).length : 1) + " Online"; });
-
 </script>
 </body>
 </html>
