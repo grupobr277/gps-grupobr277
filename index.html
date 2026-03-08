@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="utf-8">
-    <title>BR-277 | GPS PROFISSIONAL V2</title>
+    <title>BR-277 | GPS PROFISSIONAL V3</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -12,32 +12,37 @@
     <style>
         html, body, #map { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; background: #f0f0f0; }
         
-        /* Efeito GPS 3D */
+        /* Efeito 3D */
         .leaflet-map-pane { transform: rotateX(15deg); }
         .seta-gps { width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-bottom: 25px solid #1a73e8; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
 
-        /* Painéis e Botões */
+        /* Painéis */
         .painel-alertas { position: absolute; top: 100px; left: 10px; z-index: 1000; display: flex; flex-direction: column; gap: 8px; }
         .btn-alerta { background: white; border: none; padding: 8px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); width: 85px; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
         .btn-alerta b { font-size: 8px; text-transform: uppercase; margin-top: 3px; color: #333; }
+        
         #contador { position: absolute; bottom: 20px; left: 10px; z-index: 1000; background: rgba(0,0,0,0.8); color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; }
+
+        /* Botão Centralizar GPS */
+        .btn-recentralizar { position: absolute; bottom: 60px; left: 15px; z-index: 1000; background: white; border: none; width: 40px; height: 40px; border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.3); cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; }
 
         /* Chat Geral Lateral */
         #chat-box { position: fixed; right: -100%; top: 0; width: 85%; max-width: 350px; height: 100%; background: #e5ddd5; z-index: 2000; transition: 0.4s; display: flex; flex-direction: column; }
         #chat-box.aberto { right: 0; }
-        .msg-geral { padding: 8px 12px; border-radius: 10px; font-size: 13px; margin-bottom: 5px; max-width: 85%; box-shadow: 0 1px 1px rgba(0,0,0,0.1); }
-        .m-eu { background: #dcf8c6; align-self: flex-end; }
-        .m-outro { background: white; align-self: flex-start; }
+        
+        /* Botão Chat FLUTUANTE e ARRASTÁVEL */
+        #btn-chat-flutuante { position: fixed; bottom: 20px; right: 20px; z-index: 2001; width: 60px; height: 60px; border-radius: 50%; background: #25d366; color: white; border: none; font-size: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: move; touch-action: none; display: flex; align-items: center; justify-content: center; }
 
-        /* --- CHAT INTERNO DOS ÍCONES (CORRIGIDO) --- */
-        .chat-icone-container { width: 220px; max-height: 280px; display: flex; flex-direction: column; }
-        .chat-icone-msgs { flex: 1; overflow-y: auto; max-height: 150px; margin: 8px 0; padding: 5px; display: flex; flex-direction: column; gap: 5px; background: #eee; border-radius: 5px; }
-        .balao-mini { padding: 6px 8px; border-radius: 8px; font-size: 11px; max-width: 90%; word-wrap: break-word; line-height: 1.2; }
-        .balao-mini-outro { background: white; align-self: flex-start; border: 1px solid #ddd; }
-        .balao-mini-eu { background: #dcf8c6; align-self: flex-end; border: 1px solid #c1e0a3; }
-        .chat-icone-input { display: flex; gap: 4px; padding-top: 5px; }
-        .chat-icone-input input { flex: 1; border: 1px solid #ccc; border-radius: 15px; padding: 6px 10px; font-size: 12px; outline: none; }
-        .chat-icone-input button { background: #075e54; color: white; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; }
+        /* CHAT INTERNO DOS ÍCONES (Cores Atualizadas) */
+        .chat-icone-container { width: 220px; display: flex; flex-direction: column; }
+        .chat-icone-msgs { flex: 1; overflow-y: auto; max-height: 150px; margin: 8px 0; padding: 5px; display: flex; flex-direction: column; gap: 5px; background: #ece5dd; border-radius: 5px; }
+        .balao-mini { padding: 6px 8px; border-radius: 8px; font-size: 11px; max-width: 90%; word-wrap: break-word; box-shadow: 0 1px 1px rgba(0,0,0,0.1); }
+        .balao-mini-outro { background: #ffffff; align-self: flex-start; color: #000; border: 1px solid #ddd; }
+        .balao-mini-eu { background: #dcf8c6; align-self: flex-end; color: #000; border: 1px solid #c1e0a3; }
+        
+        .chat-icone-input { display: flex; gap: 4px; }
+        .chat-icone-input input { flex: 1; border: 1px solid #ccc; border-radius: 15px; padding: 6px 10px; font-size: 12px; }
+        .chat-icone-input button { background: #075e54; color: white; border: none; border-radius: 50%; width: 30px; height: 30px; }
 
         .leaflet-routing-container { display: none; }
     </style>
@@ -45,6 +50,7 @@
 <body>
 
 <div id="contador">🚗 <span id="online">1</span> Online</div>
+<button class="btn-recentralizar" onclick="recentralizar()" title="Minha Localização">🎯</button>
 <div id="map"></div>
 
 <div class="painel-alertas">
@@ -56,7 +62,7 @@
     <button class="btn-alerta" onclick="enviarAlerta('Buraco', '🕳️')"><span>🕳️</span><b>Buraco</b></button>
 </div>
 
-<button onclick="document.getElementById('chat-box').classList.toggle('aberto')" style="position:fixed; bottom:20px; right:20px; z-index:2001; width:60px; height:60px; border-radius:50%; background:#25d366; color:white; border:none; font-size:30px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">💬</button>
+<div id="btn-chat-flutuante">💬</div>
 
 <div id="chat-box">
     <div style="padding:15px; background:#075e54; color:white; font-weight:bold; display:flex; justify-content:space-between; align-items:center;">
@@ -87,18 +93,40 @@ L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png').addTo(map);
 let meuLatLng, meuMarker, rMachine;
 const meuID = "M_" + Math.random().toString(36).substr(2, 4).toUpperCase();
 
-// LUPA
-const searchControl = L.Control.geocoder({
-    defaultMarkGeocode: false, placeholder: "Para onde?", collapsed: false
-}).on('markgeocode', function(e) {
-    const dest = e.geocode.center;
-    if (rMachine) map.removeControl(rMachine);
-    rMachine = L.Routing.control({
-        waypoints: [meuLatLng, dest],
-        lineOptions: { styles: [{ color: '#1a73e8', opacity: 0.9, weight: 12 }] }
-    }).addTo(map);
-    map.fitBounds(L.latLngBounds([meuLatLng, dest]), { padding: [80, 80] });
-}).addTo(map);
+// FUNÇÃO RECENTRALIZAR
+function recentralizar() {
+    if (meuLatLng) {
+        map.flyTo(meuLatLng, 17);
+    }
+}
+
+// LÓGICA DO BOTÃO FLUTUANTE (DRAG AND DROP)
+const btnFlutuante = document.getElementById('btn-chat-flutuante');
+let isDragging = false;
+let startX, startY;
+
+btnFlutuante.addEventListener('pointerdown', (e) => {
+    isDragging = false;
+    startX = e.clientX;
+    startY = e.clientY;
+    btnFlutuante.setPointerCapture(e.pointerId);
+});
+
+btnFlutuante.addEventListener('pointermove', (e) => {
+    if (Math.abs(e.clientX - startX) > 5 || Math.abs(e.clientY - startY) > 5) {
+        isDragging = true;
+        btnFlutuante.style.left = (e.clientX - 30) + 'px';
+        btnFlutuante.style.top = (e.clientY - 30) + 'px';
+        btnFlutuante.style.bottom = 'auto';
+        btnFlutuante.style.right = 'auto';
+    }
+});
+
+btnFlutuante.addEventListener('pointerup', (e) => {
+    if (!isDragging) {
+        document.getElementById('chat-box').classList.toggle('aberto');
+    }
+});
 
 // GPS NAVEGAÇÃO
 function iniciarGPS() {
@@ -112,33 +140,29 @@ function iniciarGPS() {
             meuMarker.setLatLng(meuLatLng);
             document.getElementById('seta-dir').style.transform = `rotate(${heading}deg)`;
         }
-        map.panTo(meuLatLng);
         db.ref("vivos/" + meuID).set({ lat: pos.coords.latitude, lng: pos.coords.longitude });
         db.ref("vivos/" + meuID).onDisconnect().remove();
     }, null, { enableHighAccuracy: true });
 }
 
-// ALERTAS
+// ALERTAS E CHAT DO ÍCONE
 function enviarAlerta(tipo, emoji) {
     if (!meuLatLng) return;
     db.ref("alertas").push({ tipo, emoji, lat: meuLatLng.lat, lng: meuLatLng.lng, t: Date.now() });
 }
 
-// CARREGAR ALERTAS COM HISTÓRICO DE CHAT
 db.ref("alertas").on("child_added", snap => {
     const a = snap.val();
     const key = snap.key;
-    
     const marker = L.marker([a.lat, a.lng], {
         icon: L.divIcon({ html: `<span style="font-size:25px">${a.emoji}</span>`, className: '' })
     }).addTo(map);
 
-    // Quando o usuário clica no ícone, o Leaflet abre o balão
     marker.on('click', function() {
         const chatHtml = `
             <div class="chat-icone-container">
                 <strong style="color:#075e54">${a.tipo} ${a.emoji}</strong>
-                <div id="msgs-${key}" class="chat-icone-msgs">Carregando mensagens...</div>
+                <div id="msgs-${key}" class="chat-icone-msgs">Carregando...</div>
                 <div class="chat-icone-input">
                     <input type="text" id="in-${key}" placeholder="Responder...">
                     <button onclick="mandarMsgIcone('${key}')">➤</button>
@@ -147,13 +171,12 @@ db.ref("alertas").on("child_added", snap => {
         `;
         marker.bindPopup(chatHtml).openPopup();
 
-        // BUSCA O HISTÓRICO COMPLETO DO FIREBASE ASSIM QUE ABRE
         const refChat = db.ref("alertas/" + key + "/conversa");
-        refChat.off(); // Limpa escutas antigas para não duplicar
+        refChat.off();
         refChat.on("value", cSnap => {
             const divMsgs = document.getElementById("msgs-" + key);
             if(divMsgs) {
-                divMsgs.innerHTML = ""; // Limpa o "Carregando"
+                divMsgs.innerHTML = "";
                 const dados = cSnap.val();
                 if (dados) {
                     Object.values(dados).forEach(c => {
@@ -161,8 +184,6 @@ db.ref("alertas").on("child_added", snap => {
                         divMsgs.innerHTML += `<div class="balao-mini ${classe}">${c.m}</div>`;
                     });
                     divMsgs.scrollTop = divMsgs.scrollHeight;
-                } else {
-                    divMsgs.innerHTML = "<small style='color:gray'>Sem mensagens ainda.</small>";
                 }
             }
         });
@@ -188,7 +209,7 @@ db.ref("chat").limitToLast(25).on("child_added", snap => {
     const c = snap.val();
     const b = document.getElementById('mensagens');
     const classe = c.u === meuID ? "m-eu" : "m-outro";
-    b.innerHTML += `<div class="msg-geral ${classe}"><small style="font-size:9px; color:gray">${c.u}</small><br>${c.m}</div>`;
+    b.innerHTML += `<div style="padding:8px; border-radius:10px; margin-bottom:5px; max-width:85%; font-size:13px; box-shadow:0 1px 1px rgba(0,0,0,0.1);" class="${classe === 'm-eu' ? 'balao-mini-eu' : 'balao-mini-outro'}"><small>${c.u}</small><br>${c.m}</div>`;
     b.scrollTop = b.scrollHeight;
 });
 
