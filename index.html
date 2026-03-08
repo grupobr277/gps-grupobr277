@@ -1,271 +1,98 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8">
-<title>GPS BR277</title>
-
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-
-<style>
-
-body{
-margin:0;
-font-family:Arial;
-}
-
-#map{
-height:100vh;
-}
-
-.painel{
-position:absolute;
-top:10px;
-left:10px;
-z-index:999;
-background:white;
-padding:10px;
-border-radius:10px;
-box-shadow:0 0 10px rgba(0,0,0,0.3);
-}
-
-button{
-padding:8px;
-margin:4px;
-border:none;
-border-radius:6px;
-background:#007bff;
-color:white;
-font-weight:bold;
-cursor:pointer;
-}
-
-button:hover{
-background:#0056b3;
-}
-
-.online{
-font-size:12px;
-margin-top:5px;
-}
-
-</style>
-
+    <meta charset="utf-8">
+    <title>GPS BR277 - Versão Otimizada</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+    <style>
+        body { margin:0; font-family:Arial; }
+        #map { height:100vh; }
+        .painel { position:absolute; top:10px; left:10px; z-index:999; background:white; padding:10px; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.3); }
+        button { padding:8px; margin:4px; border:none; border-radius:6px; background:#007bff; color:white; font-weight:bold; cursor:pointer; }
+    </style>
 </head>
 <body>
 
 <div id="map"></div>
-
 <div class="painel">
-
-<button onclick="registrarOcorrencia()">⚠ Acidente</button>
-<button onclick="registrarRadar()">📷 Radar</button>
-<button onclick="centralizar()">📍 Minha posição</button>
-
-<div class="online">
-Usuários online: <span id="online">0</span>
-</div>
-
+    <button onclick="registrarOcorrencia('acidente')">⚠ Acidente</button>
+    <button onclick="registrarOcorrencia('radar')">📷 Radar</button>
+    <div class="online">Usuários: <span id="online">0</span></div>
 </div>
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
+<script src="https://unpkg.com/leaflet-rotatedmarker/leaflet.rotatedMarker.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-
-const firebaseConfig = {
-
-apiKey: "SUA_API_KEY",
-authDomain: "SEU_PROJETO.firebaseapp.com",
-databaseURL: "https://SEU_PROJETO.firebaseio.com",
-projectId: "SEU_PROJETO",
-storageBucket: "SEU_PROJETO.appspot.com",
-messagingSenderId: "XXXX",
-appId: "XXXX"
-
-};
-
-firebase.initializeApp(firebaseConfig);
-
-const db = firebase.database();
-
-let map = L.map('map').setView([-25.4284,-49.2733],13);
-
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
-maxZoom:19
-}).addTo(map);
-
-let meuID = "user_"+Math.random().toString(36).substr(2,9);
-
-let carroIcon = L.icon({
-iconUrl:"https://cdn-icons-png.flaticon.com/512/743/743922.png",
-iconSize:[40,40],
-iconAnchor:[20,20]
-});
-
-let marker;
-
-function centralizar(){
-
-navigator.geolocation.getCurrentPosition(function(pos){
-
-let lat = pos.coords.latitude;
-let lon = pos.coords.longitude;
-
-map.setView([lat,lon],16);
-
-});
-
-}
-
-function iniciarGPS(){
-
-navigator.geolocation.watchPosition(function(pos){
-
-let lat = pos.coords.latitude;
-let lon = pos.coords.longitude;
-let dir = pos.coords.heading || 0;
-
-if(!marker){
-
-marker = L.marker([lat,lon],{icon:carroIcon}).addTo(map);
-
-}else{
-
-marker.setLatLng([lat,lon]);
-
-}
-
-let el = marker.getElement();
-
-if(el){
-el.style.transform = "rotate("+dir+"deg)";
-}
-
-db.ref("usuarios/"+meuID).set({
-
-lat:lat,
-lon:lon,
-dir:dir,
-time:Date.now()
-
-});
-
-});
-
-}
-
-iniciarGPS();
-
-let usuariosMarkers={};
-
-db.ref("usuarios").on("value",(snap)=>{
-
-let data = snap.val();
-
-if(!data)return;
-
-let total=0;
-
-for(let id in data){
-
-if(id==meuID)continue;
-
-total++;
-
-let u=data[id];
-
-if(!usuariosMarkers[id]){
-
-usuariosMarkers[id]=L.marker(
-[u.lat,u.lon],
-{icon:carroIcon}
-).addTo(map);
-
-}else{
-
-usuariosMarkers[id].setLatLng([u.lat,u.lon]);
-
-}
-
-}
-
-document.getElementById("online").innerText=total+1;
-
-});
-
-function registrarOcorrencia(){
-
-if(!marker)return;
-
-let pos = marker.getLatLng();
-
-db.ref("ocorrencias").push({
-
-tipo:"acidente",
-lat:pos.lat,
-lon:pos.lng,
-time:Date.now()
-
-});
-
-}
-
-function registrarRadar(){
-
-if(!marker)return;
-
-let pos = marker.getLatLng();
-
-db.ref("ocorrencias").push({
-
-tipo:"radar",
-lat:pos.lat,
-lon:pos.lng,
-time:Date.now()
-
-});
-
-}
-
-let ocorrenciasLayer = L.layerGroup().addTo(map);
-
-db.ref("ocorrencias").on("child_added",(snap)=>{
-
-let o=snap.val();
-
-let icon="⚠";
-
-if(o.tipo=="radar") icon="📷";
-
-let m=L.marker([o.lat,o.lon]).addTo(ocorrenciasLayer);
-
-m.bindPopup(icon+" "+o.tipo);
-
-verificarProximidade(o);
-
-});
-
-function verificarProximidade(o){
-
-if(!marker)return;
-
-let pos=marker.getLatLng();
-
-let d = map.distance([o.lat,o.lon],[pos.lat,pos.lng]);
-
-if(d<500){
-
-alert("⚠ Atenção ocorrência próxima!");
-
-}
-
-}
-
+    const firebaseConfig = { /* SEUS DADOS AQUI */ };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const map = L.map('map').setView([-25.4284, -49.2733], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+    const meuID = "user_" + Math.random().toString(36).substr(2, 9);
+    let marker = null;
+    let ocorrencias = {};
+
+    // 1. Limpeza automática de usuários offline
+    db.ref("usuarios/" + meuID).onDisconnect().remove();
+
+    // 2. Setup do GPS com controle de bateria (atualização a cada 5s)
+    let ultimaAtualizacao = 0;
+    navigator.geolocation.watchPosition((pos) => {
+        const { latitude, longitude, heading } = pos.coords;
+        const agora = Date.now();
+
+        if (!marker) {
+            marker = L.marker([latitude, longitude], { 
+                icon: L.icon({iconUrl: "https://cdn-icons-png.flaticon.com/512/743/743922.png", iconSize: [40,40]}),
+                rotationAngle: heading || 0 
+            }).addTo(map);
+            map.setView([latitude, longitude], 16);
+        } else {
+            marker.setLatLng([latitude, longitude]);
+            marker.setRotationAngle(heading || 0);
+        }
+
+        // Envia ao servidor apenas a cada 5 segundos
+        if (agora - ultimaAtualizacao > 5000) {
+            db.ref("usuarios/" + meuID).set({ lat: latitude, lon: longitude, dir: heading });
+            ultimaAtualizacao = agora;
+        }
+    }, null, { enableHighAccuracy: true });
+
+    // 3. Renderização de outros usuários
+    const userMarkers = {};
+    db.ref("usuarios").on("value", (snap) => {
+        const data = snap.val() || {};
+        document.getElementById("online").innerText = Object.keys(data).length;
+        
+        for (let id in data) {
+            if (id === meuID) continue;
+            if (!userMarkers[id]) {
+                userMarkers[id] = L.marker([data[id].lat, data[id].lon]).addTo(map);
+            } else {
+                userMarkers[id].setLatLng([data[id].lat, data[id].lon]);
+            }
+        }
+    });
+
+    // 4. Sistema de Alertas
+    function registrarOcorrencia(tipo) {
+        if (!marker) return;
+        const pos = marker.getLatLng();
+        db.ref("ocorrencias").push({ tipo, lat: pos.lat, lon: pos.lng, time: Date.now() });
+    }
+
+    db.ref("ocorrencias").on("child_added", (snap) => {
+        const o = snap.val();
+        const m = L.marker([o.lat, o.lon]).addTo(map).bindPopup(o.tipo);
+        ocorrencias[snap.key] = { lat: o.lat, lon: o.lon, marker: m };
+    });
 </script>
-
 </body>
 </html>
