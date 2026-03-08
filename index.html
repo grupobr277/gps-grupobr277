@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="utf-8">
-    <title>BR-277 | GPS COMUNIDADE</title>
+    <title>BR-277 | GPS COMUNIDADE PRO</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
@@ -10,13 +10,13 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
 
     <style>
-        :root { --blue: #007bff; --dark: #2c3e50; }
-        body { margin: 0; font-family: 'Segoe UI', sans-serif; overflow: hidden; }
-        #map { height: 100vh; width: 100vw; background: #e5e3df; }
+        :root { --blue: #007bff; --dark: #2c3e50; --success: #28a745; }
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; overflow: hidden; background: #f0f0f0; }
+        #map { height: 100vh; width: 100vw; }
 
-        /* Bolinha Pulsante (Você no Mapa) */
+        /* Minha Localização (Bolinha Pulsante) */
         .meu-gps {
-            width: 16px; height: 16px; background: var(--blue);
+            width: 18px; height: 18px; background: var(--blue);
             border-radius: 50%; border: 3px solid white;
             box-shadow: 0 0 10px rgba(0,0,0,0.3);
             animation: pulse 2s infinite;
@@ -30,15 +30,16 @@
         /* Menu de Alertas Lateral */
         .menu-alertas {
             position: absolute; top: 100px; left: 15px; z-index: 1000;
-            display: flex; flex-direction: column; gap: 12px;
+            display: flex; flex-direction: column; gap: 10px;
         }
         .btn-alerta {
             background: white; border: none; padding: 10px; border-radius: 12px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2); width: 75px; cursor: pointer;
-            text-align: center; font-size: 10px; font-weight: bold;
+            text-align: center; font-size: 10px; font-weight: bold; transition: 0.2s;
         }
+        .btn-alerta:active { transform: scale(0.9); }
 
-        /* Chat Lateral Inteligente */
+        /* Chat Lateral */
         #chat-lateral {
             position: absolute; right: -310px; top: 0; width: 300px; height: 100vh;
             background: white; z-index: 2000; transition: 0.4s; display: flex; flex-direction: column;
@@ -52,8 +53,8 @@
         .entrada-chat { padding: 10px; border-top: 1px solid #eee; display: flex; }
         .entrada-chat input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 20px; outline: none; }
 
-        /* Barra de Busca Customizada */
-        .leaflet-control-geocoder { border-radius: 20px !important; margin-top: 20px !important; }
+        /* Estilo da barra de busca no mapa */
+        .leaflet-control-geocoder { border-radius: 20px !important; margin-top: 20px !important; box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important; }
     </style>
 </head>
 <body>
@@ -66,15 +67,18 @@
     <button class="btn-alerta" onclick="registrar('Acidente', '⚠️')"><span style="font-size:20px">⚠️</span><br>ACIDENTE</button>
     <button class="btn-alerta" onclick="registrar('Obras', '🚧')"><span style="font-size:20px">🚧</span><br>OBRAS</button>
     <button class="btn-alerta" onclick="registrar('Pane', '🚛')"><span style="font-size:20px">🚛</span><br>PANE</button>
-    <button class="btn-alerta" onclick="registrar('Animal', '🦌')"><span style="font-size:20px">🦌</span><br>ANIMAL</button>
+    <button class="btn-alerta" onclick="registrar('Bloqueio', '🚫')"><span style="font-size:20px">🚫</span><br>BLOQUEIO</button>
 </div>
 
 <div id="chat-lateral">
-    <div style="padding:20px; background:var(--dark); color:white; font-weight:bold">IA ASSISTENTE BR-277</div>
+    <div style="padding:20px; background:var(--dark); color:white; font-weight:bold; display:flex; justify-content:space-between">
+        <span>IA ASSISTENTE BR-277</span>
+        <span onclick="toggleChat()" style="cursor:pointer">✖</span>
+    </div>
     <div id="mensagens"></div>
     <div class="entrada-chat">
         <input type="text" id="input-chat" placeholder="Pergunte sobre a rodovia...">
-        <button onclick="enviarChat()" style="background:var(--blue); color:white; border:none; border-radius:50%; width:40px; margin-left:5px; cursor:pointer">➤</button>
+        <button onclick="enviarChat()" style="background:var(--blue); color:white; border:none; border-radius:50%; width:40px; height:40px; margin-left:5px; cursor:pointer">➤</button>
     </div>
 </div>
 
@@ -85,7 +89,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-// FIREBASE CONFIG
+// --- CONFIGURAÇÃO FIREBASE ---
 const firebaseConfig = { 
     apiKey: "SUA_API_KEY", 
     databaseURL: "https://SEU-PROJETO.firebaseio.com", 
@@ -94,40 +98,87 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// INICIAR MAPA
+// --- CONFIGURAÇÃO DO MAPA ---
 const map = L.map('map', { zoomControl: false }).setView([-25.4284, -49.2733], 13);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-// 1. BUSCA E ROTA (GRATUITO)
+// Ícone de outros carros
+const iconeOutrosCarros = L.icon({
+    iconUrl: 'https://cdn-icons-png.flaticon.com/512/744/744465.png',
+    iconSize: [30, 30],
+    iconAnchor: [15, 15]
+});
+
+// Variáveis de controle
+let meuLatLng, meuMarker, routingControl;
+let motoristasAtivos = {};
+let listaAlertas = [];
+let meuID = "Drive_" + Math.random().toString(36).substr(2, 5).toUpperCase();
+
+// --- BUSCA DE ENDEREÇOS E ROTA (API GRATUITA) ---
 const geocoder = L.Control.geocoder({
     defaultMarkGeocode: false,
-    placeholder: "Pesquisar destino...",
-    errorMessage: "Endereço não encontrado."
+    placeholder: "Para onde vamos?",
+    errorMessage: "Local não encontrado."
 }).on('markgeocode', function(e) {
     const dest = e.geocode.center;
     if (routingControl) map.removeControl(routingControl);
+
     routingControl = L.Routing.control({
         waypoints: [meuLatLng, dest],
-        lineOptions: { styles: [{ color: '#007bff', weight: 7 }] },
-        createMarker: () => null // Deixa a linha limpa
+        lineOptions: { styles: [{ color: '#007bff', weight: 7, opacity: 0.8 }] },
+        createMarker: () => null 
     }).addTo(map);
+
+    map.flyTo(dest, 15);
 }).addTo(map);
 
-let routingControl, meuLatLng, meuMarker;
-let listaAlertas = [];
+// --- GPS EM TEMPO REAL E MOTORISTAS ---
+function iniciarApp() {
+    navigator.geolocation.watchPosition(pos => {
+        meuLatLng = L.latLng(pos.coords.latitude, pos.coords.longitude);
+        
+        // Atualiza meu marcador pulsante
+        if (!meuMarker) {
+            meuMarker = L.marker(meuLatLng, { icon: L.divIcon({ className: 'meu-gps' }) }).addTo(map);
+            map.setView(meuLatLng, 15);
+        } else {
+            meuMarker.setLatLng(meuLatLng);
+        }
 
-// 2. GPS EM TEMPO REAL
-navigator.geolocation.watchPosition(pos => {
-    meuLatLng = L.latLng(pos.coords.latitude, pos.coords.longitude);
-    if (!meuMarker) {
-        meuMarker = L.marker(meuLatLng, { icon: L.divIcon({ className: 'meu-gps' }) }).addTo(map);
-        map.setView(meuLatLng, 15);
-    } else {
-        meuMarker.setLatLng(meuLatLng);
+        // Envia minha posição para o Firebase para os outros verem
+        db.ref("usuarios/" + meuID).set({
+            lat: meuLatLng.lat,
+            lon: meuLatLng.lng,
+            time: Date.now()
+        });
+        db.ref("usuarios/" + meuID).onDisconnect().remove();
+
+    }, null, { enableHighAccuracy: true });
+}
+
+// Escutar outros usuários (Carros andando em tempo real)
+db.ref("usuarios").on("value", snap => {
+    const usuarios = snap.val() || {};
+    for (let id in usuarios) {
+        if (id === meuID) continue;
+        const u = usuarios[id];
+        if (motoristasAtivos[id]) {
+            motoristasAtivos[id].setLatLng([u.lat, u.lon]);
+        } else {
+            motoristasAtivos[id] = L.marker([u.lat, u.lon], { icon: iconeOutrosCarros }).addTo(map);
+        }
     }
-}, null, { enableHighAccuracy: true });
+    // Remove quem ficou offline
+    for (let id in motoristasAtivos) {
+        if (!usuarios[id]) {
+            map.removeLayer(motoristasAtivos[id]);
+            delete motoristasAtivos[id];
+        }
+    }
+});
 
-// 3. REGISTRAR OCORRÊNCIA COM LEGENDA FIXA
+// --- ALERTAS FIXOS ---
 function registrar(tipo, emoji) {
     if (!meuLatLng) return;
     db.ref("ocorrencias").push({ tipo, emoji, lat: meuLatLng.lat, lng: meuLatLng.lng, hora: Date.now() });
@@ -135,15 +186,15 @@ function registrar(tipo, emoji) {
 
 db.ref("ocorrencias").on("child_added", snap => {
     const o = snap.val();
-    listaAlertas.push(o); // Guarda para a IA ler
+    listaAlertas.push(o);
     const iconHTML = `<div style="text-align:center">
                         <span style="font-size:30px">${o.emoji}</span><br>
-                        <b style="background:white; padding:2px 5px; border-radius:5px; border:1px solid #000; font-size:10px">${o.tipo.toUpperCase()}</b>
+                        <b style="background:white; padding:2px 5px; border-radius:5px; border:1px solid #000; font-size:10px; white-space:nowrap">${o.tipo.toUpperCase()}</b>
                       </div>`;
     L.marker([o.lat, o.lng], { icon: L.divIcon({ html: iconHTML, iconSize: [60, 50], className: '' }) }).addTo(map);
 });
 
-// 4. IA INTELIGENTE (Lê o mapa e responde)
+// --- CHAT IA INTELIGENTE COM VOZ ---
 function toggleChat() { document.getElementById('chat-lateral').classList.toggle('aberto'); }
 
 function enviarChat() {
@@ -156,20 +207,23 @@ function enviarChat() {
 
     setTimeout(() => {
         let resposta = "";
-        const pergunta = texto.toLowerCase();
+        const p = texto.toLowerCase();
 
-        if (pergunta.includes("como está") || pergunta.includes("trânsito") || pergunta.includes("curitiba")) {
+        if (p.includes("como está") || p.includes("trânsito") || p.includes("condição")) {
             if (listaAlertas.length === 0) {
-                resposta = "A BR-277 parece tranquila agora. Não temos alertas registrados no sistema.";
+                resposta = "A BR-277 está com fluxo livre no momento. Boa viagem!";
             } else {
                 const resumo = listaAlertas.map(a => a.tipo).join(", ");
-                resposta = `No momento, o grupo reportou: ${resumo}. Dirija com atenção redobrada!`;
+                resposta = `Atenção! Temos registros de: ${resumo}. Dirija com cuidado!`;
             }
+        } else if (p.includes("ajuda")) {
+            resposta = "Se precisar de socorro mecânico, use o botão PANE. Se for emergência, ligue 191.";
         } else {
-            resposta = "Olá! Eu monitoro a BR-277 em tempo real. Você pode me perguntar sobre as condições da pista ou registrar um alerta pelos botões.";
+            resposta = "Olá! Sou sua IA de estrada. Posso te informar sobre o trânsito ou traçar rotas.";
         }
         
         addBalao(resposta, 'balao-ia');
+        
         // Voz da IA
         const falar = new SpeechSynthesisUtterance(resposta);
         falar.lang = 'pt-BR';
@@ -185,6 +239,8 @@ function addBalao(msg, classe) {
     box.appendChild(div);
     box.scrollTop = box.scrollHeight;
 }
+
+iniciarApp();
 </script>
 </body>
 </html>
