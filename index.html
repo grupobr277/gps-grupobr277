@@ -74,7 +74,28 @@ maxZoom:19
 
 var minhaPosicao;
 
+var primeiraLocalizacao = true;
+
 navigator.geolocation.watchPosition(function(pos){
+
+var lat = pos.coords.latitude;
+var lng = pos.coords.longitude;
+
+minhaPosicao = [lat,lng];
+
+if(primeiraLocalizacao){
+
+map.setView([lat,lng],15);
+
+L.marker([lat,lng]).addTo(map)
+.bindPopup("Você está aqui")
+.openPopup();
+
+primeiraLocalizacao = false;
+
+}
+
+});
 
 var lat = pos.coords.latitude;
 var lng = pos.coords.longitude;
