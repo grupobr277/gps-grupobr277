@@ -2,78 +2,93 @@
 <html lang="pt-br">
 <head>
     <meta charset="utf-8">
-    <title>BR-277 | COMUNIDADE V10</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BR-277 | MONITORAMENTO GPS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
 
     <style>
-        :root { --whatsapp: #25d366; --dark: #075e54; --blue: #1a73e8; }
-        html, body { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; font-family: Arial, sans-serif; }
+        :root { --blue-waze: #33a1ff; --blue-maps: #1a73e8; }
+        html, body { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; font-family: 'Segoe UI', sans-serif; }
         #map { position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 1; }
 
-        /* Barra de Pesquisa Fixa no Centro Superior */
-        .caixa-busca {
-            position: absolute; top: 15px; left: 50%; transform: translateX(-50%);
-            z-index: 1005; width: 90%; max-width: 400px;
+        /* Estilo da Barra de Pesquisa (Lupa) no Topo Centro */
+        .leaflet-top.leaflet-center {
+            left: 50%;
+            transform: translateX(-50%);
+            top: 15px;
+            width: 90%;
+            max-width: 400px;
         }
-        .leaflet-control-geocoder { width: 100% !important; border-radius: 25px !important; box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important; border: none !important; }
+        .leaflet-control-geocoder {
+            border: none !important;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.25) !important;
+            border-radius: 30px !important;
+            width: 100% !important;
+            height: 45px !important;
+            overflow: hidden;
+            background: white !important;
+        }
+        .leaflet-control-geocoder-form input {
+            height: 45px !important;
+            font-size: 16px !important;
+            padding-left: 20px !important;
+        }
 
-        /* Contador Online */
-        #online-tag { position: absolute; top: 75px; right: 15px; z-index: 1000; background: rgba(0,0,0,0.7); color: white; padding: 5px 12px; border-radius: 15px; font-size: 11px; }
+        /* Ponto Azul Pulsante */
+        .ponto-gps-pulsante {
+            width: 14px; height: 14px;
+            background: var(--blue-maps);
+            border: 3px solid white;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(0,0,0,0.4);
+        }
+        .ponto-gps-pulsante::after {
+            content: '';
+            position: absolute;
+            top: -3px; left: -3px;
+            width: 14px; height: 14px;
+            border: 6px solid var(--blue-maps);
+            border-radius: 50%;
+            animation: pulsar 1.5s infinite;
+            opacity: 0;
+        }
+        @keyframes pulsar {
+            0% { transform: scale(0.5); opacity: 0.8; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
 
-        /* Botões Laterais (Inalterados conforme solicitado) */
-        .menu-lateral { position: absolute; top: 80px; left: 10px; z-index: 1000; display: flex; flex-direction: column; gap: 8px; }
-        .btn-alerta { 
-            background: white; border: none; padding: 10px 5px; border-radius: 12px; 
-            box-shadow: 0 3px 8px rgba(0,0,0,0.2); width: 85px; cursor: pointer; 
+        /* Botões de Alerta Laterais */
+        .menu-alertas {
+            position: absolute; top: 80px; left: 10px; z-index: 1000;
+            display: flex; flex-direction: column; gap: 8px;
+        }
+        .btn-acao {
+            background: white; border: none; padding: 10px 5px; border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2); width: 85px; cursor: pointer;
             display: flex; flex-direction: column; align-items: center;
         }
-        .btn-alerta span { font-size: 22px; }
-        .btn-alerta b { font-size: 8px; color: #333; text-transform: uppercase; margin-top: 3px; }
+        .btn-acao b { font-size: 8px; text-transform: uppercase; margin-top: 3px; }
 
-        /* Chat WhatsApp Style */
-        #chat-lateral { position: fixed; right: -100%; top: 0; width: 85%; max-width: 350px; height: 100%; background: #e5ddd5; z-index: 2000; transition: 0.4s; display: flex; flex-direction: column; }
-        #chat-lateral.aberto { right: 0; }
-        .chat-topo { padding: 15px; background: var(--dark); color: white; font-weight: bold; display: flex; justify-content: space-between; }
-        #chat-mensagens { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 8px; }
-        .balao { padding: 8px 12px; border-radius: 10px; font-size: 14px; max-width: 80%; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-        .balao-outro { background: white; align-self: flex-start; }
-        .balao-eu { background: #dcf8c6; align-self: flex-end; }
-
-        /* Ponto GPS e Rota */
-        .meu-local { width: 18px; height: 18px; background: var(--blue); border-radius: 50%; border: 3px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
-        .leaflet-routing-container { display: none; }
+        /* Chat e Outros */
+        .leaflet-routing-container { display: none !important; }
+        #online-tag { position: absolute; top: 75px; right: 10px; z-index: 1000; background: rgba(0,0,0,0.7); color: white; padding: 5px 10px; border-radius: 15px; font-size: 11px; }
     </style>
 </head>
 <body>
 
-<div class="caixa-busca" id="container-busca"></div>
-<div id="online-tag">🟢 <span id="val-online">1</span> Online</div>
+<div id="online-tag">🟢 <span id="num-online">1</span> Online</div>
 <div id="map"></div>
 
-<div class="menu-lateral">
-    <button class="btn-alerta" onclick="enviarAlerta('Acidente', '⚠️')"><span>⚠️</span><b>Acidente</b></button>
-    <button class="btn-alerta" onclick="enviarAlerta('Obras', '🚧')"><span>🚧</span><b>Obras</b></button>
-    <button class="btn-alerta" onclick="enviarAlerta('Lentidão', '🚗')"><span>🚗</span><b>Lentidão</b></button>
-    <button class="btn-alerta" onclick="enviarAlerta('Clima', '☁️')"><span>☁️</span><b>Clima</b></button>
-    <button class="btn-alerta" onclick="enviarAlerta('Animal', '🐕')"><span>🐕</span><b>Animal</b></button>
-    <button class="btn-alerta" onclick="enviarAlerta('Barreira', '⛰️')"><span>⛰️</span><b>Barreira</b></button>
-    <button class="btn-alerta" onclick="enviarAlerta('Bloqueio', '🚫')"><span>🚫</span><b>Bloqueio</b></button>
-    <button class="btn-alerta" onclick="enviarAlerta('Buraco', '🕳️')"><span>🕳️</span><b>Buraco</b></button>
-</div>
-
-<button onclick="document.getElementById('chat-lateral').classList.toggle('aberto')" style="position:fixed; bottom:20px; right:20px; z-index:1001; width:65px; height:65px; border-radius:50%; background:var(--whatsapp); color:white; border:none; font-size:30px; box-shadow: 0 4px 15px rgba(0,0,0,0.3)">💬</button>
-
-<div id="chat-lateral">
-    <div class="chat-topo"><span>COMUNIDADE BR-277</span><span onclick="document.getElementById('chat-lateral').classList.remove('aberto')" style="cursor:pointer">✕</span></div>
-    <div id="chat-mensagens"></div>
-    <div style="padding:10px; background:#f0f0f0; display:flex;">
-        <input type="text" id="msg-txt" style="flex:1; padding:10px; border-radius:20px; border:none;" placeholder="Mensagem...">
-        <button onclick="mandarMsg()" style="background:var(--dark); color:white; border:none; border-radius:50%; width:40px; height:40px; margin-left:5px;">➤</button>
-    </div>
+<div class="menu-alertas">
+    <button class="btn-acao" onclick="salvarAlerta('Acidente', '⚠️')"><span>⚠️</span><b>Acidente</b></button>
+    <button class="btn-acao" onclick="salvarAlerta('Obras', '🚧')"><span>🚧</span><b>Obras</b></button>
+    <button class="btn-acao" onclick="salvarAlerta('Lentidão', '🚗')"><span>🚗</span><b>Lentidão</b></button>
+    <button class="btn-acao" onclick="salvarAlerta('Animal', '🐕')"><span>🐕</span><b>Animal</b></button>
+    <button class="btn-acao" onclick="salvarAlerta('Bloqueio', '🚫')"><span>🚫</span><b>Bloqueio</b></button>
+    <button class="btn-acao" onclick="salvarAlerta('Buraco', '🕳️')"><span>🕳️</span><b>Buraco</b></button>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -83,88 +98,84 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-// --- CONFIG FIREBASE ---
-const firebaseConfig = { 
-    apiKey: "SUA_API_KEY", 
-    databaseURL: "https://SEU-PROJETO.firebaseio.com", 
-    projectId: "SEU-PROJETO" 
-};
+// --- FIREBASE (Link do seu banco) ---
+const firebaseConfig = { databaseURL: "https://gps-br277-default-rtdb.firebaseio.com" };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// --- MAPA ---
+// --- INICIAR MAPA ---
 const map = L.map('map', { zoomControl: false }).setView([-25.4284, -49.2733], 12);
 L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png').addTo(map);
 
-let meuLatLng, meuMarker, rota;
-const meuID = "M_" + Math.random().toString(36).substr(2, 4).toUpperCase();
+// Criar posição para a barra de pesquisa
+L.Control.Center = L.Control.extend({ onAdd: function(map) { return L.DomUtil.create('div', 'leaflet-center'); } });
+new L.Control.Center({ position: 'topleft' }).addTo(map);
 
-// --- GPS REALTIME ---
+let meuLatLng, meuMarker, controleRota;
+const idSessao = "D_" + Math.random().toString(36).substr(2, 4).toUpperCase();
+
+// --- GPS COM ZOOM AUTOMÁTICO ---
 function ativarGPS() {
     navigator.geolocation.watchPosition(pos => {
-        meuLatLng = L.latLng(pos.coords.latitude, pos.coords.longitude);
+        const { latitude, longitude } = pos.coords;
+        meuLatLng = L.latLng(latitude, longitude);
+
         if (!meuMarker) {
-            meuMarker = L.marker(meuLatLng, { icon: L.divIcon({ className: 'meu-local' }) }).addTo(map);
-            map.setView(meuLatLng, 15);
+            // Na primeira vez, cria o marcador e dá ZOOM DE APROXIMAÇÃO
+            meuMarker = L.marker(meuLatLng, { 
+                icon: L.divIcon({ className: 'ponto-gps-pulsante', iconSize: [20, 20] }) 
+            }).addTo(map);
+            map.setView(meuLatLng, 16); // ZOOM 16 = Perto o suficiente para dirigir
         } else {
             meuMarker.setLatLng(meuLatLng);
         }
-        db.ref("ativos/" + meuID).set({ lat: pos.coords.latitude, lng: pos.coords.longitude, t: Date.now() });
-        db.ref("ativos/" + meuID).onDisconnect().remove();
-    }, e => console.log("Erro GPS"), { enableHighAccuracy: true });
+
+        // Salva localização para os outros usuários verem
+        db.ref("ativos/" + idSessao).set({ lat: latitude, lng: longitude, t: Date.now() });
+        db.ref("ativos/" + idSessao).onDisconnect().remove();
+    }, e => alert("Ative o GPS do seu celular!"), { enableHighAccuracy: true });
 }
 
-// --- BUSCA E ROTA ---
-const busca = L.Control.geocoder({
+// --- BARRA DE PESQUISA (LUPA) ---
+const buscador = L.Control.geocoder({
     defaultMarkGeocode: false,
     placeholder: "Pra onde vamos motorista?",
     collapsed: false
 }).on('markgeocode', function(e) {
-    const d = e.geocode.center;
-    if (rota) map.removeControl(rota);
-    rota = L.Routing.control({
-        waypoints: [meuLatLng, d],
-        lineOptions: { styles: [{ color: '#1a73e8', opacity: 0.8, weight: 9 }] },
+    const destino = e.geocode.center;
+    
+    if (controleRota) map.removeControl(controleRota);
+
+    controleRota = L.Routing.control({
+        waypoints: [meuLatLng, destino],
+        lineOptions: { styles: [{ color: '#1a73e8', opacity: 0.8, weight: 10 }] },
         createMarker: (i, wp) => i === 1 ? L.marker(wp.latLng).bindPopup("Chegada") : null,
         addWaypoints: false
     }).addTo(map);
-    map.fitBounds(L.latLngBounds([meuLatLng, d]), { padding: [80, 80] });
-}).addTo(document.getElementById('container-busca'));
 
-// --- ALERTAS (SALVAMENTO REAL) ---
-function enviarAlerta(tipo, emoji) {
-    if (!meuLatLng) return alert("Buscando localização...");
-    const id = "A_" + Date.now();
-    db.ref("alertas/" + id).set({ tipo, emoji, lat: meuLatLng.lat, lng: meuLatLng.lng });
+    // Ajusta o mapa para mostrar a rota do início ao fim
+    map.fitBounds(L.latLngBounds([meuLatLng, destino]), { padding: [80, 80] });
+}).addTo(document.querySelector('.leaflet-center'));
+
+// --- SALVAR ALERTAS ---
+function salvarAlerta(tipo, emoji) {
+    if (!meuLatLng) return;
+    const ref = db.ref("ocorrencias").push();
+    ref.set({ tipo, emoji, lat: meuLatLng.lat, lng: meuLatLng.lng });
 }
 
-db.ref("alertas").on("child_added", snap => {
+// MOSTRAR ALERTAS QUE JÁ ESTÃO NO BANCO
+db.ref("ocorrencias").on("child_added", snap => {
     const a = snap.val();
     const iconHTML = `<div style="text-align:center"><span style="font-size:26px">${a.emoji}</span></div>`;
     L.marker([a.lat, a.lng], { icon: L.divIcon({ html: iconHTML, iconSize: [40, 40], className: '' }) })
     .addTo(map).bindPopup("<b>" + a.tipo + "</b>");
 });
 
-// --- MOTORISTAS ONLINE ---
+// CONTADOR
 db.ref("ativos").on("value", snap => {
-    const d = snap.val() || {};
-    document.getElementById("val-online").innerText = Object.keys(d).length;
-});
-
-// --- CHAT COM MEMÓRIA ---
-function mandarMsg() {
-    const inp = document.getElementById('msg-txt');
-    if (!inp.value) return;
-    db.ref("conversa").push({ u: meuID, m: inp.value });
-    inp.value = "";
-}
-
-db.ref("conversa").limitToLast(25).on("child_added", snap => {
-    const v = snap.val();
-    const box = document.getElementById('chat-mensagens');
-    const lado = v.u === meuID ? "balao-eu" : "balao-outro";
-    box.innerHTML += `<div class="balao ${lado}"><small>${v.u}</small><br>${v.m}</div>`;
-    box.scrollTop = box.scrollHeight;
+    const val = snap.val() ? Object.keys(snap.val()).length : 1;
+    document.getElementById("num-online").innerText = val;
 });
 
 ativarGPS();
