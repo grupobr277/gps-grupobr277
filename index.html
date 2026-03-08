@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="utf-8">
-    <title>BR-277 | MONITORAMENTO ELITE V8</title>
+    <title>BR-277 | OPERACIONAL ELITE V9</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -10,40 +10,45 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
 
     <style>
-        :root { --ws-green: #075e54; --ws-light: #dcf8c6; }
-        html, body, #map { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; font-family: 'Segoe UI', Arial, sans-serif; background: #000; }
+        :root { --ws-green: #075e54; --ws-light: #dcf8c6; --ws-dark: #128c7e; }
+        html, body, #map { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #000; }
         
-        /* PAINEL DE 10 ALERTAS */
-        .painel-alertas { position: absolute; top: 110px; left: 10px; z-index: 1000; display: flex; flex-direction: column; gap: 4px; }
-        .btn-a { border: 2px solid #d4af37; padding: 7px; border-radius: 8px; width: 85px; display: flex; flex-direction: column; align-items: center; cursor: pointer; color: white; font-weight: bold; font-size: 10px; text-shadow: 1px 1px #000; }
+        /* ALERTAS LATERAIS */
+        .painel-alertas { position: absolute; top: 100px; left: 10px; z-index: 1000; display: flex; flex-direction: column; gap: 4px; }
+        .btn-a { border: 2px solid #d4af37; padding: 6px; border-radius: 8px; width: 85px; display: flex; flex-direction: column; align-items: center; cursor: pointer; color: white; font-weight: bold; font-size: 10px; text-shadow: 1px 1px #000; transition: 0.2s; }
+        .btn-a:active { transform: scale(0.9); }
         .bg-r { background: #b00020; } .bg-o { background: #ff6d00; } .bg-b { background: #1a1a1a; }
 
-        /* PULSAÇÃO DO VEÍCULO */
+        /* VEÍCULO PULSANTE */
         .pulse-loc { border-radius: 50%; animation: pulse-blue 2s infinite; background: rgba(0, 122, 255, 0.3); }
-        @keyframes pulse-blue { 0% { box-shadow: 0 0 0 0px rgba(0, 122, 255, 0.7); } 100% { box-shadow: 0 0 0 20px rgba(0, 122, 255, 0); } }
+        @keyframes pulse-blue { 0% { box-shadow: 0 0 0 0px rgba(0, 122, 255, 0.7); } 100% { box-shadow: 0 0 0 15px rgba(0, 122, 255, 0); } }
 
         /* BOTÕES FLUTUANTES */
         .f-btn { position: fixed; z-index: 4001; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.4); cursor: pointer; border: 2px solid white; background: white; touch-action: none; }
         #chat-trigger { width: 65px; height: 65px; background: #25d366; color: white; right: 20px; bottom: 20px; font-size: 30px; }
-        #btn-perfil { width: 50px; height: 50px; background: #333; color: white; right: 25px; top: 130px; font-size: 25px; }
-        #btn-bussola { width: 55px; height: 55px; left: 20px; bottom: 20px; font-size: 30px; border: 2px solid #d4af37; }
+        #btn-perfil { width: 45px; height: 45px; background: #333; color: white; right: 25px; top: 110px; font-size: 22px; }
+        #btn-luz { width: 45px; height: 45px; background: #ffcc00; color: black; right: 25px; top: 165px; font-size: 22px; }
+        #btn-bussola { width: 50px; height: 50px; left: 20px; bottom: 20px; font-size: 25px; border: 2px solid #d4af37; }
 
-        /* CHAT WHATSAPP */
-        #chat-box { position: fixed; right: -100%; top: 0; width: 100%; max-width: 400px; height: 100%; background: #e5ddd5; z-index: 5000; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; }
+        /* CHAT ESTRUTURADO */
+        #chat-box { position: fixed; right: -100%; top: 0; width: 100%; max-width: 400px; height: 100%; background: #e5ddd5; z-index: 5000; transition: 0.3s; display: flex; flex-direction: column; }
         #chat-box.aberto { right: 0; }
-        .balao { padding: 10px; border-radius: 12px; margin-bottom: 8px; max-width: 85%; font-size: 14px; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
-        .balao-eu { background: var(--ws-light); align-self: flex-end; }
-        .balao-outro { background: white; align-self: flex-start; }
+        .chat-header { padding: 15px; background: var(--ws-green); color: white; display: flex; justify-content: space-between; align-items: center; }
+        #mensagens { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 8px; }
+        .balao { padding: 8px 12px; border-radius: 12px; max-width: 80%; position: relative; font-size: 14px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .balao-eu { background: var(--ws-light); align-self: flex-end; border-top-right-radius: 2px; }
+        .balao-outro { background: white; align-self: flex-start; border-top-left-radius: 2px; }
+        .msg-info { display: flex; justify-content: space-between; font-size: 10px; color: #666; margin-top: 4px; gap: 10px; }
+        .btn-del { color: #ff4444; cursor: pointer; font-weight: bold; margin-left: 5px; }
+
+        /* RESPOSTAS RÁPIDAS */
+        .fast-reply { display: flex; gap: 5px; padding: 8px; overflow-x: auto; background: #f0f0f0; border-top: 1px solid #ddd; }
+        .fast-reply button { background: white; border: 1px solid #ccc; padding: 5px 12px; border-radius: 15px; font-size: 12px; white-space: nowrap; cursor: pointer; }
 
         /* LOGIN */
         .overlay { position: fixed; inset: 0; background: var(--ws-green); z-index: 9999; display: flex; align-items: center; justify-content: center; }
-        .box { background: white; padding: 25px; border-radius: 20px; width: 85%; max-width: 320px; text-align: center; border: 4px solid #d4af37; }
-        .box input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 10px; }
-        .v-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 10px 0; }
-        .v-opt { font-size: 30px; padding: 8px; border: 2px solid #eee; border-radius: 12px; cursor: pointer; }
-        .v-opt.selected { border-color: var(--ws-green); background: #e8f5e9; }
+        .box { background: white; padding: 20px; border-radius: 20px; width: 85%; max-width: 300px; text-align: center; border: 3px solid #d4af37; }
         
-        /* OCULTAR TEXTO DE ROTA */
         .leaflet-routing-container { display: none !important; }
     </style>
 </head>
@@ -51,11 +56,12 @@
 
 <div id="login-screen" class="overlay">
     <div class="box">
-        <h2 style="margin:0">BR-277 MONITOR</h2>
-        <input type="text" id="u-nome" placeholder="Nome Completo">
-        <input type="text" id="u-tel" value="+55 ">
-        <div class="v-grid" id="v-grid-login"></div>
-        <button onclick="salvarCadastro()" style="width:100%; padding:15px; background:var(--ws-green); color:white; border:none; border-radius:12px; font-weight:bold; cursor:pointer;">ACESSAR SISTEMA</button>
+        <h3 style="margin:0">BR-277 OPERACIONAL</h3>
+        <p style="font-size:12px; color:#666">SISTEMA DE MONITORAMENTO V9</p>
+        <input type="text" id="u-nome" placeholder="Seu Nome" style="width:100%; padding:10px; margin:10px 0; border:1px solid #ddd; border-radius:8px;">
+        <input type="text" id="u-tel" value="+55 " style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ddd; border-radius:8px;">
+        <div id="v-grid-login" style="display:grid; grid-template-columns: repeat(4,1fr); gap:5px; margin-bottom:15px;"></div>
+        <button onclick="salvarCadastro()" style="width:100%; padding:15px; background:var(--ws-green); color:white; border:none; border-radius:10px; font-weight:bold;">ENTRAR NO GRUPO</button>
     </div>
 </div>
 
@@ -75,20 +81,30 @@
 </div>
 
 <div id="btn-perfil" class="f-btn">⚙️</div>
+<div id="btn-luz" class="f-btn">💡</div>
 <div id="btn-bussola" class="f-btn">🧭</div>
 <div id="chat-trigger" class="f-btn">💬</div>
 
 <div id="chat-box">
-    <div style="padding:15px; background:var(--ws-green); color:white; display:flex; justify-content:space-between; align-items:center;">
-        <b>BR-277 OPERACIONAL</b>
+    <div class="chat-header">
+        <b>GRUPO OPERACIONAL</b>
         <span onclick="document.getElementById('chat-box').classList.remove('aberto')" style="cursor:pointer; font-size:25px;">✕</span>
     </div>
-    <div id="mensagens" style="flex:1; overflow-y:auto; padding:15px; display:flex; flex-direction:column;"></div>
-    <div style="padding:10px; display:flex; gap:10px;">
-        <input type="text" id="chat-input" style="flex:1; padding:12px; border-radius:25px; border:1px solid #ccc;">
-        <button onclick="mandarChat()" style="background:var(--ws-green); color:white; border-radius:50%; width:45px; height:45px; border:none;">➤</button>
+    <div id="mensagens"></div>
+    <div class="fast-reply">
+        <button onclick="fastMsg('👍 OK')">OK</button>
+        <button onclick="fastMsg('🙏 Obrigado')">Obrigado</button>
+        <button onclick="fastMsg('✅ Fluindo')">Fluindo</button>
+        <button onclick="fastMsg('⚠️ Parado')">Parado</button>
+        <button onclick="fastMsg('🚫 Bloqueado')">Bloqueado</button>
+    </div>
+    <div style="padding:10px; background:#f0f0f0; display:flex; gap:10px; align-items:center;">
+        <input type="text" id="chat-input" placeholder="Mensagem..." style="flex:1; padding:12px; border-radius:25px; border:1px solid #ccc; outline:none;">
+        <button onclick="mandarChat()" style="background:var(--ws-green); color:white; border-radius:50%; width:45px; height:45px; border:none; cursor:pointer;">➤</button>
     </div>
 </div>
+
+<audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3"></audio>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
@@ -101,28 +117,33 @@ const firebaseConfig = { databaseURL: "https://gps-br277-default-rtdb.firebaseio
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// MAPA ESTILO GOOGLE MAPS (Híbrido com Trânsito)
-const map = L.map('map', { zoomControl: false }).setView([-25.4284, -49.2733], 13);
-L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(map);
+// MAPA GOOGLE TRÂNSITO (O QUE VOCÊ AMOU)
+const googleTraffic = L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}');
+const googleNight = L.tileLayer('https://mt1.google.com/vt/lyrs=y,traffic&x={x}&y={y}&z={z}'); // Satélite + Trânsito
+const map = L.map('map', { zoomControl: false, layers:[googleTraffic] }).setView([-25.4284, -49.2733], 13);
 
-let meuLatLng, meuMarker, user = JSON.parse(localStorage.getItem('br277_v8')) || null;
+let isNight = false;
+function alternarLuz() {
+    if(!isNight) { map.removeLayer(googleTraffic); googleNight.addTo(map); }
+    else { map.removeLayer(googleNight); googleTraffic.addTo(map); }
+    isNight = !isNight;
+}
+
+let meuLatLng, meuMarker, user = JSON.parse(localStorage.getItem('br277_v9')) || null;
 let vSel = "🚗";
 
-// LUPA INTELIGENTE
-const geocoder = L.Control.geocoder({ collapsed: false, placeholder: "Buscar Destino..." }).on('markgeocode', e => {
-    L.Routing.control({ 
-        waypoints: [meuLatLng, e.geocode.center], 
-        lineOptions: { styles: [{ color: '#007AFF', weight: 8 }] },
-        createMarker: () => null 
-    }).addTo(map);
+// LUPA
+const geocoder = L.Control.geocoder({ collapsed: false, placeholder: "Pesquisar Destino..." }).on('markgeocode', e => {
+    L.Routing.control({ waypoints: [meuLatLng, e.geocode.center], lineOptions: { styles: [{ color: '#25d366', weight: 7 }] }, createMarker: () => null }).addTo(map);
     map.flyTo(e.geocode.center, 15);
 }).addTo(map);
 
+const veiculos = ['🚛','🏍️','🚗','🚐','🚌','🚑','🚕','🚔'];
 function renderV() {
-    const grid = document.getElementById('v-grid-login'); grid.innerHTML = "";
-    ['🚛','🏍️','🚗','🚐','🚌','🚑','🚕','🚔'].forEach(v => {
+    const g = document.getElementById('v-grid-login'); g.innerHTML = "";
+    veiculos.forEach(v => {
         const d = document.createElement('div'); d.className = 'v-opt' + (v === vSel ? ' selected' : '');
-        d.innerText = v; d.onclick = () => { vSel = v; renderV(); }; grid.appendChild(d);
+        d.innerText = v; d.style.cursor="pointer"; d.onclick = () => { vSel = v; renderV(); }; g.appendChild(d);
     });
 }
 renderV();
@@ -132,9 +153,9 @@ if(user) { document.getElementById('login-screen').style.display = 'none'; vSel 
 function salvarCadastro() {
     const n = document.getElementById('u-nome').value.trim();
     const t = document.getElementById('u-tel').value.trim();
-    if(!n || t === "+55 ") return alert("Preencha Nome e Telefone!");
-    user = { n, t, v: vSel };
-    localStorage.setItem('br277_v8', JSON.stringify(user));
+    if(!n || t === "+55 ") return alert("Preencha os dados!");
+    user = { n, t, v: vSel, id: "u_" + Math.random().toString(36).substr(2, 9) };
+    localStorage.setItem('br277_v9', JSON.stringify(user));
     location.reload();
 }
 
@@ -149,39 +170,39 @@ function iniciarApp() {
     carregarAlertas();
 }
 
-// LOGICA DE TOQUE E ARRASTE (PRECISÃO TOTAL)
-function configurarBotao(id, acao) {
+// LOGICA DE TOQUE E MOVIMENTO (SUPER REFINADA)
+function bindBotao(id, acao) {
     const el = document.getElementById(id);
-    let movido = false, sX, sY, tStart;
+    let movido = false, sX, sY, tIni;
     const start = (e) => {
-        movido = false; tStart = Date.now();
-        sX = (e.touches ? e.touches[0].clientX : e.clientX) - el.offsetLeft;
-        sY = (e.touches ? e.touches[0].clientY : e.clientY) - el.offsetTop;
+        movido = false; tIni = Date.now();
+        const pt = e.touches ? e.touches[0] : e;
+        sX = pt.clientX - el.offsetLeft; sY = pt.clientY - el.offsetTop;
         document.onmousemove = move; document.ontouchmove = move;
         document.onmouseup = stop; document.ontouchend = stop;
     };
     const move = (e) => {
-        movido = true;
-        const curX = e.touches ? e.touches[0].clientX : e.clientX;
-        const curY = e.touches ? e.touches[0].clientY : e.clientY;
-        el.style.left = (curX - sX) + 'px'; el.style.top = (curY - sY) + 'px';
+        const pt = e.touches ? e.touches[0] : e;
+        if(Math.abs(pt.clientX - (sX + el.offsetLeft)) > 8) movido = true;
+        el.style.left = (pt.clientX - sX) + 'px'; el.style.top = (pt.clientY - sY) + 'px';
         el.style.right = 'auto'; el.style.bottom = 'auto';
     };
     const stop = () => {
         document.onmousemove = null; document.ontouchmove = null;
-        if(!movido || (Date.now() - tStart < 200)) acao();
+        if(!movido || (Date.now() - tIni < 200)) acao();
     };
     el.onmousedown = start; el.ontouchstart = start;
 }
 
-configurarBotao('chat-trigger', () => document.getElementById('chat-box').classList.toggle('aberto'));
-configurarBotao('btn-bussola', () => { if(meuLatLng) map.flyTo(meuLatLng, 17); });
-configurarBotao('btn-perfil', () => { if(confirm("Editar Perfil?")) { localStorage.removeItem('br277_v8'); location.reload(); } });
+bindBotao('chat-trigger', () => document.getElementById('chat-box').classList.toggle('aberto'));
+bindBotao('btn-bussola', () => { if(meuLatLng) map.flyTo(meuLatLng, 17); });
+bindBotao('btn-luz', () => alternarLuz());
+bindBotao('btn-perfil', () => { if(confirm("Deseja sair/editar perfil?")) { localStorage.removeItem('br277_v9'); location.reload(); } });
 
 function enviarAlerta(tipo, emoji) {
     if(meuLatLng) {
         db.ref("alertas").push({ tipo, emoji, lat: meuLatLng.lat, lng: meuLatLng.lng, autor: user.n, t: Date.now() });
-        alert("Alerta de " + tipo + " enviado com sucesso!");
+        alert("Sinalização de " + tipo + " enviada!");
     }
 }
 
@@ -195,16 +216,36 @@ function carregarAlertas() {
 
 function mandarChat() {
     const i = document.getElementById('chat-input'); if(!i.value) return;
-    db.ref("chat").push({ u: user.n, m: i.value, t: Date.now() }); i.value = "";
+    db.ref("chat").push({ uid: user.id, u: user.n, m: i.value, t: Date.now() });
+    i.value = "";
 }
+function fastMsg(txt) { db.ref("chat").push({ uid: user.id, u: user.n, m: txt, t: Date.now() }); }
 
-db.ref("chat").limitToLast(40).on("value", snap => {
-    const b = document.getElementById('mensagens'); b.innerHTML = "";
-    const d = snap.val();
-    if(d) Object.values(d).forEach(c => {
-        const eu = (c.u === user.n);
-        b.innerHTML += `<div class="balao ${eu?'balao-eu':'balao-outro'}"><b>${c.u}</b><br>${c.m}</div>`;
-    }); b.scrollTop = b.scrollHeight;
+// ESCUTA O CHAT COM GESTÃO DE APAGAR
+db.ref("chat").limitToLast(50).on("value", snap => {
+    const box = document.getElementById('mensagens'); 
+    const isAtBottom = box.scrollHeight - box.clientHeight <= box.scrollTop + 50;
+    box.innerHTML = "";
+    const data = snap.val();
+    if(data) {
+        Object.entries(data).forEach(([key, msg]) => {
+            const eu = (msg.uid === user.id);
+            const hora = new Date(msg.t).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            const delBtn = eu ? `<span class="btn-del" onclick="db.ref('chat/${key}').remove()">✕</span>` : "";
+            
+            box.innerHTML += `
+                <div class="balao ${eu?'balao-eu':'balao-outro'}">
+                    <b style="font-size:11px; color:${eu?'#075e54':'#1a73e8'}">${msg.u}</b><br>
+                    <span>${msg.m}</span>
+                    <div class="msg-info">
+                        <span>${hora}</span>
+                        ${delBtn}
+                    </div>
+                </div>`;
+        });
+        if(isAtBottom) box.scrollTop = box.scrollHeight;
+        document.getElementById('notif-sound').play().catch(()=>{});
+    }
 });
 </script>
 </body>
