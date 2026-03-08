@@ -12,13 +12,13 @@
     <style>
         :root { --blue: #007bff; --dark: #2c3e50; }
         
-        /* Garantia de que a tela não ficará branca */
-        html, body { margin: 0; padding: 0; height: 100vh; width: 100vw; overflow: hidden; background: #eee; }
+        /* Layout Base */
+        html, body { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; font-family: 'Segoe UI', sans-serif; }
         #map { position: absolute; top: 0; bottom: 0; left: 0; right: 0; height: 100%; width: 100%; z-index: 1; }
 
         /* Ícone Pulsante (Você) */
         .meu-gps {
-            width: 20px; height: 20px; background: var(--blue);
+            width: 18px; height: 18px; background: var(--blue);
             border-radius: 50%; border: 3px solid white;
             box-shadow: 0 0 10px rgba(0,0,0,0.5);
             animation: pulse 2s infinite;
@@ -29,18 +29,18 @@
             100% { box-shadow: 0 0 0 0 rgba(0,123,255, 0); }
         }
 
-        /* Menu de Alertas */
+        /* Menu de Alertas Lateral */
         .menu-alertas {
-            position: absolute; top: 70px; left: 10px; z-index: 1000;
+            position: absolute; top: 80px; left: 10px; z-index: 1000;
             display: flex; flex-direction: column; gap: 8px;
         }
         .btn-alerta {
-            background: white; border: none; padding: 10px; border-radius: 12px;
+            background: white; border: none; padding: 8px; border-radius: 12px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2); width: 75px; cursor: pointer;
             text-align: center; font-size: 10px; font-weight: bold;
         }
 
-        /* Chat Lateral Dinâmico */
+        /* Chat Lateral */
         #chat-lateral {
             position: fixed; right: -100%; top: 0; width: 85%; max-width: 320px; 
             height: 100dvh; background: white; z-index: 2000; transition: 0.4s;
@@ -49,14 +49,24 @@
         #chat-lateral.aberto { right: 0; }
         .chat-header { padding: 15px; background: var(--dark); color: white; font-weight: bold; display: flex; justify-content: space-between; }
         #mensagens { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; background: #f8f9fa; }
+        
         .balao-ia { background: #e7f3ff; border-left: 4px solid var(--blue); padding: 10px; border-radius: 8px; font-size: 13px; }
         .balao-user { background: #eee; padding: 10px; border-radius: 8px; font-size: 13px; align-self: flex-end; }
+        
         .entrada-chat { padding: 10px; border-top: 1px solid #ddd; display: flex; background: white; padding-bottom: env(safe-area-inset-bottom); }
         .entrada-chat input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 20px; outline: none; }
 
-        /* Ajustes de Rota e Busca */
-        .leaflet-control-geocoder { margin-top: 10px !important; border-radius: 20px !important; }
-        .leaflet-routing-container { max-height: 150px; overflow-y: auto; font-size: 12px; }
+        /* Ajustes das Rotas e Busca */
+        .leaflet-control-geocoder { margin-top: 15px !important; border-radius: 20px !important; box-shadow: 0 4px 12px rgba(0,0,0,0.2) !important; }
+        .leaflet-routing-container { 
+            background: white; 
+            max-height: 200px; 
+            overflow-y: auto; 
+            font-size: 11px; 
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px !important;
+        }
     </style>
 </head>
 <body>
@@ -97,7 +107,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// --- MAPA ---
+// --- INICIALIZAR MAPA ---
 const map = L.map('map', { zoomControl: false }).setView([-25.4284, -49.2733], 13);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
@@ -109,10 +119,10 @@ const iconeCarro = L.icon({
 let meuLatLng, meuMarker, routingControl, listaAlertas = [];
 let motoristasAtivos = {}, meuID = "Drive_" + Math.random().toString(36).substr(2, 5).toUpperCase();
 
-// --- BUSCA E ROTAS ALTERNATIVAS ---
+// --- BUSCA E ROTAS EM PORTUGUÊS ---
 const geocoder = L.Control.geocoder({
     defaultMarkGeocode: false,
-    placeholder: "Para onde vamos?"
+    placeholder: "Para onde vamos? (Ex: Curitiba)"
 }).on('markgeocode', function(e) {
     const dest = e.geocode.center;
     if (routingControl) map.removeControl(routingControl);
@@ -121,7 +131,12 @@ const geocoder = L.Control.geocoder({
         waypoints: [meuLatLng, dest],
         router: L.Routing.osrmv1({
             serviceUrl: 'https://router.project-osrm.org/route/v1',
-            alternatives: true // ATIVA ROTAS ALTERNATIVAS
+            alternatives: true,
+            language: 'pt' // IDIOMA PORTUGUÊS
+        }),
+        formatter: new L.Routing.Formatter({
+            language: 'pt',
+            units: 'metric' // SISTEMA MÉTRICO (KM/METROS)
         }),
         lineOptions: {
             styles: [
@@ -146,13 +161,12 @@ function iniciarGPS() {
         } else {
             meuMarker.setLatLng(meuLatLng);
         }
-        // Envia posição para o Firebase
         db.ref("usuarios/" + meuID).set({ lat: meuLatLng.lat, lon: meuLatLng.lng, time: Date.now() });
         db.ref("usuarios/" + meuID).onDisconnect().remove();
     }, null, { enableHighAccuracy: true });
 }
 
-// Visualizar outros motoristas andando
+// Visualizar outros usuários
 db.ref("usuarios").on("value", snap => {
     const usuarios = snap.val() || {};
     for (let id in usuarios) {
@@ -169,7 +183,7 @@ db.ref("usuarios").on("value", snap => {
 // --- ALERTAS ---
 function registrar(tipo, emoji) {
     if (!meuLatLng) return;
-    db.ref("ocorrencias").push({ tipo, emoji, lat: meuLatLng.lat, lng: meuLatLng.lng, hora: Date.now() });
+    db.ref("ocorrencias").push({ tipo, emoji, lat: meuLatLng.lat, lng: meuLatLng.lng });
 }
 
 db.ref("ocorrencias").on("child_added", snap => {
@@ -179,7 +193,7 @@ db.ref("ocorrencias").on("child_added", snap => {
     L.marker([o.lat, o.lng], { icon: L.divIcon({ html: iconHTML, iconSize: [60, 50], className: '' }) }).addTo(map);
 });
 
-// --- CHAT COM IA E VOZ ---
+// --- CHAT IA COM VOZ ---
 function toggleChat() { 
     document.getElementById('chat-lateral').classList.toggle('aberto'); 
 }
@@ -193,12 +207,12 @@ function enviarChat() {
     input.value = "";
 
     setTimeout(() => {
-        let resp = "Monitorando a pista. ";
+        let resp = "Estou monitorando o trecho. ";
         if (listaAlertas.length > 0) {
             const resumo = listaAlertas.map(a => a.tipo).join(", ");
-            resp += `Fique alerta: temos registros de ${resumo}.`;
+            resp += `Atenção: temos registros de ${resumo} na via.`;
         } else {
-            resp += "A BR-277 está com fluxo normal em nosso sistema.";
+            resp += "O trânsito na BR-277 segue sem alertas no momento.";
         }
         addBalao(resp, 'balao-ia');
         
