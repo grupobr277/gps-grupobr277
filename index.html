@@ -1,77 +1,131 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>GPS Grupo BR 277</title>
-<meta charset="utf-8" />
+<meta charset="utf-8">
+<title>GPS BR-277</title>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js"></script>
+
 <style>
 
-#map {
-height: 100vh;
+body{
+margin:0;
+font-family:Arial;
 }
 
-.menu {
+#map{
+height:100vh;
+}
+
+.menu{
 position:absolute;
 top:10px;
 left:10px;
-z-index:1000;
 background:white;
 padding:10px;
-border-radius:8px;
+border-radius:10px;
 box-shadow:0 0 10px rgba(0,0,0,0.3);
+z-index:1000;
 }
 
-button{
+.menu button{
 display:block;
+width:180px;
 margin:5px 0;
-width:160px;
 padding:8px;
+font-size:14px;
 cursor:pointer;
 }
 
 </style>
-
 </head>
 
 <body>
 
 <div class="menu">
 
-<button onclick="tipoOcorrencia='Acidente'">🚨 Acidente</button>
+<b>Registrar ocorrência</b>
 
-<button onclick="tipoOcorrencia='Obra'">🚧 Obra</button>
-
-<button onclick="tipoOcorrencia='Animal na pista'">🐄 Animal</button>
-
-<button onclick="tipoOcorrencia='Veículo quebrado'">🚗 Veículo quebrado</button>
+<button onclick="registrar('🚨 Acidente')">🚨 Acidente</button>
+<button onclick="registrar('🚧 Obra')">🚧 Obra</button>
+<button onclick="registrar('🚓 Polícia')">🚓 Polícia</button>
+<button onclick="registrar('🐄 Animal na pista')">🐄 Animal</button>
+<button onclick="registrar('🌧️ Pista escorregadia')">🌧️ Perigo</button>
 
 </div>
 
 <div id="map"></div>
 
-<script>
+<script type="module">
 
-var tipoOcorrencia = "";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-var map = L.map('map').setView([-25.4284, -49.2733], 8);
+const firebaseConfig = {
+apiKey: "AIzaSyCjJLUgRZowkeTmpua6-uXhzOM5hqn6chI",
+authDomain: "gps-br277.firebaseapp.com",
+databaseURL: "https://gps-br277-default-rtdb.firebaseio.com",
+projectId: "gps-br277",
+storageBucket: "gps-br277.firebasestorage.app",
+messagingSenderId: "459366791706",
+appId: "1:459366791706:web:a8771a8981acf5d3c8afa3",
+measurementId: "G-GQED5N9WM8"
+};
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-attribution: 'Mapa OpenStreetMap'
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+var map = L.map('map').setView([-25.42,-49.27],8);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+maxZoom:19
 }).addTo(map);
 
-map.on('click', function(e){
+var minhaPosicao;
 
-if(tipoOcorrencia == ""){
-alert("Escolha um tipo de ocorrência primeiro.");
+navigator.geolocation.watchPosition(function(pos){
+
+var lat = pos.coords.latitude;
+var lng = pos.coords.longitude;
+
+minhaPosicao=[lat,lng];
+
+map.setView([lat,lng],13);
+
+L.marker([lat,lng]).addTo(map)
+.bindPopup("Você está aqui")
+.openPopup();
+
+});
+
+window.registrar=function(tipo){
+
+if(!minhaPosicao){
+alert("Aguardando GPS");
 return;
 }
 
-var marker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(map);
+push(ref(db,"ocorrencias"),{
 
-marker.bindPopup(tipoOcorrencia).openPopup();
+tipo:tipo,
+lat:minhaPosicao[0],
+lng:minhaPosicao[1],
+data:Date.now()
+
+});
+
+}
+
+onChildAdded(ref(db,"ocorrencias"),function(snapshot){
+
+var d=snapshot.val();
+
+L.marker([d.lat,d.lng]).addTo(map)
+.bindPopup(d.tipo);
 
 });
 
