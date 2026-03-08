@@ -2,44 +2,46 @@
 <html lang="pt-br">
 <head>
     <meta charset="utf-8">
-    <title>BR-277 | Comunidade Real-Time</title>
+    <title>BR-277 | Monitoramento Real-Time</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
     <style>
-        body { margin: 0; font-family: sans-serif; overflow: hidden; }
+        body { margin: 0; font-family: 'Segoe UI', Arial; overflow: hidden; background: #222; }
         #map { height: 100vh; width: 100vw; }
         
-        /* Painel de Alertas */
-        .painel {
+        /* Interface Superior */
+        .painel-alertas {
             position: absolute; top: 10px; left: 10px; z-index: 1001;
-            background: white; padding: 10px; border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2); width: 160px;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+            background: rgba(255,255,255,0.9); padding: 10px; border-radius: 12px;
         }
-        button {
-            width: 100%; margin: 4px 0; padding: 10px; border: none;
-            border-radius: 6px; color: white; font-weight: bold; cursor: pointer;
+        .btn {
+            border: none; border-radius: 6px; padding: 10px; color: white;
+            font-weight: bold; cursor: pointer; font-size: 12px;
         }
-        .btn-radar { background: #5bc0de; }
-        .btn-animal { background: #f0ad4e; }
-        .btn-obras { background: #6c757d; }
-        .btn-acidente { background: #d9534f; }
+        .btn-acidente { background: #ff4444; }
+        .btn-radar { background: #33b5e5; }
+        .btn-animal { background: #ffbb33; }
+        .btn-obras { background: #888; }
 
         /* Chat Lateral */
-        #chat-container {
-            position: absolute; right: -300px; top: 0; width: 300px; height: 100vh;
-            background: white; z-index: 1002; transition: 0.3s;
-            display: flex; flex-direction: column; box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+        #chat-window {
+            position: absolute; right: -320px; top: 0; width: 300px; height: 100vh;
+            background: white; z-index: 1005; transition: 0.4s;
+            display: flex; flex-direction: column; box-shadow: -5px 0 15px rgba(0,0,0,0.3);
         }
-        #chat-container.open { right: 0; }
-        #messages { flex: 1; overflow-y: auto; padding: 10px; font-size: 14px; }
-        .msg { margin-bottom: 8px; padding: 5px; border-radius: 4px; background: #f1f1f1; }
-        .msg-ia { background: #e3f2fd; border-left: 3px solid #2196f3; }
-        #chat-input-area { padding: 10px; border-top: 1px solid #ddd; display: flex; }
-        #chat-input { flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        #chat-window.open { right: 0; }
+        #msg-container { flex: 1; overflow-y: auto; padding: 15px; background: #f9f9f9; }
+        .msg { margin-bottom: 12px; padding: 8px; border-radius: 8px; background: #eee; font-size: 13px; }
+        .msg-bot { background: #e3f2fd; border-left: 4px solid #2196f3; }
+        .chat-input-box { padding: 10px; display: flex; border-top: 1px solid #ddd; }
         
-        .btn-chat-toggle {
-            position: absolute; top: 10px; right: 10px; z-index: 1001;
-            background: #28a745; width: 50px; height: 50px; border-radius: 50%;
+        /* Botão flutuante do Chat */
+        .fab-chat {
+            position: absolute; bottom: 20px; right: 20px; z-index: 1001;
+            width: 60px; height: 60px; background: #28a745; border-radius: 50%;
+            border: none; color: white; font-size: 24px; cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
     </style>
 </head>
@@ -47,23 +49,21 @@
 
 <div id="map"></div>
 
-<button class="btn-chat-toggle" onclick="toggleChat()">💬</button>
-
-<div class="painel">
-    <button class="btn-radar" onclick="postar('Radar Fixo')">📸 Radar Fixo</button>
-    <button class="btn-animal" onclick="postar('Animal na Pista')">🦌 Animal</button>
-    <button class="btn-obras" onclick="postar('Obras')">🚧 Obras</button>
-    <button class="btn-acidente" onclick="postar('Acidente')">⚠️ Acidente</button>
-    <hr>
-    <small>Motoristas: <span id="count">1</span></small>
+<div class="painel-alertas">
+    <button class="btn btn-acidente" onclick="alerta('⚠️ Acidente')">ACIDENTE</button>
+    <button class="btn btn-radar" onclick="alerta('📸 Radar Fixo')">RADAR</button>
+    <button class="btn btn-animal" onclick="alerta('🦌 Animal')">ANIMAL</button>
+    <button class="btn btn-obras" onclick="alerta('🚧 Obras')">OBRAS</button>
 </div>
 
-<div id="chat-container">
-    <h3 style="padding: 10px; margin: 0; background: #28a745; color: white;">Chat BR-277</h3>
-    <div id="messages"></div>
-    <div id="chat-input-area">
-        <input type="text" id="chat-input" placeholder="Diga algo...">
-        <button onclick="enviarMensagem()" style="width: 50px; background: #28a745; margin-left: 5px;">></button>
+<button class="fab-chat" onclick="document.getElementById('chat-window').classList.toggle('open')">💬</button>
+
+<div id="chat-window">
+    <div style="padding: 15px; background: #28a745; color: white; font-weight: bold;">GRUPO BR-277</div>
+    <div id="msg-container"></div>
+    <div class="chat-input-box">
+        <input type="text" id="chat-in" placeholder="Escreva aqui..." style="flex:1; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+        <button onclick="enviarChat()" style="margin-left:5px; background:#28a745; color:white; border:none; border-radius:4px; padding: 0 10px;">></button>
     </div>
 </div>
 
@@ -73,115 +73,114 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-// --- CONFIGURAÇÃO (Substitua pelos seus dados) ---
+// --- INICIALIZAÇÃO FIREBASE ---
 const firebaseConfig = {
     apiKey: "SUA_API_KEY",
     databaseURL: "https://SEU-PROJETO.firebaseio.com",
-    projectId: "SEU-PROJETO",
+    projectId: "SEU-PROJETO"
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// --- MAPA E ÍCONES ---
-let map = L.map('map', {zoomControl: false}).setView([-25.50, -49.30], 12);
+// --- CONFIG MAPA ---
+let map = L.map('map', {zoomControl: false}).setView([-25.4284, -49.2733], 13);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-// Ícone de Automóvel (Visão de cima, transparente)
 const carroIcon = L.icon({
-    iconUrl: "https://i.imgur.com/39N246L.png", // Ícone de carro real em PNG
-    iconSize: [40, 40],
-    iconAnchor: [20, 20]
+    iconUrl: "https://i.imgur.com/39N246L.png", // Ícone de carro visto de cima
+    iconSize: [40, 40], iconAnchor: [20, 20]
 });
 
-let meuID = "mot_" + Math.random().toString(36).substr(2, 5);
+let meuID = "User_" + Math.random().toString(36).substr(2, 4).toUpperCase();
 let meuMarker;
-let outros = {};
+let motoristas = {};
 
-// --- GPS E MOVIMENTO ---
-function iniciarApp() {
+// --- GEOLOCALIZAÇÃO ---
+function iniciarGPS() {
     navigator.geolocation.watchPosition(pos => {
         const { latitude, longitude, heading } = pos.coords;
-        const dir = heading || 0;
+        const latlng = [latitude, longitude];
+        const direcao = heading || 0;
 
         if (!meuMarker) {
-            meuMarker = L.marker([latitude, longitude], {icon: carroIcon, rotationAngle: dir}).addTo(map);
-            map.panTo([latitude, longitude]);
+            meuMarker = L.marker(latlng, {icon: carroIcon, rotationAngle: direcao}).addTo(map);
+            map.panTo(latlng);
         } else {
-            meuMarker.setLatLng([latitude, longitude]);
-            meuMarker.setRotationAngle(dir);
+            meuMarker.setLatLng(latlng);
+            meuMarker.setRotationAngle(direcao);
         }
 
-        // Sincroniza com Firebase
-        db.ref("usuarios/" + meuID).set({ lat: latitude, lon: longitude, dir: dir, time: Date.now() });
+        // Envia para o Firebase e limpa ao sair
+        db.ref("usuarios/" + meuID).set({ lat: latitude, lon: longitude, dir: direcao });
         db.ref("usuarios/" + meuID).onDisconnect().remove();
     }, null, { enableHighAccuracy: true });
 }
 
-// Atualizar outros motoristas no mapa
+// Sincronizar motoristas
 db.ref("usuarios").on("value", snap => {
-    const lista = snap.val();
-    let c = 0;
-    for (let id in lista) {
-        c++;
+    const data = snap.val() || {};
+    for (let id in data) {
         if (id === meuID) continue;
-        const u = lista[id];
-        if (!outros[id]) {
-            outros[id] = L.marker([u.lat, u.lon], {icon: carroIcon, rotationAngle: u.dir}).addTo(map);
+        const u = data[id];
+        if (motoristas[id]) {
+            motoristas[id].setLatLng([u.lat, u.lon]);
+            motoristas[id].setRotationAngle(u.dir);
         } else {
-            outros[id].setLatLng([u.lat, u.lon]);
-            outros[id].setRotationAngle(u.dir);
+            motoristas[id] = L.marker([u.lat, u.lon], {icon: carroIcon, rotationAngle: u.dir}).addTo(map);
         }
     }
-    document.getElementById("count").innerText = c;
+    // Remover quem saiu
+    for (let id in motoristas) {
+        if (!data[id]) { map.removeLayer(motoristas[id]); delete motoristas[id]; }
+    }
 });
 
-// --- SISTEMA DE ALERTAS ---
-function postar(tipo) {
-    if (!meuMarker) return;
+// --- ALERTAS ---
+function alerta(tipo) {
+    if (!meuMarker) return alert("GPS desligado");
     const p = meuMarker.getLatLng();
-    db.ref("ocorrencias").push({ tipo, lat: p.lat, lon: p.lng, user: meuID });
+    db.ref("ocorrencias").push({ tipo, lat: p.lat, lon: p.lng, time: Date.now() });
 }
 
 db.ref("ocorrencias").on("child_added", snap => {
     const o = snap.val();
-    L.circle([o.lat, o.lon], {radius: 200, color: 'red'}).addTo(map)
-     .bindPopup("<b>" + o.tipo + "</b>").openPopup();
+    const markerOcorrencia = L.marker([o.lat, o.lon]).addTo(map).bindPopup(o.tipo).openPopup();
+    // Auto-remover do mapa após 1 hora (limpeza visual)
+    setTimeout(() => map.removeLayer(markerOcorrencia), 3600000);
 });
 
-// --- SISTEMA DE CHAT COM IA ---
-function toggleChat() {
-    document.getElementById("chat-container").classList.toggle("open");
-}
+// --- CHAT COM IA BÁSICA ---
+function enviarChat() {
+    const el = document.getElementById("chat-in");
+    const texto = el.value.trim();
+    if (!texto) return;
 
-function enviarMensagem() {
-    const input = document.getElementById("chat-input");
-    if (input.value.trim() === "") return;
-
-    const novaMsg = {
-        user: meuID,
-        text: input.value,
-        timestamp: Date.now()
-    };
-
-    db.ref("chat").push(novaMsg);
-    input.value = "";
-}
-
-// Escutar mensagens e exibir
-db.ref("chat").limitToLast(20).on("child_added", snap => {
-    const m = snap.val();
-    const div = document.createElement("div");
-    // Se a mensagem vier de um sistema ou IA, ganha classe especial
-    const isIA = m.user === "IA_ASSISTENTE";
-    div.className = "msg " + (isIA ? "msg-ia" : "");
-    div.innerHTML = `<b>${isIA ? "🤖 Assistente BR" : m.user}:</b> ${m.text}`;
+    db.ref("chat").push({ user: meuID, msg: texto, time: Date.now() });
     
-    const box = document.getElementById("messages");
+    // Simulação de IA (Inteligência Simples de Estrada)
+    if (texto.toLowerCase().includes("condição") || texto.toLowerCase().includes("serra")) {
+        setTimeout(() => {
+            db.ref("chat").push({ 
+                user: "🤖 ASSISTENTE BR-277", 
+                msg: "Motorista, verifique os alertas no mapa. Neblina intensa na serra é comum agora!", 
+                time: Date.now() 
+            });
+        }, 1500);
+    }
+    el.value = "";
+}
+
+db.ref("chat").limitToLast(15).on("child_added", snap => {
+    const c = snap.val();
+    const box = document.getElementById("msg-container");
+    const div = document.createElement("div");
+    div.className = "msg" + (c.user.includes("🤖") ? " msg-bot" : "");
+    div.innerHTML = `<strong>${c.user}:</strong> ${c.msg}`;
     box.appendChild(div);
     box.scrollTop = box.scrollHeight;
 });
 
-iniciarApp();
+iniciarGPS();
 </script>
 </body>
 </html>
