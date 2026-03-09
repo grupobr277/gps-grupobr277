@@ -11,7 +11,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body, #map { height: 100%; width: 100%; font-family: 'Segoe UI', sans-serif; }
         
-        /* PAINEL DE ALERTAS - SOMENTE ÍCONES */
+        /* PAINEL DE ALERTAS - ÍCONES LUCIDE STYLE */
         .alertas-panel {
             position: fixed;
             top: 70px;
@@ -41,6 +41,86 @@
         .alerta-icone:hover {
             transform: scale(1.1);
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        
+        /* ALERTA SUSPENSO - TEMPO REAL */
+        .alerta-suspenso {
+            position: fixed;
+            top: 70px;
+            right: 10px;
+            width: 280px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            z-index: 9500;
+            border: 2px solid #075e54;
+            overflow: hidden;
+            display: none;
+        }
+        
+        .alerta-suspenso-header {
+            background: #075e54;
+            color: white;
+            padding: 12px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .alerta-suspenso-header span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .alerta-suspenso-conteudo {
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        
+        .alerta-tempo-real {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .alerta-tempo-real:last-child {
+            border-bottom: none;
+        }
+        
+        .alerta-tempo-real .icone {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+        }
+        
+        .alerta-tempo-real .info {
+            flex: 1;
+        }
+        
+        .alerta-tempo-real .titulo {
+            font-weight: bold;
+            font-size: 13px;
+        }
+        
+        .alerta-tempo-real .endereco {
+            font-size: 11px;
+            color: #666;
+        }
+        
+        .alerta-tempo-real .tempo {
+            font-size: 10px;
+            color: #999;
         }
         
         /* CHAT WHATSAPP */
@@ -150,6 +230,12 @@
             font-weight: bold;
             display: flex;
             justify-content: space-between;
+            align-items: center;
+        }
+        
+        .balao-header .endereco {
+            font-size: 10px;
+            opacity: 0.9;
         }
         
         .balao-chat {
@@ -171,6 +257,12 @@
             background: #dcf8c6;
         }
         
+        .balao-mensagem .endereco-msg {
+            font-size: 9px;
+            color: #075e54;
+            margin-top: 2px;
+        }
+        
         .balao-input {
             display: flex;
             padding: 8px;
@@ -184,6 +276,7 @@
             border-radius: 20px;
             border: 1px solid #ccc;
             outline: none;
+            font-size: 12px;
         }
         
         .balao-input button {
@@ -260,6 +353,14 @@
             color: #333;
         }
         
+        #btn-alerta-suspenso {
+            right: 15px;
+            top: 190px;
+            background: #e53935;
+            color: white;
+            border-color: white;
+        }
+        
         #btn-px { 
             bottom: 20px; 
             left: 50%; 
@@ -324,8 +425,22 @@
 
 <div id="map"></div>
 
-<!-- ALERTAS - SOMENTE ÍCONES -->
+<!-- ALERTAS - ÍCONES LADO ESQUERDO -->
 <div class="alertas-panel" id="alertasLista"></div>
+
+<!-- ALERTA SUSPENSO - TEMPO REAL -->
+<div class="alerta-suspenso" id="alertaSuspenso">
+    <div class="alerta-suspenso-header" onclick="toggleAlertaSuspenso()">
+        <span>
+            <i class="fas fa-exclamation-triangle"></i>
+            ALERTAS EM TEMPO REAL
+        </span>
+        <i class="fas fa-chevron-up" id="setaSuspenso"></i>
+    </div>
+    <div class="alerta-suspenso-conteudo" id="conteudoSuspenso">
+        <div style="text-align:center; padding:10px; color:#999;">Carregando alertas...</div>
+    </div>
+</div>
 
 <!-- LUPA -->
 <div class="lupa-container">
@@ -345,6 +460,10 @@
 
 <div class="btn-flutuante" id="btn-luz" onclick="toggleModoNoturno()">
     💡
+</div>
+
+<div class="btn-flutuante" id="btn-alerta-suspenso" onclick="toggleAlertaSuspenso()">
+    <i class="fas fa-bell"></i>
 </div>
 
 <div id="btn-px">🎤</div>
@@ -382,20 +501,20 @@ let meuMarcador = null;
 let seguirLocalizacao = true;
 let rotaAtual = null;
 let mapa = null;
-let alertaAtual = null;
+let alertasFixos = [];
 
-// ===== 10 ALERTAS =====
+// ===== 10 ALERTAS (ÍCONES LUCIDE STYLE) =====
 const alertas = [
-    { tipo: 'acidente', icone: '💥', nome: 'Acidente' },
-    { tipo: 'obras', icone: '🚧', nome: 'Obras' },
-    { tipo: 'pane', icone: '🔧', nome: 'Pane' },
-    { tipo: 'animal', icone: '🐂', nome: 'Animal' },
-    { tipo: 'radar', icone: '📷', nome: 'Radar' },
-    { tipo: 'barreira', icone: '⛰️', nome: 'Barreira' },
-    { tipo: 'neblina', icone: '🌫️', nome: 'Neblina' },
-    { tipo: 'congestionamento', icone: '⚫', nome: 'Congestionamento' },
-    { tipo: 'alagamento', icone: '💧', nome: 'Alagamento' },
-    { tipo: 'desvio', icone: '↩️', nome: 'Desvio' }
+    { tipo: 'acidente', icone: '💥', nome: 'Acidente', cor: '#e53935' },
+    { tipo: 'obras', icone: '🚧', nome: 'Obras', cor: '#ff9800' },
+    { tipo: 'pane', icone: '🔧', nome: 'Pane Mecânica', cor: '#795548' },
+    { tipo: 'animal', icone: '🐂', nome: 'Animal na Pista', cor: '#9c27b0' },
+    { tipo: 'radar', icone: '📷', nome: 'Radar Fixo', cor: '#607d8b' },
+    { tipo: 'barreira', icone: '⛰️', nome: 'Queda de Barreira', cor: '#8b4513' },
+    { tipo: 'neblina', icone: '🌫️', nome: 'Neblina', cor: '#00acc1' },
+    { tipo: 'congestionamento', icone: '⚫', nome: 'Congestionamento', cor: '#f44336' },
+    { tipo: 'alagamento', icone: '💧', nome: 'Alagamento', cor: '#2196f3' },
+    { tipo: 'desvio', icone: '↩️', nome: 'Desvio', cor: '#4caf50' }
 ];
 
 // ===== INICIALIZAÇÃO =====
@@ -404,6 +523,10 @@ document.addEventListener('DOMContentLoaded', function() {
     iniciarMapa();
     iniciarGPS();
     carregarChatGeral();
+    carregarAlertasTempoReal();
+    
+    // Carrega alertas salvos do Firebase
+    carregarAlertasFixos();
 });
 
 function criarIconesAlertas() {
@@ -418,56 +541,146 @@ function criarIconesAlertas() {
     });
 }
 
+// ===== ALERTAS FIXOS (SALVOS NO FIREBASE) =====
+function carregarAlertasFixos() {
+    db.ref('alertas_fixos').on('child_added', snap => {
+        const alerta = snap.val();
+        const id = snap.key;
+        
+        // Cria marcador no mapa
+        const marcador = L.marker([alerta.lat, alerta.lng], {
+            icon: L.divIcon({
+                html: `<div style="background:white; padding:5px 10px; border-radius:30px; border:2px solid ${alerta.cor}; box-shadow:0 2px 10px rgba(0,0,0,0.2); font-size:16px; display:flex; align-items:center; gap:5px;">
+                    <span>${alerta.icone}</span>
+                    <span style="font-size:10px;">${alerta.nome}</span>
+                </div>`,
+                className: '',
+                iconSize: [80, 30]
+            })
+        }).addTo(mapa);
+        
+        // Abre chat ao clicar
+        marcador.on('click', () => {
+            abrirChatAlerta(alerta, L.latLng(alerta.lat, alerta.lng), id);
+        });
+        
+        alertasFixos.push({ id, marcador, alerta });
+    });
+}
+
 function ativarAlerta(alerta) {
     if (!minhaLocalizacao) {
         alert('Aguardando localização...');
         return;
     }
     
-    const id = Date.now();
+    // Obtém endereço
+    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${minhaLocalizacao.lat}&lon=${minhaLocalizacao.lng}`)
+        .then(res => res.json())
+        .then(data => {
+            const endereco = data.display_name || 'Localização atual';
+            
+            const alertaData = {
+                ...alerta,
+                lat: minhaLocalizacao.lat,
+                lng: minhaLocalizacao.lng,
+                endereco: endereco,
+                timestamp: Date.now()
+            };
+            
+            // Salva no Firebase
+            db.ref('alertas_fixos').push(alertaData);
+        });
+}
+
+// ===== ALERTA SUSPENSO (TEMPO REAL) =====
+function carregarAlertasTempoReal() {
+    // Simula alertas em tempo real (depois integrar com Waze/Google)
+    const alertasTempoReal = [
+        {
+            tipo: 'acidente',
+            icone: '💥',
+            cor: '#e53935',
+            titulo: 'Acidente na BR-277',
+            endereco: 'BR-277, km 120, Curitiba - PR',
+            tempo: 'Há 2 minutos'
+        },
+        {
+            tipo: 'congestionamento',
+            icone: '⚫',
+            cor: '#f44336',
+            titulo: 'Trânsito lento',
+            endereco: 'BR-277, km 115, São José dos Pinhais - PR',
+            tempo: 'Há 5 minutos'
+        },
+        {
+            tipo: 'obras',
+            icone: '🚧',
+            cor: '#ff9800',
+            titulo: 'Obras na pista',
+            endereco: 'BR-277, km 125, Campo Largo - PR',
+            tempo: 'Há 10 minutos'
+        }
+    ];
     
-    // Cria marcador no mapa
-    const marcador = L.marker(minhaLocalizacao, {
-        icon: L.divIcon({
-            html: `<div style="background:white; padding:5px 10px; border-radius:30px; border:2px solid #075e54; box-shadow:0 2px 10px rgba(0,0,0,0.2); font-size:16px;">${alerta.icone}</div>`,
-            className: '',
-            iconSize: [40, 30]
-        })
-    }).addTo(mapa);
+    const conteudo = document.getElementById('conteudoSuspenso');
+    let html = '';
     
-    // Abre chat ao clicar
-    marcador.on('click', () => {
-        abrirChatAlerta(alerta, minhaLocalizacao, id);
+    alertasTempoReal.forEach(alerta => {
+        html += `
+            <div class="alerta-tempo-real">
+                <div class="icone" style="background:${alerta.cor}">${alerta.icone}</div>
+                <div class="info">
+                    <div class="titulo">${alerta.titulo}</div>
+                    <div class="endereco">${alerta.endereco}</div>
+                    <div class="tempo">${alerta.tempo}</div>
+                </div>
+            </div>
+        `;
     });
     
-    // Abre chat automaticamente
-    setTimeout(() => {
-        abrirChatAlerta(alerta, minhaLocalizacao, id);
-    }, 200);
+    conteudo.innerHTML = html;
+    
+    // Atualiza a cada 30 segundos
+    setInterval(() => {
+        // Aqui viria a integração com Waze/Google
+        console.log('Atualizando alertas...');
+    }, 30000);
+}
+
+function toggleAlertaSuspenso() {
+    const alerta = document.getElementById('alertaSuspenso');
+    const seta = document.getElementById('setaSuspenso');
+    
+    if (alerta.style.display === 'none' || alerta.style.display === '') {
+        alerta.style.display = 'block';
+        seta.className = 'fas fa-chevron-down';
+    } else {
+        alerta.style.display = 'none';
+        seta.className = 'fas fa-chevron-up';
+    }
 }
 
 // ===== CHAT DO ALERTA =====
 function abrirChatAlerta(alerta, posicao, id) {
-    alertaAtual = { alerta, id };
-    
     const conteudo = document.createElement('div');
     conteudo.className = 'balao-alerta';
     conteudo.innerHTML = `
         <div class="balao-header">
             <span>${alerta.icone} ${alerta.nome}</span>
-            <span style="font-size:11px;">${new Date().toLocaleTimeString()}</span>
+            <span class="endereco">${alerta.endereco || 'Local atual'}</span>
         </div>
         <div class="balao-chat" id="chatAlerta-${id}">
             <div style="text-align:center; color:#999;">Carregando...</div>
         </div>
         <div class="balao-input">
-            <input type="text" id="inputAlerta-${id}" placeholder="Digite...">
+            <input type="text" id="inputAlerta-${id}" placeholder="Digite sua mensagem...">
             <button onclick="enviarMsgAlerta('${id}')"><i class="fas fa-paper-plane"></i></button>
         </div>
     `;
     
     L.popup({
-        maxWidth: 280,
+        maxWidth: 300,
         className: 'custom-popup'
     })
     .setLatLng(posicao)
@@ -491,12 +704,14 @@ function abrirChatAlerta(alerta, posicao, id) {
                 <div class="balao-mensagem ${msg.usuario === usuario ? 'minha' : ''}">
                     <small><b>${msg.usuario}</b></small><br>
                     ${msg.texto}<br>
+                    <div class="endereco-msg">📍 ${msg.endereco || 'Local desconhecido'}</div>
                     <small style="font-size:9px;">${msg.hora}</small>
                 </div>
             `;
         });
         
         chatDiv.innerHTML = html;
+        chatDiv.scrollTop = chatDiv.scrollHeight;
     });
 }
 
@@ -505,12 +720,30 @@ function enviarMsgAlerta(id) {
     const texto = input.value.trim();
     if (!texto) return;
     
-    db.ref(`chats/alerta_${id}`).push({
-        usuario: usuario,
-        texto: texto,
-        hora: new Date().toLocaleTimeString(),
-        timestamp: Date.now()
-    });
+    // Pega endereço atual
+    if (minhaLocalizacao) {
+        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${minhaLocalizacao.lat}&lon=${minhaLocalizacao.lng}`)
+            .then(res => res.json())
+            .then(data => {
+                const endereco = data.display_name || 'Localização atual';
+                
+                db.ref(`chats/alerta_${id}`).push({
+                    usuario: usuario,
+                    texto: texto,
+                    endereco: endereco.substring(0, 50) + '...',
+                    hora: new Date().toLocaleTimeString(),
+                    timestamp: Date.now()
+                });
+            });
+    } else {
+        db.ref(`chats/alerta_${id}`).push({
+            usuario: usuario,
+            texto: texto,
+            endereco: 'Localização desconhecida',
+            hora: new Date().toLocaleTimeString(),
+            timestamp: Date.now()
+        });
+    }
     
     input.value = '';
 }
