@@ -2,18 +2,15 @@
 <html lang="pt-br">
 <head>
     <meta charset="utf-8">
-    <title>BR-277 | TRÂNSITO INTELIGENTE COM WAZE</title>
+    <title>BR-277 | TRÂNSITO</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
     <style>
         :root { 
             --ws-green: #075e54; 
-            --ws-light: #dcf8c6; 
             --radio-gold: #ffd700; 
             --danger: #e53935;
             --warning: #ff9800;
@@ -22,99 +19,122 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body, #map { height: 100%; width: 100%; font-family: 'Segoe UI', sans-serif; }
         
-        /* PAINEL DE ALERTAS */
+        /* PAINEL DE ALERTAS - MAIS PROFISSIONAL */
         .alertas-panel {
             position: fixed;
             top: 70px;
             left: 10px;
             width: 260px;
-            max-height: 65vh;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            max-height: 60vh;
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(5px);
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
             z-index: 4000;
             display: flex;
             flex-direction: column;
-            border: 2px solid var(--ws-green);
+            border: 1px solid rgba(7,94,84,0.3);
             overflow: hidden;
             font-size: 13px;
         }
         
         .alertas-header {
-            background: var(--ws-green);
+            background: linear-gradient(135deg, var(--ws-green), #0a7a6b);
             color: white;
-            padding: 10px;
-            font-weight: bold;
+            padding: 12px 15px;
+            font-weight: 600;
             display: flex;
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
+            letter-spacing: 0.5px;
         }
         
         .alertas-lista {
             flex: 1;
             overflow-y: auto;
-            padding: 8px;
+            padding: 10px;
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 8px;
             max-height: 45vh;
+            background: #f8f9fa;
         }
         
         .alerta-item {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px;
-            background: #f5f5f5;
-            border-radius: 8px;
+            gap: 12px;
+            padding: 10px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             cursor: pointer;
+            transition: all 0.2s;
             border-left: 4px solid transparent;
         }
         
+        .alerta-item:hover {
+            transform: translateX(3px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
         .alerta-item .icone {
-            width: 28px;
-            height: 28px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
+            font-size: 18px;
             color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
         
         .alerta-item .info {
             flex: 1;
-            font-size: 12px;
         }
         
         .alerta-item .titulo {
-            font-weight: bold;
-            font-size: 12px;
+            font-weight: 600;
+            font-size: 13px;
+            color: #1a1a1a;
+            margin-bottom: 2px;
+        }
+        
+        .alerta-item .desc {
+            font-size: 11px;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
         
         .alerta-item .distancia {
             font-size: 10px;
-            color: #666;
+            background: #eef2f6;
+            padding: 2px 8px;
+            border-radius: 12px;
+            display: inline-block;
+            color: #2c3e50;
         }
         
         .alerta-item .confiabilidade {
-            font-size: 9px;
-            padding: 2px 5px;
-            border-radius: 10px;
-            background: #ddd;
-            display: inline-block;
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            background: #e8f5e9;
+            color: #2e7d32;
         }
         
-        /* CORES POR TIPO WAZE [citation:5] */
-        .alerta-ACCIDENT .icone { background: #e53935; }
-        .alerta-ACCIDENT { border-left-color: #e53935; }
-        .alerta-HAZARD .icone { background: #ff9800; }
-        .alerta-HAZARD { border-left-color: #ff9800; }
-        .alerta-JAM .icone { background: #f44336; }
-        .alerta-JAM { border-left-color: #f44336; }
-        .alerta-ROAD_CLOSED .icone { background: #000; }
-        .alerta-ROAD_CLOSED { border-left-color: #000; }
+        /* ÍCONES PROFISSIONAIS POR TIPO */
+        .icone-acidente { background: #e53935; }
+        .icone-obras { background: #ff9800; }
+        .icone-congestionamento { background: #f44336; }
+        .icone-perigo { background: #ff5722; }
+        .icone-interdicao { background: #455a64; }
+        .icone-neblina { background: #00acc1; }
+        .icone-animal { background: #8bc34a; color: #333; }
         
         /* LUPA */
         .lupa-container {
@@ -122,76 +142,102 @@
             top: 15px;
             left: 50%;
             transform: translateX(-50%);
-            width: 300px;
+            width: 320px;
             z-index: 4500;
             background: white;
-            border-radius: 30px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            border-radius: 40px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
             border: 2px solid var(--radio-gold);
             overflow: hidden;
             display: flex;
+            align-items: center;
         }
         
         .lupa-container input {
             flex: 1;
-            padding: 10px 15px;
+            padding: 12px 20px;
             border: none;
             font-size: 14px;
             outline: none;
+            background: transparent;
         }
         
         .lupa-container i {
-            padding: 0 15px;
+            padding: 0 18px;
             color: var(--ws-green);
             font-size: 18px;
             cursor: pointer;
+            transition: transform 0.2s;
         }
         
-        /* CHAT DO ALERTA */
-        .chat-alerta {
-            position: fixed;
-            bottom: 120px;
-            right: 90px;
-            width: 280px;
-            height: 350px;
+        .lupa-container i:hover { transform: scale(1.1); }
+        
+        /* POPUP DO ALERTA - BALÃO PROFISSIONAL */
+        .alerta-popup {
             background: white;
-            border-radius: 15px;
-            z-index: 7000;
-            display: none;
-            flex-direction: column;
-            border: 2px solid var(--ws-green);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            border-radius: 16px;
+            padding: 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border: 1px solid rgba(7,94,84,0.2);
+            min-width: 250px;
+            overflow: hidden;
         }
         
-        .chat-alerta-header {
-            background: var(--ws-green);
+        .popup-header {
+            background: linear-gradient(135deg, var(--ws-green), #0a7a6b);
             color: white;
-            padding: 10px;
-            font-weight: bold;
+            padding: 12px 15px;
+            font-weight: 600;
             display: flex;
             justify-content: space-between;
+            align-items: center;
         }
         
-        .chat-alerta-msgs {
-            flex: 1;
+        .popup-body {
+            padding: 15px;
+            max-height: 250px;
             overflow-y: auto;
-            padding: 10px;
-            background: #e5ddd5;
-            font-size: 12px;
+            background: #f5f5f5;
         }
         
-        .chat-alerta-input {
-            padding: 8px;
-            background: #f0f0f0;
+        .popup-mensagem {
+            background: white;
+            border-radius: 12px;
+            padding: 8px 12px;
+            margin: 5px 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .popup-mensagem small {
+            color: #999;
+            font-size: 10px;
+        }
+        
+        .popup-input {
             display: flex;
-            gap: 5px;
+            padding: 10px;
+            background: white;
+            border-top: 1px solid #eee;
+            gap: 8px;
         }
         
-        .chat-alerta-input input {
+        .popup-input input {
             flex: 1;
-            padding: 8px;
-            border-radius: 20px;
-            border: 1px solid #ccc;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 12px;
+            outline: none;
+        }
+        
+        .popup-input button {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: var(--ws-green);
+            color: white;
+            cursor: pointer;
         }
         
         /* BOTÕES FLUTUANTES */
@@ -202,14 +248,18 @@
             display: flex; 
             align-items: center; 
             justify-content: center; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3); 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
             border: 2px solid white; 
             cursor: pointer; 
             background: white; 
             width: 50px; 
             height: 50px; 
             font-size: 22px; 
+            transition: all 0.2s;
         }
+        
+        .f-btn:hover { transform: scale(1.05); }
+        
         #btn-chat { right: 15px; bottom: 110px; background: var(--ws-green); color: white; }
         #btn-mute { right: 15px; bottom: 175px; background: #fff; }
         #btn-luz { right: 15px; top: 130px; background: #ffcc00; }
@@ -230,9 +280,18 @@
             justify-content: center; 
             font-size: 30px; 
             color: var(--radio-gold); 
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3); 
             transition: all 0.2s; 
+            cursor: pointer;
         }
-        #btn-px.ativo { background: #e53935; color: white; transform: translateX(-50%) scale(0.95); }
+        
+        #btn-px.ativo { 
+            background: var(--danger); 
+            border-color: white; 
+            color: white; 
+            transform: translateX(-50%) scale(0.95);
+            box-shadow: 0 0 30px rgba(229,57,53,0.5);
+        }
         
         .map-dark { filter: invert(100%) hue-rotate(180deg) brightness(95%); }
         
@@ -244,43 +303,51 @@
             z-index: 4001; 
             background: white; 
             border: 2px solid var(--ws-green); 
-            border-radius: 20px; 
-            padding: 8px 15px; 
+            border-radius: 30px; 
+            padding: 8px 20px; 
+            font-weight: 600; 
+            color: var(--ws-green); 
             display: none; 
             cursor: pointer; 
+            font-size: 13px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         
         .pulse-loc { 
-            width: 35px; 
-            height: 35px; 
+            width: 45px; 
+            height: 45px; 
             border-radius: 50%; 
-            animation: pulse-blue 2s infinite; 
-            background: rgba(0, 122, 255, 0.4); 
-            border: 2px solid white; 
+            animation: pulse-blue 1.5s infinite; 
+            background: rgba(33, 150, 243, 0.3); 
+            border: 3px solid #2196f3; 
+            position: absolute;
+            left: -22px;
+            top: -22px;
         }
         
         @keyframes pulse-blue { 
-            0% { box-shadow: 0 0 0 0 rgba(0, 122, 255, 0.7); } 
-            100% { box-shadow: 0 0 0 15px rgba(0, 122, 255, 0); } 
+            0% { transform: scale(0.8); opacity: 1; } 
+            100% { transform: scale(2); opacity: 0; } 
         }
 
         .waze-credit {
             position: fixed;
             bottom: 5px;
             right: 10px;
-            font-size: 10px;
+            font-size: 9px;
             color: #666;
-            background: rgba(255,255,255,0.7);
-            padding: 2px 5px;
-            border-radius: 10px;
+            background: rgba(255,255,255,0.9);
+            padding: 3px 8px;
+            border-radius: 20px;
             z-index: 3000;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
     </style>
 </head>
 <body>
 
 <div id="map"></div>
-<div id="btn-rec" onclick="recentralizar()">🧭 RECENTRALIZAR</div>
+<div id="btn-rec" onclick="recentralizar()">📍 RECENTRALIZAR</div>
 
 <!-- BOTÕES -->
 <div id="btn-luz" class="f-btn" onclick="toggleDark()">💡</div>
@@ -289,22 +356,22 @@
 <div id="btn-px">🎤</div>
 
 <!-- CHAT GLOBAL -->
-<div id="chat-global" style="position:fixed; top:10%; left:5%; width:90%; height:80%; background:#e5ddd5; z-index:6000; border-radius:15px; display:none; flex-direction:column; border:2px solid var(--ws-green);">
-    <div style="background:#075e54; color:white; padding:15px; display:flex; justify-content:space-between">
-        <span>CHAT BR-277</span>
+<div id="chat-global" style="position:fixed; top:10%; left:5%; width:90%; height:80%; background:#e5ddd5; z-index:6000; border-radius:20px; display:none; flex-direction:column; border:2px solid var(--ws-green); box-shadow:0 10px 30px rgba(0,0,0,0.3);">
+    <div style="background:linear-gradient(135deg, var(--ws-green), #0a7a6b); color:white; padding:15px 20px; border-radius:18px 18px 0 0; display:flex; justify-content:space-between; font-weight:600;">
+        <span>CHAT GERAL</span>
         <span onclick="toggleChat()" style="cursor:pointer">✖</span>
     </div>
-    <div id="chat-msgs" style="flex:1; overflow-y:auto; padding:15px;"></div>
-    <div style="padding:10px; background:#f0f0f0; display:flex; gap:10px;">
-        <input type="text" id="msg-input" style="flex:1; padding:10px; border-radius:20px; border:1px solid #ccc;">
-        <button onclick="enviarMsg()" style="background:#075e54; color:white; border:none; border-radius:50%; width:40px; height:40px;">➔</button>
+    <div id="chat-msgs" style="flex:1; overflow-y:auto; padding:15px; display:flex; flex-direction:column; gap:5px;"></div>
+    <div style="padding:15px; background:#f0f0f0; display:flex; gap:10px; border-radius:0 0 18px 18px;">
+        <input type="text" id="msg-input" style="flex:1; padding:12px; border-radius:30px; border:1px solid #ccc; outline:none;" placeholder="Digite sua mensagem...">
+        <button onclick="enviarMsg()" style="background:var(--ws-green); color:white; border:none; border-radius:50%; width:45px; height:45px; cursor:pointer;">➔</button>
     </div>
 </div>
 
 <!-- PAINEL DE ALERTAS -->
 <div class="alertas-panel">
     <div class="alertas-header" onclick="minimizarAlertas()">
-        <span>🚨 ALERTAS WAZE + USUÁRIOS</span>
+        <span>🚨 ALERTAS</span>
         <i class="fas fa-chevron-down" id="setaAlertas"></i>
     </div>
     <div class="alertas-lista" id="alertasLista"></div>
@@ -312,39 +379,28 @@
 
 <!-- LUPA -->
 <div class="lupa-container">
-    <input type="text" id="buscaDestino" placeholder="Digite seu destino..." onkeypress="if(event.key==='Enter') buscarRota()">
+    <input type="text" id="buscaDestino" placeholder="Para onde você quer ir? Ex: Curitiba, Centro" onkeypress="if(event.key==='Enter') buscarRota()">
     <i class="fas fa-search" onclick="buscarRota()"></i>
 </div>
 
-<!-- CHAT DO ALERTA -->
-<div class="chat-alerta" id="chatAlerta">
-    <div class="chat-alerta-header">
-        <span id="chatAlertaTitulo">Alerta</span>
-        <span onclick="fecharChatAlerta()" style="cursor:pointer">✖</span>
-    </div>
-    <div class="chat-alerta-msgs" id="chatAlertaMsgs"></div>
-    <div class="chat-alerta-input">
-        <input type="text" id="chatAlertaInput" placeholder="Digite..." onkeypress="if(event.key==='Enter') enviarMsgAlerta()">
-        <button onclick="enviarMsgAlerta()">➔</button>
-    </div>
-</div>
+<!-- POPUP DO ALERTA (BALÃO) -->
+<div id="alertaPopup" style="display:none; position:absolute; z-index:10000;"></div>
 
-<div class="waze-credit">🚗 Dados de trânsito: Waze [citation:1]</div>
+<div class="waze-credit">🚗 Dados: Waze + Comunidade</div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
-<script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-// ===== CONFIGURAÇÃO FIREBASE =====
+// ===== FIREBASE =====
 const firebaseConfig = { databaseURL: "https://gps-br277-default-rtdb.firebaseio.com" };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// ===== VARIÁVEIS GLOBAIS =====
+// ===== VARIÁVEIS =====
 let user = "Motorista_" + Math.floor(Math.random()*999);
 let meuLatLng = null;
 let meuMarker = null;
@@ -352,45 +408,38 @@ let follow = true;
 let rotaControle = null;
 let isMuted = false;
 let alertaAtual = null;
-const RAIO_MAXIMO = 300; // 300km
+let popupAtual = null;
+const RAIO_MAXIMO = 300;
 
-// ===== CONFIGURAÇÃO DO MAPA =====
-const map = L.map('map', { zoomControl: false }).setView([-25.4284, -49.2733], 12);
+// ===== MAPA =====
+const map = L.map('map', { 
+    zoomControl: false,
+    zoomSnap: 0.5,
+    zoomDelta: 0.5
+}).setView([-25.4284, -49.2733], 13);
 
 // Camada do Google com trânsito
 L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(map);
 
-// Cluster para agrupar alertas próximos
-const alertasCluster = L.markerClusterGroup({
-    maxClusterRadius: 60,
-    iconCreateFunction: function(cluster) {
-        const count = cluster.getChildCount();
-        let cor = count > 10 ? '#e53935' : count > 5 ? '#ff9800' : '#075e54';
-        return L.divIcon({
-            html: `<div style="background:${cor}; color:white; border-radius:50%; width:40px; height:40px; display:flex; align-items:center; justify-content:center; border:3px solid white; font-weight:bold;">${count}</div>`,
-            className: '',
-            iconSize: [40, 40]
-        });
-    }
-});
-map.addLayer(alertasCluster);
-
-// ===== GPS DO USUÁRIO =====
+// ===== GPS - ZOOM AUMENTADO =====
 navigator.geolocation.watchPosition(pos => {
     meuLatLng = L.latLng(pos.coords.latitude, pos.coords.longitude);
     
     if(!meuMarker) {
         meuMarker = L.marker(meuLatLng, { 
             icon: L.divIcon({ 
-                html: `<div class="pulse-loc"></div><div style="font-size:28px; margin-top:-8px;">🚚</div>`, 
-                iconSize:[35,35] 
+                html: `<div class="pulse-loc"></div><div style="font-size:32px; position:relative; top:-15px;">🚚</div>`, 
+                iconSize:[1,1],
+                className: ''
             }) 
         }).addTo(map);
-        map.setView(meuLatLng, 12);
         
-        // Inicia buscas após ter localização
-        buscarAlertasWaze();
-        setInterval(buscarAlertasWaze, 120000); // A cada 2 minutos (igual Waze [citation:1])
+        // ZOOM AUMENTADO PARA 17 (mais próximo)
+        map.setView(meuLatLng, 17);
+        
+        // Inicia alertas
+        gerarAlertasSimulados();
+        setInterval(gerarAlertasSimulados, 120000);
     } else { 
         meuMarker.setLatLng(meuLatLng); 
     }
@@ -399,183 +448,298 @@ navigator.geolocation.watchPosition(pos => {
     
 }, null, { enableHighAccuracy: true });
 
-// ===== INTEGRAÇÃO COM FEED DO WAZE =====
-// NOTA: Para usar o feed oficial, você precisa ser parceiro Waze [citation:1]
-// Este é um proxy público para demonstração - em produção, use seu próprio feed
-const WAZE_PROXY_URL = 'https://waze-data-proxy.vercel.app/api/incidents?bottom=-26.5&left=-50.5&top=-24.5&right=-48.5';
-
-async function buscarAlertasWaze() {
+// ===== ALERTAS EM PORTUGUÊS =====
+function gerarAlertasSimulados() {
     if (!meuLatLng) return;
     
-    try {
-        // Simulação de dados Waze (já que precisa de parceria oficial)
-        // Em produção, substitua pela URL do seu feed oficial [citation:1]
-        const alertasSimulados = gerarAlertasSimulados();
-        processarAlertasWaze(alertasSimulados);
-        
-        /* Código para quando tiver o feed oficial:
-        const response = await fetch(WAZE_PROXY_URL);
-        const data = await response.json();
-        processarAlertasWaze(data.incidents);
-        */
-        
-    } catch (error) {
-        console.log('Erro ao buscar Waze:', error);
-    }
-}
-
-function gerarAlertasSimulados() {
-    // Simula alertas nos principais pontos da BR-277
     const alertas = [];
-    const tipos = ['ACCIDENT', 'HAZARD', 'JAM', 'ROAD_CLOSED'];
-    const subtipos = {
-        'ACCIDENT': ['ACCIDENT_MINOR', 'ACCIDENT_MAJOR'],
-        'HAZARD': ['HAZARD_ON_ROAD_OBJECT', 'HAZARD_ON_ROAD_CONSTRUCTION', 'HAZARD_ON_SHOULDER_CAR_STOPPED'],
-        'JAM': ['JAM_HEAVY_TRAFFIC', 'JAM_STAND_STILL_TRAFFIC'],
-        'ROAD_CLOSED': ['ROAD_CLOSED_CONSTRUCTION']
-    };
+    const tipos = [
+        { tipo: 'ACIDENTE', icone: 'car-crash', cor: '#e53935', classe: 'acidente' },
+        { tipo: 'OBRAS', icone: 'hard-hat', cor: '#ff9800', classe: 'obras' },
+        { tipo: 'CONGESTIONAMENTO', icone: 'traffic-light', cor: '#f44336', classe: 'congestionamento' },
+        { tipo: 'PERIGO', icone: 'exclamation-triangle', cor: '#ff5722', classe: 'perigo' },
+        { tipo: 'INTERDIÇÃO', icone: 'ban', cor: '#455a64', classe: 'interdicao' },
+        { tipo: 'NEBLINA', icone: 'smog', cor: '#00acc1', classe: 'neblina' },
+        { tipo: 'ANIMAL', icone: 'horse', cor: '#8bc34a', classe: 'animal' }
+    ];
     
-    // Pontos críticos da BR-277 [citação sua]
-    const pontosCriticos = [
-        { lat: -25.4284, lng: -49.2733, nome: 'BR-277 km 120' }, // Curitiba
+    const descricoes = [
+        'Veículo parado no acostamento',
+        'Pista interditada para obras',
+        'Trânsito lento - 5km de fila',
+        'Óleo na pista',
+        'Animal solto na pista',
+        'Neblina intensa - visibilidade reduzida',
+        'Veículo em chamas',
+        'Deslizamento de barreira',
+        'Buraco na pista',
+        'Sinalização danificada'
+    ];
+    
+    // Pontos da BR-277
+    const pontos = [
+        { lat: -25.4284, lng: -49.2733, nome: 'BR-277 km 120' },
         { lat: -25.4384, lng: -49.2833, nome: 'BR-277 km 125' },
         { lat: -25.4184, lng: -49.2633, nome: 'BR-277 km 115' },
         { lat: -25.4484, lng: -49.2933, nome: 'BR-277 km 130' },
         { lat: -25.4084, lng: -49.2533, nome: 'BR-277 km 110' },
-        { lat: -25.4584, lng: -49.3033, nome: 'BR-277 km 135' },
-        { lat: -25.3984, lng: -49.2433, nome: 'BR-277 km 105' },
-        { lat: -25.3884, lng: -49.2333, nome: 'BR-277 km 100' }
+        { lat: -25.4584, lng: -49.3033, nome: 'BR-277 km 135' }
     ];
     
-    pontosCriticos.forEach((ponto, index) => {
-        if (Math.random() > 0.5) { // 50% de chance de ter alerta
+    pontos.forEach((ponto, index) => {
+        if (Math.random() > 0.3) {
             const tipo = tipos[Math.floor(Math.random() * tipos.length)];
-            const subtipo = subtipos[tipo][Math.floor(Math.random() * subtipos[tipo].length)];
+            const desc = descricoes[Math.floor(Math.random() * descricoes.length)];
+            const id = `alerta_${Date.now()}_${index}`;
             
             alertas.push({
-                id: `waze_${Date.now()}_${index}`,
-                type: tipo,
-                subtype: subtipo,
-                description: `${subtipo.replace(/_/g, ' ')} em ${ponto.nome}`,
-                street: ponto.nome,
-                location: { lat: ponto.lat, lng: ponto.lng },
-                reliability: Math.floor(Math.random() * 5) + 5, // 5-10
-                confidence: Math.floor(Math.random() * 5) + 5,
-                starttime: new Date().toISOString()
+                id: id,
+                tipo: tipo.tipo,
+                tipo_pt: tipo.tipo,
+                icone: tipo.icone,
+                cor: tipo.cor,
+                classe: tipo.classe,
+                descricao: desc,
+                local: ponto.nome,
+                lat: ponto.lat,
+                lng: ponto.lng,
+                confiabilidade: Math.floor(Math.random() * 4) + 7, // 7-10
+                horario: new Date().toLocaleTimeString()
+            });
+            
+            // Salva no Firebase
+            db.ref(`alertas/${id}`).set({
+                tipo: tipo.tipo,
+                descricao: desc,
+                lat: ponto.lat,
+                lng: ponto.lng,
+                local: ponto.nome,
+                horario: new Date().toISOString()
             });
         }
     });
     
-    return alertas;
+    processarAlertas(alertas);
 }
 
-function processarAlertasWaze(alertas) {
+function processarAlertas(alertas) {
     if (!meuLatLng) return;
     
-    // Limpa alertas antigos
-    alertasCluster.clearLayers();
+    // Limpa mapa antigo
+    map.eachLayer(layer => {
+        if (layer.options && layer.options.icon && layer.options.icon.options && 
+            layer.options.icon.options.html && layer.options.icon.options.html.includes('alerta-popup')) {
+            map.removeLayer(layer);
+        }
+    });
+    
     document.getElementById('alertasLista').innerHTML = '';
     
-    // Filtra por raio de 300km
-    const alertasProximos = alertas.filter(alerta => {
-        if (!alerta.location) return false;
-        const distancia = calcularDistancia(
-            meuLatLng.lat, meuLatLng.lng,
-            alerta.location.lat, alerta.location.lng
-        );
-        return distancia <= RAIO_MAXIMO;
+    // Filtra por raio 300km
+    const alertasProximos = alertas.filter(a => {
+        const dist = calcularDistancia(meuLatLng.lat, meuLatLng.lng, a.lat, a.lng);
+        return dist <= RAIO_MAXIMO;
     });
     
     // Ordena por distância
     alertasProximos.sort((a, b) => {
-        const distA = calcularDistancia(meuLatLng.lat, meuLatLng.lng, a.location.lat, a.location.lng);
-        const distB = calcularDistancia(meuLatLng.lat, meuLatLng.lng, b.location.lat, b.location.lng);
+        const distA = calcularDistancia(meuLatLng.lat, meuLatLng.lng, a.lat, a.lng);
+        const distB = calcularDistancia(meuLatLng.lat, meuLatLng.lng, b.lat, b.lng);
         return distA - distB;
     });
     
-    // Adiciona ao mapa e painel
     alertasProximos.forEach(alerta => {
-        adicionarAlertaWazeMapa(alerta);
+        adicionarMarcadorAlerta(alerta);
         adicionarAlertaPainel(alerta);
     });
 }
 
-function adicionarAlertaWazeMapa(alerta) {
+function adicionarMarcadorAlerta(alerta) {
+    // ÍCONES PROFISSIONAIS
     const icones = {
-        'ACCIDENT': '💥',
-        'HAZARD': '⚠️',
-        'JAM': '🚦',
-        'ROAD_CLOSED': '🚧'
+        'ACIDENTE': '💥',
+        'OBRAS': '🚧',
+        'CONGESTIONAMENTO': '🚦',
+        'PERIGO': '⚠️',
+        'INTERDIÇÃO': '⛔',
+        'NEBLINA': '🌫️',
+        'ANIMAL': '🐂'
     };
     
-    const cores = {
-        'ACCIDENT': '#e53935',
-        'HAZARD': '#ff9800',
-        'JAM': '#f44336',
-        'ROAD_CLOSED': '#000000'
-    };
-    
-    const marker = L.marker([alerta.location.lat, alerta.location.lng], {
+    const marker = L.marker([alerta.lat, alerta.lng], {
         icon: L.divIcon({
-            html: `<div style="background:${cores[alerta.type]}; color:white; padding:5px 10px; border-radius:20px; border:2px solid white; font-size:12px; white-space:nowrap; box-shadow:0 2px 5px rgba(0,0,0,0.3);">
-                ${icones[alerta.type] || '⚠️'} ${alerta.type} ${alerta.reliability ? '🔹'+alerta.reliability : ''}
+            html: `<div style="background:${alerta.cor}; color:white; padding:6px 12px; border-radius:30px; border:2px solid white; font-size:13px; font-weight:600; box-shadow:0 3px 10px rgba(0,0,0,0.3); display:flex; align-items:center; gap:5px; white-space:nowrap;">
+                <span>${icones[alerta.tipo] || '⚠️'}</span>
+                <span>${alerta.tipo}</span>
             </div>`,
             className: '',
-            iconSize: [100, 30]
+            iconSize: [100, 36]
         })
     });
     
+    // BALÃO AO CLICAR
     marker.on('click', () => {
-        abrirChatAlerta({
-            id: alerta.id,
-            tipo: alerta.type,
-            desc: alerta.description || alerta.type,
-            local: alerta.street
-        });
+        abrirPopupAlerta(alerta, marker.getLatLng());
     });
     
-    alertasCluster.addLayer(marker);
+    marker.addTo(map);
+}
+
+function abrirPopupAlerta(alerta, latlng) {
+    // Fecha popup anterior
+    if (popupAtual) map.closePopup(popupAtual);
+    
+    // Cria conteúdo do popup
+    const popupContent = document.createElement('div');
+    popupContent.className = 'alerta-popup';
+    popupContent.style.width = '280px';
+    
+    popupContent.innerHTML = `
+        <div class="popup-header">
+            <span><i class="fas fa-${alerta.icone}" style="margin-right:8px;"></i>${alerta.tipo}</span>
+            <span style="font-size:11px; background:rgba(255,255,255,0.2); padding:3px 8px; border-radius:20px;">🔹 conf. ${alerta.confiabilidade}</span>
+        </div>
+        <div class="popup-body" id="popup-msgs-${alerta.id}">
+            <div style="text-align:center; color:#666; padding:10px;">Carregando mensagens...</div>
+        </div>
+        <div class="popup-input">
+            <input type="text" id="popup-input-${alerta.id}" placeholder="Digite sua mensagem...">
+            <button onclick="enviarMsgPopup('${alerta.id}')">➔</button>
+        </div>
+    `;
+    
+    popupAtual = L.popup({
+        maxWidth: 300,
+        minWidth: 280,
+        className: 'custom-popup',
+        offset: [0, -20]
+    })
+    .setLatLng(latlng)
+    .setContent(popupContent)
+    .openOn(map);
+    
+    // Carrega mensagens do Firebase
+    carregarMensagensAlerta(alerta.id);
+}
+
+function carregarMensagensAlerta(alertaId) {
+    const msgsDiv = document.getElementById(`popup-msgs-${alertaId}`);
+    if (!msgsDiv) return;
+    
+    db.ref(`chats/${alertaId}/mensagens`).limitToLast(20).on('value', snap => {
+        const msgs = snap.val();
+        if (!msgs) {
+            msgsDiv.innerHTML = '<div style="text-align:center; color:#999; padding:15px;">Nenhuma mensagem ainda</div>';
+            return;
+        }
+        
+        let html = '';
+        Object.values(msgs).reverse().forEach(msg => {
+            const isMe = msg.user === user;
+            html += `
+                <div class="popup-mensagem" style="margin:8px 0; ${isMe ? 'margin-left:20px;' : 'margin-right:20px;'}">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:3px;">
+                        <small><b>${msg.user}</b></small>
+                        <small style="color:#999;">${msg.time}</small>
+                    </div>
+                    <div style="font-size:13px;">${msg.text}</div>
+                </div>
+            `;
+        });
+        
+        msgsDiv.innerHTML = html;
+        msgsDiv.scrollTop = msgsDiv.scrollHeight;
+    });
+}
+
+function enviarMsgPopup(alertaId) {
+    const input = document.getElementById(`popup-input-${alertaId}`);
+    if (!input || !input.value.trim()) return;
+    
+    db.ref(`chats/${alertaId}/mensagens`).push({
+        user: user,
+        text: input.value,
+        time: new Date().toLocaleTimeString()
+    });
+    
+    input.value = "";
 }
 
 function adicionarAlertaPainel(alerta) {
-    const distancia = calcularDistancia(
-        meuLatLng.lat, meuLatLng.lng,
-        alerta.location.lat, alerta.location.lng
-    );
+    const distancia = calcularDistancia(meuLatLng.lat, meuLatLng.lng, alerta.lat, alerta.lng);
     
     const div = document.createElement('div');
-    div.className = `alerta-item alerta-${alerta.type}`;
-    
-    const iconeTipo = {
-        'ACCIDENT': 'car-crash',
-        'HAZARD': 'exclamation-triangle',
-        'JAM': 'traffic-light',
-        'ROAD_CLOSED': 'ban'
-    };
-    
+    div.className = 'alerta-item';
     div.innerHTML = `
-        <div class="icone"><i class="fas fa-${iconeTipo[alerta.type] || 'exclamation'}"></i></div>
+        <div class="icone icone-${alerta.classe}" style="background:${alerta.cor};">
+            <i class="fas fa-${alerta.icone}"></i>
+        </div>
         <div class="info">
-            <div class="titulo">${alerta.type} - ${alerta.subtype ? alerta.subtype.replace(/_/g, ' ') : ''}</div>
-            <div class="desc">${alerta.description || alerta.street}</div>
-            <div class="distancia">📍 ${distancia} km</div>
-            <div><span class="confiabilidade">🔹 Conf: ${alerta.reliability || '?'}/10</span></div>
+            <div class="titulo">${alerta.tipo}</div>
+            <div class="desc">
+                <span>${alerta.descricao}</span>
+                <span class="distancia">${distancia} km</span>
+            </div>
+            <div style="display:flex; gap:5px; margin-top:5px;">
+                <span class="confiabilidade">🔹 confiabilidade ${alerta.confiabilidade}/10</span>
+            </div>
         </div>
     `;
     
     div.onclick = () => {
-        map.flyTo([alerta.location.lat, alerta.location.lng], 14);
-        abrirChatAlerta({
-            id: alerta.id,
-            tipo: alerta.type,
-            desc: alerta.description || alerta.type
-        });
+        map.flyTo([alerta.lat, alerta.lng], 17);
+        setTimeout(() => {
+            abrirPopupAlerta(alerta, L.latLng(alerta.lat, alerta.lng));
+        }, 500);
     };
     
     document.getElementById('alertasLista').appendChild(div);
 }
 
-// ===== FUNÇÃO PARA CALCULAR DISTÂNCIA =====
+// ===== ROTA CORRIGIDA =====
+function buscarRota() {
+    const destino = document.getElementById('buscaDestino').value;
+    if (!destino || !meuLatLng) return;
+    
+    // Usando Nominatim para busca
+    const geocoder = L.Control.Geocoder.nominatim({
+        geocodingQueryParams: {
+            'countrycodes': 'br',
+            'limit': 5,
+            'viewbox': '-54.6,-26.3,-48.3,-24.5',
+            'bounded': 1
+        }
+    });
+    
+    geocoder.geocode(destino, (results) => {
+        if (results && results.length > 0) {
+            const dest = results[0].center;
+            
+            if (rotaControle) map.removeControl(rotaControle);
+            
+            rotaControle = L.Routing.control({
+                waypoints: [meuLatLng, dest],
+                lineOptions: { 
+                    styles: [{ 
+                        color: '#2196f3', 
+                        weight: 6,
+                        opacity: 0.8
+                    }] 
+                },
+                createMarker: () => null,
+                show: false,
+                router: L.Routing.mapbox('sua-chave-aqui', { profile: 'mapbox/driving' })
+            }).addTo(map);
+            
+            // ZOOM NA ROTA
+            map.flyToBounds(L.latLngBounds([meuLatLng, dest]), { padding: [50, 50] });
+        } else {
+            alert("Local não encontrado. Tente ser mais específico.");
+        }
+    });
+}
+
+// ===== CALCULAR DISTÂNCIA =====
 function calcularDistancia(lat1, lon1, lat2, lon2) {
     const R = 6371;
     const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -585,48 +749,6 @@ function calcularDistancia(lat1, lon1, lat2, lon2) {
             Math.sin(dLon/2) * Math.sin(dLon/2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     return (R * c).toFixed(1);
-}
-
-// ===== CHAT DO ALERTA =====
-function abrirChatAlerta(alerta) {
-    alertaAtual = alerta;
-    document.getElementById('chatAlertaTitulo').innerHTML = `${alerta.tipo} - ${alerta.desc.substring(0, 30)}...`;
-    document.getElementById('chatAlerta').style.display = 'flex';
-    
-    // Carrega mensagens do Firebase
-    const chatId = `alerta_${alerta.id}`;
-    db.ref(`chats/${chatId}/mensagens`).limitToLast(20).on('child_added', snap => {
-        const msg = snap.val();
-        const div = document.createElement('div');
-        div.style.margin = '5px 0';
-        div.style.padding = '5px 10px';
-        div.style.background = msg.user === user ? '#dcf8c6' : 'white';
-        div.style.borderRadius = '10px';
-        div.style.alignSelf = msg.user === user ? 'flex-end' : 'flex-start';
-        div.style.maxWidth = '80%';
-        div.innerHTML = `<small><b>${msg.user}</b></small><br>${msg.text}<br><small style="font-size:9px">${msg.time}</small>`;
-        document.getElementById('chatAlertaMsgs').appendChild(div);
-        document.getElementById('chatAlertaMsgs').scrollTop = document.getElementById('chatAlertaMsgs').scrollHeight;
-    });
-}
-
-function enviarMsgAlerta() {
-    const input = document.getElementById('chatAlertaInput');
-    if(!input.value.trim() || !alertaAtual) return;
-    
-    const chatId = `alerta_${alertaAtual.id}`;
-    db.ref(`chats/${chatId}/mensagens`).push({
-        user: user,
-        text: input.value,
-        time: new Date().toLocaleTimeString()
-    });
-    
-    input.value = "";
-}
-
-function fecharChatAlerta() {
-    document.getElementById('chatAlerta').style.display = 'none';
-    document.getElementById('chatAlertaMsgs').innerHTML = '';
 }
 
 // ===== RÁDIO PX =====
@@ -655,7 +777,7 @@ async function iniciarGravacao() {
                 const audioBlob = new Blob(chunks, { type: 'audio/webm' });
                 const reader = new FileReader();
                 reader.onloadend = () => {
-                    db.ref("radio").set({ 
+                    db.ref("radio").push({ 
                         audio: reader.result, 
                         user: user, 
                         time: Date.now() 
@@ -681,35 +803,12 @@ function pararGravacao() {
 }
 
 // Receber áudio
-db.ref("radio").on("value", snap => {
+db.ref("radio").limitToLast(1).on("child_added", snap => {
     const d = snap.val();
     if(d && d.user !== user && !isMuted && (Date.now() - d.time < 5000)) {
         new Audio(d.audio).play().catch(() => {});
     }
 });
-
-// ===== ROTA =====
-function buscarRota() {
-    const destino = document.getElementById('buscaDestino').value;
-    if(!destino || !meuLatLng) return;
-    
-    L.Control.Geocoder.nominatim().geocode(destino, (results) => {
-        if(results && results.length > 0) {
-            const dest = results[0].center;
-            
-            if(rotaControle) map.removeControl(rotaControle);
-            
-            rotaControle = L.Routing.control({
-                waypoints: [meuLatLng, dest],
-                lineOptions: { styles: [{ color: '#007aff', weight: 6 }] },
-                createMarker: () => null,
-                show: false
-            }).addTo(map);
-        } else {
-            alert("Local não encontrado!");
-        }
-    });
-}
 
 // ===== FUNÇÕES BÁSICAS =====
 function toggleDark() { 
@@ -730,40 +829,24 @@ function enviarMsg() {
     const input = document.getElementById('msg-input');
     if(!input.value.trim()) return;
     
-    const div = document.createElement('div');
-    div.style.background = '#dcf8c6';
-    div.style.padding = '10px';
-    div.style.borderRadius = '10px';
-    div.style.margin = '5px 0';
-    div.style.alignSelf = 'flex-end';
-    div.style.maxWidth = '80%';
-    div.innerHTML = `<b>${user}</b><br>${input.value}<br><small>${new Date().toLocaleTimeString()}</small>`;
-    document.getElementById('chat-msgs').appendChild(div);
+    db.ref("chat_geral").push({
+        user: user,
+        text: input.value,
+        time: new Date().toLocaleTimeString()
+    });
+    
     input.value = "";
 }
 
-function recentralizar() { 
-    follow = true; 
-    document.getElementById('btn-rec').style.display = 'none'; 
-    if(meuLatLng) map.flyTo(meuLatLng, 12);
-}
-
-map.on('dragstart', () => { 
-    follow = false; 
-    document.getElementById('btn-rec').style.display = 'block'; 
-});
-
-function minimizarAlertas() {
-    const lista = document.getElementById('alertasLista');
-    const seta = document.getElementById('setaAlertas');
-    if (lista.style.display === 'none') {
-        lista.style.display = 'flex';
-        seta.style.transform = 'rotate(0deg)';
-    } else {
-        lista.style.display = 'none';
-        seta.style.transform = 'rotate(180deg)';
-    }
-}
-</script>
-</body>
-</html>
+// Chat geral
+db.ref("chat_geral").limitToLast(50).on("child_added", snap => {
+    const msg = snap.val();
+    const div = document.createElement('div');
+    div.style.background = msg.user === user ? '#dcf8c6' : 'white';
+    div.style.padding = '8px 12px';
+    div.style.borderRadius = '15px';
+    div.style.margin = '5px 0';
+    div.style.alignSelf = msg.user === user ? 'flex-end' : 'flex-start';
+    div.style.maxWidth = '80%';
+    div.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
+    div.innerHTML =
