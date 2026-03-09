@@ -345,7 +345,7 @@
             cursor: pointer;
         }
         
-        /* SALA DE BATE-PAPO DO ALERTA */
+        /* SALA DE CHAT DO ALERTA */
         .chat-alerta-container {
             position: fixed;
             top: 10%;
@@ -762,7 +762,7 @@ const db = firebase.database();
 // VARIÁVEIS GLOBAIS
 let user = "";
 let isAdmin = false;
-const ADMIN_PASSWORD = "br277admin2026"; // Altere para sua senha
+const ADMIN_PASSWORD = "br277admin2026";
 let meuLatLng = null;
 let meuMarker = null;
 let follow = true;
@@ -783,34 +783,85 @@ const map = L.map('map', {
 
 L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(map);
 
-// ZOOM INTERATIVO (aproxima em conversões)
-map.on('zoomend', function() {
-    if(zoomAutomaticoAtivo && rotaControle && rotaControle.getWaypoints().length > 1) {
-        // Lógica de zoom automático será implementada
-    }
-});
-
-// FUNÇÃO DE BOAS-VINDAS
+// ===== FUNÇÃO DE BOAS-VINDAS CORRIGIDA =====
 function definirNomeUsuario() {
-    const nome = document.getElementById('nomeUsuario').value.trim() || "Motorista";
+    const nome = document.getElementById('nomeUsuario').value.trim();
+    if(nome === "") {
+        alert("Por favor, digite seu nome!");
+        return;
+    }
+    
     user = nome + "_" + Math.floor(Math.random()*999);
     localStorage.setItem('user_br277', user);
+    
+    // Fecha o modal de boas-vindas
     document.getElementById('welcomeModal').style.display = 'none';
     
+    // Mostra mensagem de boas-vindas
     const msgDiv = document.getElementById('mensagemBemVindo');
     msgDiv.style.display = 'block';
     msgDiv.innerHTML = `👋 Bem-vindo, ${nome}!`;
     setTimeout(() => {
         msgDiv.style.display = 'none';
     }, 5000);
+    
+    // Inicia o GPS
+    iniciarGPS();
 }
 
-// Verifica se já tem usuário
+// ===== FUNÇÃO PARA INICIAR GPS =====
+function iniciarGPS() {
+    if (!navigator.geolocation) {
+        alert("Seu navegador não suporta GPS!");
+        return;
+    }
+    
+    navigator.geolocation.watchPosition(pos => {
+        const novaPos = L.latLng(pos.coords.latitude, pos.coords.longitude);
+        meuLatLng = novaPos;
+        
+        if(!meuMarker) {
+            meuMarker = L.marker(meuLatLng, { 
+                icon: L.divIcon({ 
+                    html: `<div class="pulse-loc" style="width:40px;height:40px;"></div><div style="font-size:32px; margin-top:-10px;">🚚</div>`, 
+                    className: '', 
+                    iconSize:[40,40] 
+                }) 
+            }).addTo(map);
+            map.setView(meuLatLng, 17);
+        } else { 
+            meuMarker.setLatLng(meuLatLng); 
+        }
+        
+        if(follow) map.panTo(meuLatLng);
+        
+        // Auto-encerrar rota se chegar perto (50 metros)
+        if(rotaControle && rotaControle.getWaypoints().length >= 2) {
+            const destino = rotaControle.getWaypoints()[1].latLng;
+            if(destino) {
+                const dist = meuLatLng.distanceTo(destino);
+                if(dist < 50) { 
+                    map.removeControl(rotaControle); 
+                    rotaControle = null; 
+                    alert("Você chegou ao destino!"); 
+                }
+            }
+        }
+    }, error => {
+        console.log("Erro GPS:", error);
+        alert("Erro ao acessar GPS. Verifique as permissões!");
+    }, { 
+        enableHighAccuracy: true,
+        maximumAge: 0,
+        timeout: 5000
+    });
+}
+
+// ===== VERIFICA USUÁRIO AO CARREGAR =====
 if(localStorage.getItem('user_br277')) {
     user = localStorage.getItem('user_br277');
     document.getElementById('welcomeModal').style.display = 'none';
-} else {
-    document.getElementById('welcomeModal').style.display = 'flex';
+    iniciarGPS(); // Inicia GPS automaticamente
 }
 
 // FUNÇÕES DE INTERFACE ORIGINAIS
@@ -819,61 +870,4 @@ function toggleDark() {
 }
 
 function toggleMute() { 
-    isMuted = !isMuted; 
-    document.getElementById('btn-mute').innerHTML = isMuted ? "🔇" : "🔊";
-    document.getElementById('btn-mute').style.color = isMuted ? "red" : "black";
-}
-
-function toggleChat() { 
-    const c = document.getElementById('chat-global');
-    c.style.display = (c.style.display === 'flex') ? 'none' : 'flex';
-}
-
-// FUNÇÕES DO PAINEL DE ALERTAS
-function minimizarAlertas() {
-    const lista = document.getElementById('alertasLista');
-    const seta = document.getElementById('setaAlertas');
-    if(lista.style.display === 'none') {
-        lista.style.display = 'flex';
-        seta.style.transform = 'rotate(0deg)';
-    } else {
-        lista.style.display = 'none';
-        seta.style.transform = 'rotate(180deg)';
-    }
-}
-
-function abrirModalAlerta() {
-    document.getElementById('modalAlerta').style.display = 'flex';
-}
-
-function fecharModalAlerta() {
-    document.getElementById('modalAlerta').style.display = 'none';
-    document.querySelectorAll('.opcao-alerta').forEach(el => {
-        el.classList.remove('selecionado');
-    });
-}
-
-function selecionarTipoAlerta(tipo) {
-    document.querySelectorAll('.opcao-alerta').forEach(el => {
-        el.classList.remove('selecionado');
-        if(el.dataset.tipo === tipo) {
-            el.classList.add('selecionado');
-            alertaSelecionado = tipo;
-        }
-    });
-}
-
-function enviarAlerta() {
-    if(!alertaSelecionado) {
-        alert("Selecione um tipo de alerta!");
-        return;
-    }
-    
-    if(!meuLatLng) {
-        alert("Aguardando localização GPS...");
-        return;
-    }
-    
-    const desc = document.getElementById('descAlerta').value;
-    const novoAlerta = {
-        id: Date.now().toString
+    isMuted = !is
