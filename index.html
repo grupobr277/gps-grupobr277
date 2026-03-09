@@ -11,85 +11,93 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body, #map { height: 100%; width: 100%; font-family: 'Segoe UI', sans-serif; }
         
-        /* PAINEL DE ALERTAS - NOMES */
+        /* PAINEL DE ALERTAS - COMPACTO */
         .alertas-panel {
             position: fixed;
             top: 70px;
             left: 5px;
-            background: white;
-            border-radius: 20px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(5px);
+            border-radius: 30px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.2);
             z-index: 9000;
             border: 2px solid #075e54;
             overflow: hidden;
-            width: 140px;
+            width: 50px;
         }
         
         .alertas-header {
             background: #075e54;
             color: white;
-            padding: 10px;
-            font-weight: bold;
+            padding: 8px;
+            font-size: 12px;
             text-align: center;
-            font-size: 14px;
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            height: 70px;
         }
         
         .alertas-lista {
-            max-height: 400px;
-            overflow-y: auto;
             padding: 5px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
         }
         
         .alerta-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px;
-            cursor: pointer;
-            border-radius: 12px;
-            transition: background 0.2s;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .alerta-item:hover {
-            background: #f0f0f0;
-        }
-        
-        .alerta-item .icone {
-            width: 32px;
-            height: 32px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
             color: white;
-            font-size: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: all 0.2s;
+            position: relative;
+        }
+        
+        .alerta-item:hover {
+            transform: scale(1.1);
         }
         
         .alerta-item .nome {
-            font-size: 13px;
-            font-weight: 500;
+            position: absolute;
+            left: 45px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 15px;
+            font-size: 11px;
+            white-space: nowrap;
+            display: none;
         }
         
-        .acidente .icone { background: #e53935; }
-        .obras .icone { background: #ff9800; }
-        .pane .icone { background: #795548; }
-        .animal .icone { background: #9c27b0; }
-        .radar .icone { background: #607d8b; }
-        .barreira .icone { background: #8b4513; }
-        .neblina .icone { background: #00acc1; }
-        .congestionamento .icone { background: #f44336; }
-        .alagamento .icone { background: #2196f3; }
-        .desvio .icone { background: #4caf50; }
+        .alerta-item:hover .nome {
+            display: block;
+        }
         
-        /* CONTADOR DE USUÁRIOS */
+        .acidente { background: #e53935; }
+        .obras { background: #ff9800; }
+        .pane { background: #795548; }
+        .animal { background: #9c27b0; }
+        .radar { background: #607d8b; }
+        .barreira { background: #8b4513; }
+        .neblina { background: #00acc1; }
+        .congestionamento { background: #f44336; }
+        .alagamento { background: #2196f3; }
+        .desvio { background: #4caf50; }
+        
+        /* CONTADOR DE USUÁRIOS - TECNOLÓGICO */
         .contador-usuarios {
             position: fixed;
             top: 15px;
             right: 15px;
-            background: #075e54;
+            background: linear-gradient(135deg, #075e54, #0a7a6b);
             color: white;
-            padding: 8px 15px;
+            padding: 10px 18px;
             border-radius: 40px;
             font-size: 13px;
             font-weight: bold;
@@ -98,11 +106,53 @@
             align-items: center;
             gap: 8px;
             border: 2px solid #ffd700;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            backdrop-filter: blur(5px);
         }
         
         .contador-usuarios i {
             color: #ffd700;
+            animation: pulse 2s infinite;
+        }
+        
+        .online-pulse {
+            width: 8px;
+            height: 8px;
+            background: #4caf50;
+            border-radius: 50%;
+            margin-left: 5px;
+            animation: pulse-green 2s infinite;
+        }
+        
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(76, 175, 80, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
+        }
+        
+        /* BOTÃO MUDO */
+        .btn-mudo {
+            position: fixed;
+            right: 15px;
+            bottom: 190px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid #075e54;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 9000;
+            font-size: 20px;
+            color: #075e54;
+        }
+        
+        .btn-mudo.mudo {
+            background: #e53935;
+            color: white;
         }
         
         /* ALERTA SUSPENSO */
@@ -110,7 +160,7 @@
             position: fixed;
             top: 70px;
             right: 10px;
-            width: 320px;
+            width: 300px;
             background: white;
             border-radius: 16px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.2);
@@ -127,7 +177,6 @@
             font-weight: bold;
             display: flex;
             justify-content: space-between;
-            align-items: center;
             cursor: pointer;
         }
         
@@ -141,7 +190,7 @@
             padding: 12px;
             border-bottom: 1px solid #eee;
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             gap: 12px;
             cursor: pointer;
             transition: background 0.2s;
@@ -159,279 +208,60 @@
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 20px;
-            flex-shrink: 0;
+            font-size: 18px;
         }
         
-        .alerta-tempo-real .info {
-            flex: 1;
-        }
-        
-        .alerta-tempo-real .titulo {
-            font-weight: bold;
-            font-size: 14px;
-            margin-bottom: 3px;
-        }
-        
-        .alerta-tempo-real .endereco {
-            font-size: 12px;
-            color: #075e54;
-            margin-bottom: 3px;
-        }
-        
-        .alerta-tempo-real .distancia {
-            font-size: 11px;
-            color: #e53935;
-            font-weight: bold;
-        }
-        
-        /* CHAT WHATSAPP STYLE */
-        .chat-container {
-            position: fixed;
-            top: 10%;
-            left: 5%;
-            width: 90%;
-            height: 80%;
-            background: #e5ddd5;
-            z-index: 20000;
-            border-radius: 20px;
-            display: none;
-            flex-direction: column;
-            border: 2px solid #075e54;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-        
-        .chat-header {
-            background: #075e54;
-            color: white;
-            padding: 15px;
-            border-radius: 18px 18px 0 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .chat-mensagens {
-            flex: 1;
-            overflow-y: auto;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            background: #e5ddd5;
-        }
-        
-        .mensagem-wrapper {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            margin: 2px 0;
-            position: relative;
-        }
-        
-        .mensagem {
-            max-width: 65%;
-            padding: 8px 12px;
-            border-radius: 15px;
-            position: relative;
-            font-size: 14px;
-            word-wrap: break-word;
-        }
-        
-        .mensagem.minha {
-            background: #dcf8c6;
-            align-self: flex-end;
-            margin-left: auto;
-            border-bottom-right-radius: 2px;
-        }
-        
-        .mensagem.outra {
-            background: white;
-            align-self: flex-start;
-            border-bottom-left-radius: 2px;
-        }
-        
-        .mensagem-info {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            margin-top: 2px;
-            font-size: 10px;
-            color: #999;
-            justify-content: flex-end;
-        }
-        
-        .mensagem-remetente {
-            font-weight: bold;
-            font-size: 12px;
-            margin-bottom: 2px;
-            color: #075e54;
-        }
-        
-        .mensagem-acoes {
-            position: absolute;
-            top: -25px;
-            right: 0;
-            background: white;
-            border-radius: 30px;
-            padding: 5px 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            display: none;
-            gap: 15px;
-            z-index: 10;
-            border: 1px solid #075e54;
-        }
-        
-        .mensagem-wrapper:hover .mensagem-acoes {
-            display: flex;
-        }
-        
-        .mensagem-acoes span {
-            cursor: pointer;
-            font-size: 16px;
-            color: #666;
-        }
-        
-        .chat-input {
-            padding: 15px;
-            background: #f0f0f0;
-            display: flex;
-            gap: 10px;
-            border-radius: 0 0 18px 18px;
-            align-items: center;
-        }
-        
-        .chat-input input {
-            flex: 1;
-            padding: 12px 15px;
-            border-radius: 30px;
-            border: 1px solid #ccc;
-            outline: none;
-            font-size: 14px;
-        }
-        
-        .chat-input button {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            border: none;
-            background: #075e54;
-            color: white;
-            cursor: pointer;
-        }
-        
-        .btn-emoji {
-            background: #ffcc00 !important;
-            color: #333 !important;
-        }
-        
-        /* EMOJI PICKER */
-        .emoji-picker {
+        /* NOTIFICAÇÃO DE ÁUDIO */
+        .audio-notification {
             position: fixed;
             bottom: 100px;
-            right: 20px;
-            background: white;
-            border-radius: 30px;
-            padding: 12px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2196f3;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            z-index: 10000;
             display: none;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 8px;
-            z-index: 21000;
-            border: 2px solid #075e54;
-        }
-        
-        .emoji-picker span {
-            font-size: 24px;
-            cursor: pointer;
-            width: 45px;
-            height: 45px;
-            display: flex;
             align-items: center;
-            justify-content: center;
-            border-radius: 50%;
+            gap: 15px;
+            font-size: 14px;
+            border: 2px solid white;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            animation: slideUp 0.3s;
         }
         
-        .emoji-picker span:hover {
-            background: #f0f0f0;
+        .audio-notification i {
+            font-size: 20px;
         }
         
-        /* BALÃO DO ALERTA */
-        .balao-alerta {
-            background: white;
-            border-radius: 16px;
-            padding: 0;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            border: 2px solid #075e54;
-            min-width: 280px;
-            overflow: hidden;
-        }
-        
-        .balao-header {
-            background: #075e54;
-            color: white;
-            padding: 10px 12px;
-            font-weight: bold;
+        .audio-wave {
             display: flex;
-            justify-content: space-between;
+            gap: 3px;
         }
         
-        .balao-chat {
-            max-height: 250px;
-            overflow-y: auto;
-            padding: 10px;
-            background: #e5ddd5;
-        }
-        
-        .balao-mensagem {
+        .audio-wave span {
+            width: 4px;
+            height: 15px;
             background: white;
-            padding: 6px 10px;
-            border-radius: 12px;
-            margin: 4px 0;
-            max-width: 85%;
-            font-size: 12px;
+            animation: wave 1s infinite;
         }
         
-        .balao-mensagem.minha {
-            background: #dcf8c6;
-            margin-left: auto;
+        @keyframes wave {
+            0%, 100% { height: 5px; }
+            50% { height: 20px; }
         }
         
-        .balao-mensagem .hora {
-            font-size: 9px;
-            color: #999;
-            margin-left: 8px;
-        }
-        
-        .balao-input {
-            display: flex;
-            padding: 8px;
-            background: #f0f0f0;
-            gap: 5px;
-        }
-        
-        .balao-input input {
-            flex: 1;
-            padding: 8px 12px;
-            border-radius: 25px;
-            border: 1px solid #ccc;
-            outline: none;
-        }
-        
-        .balao-input button {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            border: none;
-            background: #075e54;
-            color: white;
-            cursor: pointer;
+        @keyframes slideUp {
+            from { transform: translateX(-50%) translateY(20px); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
         }
         
         /* LUPA */
         .lupa-container {
             position: fixed;
-            top: 70px;
-            left: 160px;
+            top: 15px;
+            left: 60px;
             width: 250px;
             z-index: 10000;
             background: white;
@@ -464,9 +294,9 @@
             bottom: 100px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.9);
             color: white;
-            padding: 10px 25px;
+            padding: 12px 25px;
             border-radius: 50px;
             z-index: 10000;
             display: none;
@@ -479,7 +309,7 @@
         .gravando-timer {
             font-weight: bold;
             color: #ffd700;
-            font-size: 18px;
+            font-size: 20px;
         }
         
         /* BOTÕES */
@@ -514,12 +344,11 @@
             color: #333;
         }
         
-        #btn-alerta-suspenso {
+        #btn-alerta {
             right: 15px;
             top: 190px;
             background: #e53935;
             color: white;
-            border-color: white;
         }
         
         #btn-px { 
@@ -582,19 +411,6 @@
             0% { transform: scale(0.8); opacity: 1; } 
             100% { transform: scale(2); opacity: 0; } 
         }
-        
-        .data-divider {
-            text-align: center;
-            margin: 10px 0;
-        }
-        
-        .data-divider span {
-            background: rgba(0,0,0,0.6);
-            color: white;
-            padding: 3px 12px;
-            border-radius: 30px;
-            font-size: 11px;
-        }
     </style>
 </head>
 <body>
@@ -605,11 +421,12 @@
 <div class="contador-usuarios" id="contadorUsuarios">
     <i class="fas fa-users"></i>
     <span id="numUsuarios">0</span> online
+    <div class="online-pulse"></div>
 </div>
 
-<!-- PAINEL DE ALERTAS - NOMES -->
+<!-- PAINEL DE ALERTAS - ÍCONES -->
 <div class="alertas-panel">
-    <div class="alertas-header">🚨 ALERTAS</div>
+    <div class="alertas-header">🚨</div>
     <div class="alertas-lista" id="alertasLista"></div>
 </div>
 
@@ -638,6 +455,11 @@
     <i class="fas fa-location-arrow"></i> RECENTRALIZAR
 </div>
 
+<!-- BOTÃO MUDO -->
+<div class="btn-mudo" id="btnMudo" onclick="toggleMudo()">
+    <i class="fas fa-volume-up"></i>
+</div>
+
 <!-- BOTÕES -->
 <div class="btn-flutuante" id="btn-chat" onclick="toggleChatGeral()">
     <i class="fas fa-comment"></i>
@@ -647,44 +469,21 @@
     💡
 </div>
 
-<div class="btn-flutuante" id="btn-alerta-suspenso" onclick="toggleAlertaSuspenso()">
+<div class="btn-flutuante" id="btn-alerta" onclick="toggleAlertaSuspenso()">
     <i class="fas fa-bell"></i>
 </div>
 
 <div id="btn-px">🎤</div>
 
-<!-- CHAT GERAL -->
-<div class="chat-container" id="chatGeral">
-    <div class="chat-header">
-        <div style="display:flex; align-items:center; gap:10px;">
-            <i class="fas fa-comments"></i>
-            <span>CHAT GERAL</span>
-        </div>
-        <div style="display:flex; gap:15px;">
-            <span onclick="abrirEmojiPicker()" style="cursor:pointer;">😊</span>
-            <span onclick="toggleChatGeral()" style="cursor:pointer;">✖</span>
-        </div>
+<!-- NOTIFICAÇÃO DE ÁUDIO -->
+<div class="audio-notification" id="audioNotification">
+    <i class="fas fa-headphones"></i>
+    <span>Áudio recebido...</span>
+    <div class="audio-wave">
+        <span></span>
+        <span></span>
+        <span></span>
     </div>
-    <div class="chat-mensagens" id="chatMensagens"></div>
-    <div class="chat-input">
-        <input type="text" id="chatInput" placeholder="Digite sua mensagem..." onkeypress="if(event.key==='Enter') enviarMsgGeral()">
-        <button class="btn-emoji" onclick="abrirEmojiPicker()">😊</button>
-        <button onclick="enviarMsgGeral()"><i class="fas fa-paper-plane"></i></button>
-    </div>
-</div>
-
-<!-- EMOJI PICKER -->
-<div class="emoji-picker" id="emojiPicker">
-    <span onclick="inserirEmoji('👍')">👍</span>
-    <span onclick="inserirEmoji('❤️')">❤️</span>
-    <span onclick="inserirEmoji('😂')">😂</span>
-    <span onclick="inserirEmoji('😢')">😢</span>
-    <span onclick="inserirEmoji('😡')">😡</span>
-    <span onclick="inserirEmoji('🚨')">🚨</span>
-    <span onclick="inserirEmoji('⚠️')">⚠️</span>
-    <span onclick="inserirEmoji('✅')">✅</span>
-    <span onclick="inserirEmoji('❌')">❌</span>
-    <span onclick="inserirEmoji('🤔')">🤔</span>
 </div>
 
 <!-- INDICADOR DE GRAVAÇÃO -->
@@ -714,9 +513,9 @@ let seguirLocalizacao = true;
 let rotaAtual = null;
 let mapa = null;
 let usuariosAtivos = {};
-let mensagemRespondendo = null;
+let mudo = false;
 
-// ===== 10 ALERTAS COM NOMES =====
+// ===== 10 ALERTAS =====
 const alertas = [
     { tipo: 'acidente', icone: '💥', nome: 'Acidente', cor: '#e53935' },
     { tipo: 'obras', icone: '🚧', nome: 'Obras', cor: '#ff9800' },
@@ -732,37 +531,35 @@ const alertas = [
 
 // ===== INICIALIZAÇÃO =====
 document.addEventListener('DOMContentLoaded', function() {
-    criarListaAlertas();
+    criarIconesAlertas();
     iniciarMapa();
     iniciarGPS();
     carregarAlertasTempoReal();
     carregarUsuariosAtivos();
-    carregarChatGeral();
     carregarAlertasFixos();
 });
 
-function criarListaAlertas() {
+function criarIconesAlertas() {
     const lista = document.getElementById('alertasLista');
     alertas.forEach(alerta => {
         const div = document.createElement('div');
         div.className = `alerta-item ${alerta.tipo}`;
-        div.innerHTML = `
-            <div class="icone">${alerta.icone}</div>
-            <div class="nome">${alerta.nome}</div>
-        `;
+        div.innerHTML = alerta.icone;
+        div.setAttribute('data-nome', alerta.nome);
         div.onclick = () => ativarAlerta(alerta);
+        
+        const nomeSpan = document.createElement('span');
+        nomeSpan.className = 'nome';
+        nomeSpan.textContent = alerta.nome;
+        div.appendChild(nomeSpan);
+        
         lista.appendChild(div);
     });
 }
 
 // ===== MAPA =====
 function iniciarMapa() {
-    mapa = L.map('map', { 
-        zoomControl: false,
-        zoomSnap: 0.5,
-        zoomDelta: 0.5
-    }).setView([-25.4284, -49.2733], 13);
-    
+    mapa = L.map('map', { zoomControl: false }).setView([-25.4284, -49.2733], 13);
     L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(mapa);
     
     mapa.on('dragstart', () => {
@@ -786,20 +583,17 @@ function iniciarGPS() {
                 icon: L.divIcon({
                     html: `<div style="position:relative;">
                         <div class="pulse-loc" style="position:absolute; left:-12px; top:-12px;"></div>
-                        <div style="font-size:28px; transform:rotate(${pos.coords.heading || 0}deg);">🚗</div>
+                        <div style="font-size:28px;">🚗</div>
                     </div>`,
-                    className: '',
                     iconSize: [1, 1]
                 })
             }).addTo(mapa);
             
             mapa.setView(minhaLocalizacao, 17);
             
-            // Registra usuário
             db.ref('usuarios_ativos/' + usuario).set({
                 lat: minhaLocalizacao.lat,
                 lng: minhaLocalizacao.lng,
-                heading: pos.coords.heading || 0,
                 timestamp: Date.now()
             });
             
@@ -808,7 +602,6 @@ function iniciarGPS() {
             db.ref('usuarios_ativos/' + usuario).update({
                 lat: minhaLocalizacao.lat,
                 lng: minhaLocalizacao.lng,
-                heading: pos.coords.heading || 0,
                 timestamp: Date.now()
             });
         }
@@ -818,7 +611,6 @@ function iniciarGPS() {
         }
     }, null, { enableHighAccuracy: true });
     
-    // Remove ao sair
     window.addEventListener('beforeunload', () => {
         db.ref('usuarios_ativos/' + usuario).remove();
     });
@@ -829,7 +621,6 @@ function carregarUsuariosAtivos() {
     db.ref('usuarios_ativos').on('value', snap => {
         const usuarios = snap.val();
         
-        // Remove marcadores antigos
         Object.values(usuariosAtivos).forEach(marker => {
             if (marker) mapa.removeLayer(marker);
         });
@@ -842,12 +633,11 @@ function carregarUsuariosAtivos() {
         }
         
         const total = Object.keys(usuarios).length;
-        document.getElementById('numUsuarios').textContent = total - 1; // Remove próprio
+        document.getElementById('numUsuarios').textContent = total;
         
         Object.entries(usuarios).forEach(([id, dados]) => {
             if (id === usuario) return;
             
-            // Remove se for muito antigo (mais de 10 segundos)
             if (Date.now() - dados.timestamp > 10000) {
                 db.ref('usuarios_ativos/' + id).remove();
                 return;
@@ -855,8 +645,7 @@ function carregarUsuariosAtivos() {
             
             const marcador = L.marker([dados.lat, dados.lng], {
                 icon: L.divIcon({
-                    html: `<div style="font-size:24px; transform:rotate(${dados.heading || 0}deg);">🚗</div>`,
-                    className: '',
+                    html: `<div style="font-size:24px;">🚗</div>`,
                     iconSize: [24, 24]
                 })
             }).addTo(mapa);
@@ -866,7 +655,7 @@ function carregarUsuariosAtivos() {
     });
 }
 
-// ===== ALERTAS FIXOS (SALVOS) =====
+// ===== ALERTAS FIXOS =====
 function carregarAlertasFixos() {
     db.ref('alertas_fixos').on('child_added', snap => {
         const alerta = snap.val();
@@ -874,9 +663,9 @@ function carregarAlertasFixos() {
         
         const marcador = L.marker([alerta.lat, alerta.lng], {
             icon: L.divIcon({
-                html: `<div style="background:white; padding:5px 10px; border-radius:30px; border:2px solid ${alerta.cor}; box-shadow:0 2px 10px rgba(0,0,0,0.2); font-size:14px;">${alerta.icone}</div>`,
+                html: `<div style="background:${alerta.cor}; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:16px; border:2px solid white; box-shadow:0 2px 10px rgba(0,0,0,0.3);">${alerta.icone}</div>`,
                 className: '',
-                iconSize: [40, 30]
+                iconSize: [34, 34]
             })
         }).addTo(mapa);
         
@@ -893,59 +682,48 @@ function ativarAlerta(alerta) {
         return;
     }
     
-    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${minhaLocalizacao.lat}&lon=${minhaLocalizacao.lng}`)
-        .then(res => res.json())
-        .then(data => {
-            const endereco = data.display_name || 'Localização atual';
-            const id = Date.now();
-            
-            const alertaData = {
-                ...alerta,
-                lat: minhaLocalizacao.lat,
-                lng: minhaLocalizacao.lng,
-                endereco: endereco,
-                timestamp: id
-            };
-            
-            db.ref('alertas_fixos/' + id).set(alertaData);
-            
-            const marcador = L.marker(minhaLocalizacao, {
-                icon: L.divIcon({
-                    html: `<div style="background:white; padding:5px 10px; border-radius:30px; border:2px solid ${alerta.cor}; box-shadow:0 2px 10px rgba(0,0,0,0.2); font-size:14px;">${alerta.icone}</div>`,
-                    className: '',
-                    iconSize: [40, 30]
-                })
-            }).addTo(mapa);
-            
-            marcador.on('click', () => {
-                abrirChatAlerta(alertaData, minhaLocalizacao, id);
-            });
-            
-            setTimeout(() => {
-                abrirChatAlerta(alertaData, minhaLocalizacao, id);
-            }, 200);
-        });
+    const id = Date.now();
+    
+    const alertaData = {
+        ...alerta,
+        lat: minhaLocalizacao.lat,
+        lng: minhaLocalizacao.lng,
+        timestamp: id
+    };
+    
+    db.ref('alertas_fixos/' + id).set(alertaData);
+    
+    const marcador = L.marker(minhaLocalizacao, {
+        icon: L.divIcon({
+            html: `<div style="background:${alerta.cor}; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:16px; border:2px solid white; box-shadow:0 2px 10px rgba(0,0,0,0.3);">${alerta.icone}</div>`,
+            iconSize: [34, 34]
+        })
+    }).addTo(mapa);
+    
+    marcador.on('click', () => {
+        abrirChatAlerta(alertaData, minhaLocalizacao, id);
+    });
+    
+    setTimeout(() => {
+        abrirChatAlerta(alertaData, minhaLocalizacao, id);
+    }, 200);
 }
 
 // ===== CHAT DO ALERTA =====
 function abrirChatAlerta(alerta, posicao, id) {
     const conteudo = document.createElement('div');
-    conteudo.className = 'balao-alerta';
     conteudo.innerHTML = `
-        <div class="balao-header">
-            <span>${alerta.icone} ${alerta.nome}</span>
-            <span style="font-size:10px;">${new Date().toLocaleTimeString()}</span>
-        </div>
-        <div class="balao-chat" id="chatAlerta-${id}">
+        <div style="padding:10px; background:#075e54; color:white; font-weight:bold;">${alerta.icone} ${alerta.nome}</div>
+        <div style="padding:10px; max-height:200px; overflow-y:auto;" id="chatAlerta-${id}">
             <div style="text-align:center; color:#999;">Carregando...</div>
         </div>
-        <div class="balao-input">
-            <input type="text" id="inputAlerta-${id}" placeholder="Digite..." onkeypress="if(event.key==='Enter') enviarMsgAlerta('${id}')">
-            <button onclick="enviarMsgAlerta('${id}')"><i class="fas fa-paper-plane"></i></button>
+        <div style="display:flex; padding:8px; gap:5px;">
+            <input type="text" id="inputAlerta-${id}" style="flex:1; padding:8px; border-radius:20px; border:1px solid #ccc;" placeholder="Digite..." onkeypress="if(event.key==='Enter') enviarMsgAlerta('${id}')">
+            <button onclick="enviarMsgAlerta('${id}')" style="width:35px; height:35px; border-radius:50%; border:none; background:#075e54; color:white; cursor:pointer;">➔</button>
         </div>
     `;
     
-    L.popup({ maxWidth: 300 }).setLatLng(posicao).setContent(conteudo).openOn(mapa);
+    L.popup({ maxWidth: 280 }).setLatLng(posicao).setContent(conteudo).openOn(mapa);
     
     db.ref(`chats/alerta_${id}`).orderByChild('timestamp').on('value', snap => {
         const msgs = snap.val();
@@ -960,10 +738,9 @@ function abrirChatAlerta(alerta, posicao, id) {
         let html = '';
         Object.values(msgs).forEach(msg => {
             html += `
-                <div class="balao-mensagem ${msg.usuario === usuario ? 'minha' : ''}">
-                    <small><b>${msg.usuario}</b></small><br>
-                    ${msg.texto}
-                    <span class="hora">${msg.hora}</span>
+                <div style="background:${msg.usuario === usuario ? '#dcf8c6' : 'white'}; padding:5px 8px; border-radius:10px; margin:3px 0;">
+                    <small><b>${msg.usuario}</b></small><br>${msg.texto}<br>
+                    <small style="font-size:9px;">${msg.hora}</small>
                 </div>
             `;
         });
@@ -996,17 +773,18 @@ function carregarAlertasTempoReal() {
     }
     
     const pontosReais = [
-        { lat: -25.4284, lng: -49.2733, nome: 'BR-277, km 120, Curitiba - PR' },
-        { lat: -25.4384, lng: -49.2833, nome: 'BR-277, km 125, Curitiba - PR' },
-        { lat: -25.4184, lng: -49.2633, nome: 'BR-277, km 115, São José dos Pinhais - PR' }
+        { lat: -25.4284, lng: -49.2733, nome: 'BR-277, km 120, Curitiba' },
+        { lat: -25.4384, lng: -49.2833, nome: 'BR-277, km 125, Curitiba' },
+        { lat: -25.4184, lng: -49.2633, nome: 'BR-277, km 115, São José' }
     ];
     
-    const alertasReais = [];
     const tipos = [
         { tipo: 'Acidente', icone: '💥', cor: '#e53935' },
         { tipo: 'Obras', icone: '🚧', cor: '#ff9800' },
         { tipo: 'Congestionamento', icone: '⚫', cor: '#f44336' }
     ];
+    
+    let html = '';
     
     pontosReais.forEach((ponto, index) => {
         const tipo = tipos[index % tipos.length];
@@ -1015,38 +793,19 @@ function carregarAlertasTempoReal() {
             ponto.lat, ponto.lng
         );
         
-        alertasReais.push({
-            ...tipo,
-            endereco: ponto.nome,
-            lat: ponto.lat,
-            lng: ponto.lng,
-            distancia: distancia
-        });
-    });
-    
-    atualizarAlertaSuspenso(alertasReais);
-}
-
-function atualizarAlertaSuspenso(alertas) {
-    const conteudo = document.getElementById('conteudoSuspenso');
-    let html = '';
-    
-    alertas.sort((a, b) => a.distancia - b.distancia);
-    
-    alertas.forEach(alerta => {
         html += `
-            <div class="alerta-tempo-real" onclick="irParaAlerta(${alerta.lat}, ${alerta.lng})">
-                <div class="icone" style="background:${alerta.cor}">${alerta.icone}</div>
-                <div class="info">
-                    <div class="titulo">${alerta.tipo}</div>
-                    <div class="endereco">${alerta.endereco}</div>
-                    <div class="distancia">🚗 ${alerta.distancia} km</div>
+            <div class="alerta-tempo-real" onclick="irParaAlerta(${ponto.lat}, ${ponto.lng})">
+                <div class="icone" style="background:${tipo.cor}">${tipo.icone}</div>
+                <div style="flex:1;">
+                    <div style="font-weight:bold;">${tipo.tipo}</div>
+                    <div style="font-size:11px;">${ponto.nome}</div>
+                    <div style="font-size:10px; color:#e53935;">${distancia} km</div>
                 </div>
             </div>
         `;
     });
     
-    conteudo.innerHTML = html;
+    document.getElementById('conteudoSuspenso').innerHTML = html;
 }
 
 function irParaAlerta(lat, lng) {
@@ -1071,107 +830,6 @@ function toggleAlertaSuspenso() {
     seta.className = alerta.style.display === 'block' ? 'fas fa-chevron-down' : 'fas fa-chevron-up';
 }
 
-// ===== CHAT GERAL =====
-function toggleChatGeral() {
-    const chat = document.getElementById('chatGeral');
-    chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
-}
-
-function carregarChatGeral() {
-    db.ref('chat_geral').orderByChild('timestamp').on('value', snap => {
-        const msgs = snap.val();
-        const chatDiv = document.getElementById('chatMensagens');
-        if (!msgs) return;
-        
-        let html = '';
-        let ultimaData = '';
-        
-        Object.values(msgs).forEach(msg => {
-            const dataMsg = new Date(msg.timestamp).toLocaleDateString();
-            
-            if (dataMsg !== ultimaData) {
-                html += `<div class="data-divider"><span>${formatarData(dataMsg)}</span></div>`;
-                ultimaData = dataMsg;
-            }
-            
-            const isMinha = msg.usuario === usuario;
-            html += `
-                <div class="mensagem-wrapper">
-                    <div class="mensagem ${isMinha ? 'minha' : 'outra'}">
-                        <div class="mensagem-remetente">${msg.usuario}</div>
-                        ${msg.texto}
-                        <div class="mensagem-info">
-                            <span>${msg.hora}</span>
-                        </div>
-                    </div>
-                    <div class="mensagem-acoes">
-                        <span onclick="responderMsg('${msg.usuario}', '${msg.texto.replace(/'/g, "\\'")}')">↩️</span>
-                        <span onclick="reagirMsg('${msg.timestamp}')">😊</span>
-                        ${isMinha ? `<span onclick="apagarMsg('${msg.timestamp}')">🗑️</span>` : ''}
-                    </div>
-                </div>
-            `;
-        });
-        
-        chatDiv.innerHTML = html;
-        chatDiv.scrollTop = chatDiv.scrollHeight;
-    });
-}
-
-function enviarMsgGeral() {
-    const input = document.getElementById('chatInput');
-    let texto = input.value.trim();
-    if (!texto) return;
-    
-    if (mensagemRespondendo) {
-        texto = `↩️ ${mensagemRespondendo.usuario}: ${mensagemRespondendo.texto}\n${texto}`;
-        mensagemRespondendo = null;
-    }
-    
-    db.ref('chat_geral').push({
-        usuario: usuario,
-        texto: texto,
-        hora: new Date().toLocaleTimeString(),
-        timestamp: Date.now()
-    });
-    
-    input.value = '';
-}
-
-function responderMsg(usuario, texto) {
-    mensagemRespondendo = { usuario, texto };
-    document.getElementById('chatInput').focus();
-}
-
-function apagarMsg(timestamp) {
-    if (confirm('Apagar mensagem?')) {
-        db.ref('chat_geral').orderByChild('timestamp').equalTo(parseInt(timestamp)).once('value', snap => {
-            snap.forEach(child => child.ref.remove());
-        });
-    }
-}
-
-function formatarData(data) {
-    const hoje = new Date().toLocaleDateString();
-    const ontem = new Date(Date.now() - 86400000).toLocaleDateString();
-    if (data === hoje) return 'Hoje';
-    if (data === ontem) return 'Ontem';
-    return data;
-}
-
-// ===== EMOJI PICKER =====
-function abrirEmojiPicker() {
-    const picker = document.getElementById('emojiPicker');
-    picker.style.display = picker.style.display === 'grid' ? 'none' : 'grid';
-}
-
-function inserirEmoji(emoji) {
-    const input = document.getElementById('chatInput');
-    input.value += emoji;
-    input.focus();
-    document.getElementById('emojiPicker').style.display = 'none';
-}
-
 // ===== ROTA CORRIGIDA =====
 function buscarRota() {
     const destino = document.getElementById('buscaDestino').value;
@@ -1181,17 +839,15 @@ function buscarRota() {
     }
     
     if (!minhaLocalizacao) {
-        alert('Aguardando localização GPS...');
+        alert('Aguardando GPS...');
         return;
     }
-    
-    console.log('Buscando rota para:', destino);
     
     fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(destino)}, Brasil&limit=1`)
         .then(res => res.json())
         .then(data => {
             if (data.length === 0) {
-                alert('Local não encontrado. Tente ser mais específico.');
+                alert('Local não encontrado');
                 return;
             }
             
@@ -1212,28 +868,18 @@ function buscarRota() {
                     }] 
                 },
                 createMarker: () => null,
-                show: false,
-                router: L.Routing.osrmv1({
-                    serviceUrl: 'https://router.project-osrm.org/route/v1'
-                })
+                show: false
             }).addTo(mapa);
             
-            // Zoom na rota
             const bounds = L.latLngBounds([minhaLocalizacao, destinoLatLng]);
-            mapa.flyToBounds(bounds, { 
-                padding: [50, 50],
-                duration: 2
-            });
-            
-            console.log('✅ Rota criada com sucesso!');
+            mapa.flyToBounds(bounds, { padding: [50, 50] });
         })
         .catch(erro => {
-            console.error('Erro na busca:', erro);
-            alert('Erro ao buscar local. Tente novamente.');
+            alert('Erro ao buscar local');
         });
 }
 
-// ===== RÁDIO PX (MANTIDO) =====
+// ===== RÁDIO PX =====
 let gravador = null;
 let pedacosAudio = [];
 let streamAudio = null;
@@ -1241,47 +887,21 @@ let timerInterval = null;
 let tempoRestante = 30;
 const botaoPX = document.getElementById('btn-px');
 
-async function pedirPermissaoMicrofone() {
+botaoPX.addEventListener('mousedown', async function() {
     try {
         streamAudio = await navigator.mediaDevices.getUserMedia({ 
             audio: {
                 echoCancellation: true,
-                noiseSuppression: true,
-                autoGainControl: true
+                noiseSuppression: true
             }
         });
-        console.log("✅ Microfone liberado");
-        streamAudio.getTracks().forEach(track => track.stop());
-        streamAudio = null;
-    } catch(e) {
-        console.log("❌ Microfone negado:", e);
-    }
-}
-pedirPermissaoMicrofone();
-
-botaoPX.addEventListener('mousedown', async function() {
-    try {
-        if (!streamAudio) {
-            streamAudio = await navigator.mediaDevices.getUserMedia({ 
-                audio: {
-                    echoCancellation: true,
-                    noiseSuppression: true,
-                    autoGainControl: true
-                }
-            });
-        }
         
-        gravador = new MediaRecorder(streamAudio, {
-            mimeType: 'audio/webm;codecs=opus'
-        });
-        
+        gravador = new MediaRecorder(streamAudio);
         pedacosAudio = [];
         tempoRestante = 30;
         
         gravador.ondataavailable = function(e) {
-            if (e.data.size > 0) {
-                pedacosAudio.push(e.data);
-            }
+            if (e.data.size > 0) pedacosAudio.push(e.data);
         };
         
         gravador.onstop = function() {
@@ -1296,7 +916,6 @@ botaoPX.addEventListener('mousedown', async function() {
                         timestamp: Date.now()
                     });
                     
-                    // Auto-delete após 30 segundos
                     setTimeout(() => {
                         db.ref('radio').orderByChild('timestamp').endAt(Date.now() - 30000).once('value', snap => {
                             snap.forEach(child => child.ref.remove());
@@ -1311,7 +930,6 @@ botaoPX.addEventListener('mousedown', async function() {
                 streamAudio.getTracks().forEach(track => track.stop());
                 streamAudio = null;
             }
-            pedacosAudio = [];
             
             document.getElementById('gravandoIndicator').style.display = 'none';
             if (timerInterval) clearInterval(timerInterval);
@@ -1320,40 +938,28 @@ botaoPX.addEventListener('mousedown', async function() {
         gravador.start();
         botaoPX.classList.add('ativo');
         
-        const indicator = document.getElementById('gravandoIndicator');
+        document.getElementById('gravandoIndicator').style.display = 'flex';
         const timer = document.getElementById('gravandoTimer');
-        indicator.style.display = 'flex';
         
         timerInterval = setInterval(() => {
             tempoRestante--;
             timer.textContent = tempoRestante + 's';
-            if (tempoRestante <= 0) {
-                pararGravacao();
-            }
+            if (tempoRestante <= 0) pararGravacao();
         }, 1000);
         
         setTimeout(() => {
-            if (gravador && gravador.state === 'recording') {
-                pararGravacao();
-            }
+            if (gravador && gravador.state === 'recording') pararGravacao();
         }, 30000);
         
     } catch(e) {
-        console.log("Erro microfone:", e);
         alert('Permita acesso ao microfone');
     }
 });
 
 botaoPX.addEventListener('mouseup', pararGravacao);
 botaoPX.addEventListener('mouseleave', pararGravacao);
-botaoPX.addEventListener('touchstart', function(e) {
-    e.preventDefault();
-    botaoPX.dispatchEvent(new Event('mousedown'));
-});
-botaoPX.addEventListener('touchend', function(e) {
-    e.preventDefault();
-    pararGravacao();
-});
+botaoPX.addEventListener('touchstart', e => { e.preventDefault(); botaoPX.dispatchEvent(new Event('mousedown')); });
+botaoPX.addEventListener('touchend', e => { e.preventDefault(); pararGravacao(); });
 
 function pararGravacao() {
     if (gravador && gravador.state === 'recording') {
@@ -1367,11 +973,17 @@ function pararGravacao() {
 // Receber áudio
 db.ref('radio').orderByChild('timestamp').limitToLast(1).on('child_added', function(snap) {
     const dados = snap.val();
-    if (dados && dados.usuario !== usuario) {
+    if (dados && dados.usuario !== usuario && !mudo) {
         if (Date.now() - dados.timestamp < 5000) {
             const audio = new Audio(dados.audio);
             audio.volume = 1.0;
-            audio.play().catch(e => console.log("Erro ao reproduzir:", e));
+            audio.play().catch(() => {});
+            
+            // Notificação visual
+            document.getElementById('audioNotification').style.display = 'flex';
+            setTimeout(() => {
+                document.getElementById('audioNotification').style.display = 'none';
+            }, 2000);
         }
     }
 });
@@ -1381,11 +993,27 @@ function toggleModoNoturno() {
     document.getElementById('map').classList.toggle('mapa-noturno');
 }
 
+function toggleMudo() {
+    mudo = !mudo;
+    const btn = document.getElementById('btnMudo');
+    btn.innerHTML = mudo ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
+    btn.classList.toggle('mudo');
+}
+
 function recentralizar() {
     seguirLocalizacao = true;
     document.getElementById('btnRecenter').style.display = 'none';
     if (minhaLocalizacao) mapa.flyTo(minhaLocalizacao, 17);
 }
+
+function toggleChatGeral() {
+    alert('Chat em desenvolvimento');
+}
+
+// Enter na busca
+document.getElementById('buscaDestino').addEventListener('keypress', e => {
+    if (e.key === 'Enter') buscarRota();
+});
 </script>
 </body>
 </html>
