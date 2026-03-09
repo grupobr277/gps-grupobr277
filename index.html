@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="utf-8">
-    <title>BR-277 | NAVEGADOR INTELIGENTE V26</title>
+    <title>BR-277 | NAVEGADOR INTELIGENTE</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
@@ -15,8 +15,6 @@
             --radio-gold: #ffd700; 
             --danger: #e53935;
             --warning: #ff9800;
-            --info: #2196f3;
-            --success: #4caf50;
             --admin-red: #c62828;
         }
         
@@ -52,10 +50,6 @@
             cursor: pointer;
         }
         
-        .alertas-header span { font-size: 16px; }
-        .alertas-header i { font-size: 20px; transition: transform 0.3s; }
-        .alertas-header.minimizado i { transform: rotate(180deg); }
-        
         .alertas-lista {
             flex: 1;
             overflow-y: auto;
@@ -79,11 +73,6 @@
             border-left: 5px solid transparent;
         }
         
-        .alerta-item:hover {
-            transform: translateX(5px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-        
         .alerta-item .icone {
             width: 40px;
             height: 40px;
@@ -95,55 +84,15 @@
             color: white;
         }
         
-        .alerta-item .info {
-            flex: 1;
-        }
-        
-        .alerta-item .titulo {
-            font-weight: bold;
-            font-size: 14px;
-            margin-bottom: 2px;
-        }
-        
-        .alerta-item .desc {
-            font-size: 12px;
-            color: #666;
-            display: flex;
-            gap: 5px;
-            align-items: center;
-        }
-        
-        .alerta-item .badge {
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 10px;
-            font-weight: bold;
-            color: white;
-        }
-        
         /* CORES DOS ALERTAS */
         .alerta-acidente .icone { background: var(--danger); }
-        .alerta-acidente { border-left-color: var(--danger); }
-        
         .alerta-obras .icone { background: var(--warning); }
-        .alerta-obras { border-left-color: var(--warning); }
-        
         .alerta-pane .icone { background: #795548; }
-        .alerta-pane { border-left-color: #795548; }
-        
         .alerta-animal .icone { background: #9c27b0; }
-        .alerta-animal { border-left-color: #9c27b0; }
-        
         .alerta-radar .icone { background: #607d8b; }
-        .alerta-radar { border-left-color: #607d8b; }
-        
         .alerta-barreira .icone { background: #8b4513; }
-        .alerta-barreira { border-left-color: #8b4513; }
-        
         .alerta-neblina .icone { background: #00acc1; }
-        .alerta-neblina { border-left-color: #00acc1; }
         
-        /* BOTÃO DE CRIAR ALERTA */
         .btn-novo-alerta {
             background: var(--ws-green);
             color: white;
@@ -174,13 +123,6 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             border: 3px solid var(--radio-gold);
             overflow: hidden;
-            animation: pulse-border 2s infinite;
-        }
-        
-        @keyframes pulse-border {
-            0% { border-color: var(--radio-gold); box-shadow: 0 0 0 0 rgba(255,215,0,0.7); }
-            50% { border-color: var(--ws-green); box-shadow: 0 0 20px rgba(7,94,84,0.5); }
-            100% { border-color: var(--radio-gold); box-shadow: 0 0 0 0 rgba(255,215,0,0.7); }
         }
         
         .lupa-destaque input {
@@ -190,73 +132,6 @@
             font-size: 18px;
             outline: none;
             background: transparent;
-        }
-        
-        .lupa-destaque input::placeholder {
-            color: #999;
-            font-style: italic;
-        }
-        
-        .lupa-destaque i {
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 24px;
-            color: var(--ws-green);
-        }
-        
-        /* SUGESTÕES DE ROTA */
-        .sugestoes-rota {
-            position: fixed;
-            top: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 90%;
-            max-width: 500px;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            z-index: 4499;
-            display: none;
-            padding: 15px;
-        }
-        
-        .sugestao-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 12px;
-            border-bottom: 1px solid #eee;
-            cursor: pointer;
-        }
-        
-        .sugestao-item:hover {
-            background: #f5f5f5;
-        }
-        
-        .sugestao-item .icone-rota {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--ws-green);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .sugestao-item .info-rota {
-            flex: 1;
-        }
-        
-        .sugestao-item .nome-rota {
-            font-weight: bold;
-        }
-        
-        .sugestao-item .detalhes-rota {
-            font-size: 12px;
-            color: #666;
         }
         
         /* MODAL DE ALERTA */
@@ -279,12 +154,6 @@
             background: white;
             border-radius: 30px;
             overflow: hidden;
-            animation: slideUp 0.3s;
-        }
-        
-        @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
         }
         
         .modal-header {
@@ -314,23 +183,11 @@
             border-radius: 15px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.2s;
         }
         
         .opcao-alerta.selecionado {
             border-color: var(--ws-green);
             background: var(--ws-light);
-        }
-        
-        .opcao-alerta i { font-size: 24px; display: block; margin-bottom: 5px; }
-        
-        .modal-body textarea {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #ddd;
-            border-radius: 15px;
-            margin: 10px 0;
-            resize: none;
         }
         
         .btn-enviar-alerta {
@@ -345,167 +202,7 @@
             cursor: pointer;
         }
         
-        /* SALA DE CHAT DO ALERTA */
-        .chat-alerta-container {
-            position: fixed;
-            top: 10%;
-            right: 5%;
-            width: 350px;
-            height: 80%;
-            background: white;
-            border-radius: 20px;
-            z-index: 7000;
-            display: none;
-            flex-direction: column;
-            border: 3px solid var(--ws-green);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-        
-        .chat-alerta-header {
-            background: var(--ws-green);
-            color: white;
-            padding: 15px;
-            font-weight: bold;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .chat-alerta-tipo {
-            background: rgba(255,255,255,0.2);
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 12px;
-        }
-        
-        .chat-alerta-msgs {
-            flex: 1;
-            overflow-y: auto;
-            padding: 15px;
-            background: #e5ddd5;
-        }
-        
-        .chat-alerta-input {
-            padding: 15px;
-            background: #f0f0f0;
-            display: flex;
-            gap: 10px;
-        }
-        
-        .chat-alerta-input input {
-            flex: 1;
-            padding: 12px;
-            border-radius: 25px;
-            border: 1px solid #ccc;
-        }
-        
-        .chat-alerta-emoji {
-            position: absolute;
-            bottom: 80px;
-            right: 20px;
-            background: white;
-            border-radius: 30px;
-            padding: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            display: none;
-        }
-        
-        /* CONTROLES DE ADMIN */
-        .admin-panel {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 9000;
-        }
-        
-        .admin-btn {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: var(--admin-red);
-            color: white;
-            border: 2px solid white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-        
-        .admin-login-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            z-index: 10001;
-            display: none;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        /* MODAL DE BOAS-VINDAS */
-        .welcome-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 20000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .welcome-content {
-            background: linear-gradient(135deg, var(--ws-green), #128C7E);
-            color: white;
-            padding: 40px;
-            border-radius: 40px;
-            text-align: center;
-            max-width: 400px;
-        }
-        
-        .welcome-content input {
-            width: 100%;
-            padding: 15px;
-            border: none;
-            border-radius: 30px;
-            margin: 20px 0;
-            font-size: 18px;
-            text-align: center;
-        }
-        
-        .welcome-content button {
-            padding: 15px 40px;
-            background: var(--radio-gold);
-            color: black;
-            border: none;
-            border-radius: 30px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        
-        .mensagem-bem-vindo {
-            position: fixed;
-            top: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--ws-green);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 30px;
-            z-index: 5000;
-            font-weight: bold;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            display: none;
-        }
-        
-        /* BOTÕES FLUTUANTES ORIGINAIS */
+        /* BOTÕES FLUTUANTES */
         .f-btn { 
             position: fixed; 
             z-index: 5000; 
@@ -520,7 +217,6 @@
             width: 55px; 
             height: 55px; 
             font-size: 24px; 
-            touch-action: none; 
         }
         #btn-chat { right: 20px; bottom: 120px; background: var(--ws-green); color: white; }
         #btn-mute { right: 20px; bottom: 190px; background: #fff; }
@@ -541,11 +237,8 @@
             justify-content: center; 
             font-size: 40px; 
             color: var(--radio-gold); 
-            box-shadow: 0 0 25px rgba(0,0,0,0.7); 
-            transition: all 0.2s; 
-            user-select: none; 
         }
-        #btn-px.ativo { background: var(--danger); border-color: white; transform: translateX(-50%) scale(0.9); color: white; }
+        #btn-px.ativo { background: var(--danger); border-color: white; }
         
         .map-dark { filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%); }
         #btn-rec { position: fixed; bottom: 130px; left: 50%; transform: translateX(-50%); z-index: 4001; background: white; border: 2px solid var(--ws-green); border-radius: 20px; padding: 10px 20px; font-weight: bold; color: var(--ws-green); display: none; cursor: pointer; }
@@ -563,6 +256,15 @@
             0% { box-shadow: 0 0 0 0px rgba(0, 122, 255, 0.7); } 
             100% { box-shadow: 0 0 0 20px rgba(0, 122, 255, 0); } 
         }
+
+        /* CHAT GLOBAL */
+        .chat-container { position: fixed; top: 10%; left: 5%; width: 90%; height: 80%; background: #e5ddd5; z-index: 6000; border-radius: 15px; display: none; flex-direction: column; border: 2px solid var(--ws-green); }
+        .chat-header { background: var(--ws-green); color: white; padding: 15px; border-radius: 13px 13px 0 0; display: flex; justify-content: space-between; }
+        .chat-msgs { flex: 1; overflow-y: auto; padding: 15px; }
+        .balao { padding: 10px 15px; border-radius: 15px; margin: 5px 0; max-width: 80%; }
+        .b-eu { background: var(--ws-light); align-self: flex-end; }
+        .b-outro { background: white; align-self: flex-start; }
+        .chat-input { padding: 10px; background: #f0f0f0; display: flex; gap: 10px; }
     </style>
 </head>
 <body>
@@ -570,13 +272,13 @@
 <div id="map"></div>
 <div id="btn-rec" onclick="recentralizar()">🧭 RECENTRALIZAR</div>
 
-<!-- BOTÕES FLUTUANTES ORIGINAIS -->
+<!-- BOTÕES FLUTUANTES -->
 <div id="btn-luz" class="f-btn" onclick="toggleDark()">💡</div>
 <div id="btn-mute" class="f-btn" onclick="toggleMute()">🔊</div>
 <div id="btn-chat" class="f-btn" onclick="toggleChat()">💬</div>
 <div id="btn-px">🎤</div>
 
-<!-- CHAT GLOBAL ORIGINAL -->
+<!-- CHAT GLOBAL -->
 <div id="chat-global" class="chat-container">
     <div class="chat-header">
         <span>CHAT BR-277</span>
@@ -590,51 +292,24 @@
 </div>
 
 <!-- PAINEL DE ALERTAS -->
-<div class="alertas-panel" id="alertasPanel">
+<div class="alertas-panel">
     <div class="alertas-header" onclick="minimizarAlertas()">
-        <span>🚨 ALERTAS EM TEMPO REAL</span>
+        <span>🚨 ALERTAS</span>
         <i class="fas fa-chevron-down" id="setaAlertas"></i>
     </div>
-    <div class="alertas-lista" id="alertasLista">
-        <!-- Alertas serão inseridos aqui via JavaScript -->
-    </div>
+    <div class="alertas-lista" id="alertasLista"></div>
     <button class="btn-novo-alerta" onclick="abrirModalAlerta()">
         <i class="fas fa-plus-circle"></i> NOVO ALERTA
     </button>
 </div>
 
-<!-- LUPA DE DESTAQUE -->
-<div class="lupa-destaque" id="lupaDestaque">
-    <input type="text" id="buscaDestino" placeholder="🔍 Para onde vamos? Ex: Curitiba a Campo Largo" onfocus="mostrarSugestoes()" onkeyup="buscarSugestoes(this.value)">
+<!-- LUPA -->
+<div class="lupa-destaque">
+    <input type="text" id="buscaDestino" placeholder="🔍 Para onde vamos?" onkeypress="if(event.key==='Enter') buscarRota()">
     <i class="fas fa-search"></i>
 </div>
 
-<!-- SUGESTÕES DE ROTA -->
-<div class="sugestoes-rota" id="sugestoesRota">
-    <div class="sugestao-item" onclick="traçarRotaSugerida('Curitiba', 'Campo Largo')">
-        <div class="icone-rota"><i class="fas fa-route"></i></div>
-        <div class="info-rota">
-            <div class="nome-rota">Curitiba → Campo Largo</div>
-            <div class="detalhes-rota">30 km • 35 min</div>
-        </div>
-    </div>
-    <div class="sugestao-item" onclick="traçarRotaSugerida('Curitiba', 'Ponta Grossa')">
-        <div class="icone-rota"><i class="fas fa-route"></i></div>
-        <div class="info-rota">
-            <div class="nome-rota">Curitiba → Ponta Grossa</div>
-            <div class="detalhes-rota">112 km • 1h40</div>
-        </div>
-    </div>
-    <div class="sugestao-item" onclick="traçarRotaSugerida('Paranaguá', 'Curitiba')">
-        <div class="icone-rota"><i class="fas fa-route"></i></div>
-        <div class="info-rota">
-            <div class="nome-rota">Paranaguá → Curitiba</div>
-            <div class="detalhes-rota">91 km • 1h30</div>
-        </div>
-    </div>
-</div>
-
-<!-- MODAL DE ALERTA -->
+<!-- MODAL ALERTA -->
 <div class="modal-alerta" id="modalAlerta">
     <div class="modal-conteudo">
         <div class="modal-header">
@@ -643,106 +318,19 @@
         </div>
         <div class="modal-body">
             <div class="opcoes-alerta" id="opcoesAlerta">
-                <div class="opcao-alerta" onclick="selecionarTipoAlerta('acidente')" data-tipo="acidente">
-                    <i class="fas fa-car-crash" style="color: #e53935"></i>
-                    <span>Acidente</span>
-                </div>
-                <div class="opcao-alerta" onclick="selecionarTipoAlerta('obras')" data-tipo="obras">
-                    <i class="fas fa-hard-hat" style="color: #ff9800"></i>
-                    <span>Obras</span>
-                </div>
-                <div class="opcao-alerta" onclick="selecionarTipoAlerta('pane')" data-tipo="pane">
-                    <i class="fas fa-tools" style="color: #795548"></i>
-                    <span>Pane Mecânica</span>
-                </div>
-                <div class="opcao-alerta" onclick="selecionarTipoAlerta('animal')" data-tipo="animal">
-                    <i class="fas fa-horse" style="color: #9c27b0"></i>
-                    <span>Animal na Pista</span>
-                </div>
-                <div class="opcao-alerta" onclick="selecionarTipoAlerta('radar')" data-tipo="radar">
-                    <i class="fas fa-camera" style="color: #607d8b"></i>
-                    <span>Radar Fixo</span>
-                </div>
-                <div class="opcao-alerta" onclick="selecionarTipoAlerta('barreira')" data-tipo="barreira">
-                    <i class="fas fa-mountain" style="color: #8b4513"></i>
-                    <span>Queda Barreira</span>
-                </div>
-                <div class="opcao-alerta" onclick="selecionarTipoAlerta('neblina')" data-tipo="neblina">
-                    <i class="fas fa-smog" style="color: #00acc1"></i>
-                    <span>Neblina</span>
-                </div>
-                <div class="opcao-alerta" onclick="selecionarTipoAlerta('congestionamento')" data-tipo="congestionamento">
-                    <i class="fas fa-traffic-light" style="color: #f44336"></i>
-                    <span>Congestionamento</span>
-                </div>
+                <div class="opcao-alerta" onclick="selecionarTipoAlerta('acidente')" data-tipo="acidente"><i class="fas fa-car-crash"></i> Acidente</div>
+                <div class="opcao-alerta" onclick="selecionarTipoAlerta('obras')" data-tipo="obras"><i class="fas fa-hard-hat"></i> Obras</div>
+                <div class="opcao-alerta" onclick="selecionarTipoAlerta('pane')" data-tipo="pane"><i class="fas fa-tools"></i> Pane</div>
+                <div class="opcao-alerta" onclick="selecionarTipoAlerta('animal')" data-tipo="animal"><i class="fas fa-horse"></i> Animal</div>
+                <div class="opcao-alerta" onclick="selecionarTipoAlerta('radar')" data-tipo="radar"><i class="fas fa-camera"></i> Radar</div>
+                <div class="opcao-alerta" onclick="selecionarTipoAlerta('barreira')" data-tipo="barreira"><i class="fas fa-mountain"></i> Barreira</div>
+                <div class="opcao-alerta" onclick="selecionarTipoAlerta('neblina')" data-tipo="neblina"><i class="fas fa-smog"></i> Neblina</div>
             </div>
-            
-            <textarea id="descAlerta" placeholder="Descreva o alerta (opcional)" rows="3"></textarea>
-            
-            <button class="btn-enviar-alerta" onclick="enviarAlerta()">
-                <i class="fas fa-send"></i> ENVIAR ALERTA
-            </button>
+            <textarea id="descAlerta" placeholder="Descrição" rows="3"></textarea>
+            <button class="btn-enviar-alerta" onclick="enviarAlerta()">ENVIAR</button>
         </div>
     </div>
 </div>
-
-<!-- SALA DE CHAT DO ALERTA -->
-<div class="chat-alerta-container" id="chatAlerta">
-    <div class="chat-alerta-header">
-        <span id="tituloChatAlerta">Alerta</span>
-        <span class="chat-alerta-tipo" id="tipoChatAlerta"></span>
-        <span onclick="fecharChatAlerta()" style="cursor:pointer">✖</span>
-    </div>
-    <div class="chat-alerta-msgs" id="chatAlertaMsgs"></div>
-    <div class="chat-alerta-input">
-        <input type="text" id="chatAlertaInput" placeholder="Digite sua mensagem..." onkeypress="if(event.key==='Enter') enviarMsgAlerta()">
-        <button onclick="enviarMsgAlerta()" style="background:var(--ws-green); color:white; border:none; border-radius:50%; width:40px; height:40px;">➔</button>
-        <button onclick="abrirEmojiPicker()" style="background:#ffcc00; border:none; border-radius:50%; width:40px; height:40px;">😊</button>
-    </div>
-    <div class="chat-alerta-emoji" id="emojiPicker">
-        <span onclick="inserirEmoji('👍')">👍</span>
-        <span onclick="inserirEmoji('👎')">👎</span>
-        <span onclick="inserirEmoji('😢')">😢</span>
-        <span onclick="inserirEmoji('🚨')">🚨</span>
-        <span onclick="inserirEmoji('⚠️')">⚠️</span>
-        <span onclick="inserirEmoji('🛑')">🛑</span>
-    </div>
-</div>
-
-<!-- PAINEL ADMIN -->
-<div class="admin-panel">
-    <div class="admin-btn" onclick="abrirAdminLogin()">
-        <i class="fas fa-user-shield"></i>
-    </div>
-</div>
-
-<!-- MODAL LOGIN ADMIN -->
-<div class="admin-login-modal" id="adminLoginModal">
-    <div class="modal-conteudo" style="max-width:300px">
-        <div class="modal-header">
-            <span>ACESSO ADMIN</span>
-            <span onclick="fecharAdminLogin()" style="cursor:pointer">✖</span>
-        </div>
-        <div class="modal-body">
-            <input type="password" id="senhaAdmin" placeholder="Senha" style="width:100%; padding:15px; margin:10px 0; border-radius:10px; border:2px solid #ddd;">
-            <button onclick="loginAdmin()" style="width:100%; padding:15px; background:var(--admin-red); color:white; border:none; border-radius:10px;">ENTRAR</button>
-        </div>
-    </div>
-</div>
-
-<!-- MODAL DE BOAS-VINDAS -->
-<div class="welcome-modal" id="welcomeModal">
-    <div class="welcome-content">
-        <h1>🚛 BR-277</h1>
-        <h2>Bem-vindo ao Navegador Inteligente!</h2>
-        <p>Como gostaria de ser chamado?</p>
-        <input type="text" id="nomeUsuario" placeholder="Seu nome" value="Motorista">
-        <button onclick="definirNomeUsuario()">COMEÇAR</button>
-    </div>
-</div>
-
-<!-- MENSAGEM DE BEM-VINDO -->
-<div class="mensagem-bem-vindo" id="mensagemBemVindo"></div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
@@ -758,55 +346,20 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// VARIÁVEIS GLOBAIS
-let user = "";
-let isAdmin = false;
-const ADMIN_PASSWORD = "br277admin2026";
+// VARIÁVEIS GLOBAIS - SIMPLIFICADO
+let user = "Motorista_" + Math.floor(Math.random()*999);
 let meuLatLng = null;
 let meuMarker = null;
 let follow = true;
 let rotaControle = null;
 let isMuted = false;
-let alertasAtivos = [];
 let alertaSelecionado = "";
-let chatAlertaAtivo = null;
 
 // INICIALIZAÇÃO DO MAPA
-const map = L.map('map', { 
-    zoomControl: false,
-    zoomSnap: 0.5,
-    zoomDelta: 0.5
-}).setView([-25.4284, -49.2733], 15);
-
+const map = L.map('map', { zoomControl: false }).setView([-25.4284, -49.2733], 15);
 L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(map);
 
-// ===== FUNÇÃO DE BOAS-VINDAS CORRIGIDA =====
-function definirNomeUsuario() {
-    const nome = document.getElementById('nomeUsuario').value.trim();
-    if(nome === "") {
-        alert("Por favor, digite seu nome!");
-        return;
-    }
-    
-    user = nome + "_" + Math.floor(Math.random()*999);
-    localStorage.setItem('user_br277', user);
-    
-    // Fecha o modal de boas-vindas
-    document.getElementById('welcomeModal').style.display = 'none';
-    
-    // Mostra mensagem de boas-vindas
-    const msgDiv = document.getElementById('mensagemBemVindo');
-    msgDiv.style.display = 'block';
-    msgDiv.innerHTML = `👋 Bem-vindo, ${nome}!`;
-    setTimeout(() => {
-        msgDiv.style.display = 'none';
-    }, 5000);
-    
-    // Inicia o GPS
-    iniciarGPS();
-}
-
-// ===== FUNÇÃO PARA INICIAR GPS =====
+// ===== GPS =====
 function iniciarGPS() {
     if (!navigator.geolocation) {
         alert("Seu navegador não suporta GPS!");
@@ -831,36 +384,13 @@ function iniciarGPS() {
         }
         
         if(follow) map.panTo(meuLatLng);
-        
-        // Auto-encerrar rota se chegar perto
-        if(rotaControle && rotaControle.getWaypoints().length >= 2) {
-            const destino = rotaControle.getWaypoints()[1].latLng;
-            if(destino) {
-                const dist = meuLatLng.distanceTo(destino);
-                if(dist < 50) { 
-                    map.removeControl(rotaControle); 
-                    rotaControle = null; 
-                    alert("Você chegou ao destino!"); 
-                }
-            }
-        }
-    }, error => {
-        console.log("Erro GPS:", error);
-    }, { 
-        enableHighAccuracy: true,
-        maximumAge: 0,
-        timeout: 5000
-    });
+    }, null, { enableHighAccuracy: true });
 }
 
-// ===== VERIFICA USUÁRIO AO CARREGAR =====
-if(localStorage.getItem('user_br277')) {
-    user = localStorage.getItem('user_br277');
-    document.getElementById('welcomeModal').style.display = 'none';
-    iniciarGPS();
-}
+// INICIA GPS AUTOMATICAMENTE
+iniciarGPS();
 
-// ===== FUNÇÕES DE INTERFACE =====
+// ===== FUNÇÕES BÁSICAS =====
 function toggleDark() { 
     document.getElementById('map').classList.toggle('map-dark'); 
 }
@@ -868,7 +398,153 @@ function toggleDark() {
 function toggleMute() { 
     isMuted = !isMuted; 
     document.getElementById('btn-mute').innerHTML = isMuted ? "🔇" : "🔊";
-    document.getElementById('btn-mute').style.color = isMuted ? "red" : "black";
 }
 
-function toggle
+function toggleChat() { 
+    const c = document.getElementById('chat-global');
+    c.style.display = (c.style.display === 'flex') ? 'none' : 'flex';
+}
+
+function recentralizar() { 
+    follow = true; 
+    document.getElementById('btn-rec').style.display = 'none'; 
+    if(meuLatLng) map.flyTo(meuLatLng, 17);
+}
+
+map.on('dragstart', () => { 
+    follow = false; 
+    document.getElementById('btn-rec').style.display = 'block'; 
+});
+
+// ===== ALERTAS =====
+function minimizarAlertas() {
+    const lista = document.getElementById('alertasLista');
+    const seta = document.getElementById('setaAlertas');
+    lista.style.display = lista.style.display === 'none' ? 'flex' : 'none';
+    seta.style.transform = lista.style.display === 'none' ? 'rotate(180deg)' : 'rotate(0deg)';
+}
+
+function abrirModalAlerta() {
+    document.getElementById('modalAlerta').style.display = 'flex';
+}
+
+function fecharModalAlerta() {
+    document.getElementById('modalAlerta').style.display = 'none';
+    document.querySelectorAll('.opcao-alerta').forEach(el => el.classList.remove('selecionado'));
+}
+
+function selecionarTipoAlerta(tipo) {
+    document.querySelectorAll('.opcao-alerta').forEach(el => {
+        el.classList.remove('selecionado');
+        if(el.dataset.tipo === tipo) el.classList.add('selecionado');
+    });
+    alertaSelecionado = tipo;
+}
+
+function enviarAlerta() {
+    if(!alertaSelecionado || !meuLatLng) {
+        alert("Selecione um tipo de alerta e aguarde o GPS!");
+        return;
+    }
+    
+    const alerta = {
+        id: Date.now(),
+        tipo: alertaSelecionado,
+        desc: document.getElementById('descAlerta').value,
+        lat: meuLatLng.lat,
+        lng: meuLatLng.lng,
+        user: user,
+        time: new Date().toLocaleTimeString()
+    };
+    
+    // Adiciona no painel
+    const alertaDiv = document.createElement('div');
+    alertaDiv.className = `alerta-item alerta-${alerta.tipo}`;
+    alertaDiv.innerHTML = `
+        <div class="icone"><i class="fas fa-${alerta.tipo === 'acidente' ? 'car-crash' : 'exclamation-triangle'}"></i></div>
+        <div class="info">
+            <div class="titulo">${alerta.tipo.toUpperCase()}</div>
+            <div class="desc">${alerta.desc || 'Alerta na pista'} • ${alerta.time}</div>
+        </div>
+    `;
+    document.getElementById('alertasLista').appendChild(alertaDiv);
+    
+    // Adiciona marcador no mapa
+    L.marker([alerta.lat, alerta.lng], {
+        icon: L.divIcon({
+            html: `<div style="background:${alerta.tipo === 'acidente' ? '#e53935' : '#ff9800'}; color:white; padding:5px 10px; border-radius:20px; border:2px solid white;">⚠️ ${alerta.tipo}</div>`,
+            className: ''
+        })
+    }).addTo(map);
+    
+    fecharModalAlerta();
+}
+
+// ===== CHAT =====
+function enviarMsg() {
+    const input = document.getElementById('msg-input');
+    if(!input.value.trim()) return;
+    
+    const msgDiv = document.createElement('div');
+    msgDiv.className = 'balao b-eu';
+    msgDiv.innerHTML = `<b>${user}</b><br>${input.value}<br><small>${new Date().toLocaleTimeString()}</small>`;
+    document.getElementById('chat-msgs').appendChild(msgDiv);
+    input.value = "";
+}
+
+// ===== ROTA =====
+function buscarRota() {
+    const destino = document.getElementById('buscaDestino').value;
+    if(!destino || !meuLatLng) return;
+    
+    // Usando geocoder do Leaflet
+    L.Control.Geocoder.nominatim().geocode(destino, (results) => {
+        if(results && results.length > 0) {
+            const destLatLng = results[0].center;
+            
+            if(rotaControle) map.removeControl(rotaControle);
+            
+            rotaControle = L.Routing.control({
+                waypoints: [meuLatLng, destLatLng],
+                lineOptions: { styles: [{ color: '#007aff', weight: 7 }] },
+                createMarker: () => null,
+                show: false
+            }).addTo(map);
+        }
+    });
+}
+
+// ===== RÁDIO PX =====
+let mediaRecorder;
+const pxBtn = document.getElementById('btn-px');
+
+pxBtn.addEventListener('mousedown', async () => {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        mediaRecorder.start();
+        pxBtn.classList.add('ativo');
+    } catch(e) {
+        alert("Permita acesso ao microfone!");
+    }
+});
+
+pxBtn.addEventListener('mouseup', () => {
+    if(mediaRecorder && mediaRecorder.state === "recording") {
+        mediaRecorder.stop();
+        pxBtn.classList.remove('ativo');
+    }
+});
+
+// Eventos touch para mobile
+pxBtn.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    pxBtn.dispatchEvent(new Event('mousedown'));
+});
+pxBtn.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    pxBtn.dispatchEvent(new Event('mouseup'));
+});
+</script>
+</body>
+</html>
