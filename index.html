@@ -1,18 +1,17 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="utf-8">
-    <title>BR-277 | GPS INTELIGENTE</title>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BR-277 | GPS INTELIGENTE</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body, #map { height: 100%; width: 100%; font-family: 'Segoe UI', sans-serif; }
         
-        /* MODAL DE CADASTRO - VERSÃO SIMPLIFICADA */
+        /* MODAL DE CADASTRO */
         .cadastro-modal {
             position: fixed;
             top: 0;
@@ -34,23 +33,16 @@
             max-width: 350px;
             width: 90%;
             color: white;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
             border: 3px solid #ffd700;
         }
         
-        .cadastro-content h1 {
-            font-size: 32px;
-            margin-bottom: 10px;
-        }
-        
-        .cadastro-content input, .cadastro-content select {
+        .cadastro-content input {
             width: 100%;
             padding: 15px;
             border: none;
             border-radius: 30px;
             margin: 10px 0;
             font-size: 16px;
-            outline: none;
         }
         
         .cadastro-content button {
@@ -63,11 +55,6 @@
             font-weight: bold;
             cursor: pointer;
             margin-top: 15px;
-            transition: transform 0.2s;
-        }
-        
-        .cadastro-content button:hover {
-            transform: scale(1.02);
         }
         
         .tipo-veiculo {
@@ -82,13 +69,13 @@
             padding: 10px;
             border-radius: 15px;
             cursor: pointer;
-            border: 2px solid transparent;
+            font-size: 14px;
         }
         
         .tipo-veiculo div.selecionado {
             background: #ffd700;
             color: #075e54;
-            border-color: white;
+            font-weight: bold;
         }
         
         /* LUPA */
@@ -102,10 +89,10 @@
             z-index: 10000;
             background: white;
             border-radius: 50px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
             border: 3px solid #ffd700;
             display: flex;
             overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
         }
         
         .lupa-container input {
@@ -125,6 +112,80 @@
             font-size: 18px;
         }
         
+        /* CHAT GLOBAL */
+        .chat-container {
+            position: fixed;
+            top: 10%;
+            left: 5%;
+            width: 90%;
+            height: 80%;
+            background: #e5ddd5;
+            z-index: 20000;
+            border-radius: 20px;
+            display: none;
+            flex-direction: column;
+            border: 2px solid #075e54;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .chat-header {
+            background: #075e54;
+            color: white;
+            padding: 15px;
+            border-radius: 18px 18px 0 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .chat-mensagens {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .chat-input {
+            padding: 15px;
+            background: #f0f0f0;
+            display: flex;
+            gap: 10px;
+            border-radius: 0 0 18px 18px;
+        }
+        
+        .chat-input input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 30px;
+            border: 1px solid #ccc;
+            outline: none;
+        }
+        
+        .chat-input button {
+            background: #075e54;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            cursor: pointer;
+        }
+        
+        .mensagem {
+            background: white;
+            padding: 8px 12px;
+            border-radius: 15px;
+            max-width: 80%;
+            margin: 2px 0;
+            align-self: flex-start;
+        }
+        
+        .mensagem.minha {
+            background: #dcf8c6;
+            align-self: flex-end;
+        }
+        
         /* BOTÕES */
         .f-btn { 
             position: fixed; 
@@ -139,6 +200,7 @@
             width: 55px; 
             height: 55px; 
             font-size: 24px; 
+            background: white;
         }
         
         #btn-chat { right: 15px; bottom: 120px; background: #075e54; color: white; }
@@ -162,6 +224,7 @@
             font-size: 35px; 
             color: #ffd700; 
             cursor: pointer;
+            transition: all 0.2s;
         }
         
         #btn-px.ativo { 
@@ -170,32 +233,60 @@
             transform: translateX(-50%) scale(0.95);
         }
         
+        #btn-rec { 
+            position: fixed; 
+            bottom: 120px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            z-index: 9000; 
+            background: white; 
+            border: 2px solid #075e54; 
+            border-radius: 30px; 
+            padding: 8px 20px; 
+            display: none; 
+            cursor: pointer; 
+            font-weight: bold;
+        }
+        
         .pulse-loc { 
             width: 45px; 
             height: 45px; 
             border-radius: 50%; 
-            animation: pulse-blue 1.5s infinite; 
+            animation: pulse 1.5s infinite; 
             background: rgba(33, 150, 243, 0.3); 
             border: 3px solid #2196f3; 
         }
         
-        @keyframes pulse-blue { 
+        @keyframes pulse { 
             0% { transform: scale(0.8); opacity: 1; } 
             100% { transform: scale(2); opacity: 0; } 
+        }
+        
+        .mapa-noturno {
+            filter: invert(100%) hue-rotate(180deg) brightness(95%);
+        }
+        
+        .alerta-item {
+            background: white;
+            padding: 10px;
+            margin: 5px;
+            border-radius: 10px;
+            border-left: 5px solid #e53935;
         }
     </style>
 </head>
 <body>
 
 <div id="map"></div>
+<div id="btn-rec" onclick="recentralizar()">📍 MINHA LOCALIZAÇÃO</div>
 
 <!-- BOTÕES -->
-<div id="btn-luz" class="f-btn" onclick="toggleDark()">💡</div>
-<div id="btn-mute" class="f-btn" onclick="toggleMute()">🔊</div>
+<div id="btn-luz" class="f-btn" onclick="toggleModoNoturno()">💡</div>
+<div id="btn-mute" class="f-btn" onclick="toggleMudo()">🔊</div>
 <div id="btn-chat" class="f-btn" onclick="toggleChat()">💬</div>
 <div id="btn-px">🎤</div>
 
-<!-- MODAL DE CADASTRO - SIMPLIFICADO -->
+<!-- MODAL CADASTRO -->
 <div class="cadastro-modal" id="cadastroModal">
     <div class="cadastro-content">
         <h1>🚛 BR-277</h1>
@@ -203,8 +294,8 @@
         
         <input type="text" id="nomeCadastro" placeholder="Seu nome" value="Motorista">
         
-        <div style="margin:15px 0; text-align:left;">
-            <div style="margin-bottom:5px;">Tipo de veículo:</div>
+        <div style="margin:15px 0;">
+            <div style="margin-bottom:10px;">Tipo de veículo:</div>
             <div class="tipo-veiculo" id="tipoVeiculo">
                 <div onclick="selecionarTipo('carro')" id="tipo-carro" class="selecionado">🚗 Carro</div>
                 <div onclick="selecionarTipo('caminhao')" id="tipo-caminhao">🚛 Caminhão</div>
@@ -215,8 +306,6 @@
             </div>
         </div>
         
-        <input type="text" id="placaCadastro" placeholder="Placa (opcional)">
-        
         <button onclick="salvarCadastro()">COMEÇAR</button>
     </div>
 </div>
@@ -224,188 +313,187 @@
 <!-- LUPA -->
 <div class="lupa-container">
     <input type="text" id="buscaDestino" placeholder="Digite seu destino...">
-    <button onclick="buscarDestino()"><i class="fas fa-search"></i></button>
+    <button onclick="buscarRota()"><i class="fas fa-search"></i></button>
+</div>
+
+<!-- CHAT -->
+<div class="chat-container" id="chatContainer">
+    <div class="chat-header">
+        <span><i class="fas fa-comments"></i> CHAT GERAL</span>
+        <span onclick="toggleChat()" style="cursor:pointer">✖</span>
+    </div>
+    <div class="chat-mensagens" id="chatMensagens"></div>
+    <div class="chat-input">
+        <input type="text" id="chatInput" placeholder="Digite sua mensagem...">
+        <button onclick="enviarMensagem()"><i class="fas fa-paper-plane"></i></button>
+    </div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-// ===== FIREBASE =====
+// ===== CONFIGURAÇÃO FIREBASE =====
+const firebaseConfig = {
+    databaseURL: "https://gps-br277-default-rtdb.firebaseio.com"
+};
+
 try {
-    const firebaseConfig = { databaseURL: "https://gps-br277-default-rtdb.firebaseio.com" };
     firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    console.log("Firebase conectado!");
+    console.log("✅ Firebase conectado");
 } catch(e) {
-    console.log("Erro Firebase:", e);
+    console.log("❌ Erro Firebase:", e);
 }
 
+const db = firebase.database();
+
 // ===== VARIÁVEIS GLOBAIS =====
-let user = null;
-let tipoVeiculo = 'carro';
-let meuLatLng = null;
-let meuMarker = null;
-let follow = true;
-let isMuted = false;
+let usuario = null;
+let tipoVeiculoUsuario = 'carro';
+let minhaLocalizacao = null;
+let meuMarcador = null;
+let seguirLocalizacao = true;
 let rotaAtual = null;
+let modoNoturno = false;
+let mute = false;
+let mapa = null;
 
 // ===== INICIALIZAÇÃO =====
 document.addEventListener('DOMContentLoaded', function() {
-    console.log("Página carregada!");
+    console.log("📱 Página carregada");
     
-    // Verifica se já tem usuário salvo
-    const userSalvo = localStorage.getItem('br277_user');
+    // Verifica se já tem usuário
+    const usuarioSalvo = localStorage.getItem('br277_usuario');
     const tipoSalvo = localStorage.getItem('br277_veiculo');
     
-    if (userSalvo) {
-        user = userSalvo;
-        if (tipoSalvo) tipoVeiculo = tipoSalvo;
+    if (usuarioSalvo) {
+        usuario = usuarioSalvo;
+        if (tipoSalvo) tipoVeiculoUsuario = tipoSalvo;
         document.getElementById('cadastroModal').style.display = 'none';
-        iniciarGPS();
         iniciarMapa();
-    } else {
-        document.getElementById('cadastroModal').style.display = 'flex';
+        iniciarGPS();
     }
 });
 
 function selecionarTipo(tipo) {
-    tipoVeiculo = tipo;
-    
-    // Remove seleção anterior
+    tipoVeiculoUsuario = tipo;
     document.querySelectorAll('.tipo-veiculo div').forEach(el => {
         el.classList.remove('selecionado');
     });
-    
-    // Adiciona seleção no atual
     document.getElementById(`tipo-${tipo}`).classList.add('selecionado');
 }
 
 function salvarCadastro() {
-    console.log("Salvando cadastro...");
-    
     const nome = document.getElementById('nomeCadastro').value.trim();
     if (!nome) {
-        alert('Por favor, digite seu nome!');
+        alert('Digite seu nome!');
         return;
     }
     
-    const placa = document.getElementById('placaCadastro').value.trim();
+    usuario = nome;
+    localStorage.setItem('br277_usuario', nome);
+    localStorage.setItem('br277_veiculo', tipoVeiculoUsuario);
     
-    // Salva dados
-    user = nome;
-    localStorage.setItem('br277_user', nome);
-    localStorage.setItem('br277_veiculo', tipoVeiculo);
-    if (placa) localStorage.setItem('br277_placa', placa);
-    
-    console.log("Usuário:", user, "Veículo:", tipoVeiculo);
-    
-    // Fecha modal
     document.getElementById('cadastroModal').style.display = 'none';
     
-    // Inicia mapa e GPS
     iniciarMapa();
     iniciarGPS();
     
-    // Registra no Firebase
+    // Salva no Firebase
     try {
         db.ref('usuarios/' + Date.now()).set({
             nome: nome,
-            veiculo: tipoVeiculo,
-            placa: placa || '',
+            veiculo: tipoVeiculoUsuario,
             data: new Date().toISOString()
         });
     } catch(e) {
-        console.log("Erro ao salvar no Firebase:", e);
+        console.log("Erro ao salvar usuário:", e);
     }
 }
 
 function iniciarMapa() {
-    console.log("Iniciando mapa...");
+    console.log("🗺️ Iniciando mapa");
     
-    // Cria mapa
-    window.map = L.map('map', { zoomControl: false }).setView([-25.4284, -49.2733], 13);
-    L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(map);
+    mapa = L.map('map', { zoomControl: false }).setView([-25.4284, -49.2733], 13);
+    
+    L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}', {
+        maxZoom: 20
+    }).addTo(mapa);
     
     // Evento para botão de recentralizar
-    map.on('dragstart', () => { 
-        follow = false; 
-        const btn = document.getElementById('btn-rec');
-        if (!btn) {
-            const novoBtn = document.createElement('div');
-            novoBtn.id = 'btn-rec';
-            novoBtn.innerHTML = '📍 MINHA LOCALIZAÇÃO';
-            novoBtn.style.cssText = 'position:fixed; bottom:120px; left:50%; transform:translateX(-50%); z-index:9000; background:white; border:2px solid #075e54; border-radius:30px; padding:8px 20px; cursor:pointer;';
-            novoBtn.onclick = recentralizar;
-            document.body.appendChild(novoBtn);
-        } else {
-            btn.style.display = 'block';
-        }
+    mapa.on('dragstart', function() {
+        seguirLocalizacao = false;
+        document.getElementById('btn-rec').style.display = 'block';
     });
+    
+    // Carrega alertas
+    carregarAlertas();
 }
 
 function iniciarGPS() {
-    console.log("Iniciando GPS...");
+    console.log("📍 Iniciando GPS");
     
     if (!navigator.geolocation) {
-        alert("Seu navegador não suporta GPS!");
+        alert("GPS não suportado!");
         return;
     }
     
-    navigator.geolocation.watchPosition(pos => {
-        meuLatLng = L.latLng(pos.coords.latitude, pos.coords.longitude);
+    navigator.geolocation.watchPosition(function(pos) {
+        minhaLocalizacao = L.latLng(pos.coords.latitude, pos.coords.longitude);
         
-        if(!meuMarker) {
-            // Ícone baseado no tipo de veículo
-            const icones = {
-                carro: '🚗',
-                caminhao: '🚛',
-                moto: '🏍️',
-                van: '🚐',
-                onibus: '🚌',
-                pickup: '🛻'
-            };
+        const icones = {
+            carro: '🚗',
+            caminhao: '🚛',
+            moto: '🏍️',
+            van: '🚐',
+            onibus: '🚌',
+            pickup: '🛻'
+        };
+        
+        if (!meuMarcador) {
+            meuMarcador = L.marker(minhaLocalizacao, {
+                icon: L.divIcon({
+                    html: `<div class="pulse-loc"></div><div style="font-size:35px; margin-top:-15px;">${icones[tipoVeiculoUsuario]}</div>`,
+                    iconSize: [1, 1]
+                })
+            }).addTo(mapa);
             
-            meuMarker = L.marker(meuLatLng, { 
-                icon: L.divIcon({ 
-                    html: `<div class="pulse-loc"></div><div style="font-size:35px; margin-top:-15px;">${icones[tipoVeiculo] || '🚗'}</div>`, 
-                    iconSize:[1,1]
-                }) 
-            }).addTo(map);
-            
-            map.setView(meuLatLng, 17);
-        } else { 
-            meuMarker.setLatLng(meuLatLng); 
+            mapa.setView(minhaLocalizacao, 17);
+        } else {
+            meuMarcador.setLatLng(minhaLocalizacao);
         }
         
-        if(follow) map.panTo(meuLatLng);
+        if (seguirLocalizacao) {
+            mapa.panTo(minhaLocalizacao);
+        }
         
-    }, error => {
+    }, function(error) {
         console.log("Erro GPS:", error);
-    }, { 
+    }, {
         enableHighAccuracy: true,
         timeout: 10000
     });
 }
 
-// ===== LUPA =====
-function buscarDestino() {
+// ===== ROTA =====
+function buscarRota() {
     const destino = document.getElementById('buscaDestino').value;
-    if (!destino || destino.length < 3) {
-        alert('Digite um destino válido');
+    
+    if (!destino) {
+        alert('Digite um destino');
         return;
     }
     
-    if (!meuLatLng) {
+    if (!minhaLocalizacao) {
         alert('Aguardando localização GPS...');
         return;
     }
     
-    // Busca local
-    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(destino)}, Brasil&limit=5`)
+    console.log("🔍 Buscando:", destino);
+    
+    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(destino)}, Brasil&limit=1`)
         .then(response => response.json())
         .then(data => {
             if (data.length === 0) {
@@ -416,22 +504,24 @@ function buscarDestino() {
             const lugar = data[0];
             const destinoLatLng = L.latLng(parseFloat(lugar.lat), parseFloat(lugar.lon));
             
-            // Remove rota anterior
-            if (rotaAtual) map.removeControl(rotaAtual);
+            if (rotaAtual) {
+                mapa.removeControl(rotaAtual);
+            }
             
-            // Cria nova rota
             rotaAtual = L.Routing.control({
-                waypoints: [meuLatLng, destinoLatLng],
-                lineOptions: { styles: [{ color: '#2196F3', weight: 6 }] },
-                createMarker: () => null,
-                show: false,
-                router: L.Routing.osrmv1({
-                    serviceUrl: 'https://router.project-osrm.org/route/v1'
-                })
-            }).addTo(map);
+                waypoints: [minhaLocalizacao, destinoLatLng],
+                lineOptions: {
+                    styles: [{ color: '#2196F3', weight: 6 }]
+                },
+                createMarker: function() { return null; },
+                show: false
+            }).addTo(mapa);
             
-            // Zoom na rota
-            map.flyToBounds(L.latLngBounds([meuLatLng, destinoLatLng]), { padding: [50, 50] });
+            mapa.flyToBounds(L.latLngBounds([minhaLocalizacao, destinoLatLng]), {
+                padding: [50, 50]
+            });
+            
+            console.log("✅ Rota criada");
         })
         .catch(error => {
             console.log("Erro na busca:", error);
@@ -440,97 +530,219 @@ function buscarDestino() {
 }
 
 // ===== RÁDIO PX =====
-let mediaRecorder;
-let chunks = [];
-const pxBtn = document.getElementById('btn-px');
+let gravador = null;
+let pedacosAudio = [];
+const botaoPX = document.getElementById('btn-px');
 
-pxBtn.addEventListener('mousedown', iniciarGravacao);
-pxBtn.addEventListener('mouseup', pararGravacao);
-pxBtn.addEventListener('mouseleave', pararGravacao);
-pxBtn.addEventListener('touchstart', (e) => { e.preventDefault(); iniciarGravacao(); });
-pxBtn.addEventListener('touchend', (e) => { e.preventDefault(); pararGravacao(); });
+botaoPX.addEventListener('mousedown', iniciarGravacao);
+botaoPX.addEventListener('mouseup', pararGravacao);
+botaoPX.addEventListener('mouseleave', pararGravacao);
+botaoPX.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    iniciarGravacao();
+});
+botaoPX.addEventListener('touchend', function(e) {
+    e.preventDefault();
+    pararGravacao();
+});
 
 async function iniciarGravacao() {
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        mediaRecorder = new MediaRecorder(stream);
-        chunks = [];
+        gravador = new MediaRecorder(stream);
+        pedacosAudio = [];
         
-        mediaRecorder.ondataavailable = (e) => {
-            if(e.data.size > 0) chunks.push(e.data);
+        gravador.ondataavailable = function(e) {
+            if (e.data.size > 0) {
+                pedacosAudio.push(e.data);
+            }
         };
         
-        mediaRecorder.onstop = () => {
-            if(chunks.length > 0) {
-                const audioBlob = new Blob(chunks, { type: 'audio/webm' });
+        gravador.onstop = function() {
+            if (pedacosAudio.length > 0) {
+                const audioBlob = new Blob(pedacosAudio, { type: 'audio/webm' });
                 const reader = new FileReader();
-                reader.onloadend = () => {
+                
+                reader.onloadend = function() {
                     try {
-                        db.ref("radio").push({ 
-                            audio: reader.result, 
-                            user: user, 
-                            time: Date.now() 
+                        db.ref('radio').push({
+                            audio: reader.result,
+                            usuario: usuario,
+                            veiculo: tipoVeiculoUsuario,
+                            timestamp: Date.now()
                         });
+                        console.log("✅ Áudio enviado");
                     } catch(e) {
                         console.log("Erro ao enviar áudio:", e);
                     }
                 };
+                
                 reader.readAsDataURL(audioBlob);
             }
-            chunks = [];
+            
             stream.getTracks().forEach(track => track.stop());
+            pedacosAudio = [];
         };
         
-        mediaRecorder.start();
-        pxBtn.classList.add('ativo');
+        gravador.start();
+        botaoPX.classList.add('ativo');
+        console.log("🎤 Gravando...");
+        
     } catch(e) {
-        alert("Permita acesso ao microfone!");
+        console.log("Erro microfone:", e);
+        alert('Permita acesso ao microfone');
     }
 }
 
 function pararGravacao() {
-    if(mediaRecorder && mediaRecorder.state === "recording") {
-        mediaRecorder.stop();
-        pxBtn.classList.remove('ativo');
+    if (gravador && gravador.state === 'recording') {
+        gravador.stop();
+        botaoPX.classList.remove('ativo');
+        console.log("⏹️ Gravação parada");
     }
 }
 
-// Recebe áudio
+// Ouvir rádio
 try {
-    db.ref("radio").limitToLast(1).on("child_added", snap => {
-        const d = snap.val();
-        if(d && d.user !== user && !isMuted && (Date.now() - d.time < 5000)) {
-            new Audio(d.audio).play().catch(() => {});
+    db.ref('radio').limitToLast(1).on('child_added', function(snap) {
+        const dados = snap.val();
+        if (dados && dados.usuario !== usuario && !mute) {
+            if (Date.now() - dados.timestamp < 5000) {
+                new Audio(dados.audio).play().catch(e => {
+                    console.log("Erro ao reproduzir:", e);
+                });
+            }
         }
     });
 } catch(e) {
     console.log("Erro ao ouvir rádio:", e);
 }
 
+// ===== CHAT =====
+function toggleChat() {
+    const chat = document.getElementById('chatContainer');
+    chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
+    
+    if (chat.style.display === 'flex') {
+        carregarMensagens();
+    }
+}
+
+function enviarMensagem() {
+    const input = document.getElementById('chatInput');
+    const texto = input.value.trim();
+    
+    if (!texto) return;
+    
+    try {
+        db.ref('chat').push({
+            usuario: usuario,
+            veiculo: tipoVeiculoUsuario,
+            texto: texto,
+            timestamp: Date.now()
+        });
+        
+        input.value = '';
+        console.log("✅ Mensagem enviada");
+    } catch(e) {
+        console.log("Erro ao enviar mensagem:", e);
+    }
+}
+
+function carregarMensagens() {
+    try {
+        db.ref('chat').limitToLast(50).on('value', function(snap) {
+            const mensagens = snap.val();
+            if (!mensagens) return;
+            
+            const container = document.getElementById('chatMensagens');
+            container.innerHTML = '';
+            
+            Object.values(mensagens).reverse().forEach(msg => {
+                const div = document.createElement('div');
+                div.className = 'mensagem' + (msg.usuario === usuario ? ' minha' : '');
+                div.innerHTML = `
+                    <small><b>${msg.usuario}</b> ${msg.veiculo ? '🚗' : ''}</small><br>
+                    ${msg.texto}<br>
+                    <small style="font-size:9px;">${new Date(msg.timestamp).toLocaleTimeString()}</small>
+                `;
+                container.appendChild(div);
+            });
+            
+            container.scrollTop = container.scrollHeight;
+        });
+    } catch(e) {
+        console.log("Erro ao carregar mensagens:", e);
+    }
+}
+
+// ===== ALERTAS =====
+function carregarAlertas() {
+    const alertasFixos = [
+        { tipo: 'ACIDENTE', local: 'km 120', cor: '#e53935', lat: -25.4284, lng: -49.2733 },
+        { tipo: 'OBRAS', local: 'km 125', cor: '#ff9800', lat: -25.4384, lng: -49.2833 },
+        { tipo: 'CONGESTIONAMENTO', local: 'km 115', cor: '#f44336', lat: -25.4184, lng: -49.2633 }
+    ];
+    
+    setTimeout(function() {
+        if (!mapa) return;
+        
+        alertasFixos.forEach(alerta => {
+            L.marker([alerta.lat, alerta.lng], {
+                icon: L.divIcon({
+                    html: `<div style="background:${alerta.cor}; color:white; padding:5px 10px; border-radius:20px; border:2px solid white; font-size:12px; white-space:nowrap;">
+                        ⚠️ ${alerta.tipo}
+                    </div>`,
+                    iconSize: [100, 30]
+                })
+            }).addTo(mapa);
+        });
+        
+        console.log("✅ Alertas carregados");
+    }, 2000);
+}
+
 // ===== FUNÇÕES =====
-function toggleDark() { 
-    document.getElementById('map').classList.toggle('map-dark'); 
+function toggleModoNoturno() {
+    modoNoturno = !modoNoturno;
+    const mapDiv = document.getElementById('map');
+    if (modoNoturno) {
+        mapDiv.classList.add('mapa-noturno');
+        document.getElementById('btn-luz').innerHTML = '💡';
+    } else {
+        mapDiv.classList.remove('mapa-noturno');
+        document.getElementById('btn-luz').innerHTML = '💡';
+    }
 }
 
-function toggleMute() { 
-    isMuted = !isMuted; 
-    document.getElementById('btn-mute').innerHTML = isMuted ? "🔇" : "🔊";
+function toggleMudo() {
+    mute = !mute;
+    document.getElementById('btn-mute').innerHTML = mute ? '🔇' : '🔊';
 }
 
-function toggleChat() { 
-    alert('Chat em desenvolvimento');
-}
-
-function recentralizar() { 
-    follow = true; 
-    document.getElementById('btn-rec').style.display = 'none'; 
-    if(meuLatLng) map.flyTo(meuLatLng, 17);
+function recentralizar() {
+    seguirLocalizacao = true;
+    document.getElementById('btn-rec').style.display = 'none';
+    if (minhaLocalizacao) {
+        mapa.flyTo(minhaLocalizacao, 17);
+    }
 }
 
 // Enter na busca
-document.getElementById('buscaDestino').addEventListener('keypress', (e) => {
-    if(e.key === 'Enter') buscarDestino();
+document.getElementById('buscaDestino').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        buscarRota();
+    }
 });
+
+// Enter no chat
+document.getElementById('chatInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        enviarMensagem();
+    }
+});
+
+console.log("🚀 Aplicativo iniciado");
 </script>
 </body>
 </html>
