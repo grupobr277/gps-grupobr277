@@ -849,4 +849,33 @@ db.ref("chat_geral").limitToLast(50).on("child_added", snap => {
     div.style.alignSelf = msg.user === user ? 'flex-end' : 'flex-start';
     div.style.maxWidth = '80%';
     div.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
-    div.innerHTML =
+    div.innerHTML = `<small><b>${msg.user}</b></small><br>${msg.text}<br><small style="font-size:9px; color:#999;">${msg.time}</small>`;
+    document.getElementById('chat-msgs').appendChild(div);
+    document.getElementById('chat-msgs').scrollTop = document.getElementById('chat-msgs').scrollHeight;
+});
+
+function recentralizar() { 
+    follow = true; 
+    document.getElementById('btn-rec').style.display = 'none'; 
+    if(meuLatLng) map.flyTo(meuLatLng, 17);
+}
+
+map.on('dragstart', () => { 
+    follow = false; 
+    document.getElementById('btn-rec').style.display = 'block'; 
+});
+
+function minimizarAlertas() {
+    const lista = document.getElementById('alertasLista');
+    const seta = document.getElementById('setaAlertas');
+    if (lista.style.display === 'none') {
+        lista.style.display = 'flex';
+        seta.style.transform = 'rotate(0deg)';
+    } else {
+        lista.style.display = 'none';
+        seta.style.transform = 'rotate(180deg)';
+    }
+}
+</script>
+</body>
+</html>
