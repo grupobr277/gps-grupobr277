@@ -8,37 +8,40 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
     <style>
-        :root { --ws-green: #075e54; --ws-light: #dcf8c6; --radio-gold: #ffd700; }
+        :root { --ws-green: #075e54; --ws-light: #dcf8c6; --radio-gold: #ffd700; --danger: #e53935; }
         html, body, #map { margin: 0; padding: 0; height: 100%; width: 100%; background: #000; overflow: hidden; font-family: 'Segoe UI', sans-serif; }
+        
+        /* LUPA PERSONALIZADA */
+        .leaflet-control-geocoder { top: 15px !important; border: 3px solid var(--ws-green) !important; border-radius: 30px !important; width: 85% !important; max-width: 400px; height: 50px; left: 50% !important; transform: translateX(-50%); box-shadow: 0 4px 15px rgba(0,0,0,0.4) !important; }
+        .leaflet-control-geocoder-form input { font-size: 16px !important; padding: 12px !important; border-radius: 30px; }
+
+        /* BOTÕES FLUTUANTES */
+        .f-btn { position: fixed; z-index: 5000; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border: 2px solid white; cursor: pointer; background: white; width: 55px; height: 55px; font-size: 24px; touch-action: none; }
+        #btn-chat { right: 20px; bottom: 120px; background: var(--ws-green); color: white; }
+        #btn-mute { right: 20px; bottom: 190px; background: #fff; }
+        #btn-luz { right: 20px; top: 140px; background: #ffcc00; }
+
+        /* CHAT E BALÕES STYLE WHATSAPP */
+        .chat-container { position: fixed; top: 10%; left: 5%; width: 90%; height: 80%; background: #e5ddd5; z-index: 6000; border-radius: 15px; display: none; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 2px solid var(--ws-green); }
+        .chat-header { background: var(--ws-green); color: white; padding: 15px; font-weight: bold; border-radius: 13px 13px 0 0; display: flex; justify-content: space-between; }
+        .chat-msgs { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 8px; }
+        .balao { padding: 10px 15px; border-radius: 15px; font-size: 14px; max-width: 80%; position: relative; word-wrap: break-word; }
+        .balao .time { font-size: 10px; opacity: 0.6; display: block; text-align: right; margin-top: 5px; }
+        .balao .del { position: absolute; top: -5px; right: -5px; background: red; color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 12px; display: none; align-items: center; justify-content: center; }
+        .balao:hover .del { display: flex; }
+        .b-eu { background: var(--ws-light); align-self: flex-end; border-bottom-right-radius: 2px; }
+        .b-outro { background: white; align-self: flex-start; border-bottom-left-radius: 2px; }
+        .chat-input { padding: 10px; background: #f0f0f0; display: flex; gap: 10px; border-radius: 0 0 15px 15px; }
+        .chat-input input { flex: 1; padding: 10px; border-radius: 20px; border: 1px solid #ccc; outline: none; }
+
+        /* INTERFACE RÁDIO */
+        #btn-px { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90px; height: 90px; background: #333; border: 5px solid var(--radio-gold); border-radius: 50%; z-index: 5001; display: flex; align-items: center; justify-content: center; font-size: 40px; color: var(--radio-gold); box-shadow: 0 0 25px rgba(0,0,0,0.7); }
+        #btn-px.ativo { background: var(--danger); border-color: white; transform: translateX(-50%) scale(0.9); }
+
         .map-dark { filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%); }
-
-        /* LUPA */
-        .leaflet-control-geocoder { top: 10px !important; left: 50% !important; transform: translateX(-50%); width: 90% !important; max-width: 500px; border: 3px solid var(--ws-green) !important; border-radius: 25px !important; background: white !important; height: 45px; display: flex; align-items: center; z-index: 1000; }
-
-        /* PAINEL ALERTAS */
-        .painel-alertas { position: absolute; top: 75px; left: 10px; z-index: 2000; display: flex; flex-direction: column; gap: 4px; }
-        .btn-a { border: 2px solid #d4af37; padding: 6px; border-radius: 8px; width: 95px; text-align: center; color: white; font-weight: bold; font-size: 10px; background: #1a1a1a; cursor: pointer; }
-
-        /* RÁDIO PX */
-        #btn-px { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90px; height: 90px; background: #333; border: 5px solid var(--radio-gold); border-radius: 50%; z-index: 5001; display: flex; align-items: center; justify-content: center; font-size: 40px; color: var(--radio-gold); box-shadow: 0 0 25px rgba(0,0,0,0.7); touch-action: none; -webkit-user-select: none; }
-        #btn-px.ativo { background: #ff5252; border-color: white; transform: translateX(-50%) scale(0.9); }
-
-        /* CHAT WHATSAPP NO POPUP */
-        .pop-whats { width: 220px; font-family: sans-serif; }
-        .pop-header { background: var(--ws-green); color: white; padding: 5px; border-radius: 5px 5px 0 0; font-weight: bold; font-size: 12px; }
-        .pop-msg-box { max-height: 150px; overflow-y: auto; background: #e5ddd5; padding: 8px; display: flex; flex-direction: column; gap: 5px; }
-        .balao { padding: 5px 8px; border-radius: 8px; font-size: 11px; max-width: 90%; }
-        .b-eu { background: var(--ws-light); align-self: flex-end; }
-        .b-outro { background: white; align-self: flex-start; }
-
-        /* ROTA */
-        .leaflet-routing-container { bottom: 120px !important; right: 10px !important; top: auto !important; width: 220px !important; max-height: 200px; overflow-y: auto; }
-        .btn-encerrar { background: #ff5252; color: white; border: none; width: 100%; padding: 10px; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 5px; }
-
         #btn-rec { position: fixed; bottom: 130px; left: 50%; transform: translateX(-50%); z-index: 4001; background: white; border: 2px solid var(--ws-green); border-radius: 20px; padding: 10px 20px; font-weight: bold; color: var(--ws-green); display: none; cursor: pointer; }
         .pulse-loc { border-radius: 50%; animation: pulse-blue 2s infinite; background: rgba(0, 122, 255, 0.4); border: 2px solid white; position: absolute; }
         @keyframes pulse-blue { 0% { box-shadow: 0 0 0 0px rgba(0, 122, 255, 0.7); } 100% { box-shadow: 0 0 0 20px rgba(0, 122, 255, 0); } }
-        .f-btn { position: fixed; z-index: 4001; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border: 2px solid white; cursor: pointer; background: white; }
     </style>
 </head>
 <body>
@@ -46,21 +49,22 @@
 <div id="map"></div>
 <div id="btn-rec" onclick="recentralizar()">🧭 RECENTRALIZAR</div>
 
-<div class="painel-alertas">
-    <div class="btn-a" style="background:#b00020" onclick="enviarAlerta('Acidente', '⚠️')">⚠️ ACIDENTE</div>
-    <div class="btn-a" style="background:#b00020" onclick="enviarAlerta('Bloqueio', '🚫')">🚫 BLOQUEIO</div>
-    <div class="btn-a" style="background:#ff6d00" onclick="enviarAlerta('Obra', '🚧')">🚧 OBRA</div>
-    <div class="btn-a" style="background:#ff6d00" onclick="enviarAlerta('Lentidão', '🚗')">🚗 LENTIDÃO</div>
-    <div class="btn-a" style="background:#333" onclick="enviarAlerta('Animal', '🐕')">🐕 ANIMAL</div>
-    <div class="btn-a" style="background:#333" onclick="enviarAlerta('Buraco', '🕳️')">🕳️ BURACO</div>
-    <div class="btn-a" style="background:#333" onclick="enviarAlerta('Neblina', '🌫️')">🌫️ NEBLINA</div>
-    <div class="btn-a" style="background:#333" onclick="enviarAlerta('Pane', '🛠️')">🛠️ PANE</div>
-    <div class="btn-a" style="background:#333" onclick="enviarAlerta('Queda', '⛰️')">⛰️ QUEDA</div>
-    <div class="btn-a" style="background:#333" onclick="enviarAlerta('Carga', '📦')">📦 CARGA</div>
-</div>
-
+<div id="btn-luz" class="f-btn" onclick="toggleDark()">💡</div>
+<div id="btn-mute" class="f-btn" onclick="toggleMute()">🔊</div>
+<div id="btn-chat" class="f-btn" ondblclick="toggleChat()">💬</div>
 <div id="btn-px">🎤</div>
-<div id="btn-luz" class="f-btn" style="width:50px;height:50px;right:20px;top:140px;background:#ffcc00" onclick="toggleDark()">💡</div>
+
+<div id="chat-global" class="chat-container">
+    <div class="chat-header">
+        <span>SALA BR-277 SUPREME</span>
+        <span onclick="toggleChat()" style="cursor:pointer">✖</span>
+    </div>
+    <div id="chat-msgs" class="chat-msgs"></div>
+    <div class="chat-input">
+        <input type="text" id="msg-input" placeholder="Digite sua mensagem...">
+        <button onclick="enviarMsg()" style="border:none; background:var(--ws-green); color:white; border-radius:50%; width:40px; height:40px;">➔</button>
+    </div>
+</div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
@@ -69,7 +73,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-// --- CONFIGURAÇÃO ---
+// CONFIGURAÇÃO FIREBASE
 const firebaseConfig = { databaseURL: "https://gps-br277-default-rtdb.firebaseio.com" };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
@@ -78,126 +82,115 @@ const map = L.map('map', { zoomControl: false }).setView([-25.4284, -49.2733], 1
 L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(map);
 
 let user = localStorage.getItem('user_br277') || "Motorista_" + Math.floor(Math.random()*999);
-let meuLatLng, meuMarker, follow = true, rotaControle;
+let meuLatLng, meuMarker, follow = true, rotaControle, isMuted = false;
 
-// --- FUNÇÃO DARK MODE ---
+// --- FUNÇÕES DE INTERFACE ---
 function toggleDark() { document.getElementById('map').classList.toggle('map-dark'); }
+function toggleMute() { 
+    isMuted = !isMuted; 
+    document.getElementById('btn-mute').innerHTML = isMuted ? "🔇" : "🔊";
+    document.getElementById('btn-mute').style.color = isMuted ? "red" : "black";
+}
+function toggleChat() { 
+    const c = document.getElementById('chat-global');
+    c.style.display = (c.style.display === 'flex') ? 'none' : 'flex';
+}
 
 // --- RÁDIO PX ---
 let mediaRecorder, chunks = [];
 const pxBtn = document.getElementById('btn-px');
 
 async function ligarRadio(e) {
-    e.preventDefault();
-    pxBtn.classList.add('ativo');
+    e.preventDefault(); pxBtn.classList.add('ativo');
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         mediaRecorder = new MediaRecorder(stream);
         mediaRecorder.ondataavailable = (e) => chunks.push(e.data);
         mediaRecorder.onstop = () => {
-            const blob = new Blob(chunks, { type: 'audio/ogg; codecs=opus' });
             const reader = new FileReader();
-            reader.readAsDataURL(blob);
+            reader.readAsDataURL(new Blob(chunks, { type: 'audio/ogg; codecs=opus' }));
             reader.onloadend = () => {
                 db.ref("radio_v25").set({ audio: reader.result, u: user, t: Date.now() });
                 chunks = [];
             };
         };
         mediaRecorder.start();
-    } catch(err) { console.log("Erro mic:", err); }
+    } catch(err) { alert("Ative o microfone!"); }
 }
+function desligarRadio() { pxBtn.classList.remove('ativo'); if(mediaRecorder?.state === "recording") mediaRecorder.stop(); }
 
-function desligarRadio() {
-    pxBtn.classList.remove('ativo');
-    if(mediaRecorder && mediaRecorder.state === "recording") mediaRecorder.stop();
-}
-
-pxBtn.addEventListener('touchstart', ligarRadio);
-pxBtn.addEventListener('touchend', desligarRadio);
-pxBtn.addEventListener('mousedown', ligarRadio);
-pxBtn.addEventListener('mouseup', desligarRadio);
+pxBtn.addEventListener('touchstart', ligarRadio); pxBtn.addEventListener('touchend', desligarRadio);
+pxBtn.addEventListener('mousedown', ligarRadio); pxBtn.addEventListener('mouseup', desligarRadio);
 
 db.ref("radio_v25").on("value", snap => {
     const d = snap.val();
-    if(d && d.u !== user && (Date.now() - d.t < 5000)) {
-        let audio = new Audio(d.audio);
-        audio.play().catch(e => console.log("Auto-play bloqueado"));
+    if(d && d.u !== user && !isMuted && (Date.now() - d.t < 5000)) {
+        new Audio(d.audio).play().catch(() => {});
     }
 });
 
-// --- GPS ---
+// --- CHAT GLOBAL WHATSAPP STYLE ---
+function enviarMsg() {
+    const input = document.getElementById('msg-input');
+    if(!input.value) return;
+    db.ref("chat_global").push({ u: user, m: input.value, t: Date.now() });
+    input.value = "";
+}
+
+db.ref("chat_global").limitToLast(20).on("child_added", snap => {
+    const d = snap.val();
+    const isMe = d.u === user;
+    const msgHtml = `
+        <div class="balao ${isMe ? 'b-eu' : 'b-outro'}" id="msg-${snap.key}">
+            <div class="del" onclick="apagarMsg('${snap.key}')">x</div>
+            <b>${d.u}</b><br>${d.m}
+            <span class="time">${new Date(d.t).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+        </div>
+    `;
+    const box = document.getElementById('chat-msgs');
+    box.innerHTML += msgHtml;
+    box.scrollTop = box.scrollHeight;
+});
+
+function apagarMsg(key) { db.ref("chat_global").child(key).remove(); document.getElementById('msg-'+key).style.display = 'none'; }
+
+// --- GPS E NAVEGAÇÃO ---
 navigator.geolocation.watchPosition(pos => {
     meuLatLng = L.latLng(pos.coords.latitude, pos.coords.longitude);
     if(!meuMarker) {
         meuMarker = L.marker(meuLatLng, { 
-            icon: L.divIcon({ 
-                html: `<div class="pulse-loc" style="width:40px;height:40px;left:-5px;top:-5px;"></div><div style="font-size:30px;">🚚</div>`, 
-                className: '', iconSize:[40,40] 
-            }) 
+            icon: L.divIcon({ html: `<div class="pulse-loc" style="width:40px;height:40px;left:-5px;top:-5px;"></div><div style="font-size:32px;">🚚</div>`, className: '', iconSize:[40,40] }) 
         }).addTo(map);
         map.setView(meuLatLng, 17);
     } else { meuMarker.setLatLng(meuLatLng); }
     if(follow) map.panTo(meuLatLng);
-    if(rotaControle) rotaControle.spliceWaypoints(0, 1, meuLatLng);
-}, err => console.log(err), { enableHighAccuracy: true });
+    
+    // Auto-encerrar rota se chegar perto (50 metros)
+    if(rotaControle) {
+        rotaControle.spliceWaypoints(0, 1, meuLatLng);
+        const dist = meuLatLng.distanceTo(rotaControle.getWaypoints()[1].latLng);
+        if(dist < 50) { map.removeControl(rotaControle); rotaControle = null; alert("Você chegou ao destino!"); }
+    }
+}, null, { enableHighAccuracy: true });
 
-// --- RECENTRALIZAR ---
-map.on('dragstart', () => { follow = false; document.getElementById('btn-rec').style.display = 'block'; });
 function recentralizar() { follow = true; document.getElementById('btn-rec').style.display = 'none'; map.flyTo(meuLatLng, 17); }
+map.on('dragstart', () => { follow = false; document.getElementById('btn-rec').style.display = 'block'; });
 
-// --- ALERTAS E CHAT ---
-function enviarAlerta(tipo, emoji) {
-    if(!meuLatLng) return alert("Aguardando GPS...");
-    db.ref("alertas_v25").push({
-        tipo, emoji, lat: meuLatLng.lat, lng: meuLatLng.lng, user, t: Date.now()
-    });
-}
-
-db.ref("alertas_v25").on("child_added", snap => {
-    const a = snap.val();
-    const marker = L.marker([a.lat, a.lng], {
-        icon: L.divIcon({ html: `<div style="font-size:30px; filter:drop-shadow(0 0 5px black)">${a.emoji}</div>`, className: '' })
-    }).addTo(map);
-
-    const popContet = `
-        <div class="pop-whats">
-            <div class="pop-header">${a.emoji} ${a.tipo}</div>
-            <div class="pop-msg-box">
-                <div class="balao b-outro"><b>${a.user}:</b> Atenção no local!</div>
-            </div>
-            <div style="display:flex; padding:5px; background:white;">
-                <input type="text" id="in-${snap.key}" placeholder="Responder..." style="flex:1; border:1px solid #ccc; border-radius:10px; padding:4px; font-size:11px;">
-                <button onclick="responderAlerta('${snap.key}')" style="border:none; background:none; font-size:18px; cursor:pointer;">➡️</button>
-            </div>
-        </div>
-    `;
-    marker.bindPopup(popContet);
-});
-
-// --- LUPA E ROTA ---
+// --- LUPA INTELIGENTE COM ROTA ---
 const geocoder = L.Control.geocoder({ 
-    defaultMarkGeocode: false, 
-    placeholder: "📍 Destino na BR-277..." 
+    defaultMarkGeocode: false,
+    placeholder: "🔍 Para onde vamos motorista?",
+    geocoder: L.Control.geocoder.nominatim({
+        geocodingQueryParams: { viewbox: "-54.6,-26.3,-48.3,-24.5", bounded: 1 } // Foca no Paraná/BR-277
+    })
 }).on('markgeocode', e => {
     const dest = e.geocode.center;
     if(rotaControle) map.removeControl(rotaControle);
     rotaControle = L.Routing.control({
         waypoints: [meuLatLng, dest],
-        lineOptions: { styles: [{ color: '#007aff', weight: 6, opacity: 0.8 }] },
+        lineOptions: { styles: [{ color: '#007aff', weight: 7, opacity: 0.8 }] },
         createMarker: () => null
     }).addTo(map);
-    
-    // Adicionar botão fechar na interface da rota
-    setTimeout(() => {
-        const p = document.querySelector('.leaflet-routing-container');
-        if(p) {
-            const btn = document.createElement('button');
-            btn.className = "btn-encerrar";
-            btn.innerText = "PARAR NAVEGAÇÃO";
-            btn.onclick = () => map.removeControl(rotaControle);
-            p.prepend(btn);
-        }
-    }, 1000);
 }).addTo(map);
 
 </script>
