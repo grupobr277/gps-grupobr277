@@ -8,40 +8,37 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
     <style>
-        :root { --ws-green: #075e54; --ws-light: #dcf8c6; --radio-gold: #ffd700; --ws-dark: #128c7e; }
+        :root { --ws-green: #075e54; --ws-light: #dcf8c6; --radio-gold: #ffd700; }
         html, body, #map { margin: 0; padding: 0; height: 100%; width: 100%; background: #000; overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         .map-dark { filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%); }
 
         /* LUPA AMPLIADA E INTELIGENTE */
-        .leaflet-control-geocoder { top: 15px !important; left: 50% !important; transform: translateX(-50%); width: 92% !important; max-width: 600px; border: 3px solid var(--ws-green) !important; border-radius: 30px !important; background: white !important; box-shadow: 0 4px 15px rgba(0,0,0,0.4) !important; }
-        .leaflet-control-geocoder-form input { font-size: 16px !important; padding: 12px !important; width: 100% !important; border-radius: 30px; }
+        .leaflet-control-geocoder { top: 15px !important; left: 50% !important; transform: translateX(-50%); width: 92% !important; max-width: 600px; border: 3px solid var(--ws-green) !important; border-radius: 30px !important; background: white !important; box-shadow: 0 4px 15px rgba(0,0,0,0.4) !important; z-index: 5000; }
+        .leaflet-control-geocoder-form input { font-size: 16px !important; padding: 12px !important; width: 100% !important; border-radius: 30px; border: none; outline: none; }
 
         /* 10 ICONES FIXOS */
         .painel-alertas { position: absolute; top: 85px; left: 10px; z-index: 2000; display: flex; flex-direction: column; gap: 5px; }
-        .btn-a { border: 2px solid #d4af37; padding: 8px; border-radius: 10px; width: 100px; text-align: center; color: white; font-weight: bold; font-size: 10px; background: #1a1a1a; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+        .btn-a { border: 2px solid #d4af37; padding: 8px; border-radius: 10px; width: 100px; text-align: center; color: white; font-weight: bold; font-size: 10px; background: #1a1a1a; cursor: pointer; }
 
-        /* RADIO PX - GATILHO RÁPIDO */
-        #btn-px { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); width: 95px; height: 95px; background: #222; border: 6px solid var(--radio-gold); border-radius: 50%; z-index: 5001; display: flex; align-items: center; justify-content: center; font-size: 40px; color: var(--radio-gold); box-shadow: 0 0 30px rgba(0,0,0,0.8); touch-action: none; -webkit-tap-highlight-color: transparent; }
-        #btn-px:active, .px-ativo { background: #ff5252 !important; border-color: white !important; transform: translateX(-50%) scale(0.9) !important; }
+        /* RADIO PX - SENSÍVEL */
+        #btn-px { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); width: 95px; height: 95px; background: #222; border: 6px solid var(--radio-gold); border-radius: 50%; z-index: 5001; display: flex; align-items: center; justify-content: center; font-size: 40px; color: var(--radio-gold); box-shadow: 0 0 30px rgba(0,0,0,0.8); touch-action: none; }
+        .px-ativo { background: #ff5252 !important; border-color: white !important; transform: translateX(-50%) scale(0.9) !important; }
 
-        /* CHAT WHATSAPP NOS ICONES */
+        /* CHAT WHATSAPP */
         .pop-whats { width: 280px; }
         .pop-msg-box { max-height: 220px; overflow-y: auto; background: #e5ddd5; padding: 10px; border-radius: 12px; display: flex; flex-direction: column; gap: 8px; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); }
-        .balao { padding: 8px 12px; border-radius: 10px; font-size: 13px; max-width: 85%; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+        .balao { padding: 8px 12px; border-radius: 10px; font-size: 13px; max-width: 85%; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.2); cursor: pointer; }
         .balao-eu { background: var(--ws-light); align-self: flex-end; }
         .balao-outro { background: white; align-self: flex-start; }
-        .emoji-picker { display: none; margin-top: 5px; font-size: 18px; cursor: pointer; background: rgba(255,255,255,0.8); border-radius: 15px; padding: 5px; text-align: center; }
+        .emoji-picker { display: none; margin-top: 5px; font-size: 18px; background: white; border-radius: 10px; padding: 5px; }
 
-        /* ROTA E PAINEL */
-        .leaflet-routing-container { bottom: 20px !important; right: 15px !important; top: auto !important; width: 260px !important; border-radius: 15px !important; border: 2px solid var(--ws-green) !important; }
+        /* ROTA E INTERFACE */
+        .leaflet-routing-container { bottom: 20px !important; right: 15px !important; top: auto !important; width: 260px !important; border-radius: 15px !important; border: 2px solid var(--ws-green) !important; background: white; }
         .btn-cancelar { background: #d32f2f; color: white; border: none; width: 100%; padding: 10px; border-radius: 8px; font-weight: bold; margin-top: 8px; cursor: pointer; }
-
-        /* RECENTRALIZAR E PULSANTE */
-        #btn-rec { position: fixed; bottom: 140px; left: 50%; transform: translateX(-50%); z-index: 4001; background: white; border: 2px solid var(--ws-green); border-radius: 25px; padding: 12px 25px; font-weight: bold; color: var(--ws-green); display: none; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        #btn-rec { position: fixed; bottom: 140px; left: 50%; transform: translateX(-50%); z-index: 4001; background: white; border: 2px solid var(--ws-green); border-radius: 25px; padding: 12px 25px; font-weight: bold; color: var(--ws-green); display: none; }
         .pulse-loc { border-radius: 50%; animation: pulse-blue 2s infinite; background: rgba(0, 122, 255, 0.4); border: 2px solid white; position: absolute; }
         @keyframes pulse-blue { 0% { box-shadow: 0 0 0 0px rgba(0, 122, 255, 0.7); } 100% { box-shadow: 0 0 0 20px rgba(0, 122, 255, 0); } }
-        
-        .f-btn { position: fixed; z-index: 4001; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border: 2px solid white; cursor: pointer; touch-action: none; background: white; }
+        .f-btn { position: fixed; z-index: 4001; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border: 2px solid white; cursor: pointer; background: white; }
     </style>
 </head>
 <body>
@@ -58,8 +55,6 @@
     <div class="btn-a" style="background:#333" onclick="enviarAlerta('Buraco', '🕳️')">🕳️ BURACO</div>
     <div class="btn-a" style="background:#333" onclick="enviarAlerta('Neblina', '🌫️')">🌫️ NEBLINA</div>
     <div class="btn-a" style="background:#333" onclick="enviarAlerta('Pane', '🛠️')">🛠️ PANE</div>
-    <div class="btn-a" style="background:#333" onclick="enviarAlerta('Queda', '⛰️')">⛰️ QUEDA</div>
-    <div class="btn-a" style="background:#333" onclick="enviarAlerta('Carga', '📦')">📦 CARGA</div>
 </div>
 
 <div id="btn-px">🎤</div>
@@ -77,17 +72,16 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
 const map = L.map('map', { zoomControl: false }).setView([-25.4284, -49.2733], 15);
-const tileLayer = L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(map);
+L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(map);
 
-let user = localStorage.getItem('user_br277') || "Danilo";
-let meuLatLng, meuMarker, follow = true, rotaAtiva;
+let user = "Danilo", meuLatLng, meuMarker, follow = true, rotaAtiva;
 
-// --- RÁDIO PX PROFISSIONAL (TOUCH SENSITIVE) ---
+// --- RÁDIO PX ---
 let recorder, audioChunks = [];
 const btnPx = document.getElementById('btn-px');
 
 async function iniciarVoz(e) {
-    if(e) e.preventDefault();
+    e.preventDefault(); e.stopPropagation();
     btnPx.classList.add('px-ativo');
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -103,11 +97,11 @@ async function iniciarVoz(e) {
             };
         };
         recorder.start();
-    } catch(err) { console.error("Erro microfone:", err); }
+    } catch(err) { alert("Permita o microfone!"); }
 }
 
 function pararVoz(e) {
-    if(e) e.preventDefault();
+    if(e) { e.preventDefault(); e.stopPropagation(); }
     btnPx.classList.remove('px-ativo');
     if(recorder && recorder.state === "recording") recorder.stop();
 }
@@ -120,18 +114,14 @@ btnPx.addEventListener('mouseup', pararVoz);
 db.ref("radio_v25").on("value", snap => {
     const d = snap.val();
     if(d && d.u !== user && (Date.now() - d.t < 4000)) {
-        let a = new Audio(d.audio);
-        a.play().catch(e => console.log("Clique no mapa para ativar áudio"));
+        new Audio(d.audio).play();
     }
 });
 
-// --- LUPA COM BUSCA INTELIGENTE (FOCO PARANÁ) ---
+// --- LUPA E ROTA ---
 const geocoder = L.Control.geocoder({ 
     defaultMarkGeocode: false, 
-    placeholder: "🔍 Pra onde vamos, motorista?",
-    geocoder: L.Control.geocoder.nominatim({
-        geocodingQueryParams: { countrycodes: 'br', viewbox: '-54.0,-26.5,-48.0,-22.5', bounded: 1 }
-    })
+    placeholder: "🔍 Pra onde vamos, motorista?" 
 }).on('markgeocode', e => {
     const dest = e.geocode.center;
     if(rotaAtiva) map.removeControl(rotaAtiva);
@@ -140,31 +130,30 @@ const geocoder = L.Control.geocoder({
         lineOptions: { styles: [{ color: '#007aff', weight: 8, opacity: 0.8 }] },
         createMarker: () => null
     }).addTo(map);
-    
     setTimeout(() => {
         const p = document.querySelector('.leaflet-routing-container');
         if(p) p.innerHTML += `<button class="btn-cancelar" onclick="map.removeControl(rotaAtiva)">ENCERRAR ROTA X</button>`;
     }, 600);
 }).addTo(map);
 
-// --- GPS E RECENTRALIZAR ---
+// --- GPS ---
 navigator.geolocation.watchPosition(pos => {
     meuLatLng = L.latLng(pos.coords.latitude, pos.coords.longitude);
     if(!meuMarker) {
-        meuMarker = L.marker(meuLatLng, { icon: L.divIcon({ html: `<div class="pulse-loc" style="width:40px;height:40px;left:-5px;top:-5px;"></div><div style="font-size:35px;filter:drop-shadow(2px 2px 2px #000)">🚗</div>`, className: '', iconSize:[40,40] }) }).addTo(map);
+        meuMarker = L.marker(meuLatLng, { icon: L.divIcon({ html: `<div class="pulse-loc" style="width:40px;height:40px;left:-5px;top:-5px;"></div><div style="font-size:35px;">🚗</div>`, className: '', iconSize:[40,40] }) }).addTo(map);
         map.setView(meuLatLng, 17);
     } else { meuMarker.setLatLng(meuLatLng); }
     if(follow) map.panTo(meuLatLng);
-    if(rotaAtiva) rotaAtiva.spliceWaypoints(0, 1, meuLatLng); // Apaga rota percorrida
+    if(rotaAtiva) rotaAtiva.spliceWaypoints(0, 1, meuLatLng);
 });
 
 map.on('dragstart', () => { follow = false; document.getElementById('btn-rec').style.display = 'block'; });
 function recentralizar() { follow = true; document.getElementById('btn-rec').style.display = 'none'; map.flyTo(meuLatLng, 17); }
 
-// --- ALERTAS E CHAT WHATSAPP ---
+// --- ALERTAS E CHAT ---
 function enviarAlerta(tipo, emoji) {
     if(!meuLatLng) return;
-    db.ref("alertas_v25").push({ tipo, emoji, lat: meuLatLng.lat, lng: meuLatLng.lng, u: user, t: Date.now(), color: "#"+Math.floor(Math.random()*16777215).toString(16) });
+    db.ref("alertas_v25").push({ tipo, emoji, lat: meuLatLng.lat, lng: meuLatLng.lng, u: user, t: Date.now() });
 }
 
 db.ref("alertas_v25").on("value", snap => {
@@ -172,60 +161,35 @@ db.ref("alertas_v25").on("value", snap => {
     snap.forEach(s => {
         const a = s.val();
         const m = L.marker([a.lat, a.lng], { icon: L.divIcon({ html: `<div style="font-size:38px;filter:drop-shadow(2px 2px 2px #000)">${a.emoji}</div>`, className:'' }) }).addTo(map);
-        
-        m.bindPopup(`
-            <div class="pop-whats">
-                <div style="background:var(--ws-green);color:white;padding:8px;border-radius:8px 8px 0 0;font-weight:bold">📍 ${a.tipo}</div>
-                <div id="box-${s.key}" class="pop-msg-box"></div>
-                <div style="display:flex;gap:5px;">
-                    <input id="in-${s.key}" style="flex:1;border-radius:20px;padding:8px;border:1px solid #ccc" placeholder="Mensagem...">
-                    <button onclick="enviarMsg('${s.key}')" style="background:var(--ws-green);color:white;border:none;border-radius:50%;width:35px;height:35px">➤</button>
-                </div>
-            </div>`);
-
-        m.on('click', () => {
-            db.ref(`alertas_v25/${s.key}/msgs`).on('value', ms => {
-                const b = document.getElementById(`box-${s.key}`);
-                if(b) {
-                    b.innerHTML = "";
-                    ms.forEach(msg => {
-                        const d = msg.val(); const eu = d.u === user;
-                        b.innerHTML += `
-                            <div class="balao ${eu?'balao-eu':'balao-outro'}" onclick="showEmojis('${msg.key}')">
-                                <b style="color:${d.color};font-size:10px">${d.u}</b><br>${d.m}
-                                <div id="em-${msg.key}" class="emoji-picker">
-                                    <span onclick="db.ref('alertas_v25/${s.key}/msgs/${msg.key}').remove()">🗑️</span> 👍 ⚠️ ✅
-                                </div>
-                            </div>`;
-                    });
-                    b.scrollTop = b.scrollHeight;
-                }
-            });
-        });
+        m.bindPopup(`<div class="pop-whats"><div style="background:var(--ws-green);color:white;padding:8px;border-radius:8px 8px 0 0;">📍 ${a.tipo}</div><div id="box-${s.key}" class="pop-msg-box"></div><div style="display:flex;gap:5px;"><input id="in-${s.key}" style="flex:1;border-radius:20px;padding:8px;border:1px solid #ccc" placeholder="Mensagem..."><button onclick="enviarMsg('${s.key}')" style="background:var(--ws-green);color:white;border:none;border-radius:50%;width:35px;height:35px">➤</button></div></div>`);
+        m.on('click', () => carregarMsgs(s.key));
     });
 });
 
-function showEmojis(id) { 
-    const e = document.getElementById('em-'+id); 
-    e.style.display = e.style.display === 'block' ? 'none' : 'block'; 
-}
-
-function enviarMsg(id) {
-    const i = document.getElementById("in-"+id); if(!i.value) return;
-    db.ref(`alertas_v25/${id}/msgs`).push({ u: user, m: i.value, color: "#075e54" }); i.value = "";
-}
-
-// BOTÃO LUZ MOVEL
-function mover(id) {
-    const el = document.getElementById(id); let sX, sY;
-    el.addEventListener('touchstart', e => { sX = e.touches[0].clientX - el.offsetLeft; sY = e.touches[0].clientY - el.offsetTop; });
-    el.addEventListener('touchmove', e => { 
-        el.style.left = (e.touches[0].clientX - sX) + 'px'; el.style.top = (e.touches[0].clientY - sY) + 'px';
-        el.style.right = 'auto'; el.style.bottom = 'auto';
+function carregarMsgs(id) {
+    db.ref(`alertas_v25/${id}/msgs`).on('value', ms => {
+        const b = document.getElementById(`box-${id}`);
+        if(b) {
+            b.innerHTML = "";
+            ms.forEach(msg => {
+                const d = msg.val(); const eu = d.u === user;
+                b.innerHTML += `<div class="balao ${eu?'balao-eu':'balao-outro'}" onclick="tglEmoji('${msg.key}')"><b>${d.u}</b><br>${d.m}<div id="em-${msg.key}" class="emoji-picker"><span onclick="db.ref('alertas_v25/${id}/msgs/${msg.key}').remove()">🗑️</span> 👍 ⚠️</div></div>`;
+            });
+            b.scrollTop = b.scrollHeight;
+        }
     });
 }
-mover('btn-luz');
-document.getElementById('btn-luz').onclick = () => document.getElementById('map').classList.toggle('map-dark');
+
+function tglEmoji(id) { const e = document.getElementById('em-'+id); e.style.display = e.style.display === 'block'?'none':'block'; }
+function enviarMsg(id) { const i = document.getElementById("in-"+id); if(!i.value) return; db.ref(`alertas_v25/${id}/msgs`).push({ u: user, m: i.value }); i.value = ""; }
+
+// MOVER LUZ
+const luz = document.getElementById('btn-luz');
+luz.addEventListener('touchmove', e => { 
+    luz.style.left = e.touches[0].clientX - 25 + 'px'; luz.style.top = e.touches[0].clientY - 25 + 'px';
+    luz.style.right = 'auto'; luz.style.bottom = 'auto';
+});
+luz.onclick = () => document.getElementById('map').classList.toggle('map-dark');
 </script>
 </body>
 </html>
