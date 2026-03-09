@@ -47,7 +47,7 @@
             position: fixed;
             top: 70px;
             right: 10px;
-            width: 300px;
+            width: 320px;
             background: white;
             border-radius: 16px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.2);
@@ -80,10 +80,6 @@
             display: flex;
             align-items: flex-start;
             gap: 12px;
-        }
-        
-        .alerta-tempo-real:last-child {
-            border-bottom: none;
         }
         
         .alerta-tempo-real .icone {
@@ -125,15 +121,360 @@
             color: #999;
         }
         
-        /* ÍCONES MAPS STYLE */
-        .icone-acidente { background: #e53935; }
-        .icone-obras { background: #ff9800; }
-        .icone-congestionamento { background: #f44336; }
-        .icone-radar { background: #607d8b; }
-        .icone-animal { background: #9c27b0; }
-        .icone-neblina { background: #00acc1; }
-        .icone-alagamento { background: #2196f3; }
-        .icone-desvio { background: #4caf50; }
+        /* CHAT WHATSAPP STYLE */
+        .chat-container {
+            position: fixed;
+            top: 10%;
+            left: 5%;
+            width: 90%;
+            height: 80%;
+            background: #e5ddd5;
+            z-index: 20000;
+            border-radius: 20px;
+            display: none;
+            flex-direction: column;
+            border: 2px solid #075e54;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .chat-header {
+            background: #075e54;
+            color: white;
+            padding: 15px;
+            border-radius: 18px 18px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .chat-mensagens {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            background: #e5ddd5;
+        }
+        
+        .mensagem-wrapper {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            margin: 2px 0;
+            position: relative;
+        }
+        
+        .mensagem {
+            max-width: 65%;
+            padding: 8px 12px;
+            border-radius: 15px;
+            position: relative;
+            font-size: 14px;
+            word-wrap: break-word;
+        }
+        
+        .mensagem.minha {
+            background: #dcf8c6;
+            align-self: flex-end;
+            margin-left: auto;
+            border-bottom-right-radius: 2px;
+        }
+        
+        .mensagem.outra {
+            background: white;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+        
+        .mensagem-info {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 2px;
+            font-size: 10px;
+            color: #999;
+            justify-content: flex-end;
+        }
+        
+        .mensagem-info .data {
+            color: #075e54;
+            font-weight: 500;
+        }
+        
+        .mensagem-remetente {
+            font-weight: bold;
+            font-size: 12px;
+            margin-bottom: 2px;
+            color: #075e54;
+        }
+        
+        .mensagem-acoes {
+            position: absolute;
+            top: -25px;
+            right: 0;
+            background: white;
+            border-radius: 30px;
+            padding: 5px 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: none;
+            gap: 15px;
+            z-index: 10;
+            border: 1px solid #075e54;
+        }
+        
+        .mensagem-wrapper:hover .mensagem-acoes {
+            display: flex;
+        }
+        
+        .mensagem-acoes span {
+            cursor: pointer;
+            font-size: 16px;
+            color: #666;
+            transition: color 0.2s;
+        }
+        
+        .mensagem-acoes span:hover {
+            color: #075e54;
+        }
+        
+        .chat-input {
+            padding: 15px;
+            background: #f0f0f0;
+            display: flex;
+            gap: 10px;
+            border-radius: 0 0 18px 18px;
+            align-items: center;
+        }
+        
+        .chat-input input {
+            flex: 1;
+            padding: 12px 15px;
+            border-radius: 30px;
+            border: 1px solid #ccc;
+            outline: none;
+            font-size: 14px;
+        }
+        
+        .chat-input button {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: none;
+            background: #075e54;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .chat-input button:hover {
+            transform: scale(1.05);
+        }
+        
+        .btn-emoji {
+            background: #ffcc00 !important;
+            color: #333 !important;
+        }
+        
+        /* EMOJI PICKER */
+        .emoji-picker {
+            position: absolute;
+            bottom: 100px;
+            right: 20px;
+            background: white;
+            border-radius: 30px;
+            padding: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            display: none;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            z-index: 21000;
+            border: 2px solid #075e54;
+        }
+        
+        .emoji-picker span {
+            font-size: 24px;
+            cursor: pointer;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+        
+        .emoji-picker span:hover {
+            background: #f0f0f0;
+        }
+        
+        /* BALÃO DO ALERTA */
+        .balao-alerta {
+            background: white;
+            border-radius: 16px;
+            padding: 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 2px solid #075e54;
+            min-width: 280px;
+            overflow: hidden;
+        }
+        
+        .balao-header {
+            background: #075e54;
+            color: white;
+            padding: 10px 12px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+        
+        .balao-chat {
+            max-height: 250px;
+            overflow-y: auto;
+            padding: 10px;
+            background: #e5ddd5;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .balao-mensagem {
+            background: white;
+            padding: 6px 10px;
+            border-radius: 12px;
+            margin: 4px 0;
+            max-width: 85%;
+            position: relative;
+            font-size: 12px;
+        }
+        
+        .balao-mensagem.minha {
+            background: #dcf8c6;
+            margin-left: auto;
+        }
+        
+        .balao-mensagem .hora {
+            font-size: 9px;
+            color: #999;
+            margin-left: 8px;
+        }
+        
+        .balao-input {
+            display: flex;
+            padding: 8px;
+            background: #f0f0f0;
+            gap: 5px;
+        }
+        
+        .balao-input input {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 25px;
+            border: 1px solid #ccc;
+            outline: none;
+            font-size: 12px;
+        }
+        
+        .balao-input button {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            border: none;
+            background: #075e54;
+            color: white;
+            cursor: pointer;
+        }
+        
+        /* LUPA */
+        .lupa-container {
+            position: fixed;
+            top: 15px;
+            left: 55px;
+            right: 55px;
+            max-width: 300px;
+            margin: 0 auto;
+            z-index: 10000;
+            background: white;
+            border-radius: 40px;
+            border: 3px solid #ffd700;
+            display: flex;
+            overflow: hidden;
+        }
+        
+        .lupa-container input {
+            flex: 1;
+            padding: 10px 15px;
+            border: none;
+            font-size: 14px;
+            outline: none;
+        }
+        
+        .lupa-container button {
+            background: #075e54;
+            color: white;
+            border: none;
+            width: 45px;
+            cursor: pointer;
+        }
+        
+        /* INDICADOR DE GRAVAÇÃO */
+        .gravando-indicator {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 50px;
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            gap: 15px;
+            font-size: 16px;
+            border: 2px solid #ffd700;
+        }
+        
+        .gravando-timer {
+            font-weight: bold;
+            color: #ffd700;
+            font-size: 18px;
+        }
+        
+        .gravando-wave {
+            display: flex;
+            gap: 3px;
+        }
+        
+        .gravando-wave span {
+            width: 4px;
+            height: 20px;
+            background: #ffd700;
+            animation: wave 1s infinite;
+        }
+        
+        @keyframes wave {
+            0%, 100% { height: 5px; }
+            50% { height: 20px; }
+        }
+        
+        /* INDICADOR DE RECEBENDO ÁUDIO */
+        .recebendo-indicator {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2196f3;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            border: 2px solid white;
+        }
         
         /* BOTÕES */
         .btn-flutuante {
@@ -235,8 +576,8 @@
         }
         
         .pulse-loc { 
-            width: 45px; 
-            height: 45px; 
+            width: 35px; 
+            height: 35px; 
             border-radius: 50%; 
             animation: pulse 1.5s infinite; 
             background: rgba(33, 150, 243, 0.3); 
@@ -246,6 +587,19 @@
         @keyframes pulse { 
             0% { transform: scale(0.8); opacity: 1; } 
             100% { transform: scale(2); opacity: 0; } 
+        }
+        
+        .data-divider {
+            text-align: center;
+            margin: 10px 0;
+        }
+        
+        .data-divider span {
+            background: rgba(0,0,0,0.6);
+            color: white;
+            padding: 3px 12px;
+            border-radius: 30px;
+            font-size: 11px;
         }
     </style>
 </head>
@@ -282,7 +636,7 @@
 </div>
 
 <!-- BOTÕES -->
-<div class="btn-flutuante" id="btn-chat" onclick="abrirChatGeral()">
+<div class="btn-flutuante" id="btn-chat" onclick="toggleChatGeral()">
     <i class="fas fa-comment"></i>
 </div>
 
@@ -295,6 +649,57 @@
 </div>
 
 <div id="btn-px">🎤</div>
+
+<!-- CHAT GERAL -->
+<div class="chat-container" id="chatGeral">
+    <div class="chat-header">
+        <div style="display:flex; align-items:center; gap:10px;">
+            <i class="fas fa-comments"></i>
+            <span>CHAT GERAL</span>
+        </div>
+        <div style="display:flex; gap:15px;">
+            <span onclick="abrirEmojiPicker('geral')" style="cursor:pointer;">😊</span>
+            <span onclick="toggleChatGeral()" style="cursor:pointer;">✖</span>
+        </div>
+    </div>
+    <div class="chat-mensagens" id="chatMensagens"></div>
+    <div class="chat-input">
+        <input type="text" id="chatInput" placeholder="Digite sua mensagem...">
+        <button class="btn-emoji" onclick="abrirEmojiPicker('geral')">😊</button>
+        <button onclick="enviarMsgGeral()"><i class="fas fa-paper-plane"></i></button>
+    </div>
+</div>
+
+<!-- EMOJI PICKER -->
+<div class="emoji-picker" id="emojiPicker">
+    <span onclick="inserirEmoji('👍')">👍</span>
+    <span onclick="inserirEmoji('❤️')">❤️</span>
+    <span onclick="inserirEmoji('😂')">😂</span>
+    <span onclick="inserirEmoji('😢')">😢</span>
+    <span onclick="inserirEmoji('😡')">😡</span>
+    <span onclick="inserirEmoji('🚨')">🚨</span>
+    <span onclick="inserirEmoji('⚠️')">⚠️</span>
+    <span onclick="inserirEmoji('✅')">✅</span>
+    <span onclick="inserirEmoji('❌')">❌</span>
+    <span onclick="inserirEmoji('🤔')">🤔</span>
+</div>
+
+<!-- INDICADOR DE GRAVAÇÃO -->
+<div class="gravando-indicator" id="gravandoIndicator">
+    <span>🎤 Gravando...</span>
+    <span class="gravando-timer" id="gravandoTimer">30s</span>
+    <div class="gravando-wave">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</div>
+
+<!-- INDICADOR DE RECEBENDO ÁUDIO -->
+<div class="recebendo-indicator" id="recebendoIndicator">
+    <i class="fas fa-headphones"></i>
+    <span>Áudio recebido...</span>
+</div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
@@ -316,6 +721,9 @@ let meuMarcador = null;
 let seguirLocalizacao = true;
 let rotaAtual = null;
 let mapa = null;
+let usuariosAtivos = {};
+let mensagemRespondendo = null;
+let pickerAtivo = null;
 
 // ===== 10 ALERTAS =====
 const alertas = [
@@ -337,6 +745,8 @@ document.addEventListener('DOMContentLoaded', function() {
     iniciarMapa();
     iniciarGPS();
     carregarAlertasTempoReal();
+    carregarUsuariosAtivos();
+    carregarChatGeral();
 });
 
 function criarIconesAlertas() {
@@ -373,24 +783,83 @@ function iniciarGPS() {
         minhaLocalizacao = L.latLng(pos.coords.latitude, pos.coords.longitude);
         
         if (!meuMarcador) {
+            // Ícone estilo Uber (carro com direção)
             meuMarcador = L.marker(minhaLocalizacao, {
                 icon: L.divIcon({
-                    html: `<div class="pulse-loc"></div><div style="font-size:35px; margin-top:-15px;">🚗</div>`,
+                    html: `<div style="position:relative;">
+                        <div class="pulse-loc" style="position:absolute; left:-12px; top:-12px;"></div>
+                        <div style="font-size:28px; transform:rotate(${pos.coords.heading || 0}deg);">🚗</div>
+                    </div>`,
+                    className: '',
                     iconSize: [1, 1]
                 })
             }).addTo(mapa);
+            
             mapa.setView(minhaLocalizacao, 17);
+            
+            // Registra usuário no Firebase
+            db.ref('usuarios_ativos/' + usuario).set({
+                lat: minhaLocalizacao.lat,
+                lng: minhaLocalizacao.lng,
+                heading: pos.coords.heading || 0,
+                timestamp: Date.now()
+            });
+            
         } else {
             meuMarcador.setLatLng(minhaLocalizacao);
+            
+            // Atualiza posição no Firebase
+            db.ref('usuarios_ativos/' + usuario).update({
+                lat: minhaLocalizacao.lat,
+                lng: minhaLocalizacao.lng,
+                heading: pos.coords.heading || 0,
+                timestamp: Date.now()
+            });
         }
         
         if (seguirLocalizacao) {
             mapa.panTo(minhaLocalizacao);
         }
     }, null, { enableHighAccuracy: true });
+    
+    // Remove usuário quando sair
+    window.addEventListener('beforeunload', () => {
+        db.ref('usuarios_ativos/' + usuario).remove();
+    });
 }
 
-// ===== ALERTA SUSPENSO COM ENDEREÇOS REAIS =====
+// ===== USUÁRIOS ATIVOS =====
+function carregarUsuariosAtivos() {
+    db.ref('usuarios_ativos').on('value', snap => {
+        const usuarios = snap.val();
+        
+        // Remove marcadores antigos
+        Object.values(usuariosAtivos).forEach(marker => {
+            if (marker) mapa.removeLayer(marker);
+        });
+        
+        usuariosAtivos = {};
+        
+        if (!usuarios) return;
+        
+        Object.entries(usuarios).forEach(([id, dados]) => {
+            if (id === usuario) return; // Ignora próprio usuário
+            
+            // Cria marcador estilo Uber
+            const marcador = L.marker([dados.lat, dados.lng], {
+                icon: L.divIcon({
+                    html: `<div style="font-size:24px; transform:rotate(${dados.heading || 0}deg);">🚗</div>`,
+                    className: '',
+                    iconSize: [24, 24]
+                })
+            }).addTo(mapa);
+            
+            usuariosAtivos[id] = marcador;
+        });
+    });
+}
+
+// ===== ALERTA SUSPENSO =====
 function carregarAlertasTempoReal() {
     if (!minhaLocalizacao) {
         setTimeout(carregarAlertasTempoReal, 2000);
@@ -407,13 +876,11 @@ function carregarAlertasTempoReal() {
     
     const alertasReais = [];
     
-    // Para cada ponto, busca o endereço real
     Promise.all(pontosReais.map(ponto => 
         fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${ponto.lat}&lon=${ponto.lng}&zoom=18&addressdetails=1`)
             .then(res => res.json())
             .then(data => {
                 const endereco = data.display_name || '';
-                // Extrai apenas a parte relevante
                 const partes = endereco.split(',');
                 const rodovia = partes[0] || 'BR-277';
                 const cidade = partes[partes.length - 3] || 'Curitiba';
@@ -427,11 +894,10 @@ function carregarAlertasTempoReal() {
                 };
             })
     )).then(resultados => {
-        // Cria alertas com os endereços reais
         const tipos = [
-            { tipo: 'Acidente', icone: '💥', cor: '#e53935', classe: 'acidente' },
-            { tipo: 'Obras', icone: '🚧', cor: '#ff9800', classe: 'obras' },
-            { tipo: 'Congestionamento', icone: '⚫', cor: '#f44336', classe: 'congestionamento' }
+            { tipo: 'Acidente', icone: '💥', cor: '#e53935' },
+            { tipo: 'Obras', icone: '🚧', cor: '#ff9800' },
+            { tipo: 'Congestionamento', icone: '⚫', cor: '#f44336' }
         ];
         
         resultados.forEach((ponto, index) => {
@@ -452,7 +918,6 @@ function carregarAlertasTempoReal() {
         atualizarAlertaSuspenso(alertasReais);
     });
     
-    // Atualiza a cada 30 segundos
     setInterval(carregarAlertasTempoReal, 30000);
 }
 
@@ -476,11 +941,11 @@ function atualizarAlertaSuspenso(alertas) {
     alertas.forEach(alerta => {
         html += `
             <div class="alerta-tempo-real">
-                <div class="icone icone-${alerta.classe}" style="background:${alerta.cor}">${alerta.icone}</div>
+                <div class="icone" style="background:${alerta.cor}">${alerta.icone}</div>
                 <div class="info">
                     <div class="titulo">${alerta.tipo}</div>
                     <div class="endereco">${alerta.endereco}</div>
-                    <div class="distancia">🚗 ${alerta.distancia} km da sua localização</div>
+                    <div class="distancia">🚗 ${alerta.distancia} km</div>
                     <div class="tempo">${alerta.tempo}</div>
                 </div>
             </div>
@@ -510,36 +975,382 @@ function ativarAlerta(alerta) {
         return;
     }
     
-    // Busca endereço real
     fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${minhaLocalizacao.lat}&lon=${minhaLocalizacao.lng}`)
         .then(res => res.json())
         .then(data => {
             const endereco = data.display_name || 'Localização atual';
             
-            // Cria marcador com endereço
+            const id = Date.now();
+            
+            // Cria marcador
             const marcador = L.marker(minhaLocalizacao, {
                 icon: L.divIcon({
-                    html: `<div style="background:white; padding:5px 12px; border-radius:30px; border:2px solid ${alerta.cor}; box-shadow:0 2px 10px rgba(0,0,0,0.2); font-size:14px; display:flex; align-items:center; gap:5px;">
-                        <span>${alerta.icone}</span>
-                        <span style="font-size:11px;">${alerta.nome}</span>
-                    </div>`,
+                    html: `<div style="background:white; padding:5px 12px; border-radius:30px; border:2px solid ${alerta.cor}; box-shadow:0 2px 10px rgba(0,0,0,0.2); font-size:16px;">${alerta.icone} ${alerta.nome}</div>`,
                     className: '',
                     iconSize: [80, 30]
                 })
             }).addTo(mapa);
             
+            // Abre chat ao clicar
+            marcador.on('click', () => {
+                abrirChatAlerta(alerta, minhaLocalizacao, id, endereco);
+            });
+            
+            // Abre automaticamente
+            setTimeout(() => {
+                abrirChatAlerta(alerta, minhaLocalizacao, id, endereco);
+            }, 200);
+            
             // Salva no Firebase
-            db.ref('alertas_ativos').push({
+            db.ref('alertas_ativos/' + id).set({
                 ...alerta,
                 lat: minhaLocalizacao.lat,
                 lng: minhaLocalizacao.lng,
                 endereco: endereco,
                 timestamp: Date.now()
             });
-            
-            alert(`✅ Alerta ${alerta.nome} ativado!\n📍 ${endereco.substring(0, 100)}`);
         });
 }
+
+// ===== CHAT DO ALERTA =====
+function abrirChatAlerta(alerta, posicao, id, endereco) {
+    const conteudo = document.createElement('div');
+    conteudo.className = 'balao-alerta';
+    conteudo.innerHTML = `
+        <div class="balao-header">
+            <span>${alerta.icone} ${alerta.nome}</span>
+            <span style="font-size:10px;">${new Date().toLocaleTimeString()}</span>
+        </div>
+        <div class="balao-chat" id="chatAlerta-${id}">
+            <div style="text-align:center; color:#999;">Carregando...</div>
+        </div>
+        <div class="balao-input">
+            <input type="text" id="inputAlerta-${id}" placeholder="Digite sua mensagem...">
+            <button onclick="enviarMsgAlerta('${id}')"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    `;
+    
+    L.popup({
+        maxWidth: 300,
+        className: 'custom-popup'
+    })
+    .setLatLng(posicao)
+    .setContent(conteudo)
+    .openOn(mapa);
+    
+    // Carrega mensagens
+    db.ref(`chats/alerta_${id}`).orderByChild('timestamp').on('value', snap => {
+        const msgs = snap.val();
+        const chatDiv = document.getElementById(`chatAlerta-${id}`);
+        if (!chatDiv) return;
+        
+        if (!msgs) {
+            chatDiv.innerHTML = '<div style="text-align:center; color:#999;">Nenhuma mensagem</div>';
+            return;
+        }
+        
+        let html = '';
+        let ultimaData = '';
+        
+        Object.values(msgs).forEach(msg => {
+            const dataMsg = new Date(msg.timestamp).toLocaleDateString();
+            
+            if (dataMsg !== ultimaData) {
+                html += `<div class="data-divider"><span>${formatarData(dataMsg)}</span></div>`;
+                ultimaData = dataMsg;
+            }
+            
+            html += `
+                <div class="balao-mensagem ${msg.usuario === usuario ? 'minha' : ''}">
+                    <small><b>${msg.usuario}</b></small><br>
+                    ${msg.texto}
+                    <span class="hora">${msg.hora}</span>
+                </div>
+            `;
+        });
+        
+        chatDiv.innerHTML = html;
+        chatDiv.scrollTop = chatDiv.scrollHeight;
+    });
+}
+
+function enviarMsgAlerta(id) {
+    const input = document.getElementById(`inputAlerta-${id}`);
+    const texto = input.value.trim();
+    if (!texto) return;
+    
+    db.ref(`chats/alerta_${id}`).push({
+        usuario: usuario,
+        texto: texto,
+        hora: new Date().toLocaleTimeString(),
+        timestamp: Date.now()
+    });
+    
+    input.value = '';
+}
+
+// ===== CHAT GERAL =====
+function toggleChatGeral() {
+    const chat = document.getElementById('chatGeral');
+    chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
+}
+
+function carregarChatGeral() {
+    db.ref('chat_geral').orderByChild('timestamp').on('value', snap => {
+        const msgs = snap.val();
+        const chatDiv = document.getElementById('chatMensagens');
+        if (!msgs) return;
+        
+        let html = '';
+        let ultimaData = '';
+        
+        Object.values(msgs).forEach(msg => {
+            const dataMsg = new Date(msg.timestamp).toLocaleDateString();
+            
+            if (dataMsg !== ultimaData) {
+                html += `<div class="data-divider"><span>${formatarData(dataMsg)}</span></div>`;
+                ultimaData = dataMsg;
+            }
+            
+            const isMinha = msg.usuario === usuario;
+            html += `
+                <div class="mensagem-wrapper">
+                    <div class="mensagem ${isMinha ? 'minha' : 'outra'}">
+                        <div class="mensagem-remetente">${msg.usuario}</div>
+                        ${msg.texto}
+                        <div class="mensagem-info">
+                            <span>${msg.hora}</span>
+                        </div>
+                    </div>
+                    <div class="mensagem-acoes">
+                        <span onclick="responderMsg('${msg.usuario}', '${msg.texto}')">↩️</span>
+                        <span onclick="reagirMsg('${msg.timestamp}')">😊</span>
+                        ${isMinha ? `<span onclick="apagarMsg('${msg.timestamp}')">🗑️</span>` : ''}
+                    </div>
+                </div>
+            `;
+        });
+        
+        chatDiv.innerHTML = html;
+        chatDiv.scrollTop = chatDiv.scrollHeight;
+    });
+}
+
+function enviarMsgGeral() {
+    const input = document.getElementById('chatInput');
+    let texto = input.value.trim();
+    if (!texto) return;
+    
+    if (mensagemRespondendo) {
+        texto = `↩️ ${mensagemRespondendo.usuario}: ${mensagemRespondendo.texto}\n${texto}`;
+        mensagemRespondendo = null;
+    }
+    
+    db.ref('chat_geral').push({
+        usuario: usuario,
+        texto: texto,
+        hora: new Date().toLocaleTimeString(),
+        timestamp: Date.now()
+    });
+    
+    input.value = '';
+}
+
+function responderMsg(usuario, texto) {
+    mensagemRespondendo = { usuario, texto };
+    document.getElementById('chatInput').focus();
+}
+
+function apagarMsg(timestamp) {
+    if (confirm('Apagar mensagem?')) {
+        db.ref('chat_geral').orderByChild('timestamp').equalTo(parseInt(timestamp)).once('value', snap => {
+            snap.forEach(child => child.ref.remove());
+        });
+    }
+}
+
+function formatarData(data) {
+    const hoje = new Date().toLocaleDateString();
+    const ontem = new Date(Date.now() - 86400000).toLocaleDateString();
+    
+    if (data === hoje) return 'Hoje';
+    if (data === ontem) return 'Ontem';
+    return data;
+}
+
+// ===== EMOJI PICKER =====
+function abrirEmojiPicker(tipo) {
+    const picker = document.getElementById('emojiPicker');
+    picker.style.display = picker.style.display === 'grid' ? 'none' : 'grid';
+    pickerAtivo = tipo;
+}
+
+function inserirEmoji(emoji) {
+    if (pickerAtivo === 'geral') {
+        const input = document.getElementById('chatInput');
+        input.value += emoji;
+        input.focus();
+    }
+    document.getElementById('emojiPicker').style.display = 'none';
+}
+
+// ===== RÁDIO PX =====
+let gravador = null;
+let pedacosAudio = [];
+let streamAudio = null;
+let timerInterval = null;
+let tempoRestante = 30;
+const botaoPX = document.getElementById('btn-px');
+
+async function pedirPermissaoMicrofone() {
+    try {
+        streamAudio = await navigator.mediaDevices.getUserMedia({ 
+            audio: {
+                echoCancellation: true,
+                noiseSuppression: true,
+                autoGainControl: true
+            }
+        });
+        console.log("✅ Microfone liberado");
+        streamAudio.getTracks().forEach(track => track.stop());
+        streamAudio = null;
+    } catch(e) {
+        console.log("❌ Microfone negado:", e);
+    }
+}
+pedirPermissaoMicrofone();
+
+botaoPX.addEventListener('mousedown', async function() {
+    try {
+        if (!streamAudio) {
+            streamAudio = await navigator.mediaDevices.getUserMedia({ 
+                audio: {
+                    echoCancellation: true,
+                    noiseSuppression: true,
+                    autoGainControl: true
+                }
+            });
+        }
+        
+        gravador = new MediaRecorder(streamAudio, {
+            mimeType: 'audio/webm;codecs=opus'
+        });
+        
+        pedacosAudio = [];
+        tempoRestante = 30;
+        
+        gravador.ondataavailable = function(e) {
+            if (e.data.size > 0) {
+                pedacosAudio.push(e.data);
+            }
+        };
+        
+        gravador.onstop = function() {
+            if (pedacosAudio.length > 0) {
+                const audioBlob = new Blob(pedacosAudio, { type: 'audio/webm' });
+                const reader = new FileReader();
+                
+                reader.onloadend = function() {
+                    db.ref('radio').push({
+                        audio: reader.result,
+                        usuario: usuario,
+                        timestamp: Date.now()
+                    });
+                    
+                    // Auto-delete após 30 segundos
+                    setTimeout(() => {
+                        db.ref('radio').orderByChild('timestamp').endAt(Date.now() - 30000).once('value', snap => {
+                            snap.forEach(child => child.ref.remove());
+                        });
+                    }, 30000);
+                };
+                
+                reader.readAsDataURL(audioBlob);
+            }
+            
+            if (streamAudio) {
+                streamAudio.getTracks().forEach(track => track.stop());
+                streamAudio = null;
+            }
+            pedacosAudio = [];
+            
+            // Esconde indicador
+            document.getElementById('gravandoIndicator').style.display = 'none';
+            if (timerInterval) clearInterval(timerInterval);
+        };
+        
+        gravador.start();
+        botaoPX.classList.add('ativo');
+        
+        // Mostra indicador de gravação
+        const indicator = document.getElementById('gravandoIndicator');
+        const timer = document.getElementById('gravandoTimer');
+        indicator.style.display = 'flex';
+        
+        timerInterval = setInterval(() => {
+            tempoRestante--;
+            timer.textContent = tempoRestante + 's';
+            if (tempoRestante <= 0) {
+                pararGravacao();
+            }
+        }, 1000);
+        
+        // Auto-para após 30 segundos
+        setTimeout(() => {
+            if (gravador && gravador.state === 'recording') {
+                pararGravacao();
+            }
+        }, 30000);
+        
+    } catch(e) {
+        console.log("Erro microfone:", e);
+        alert('Permita acesso ao microfone');
+    }
+});
+
+botaoPX.addEventListener('mouseup', pararGravacao);
+botaoPX.addEventListener('mouseleave', pararGravacao);
+botaoPX.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    botaoPX.dispatchEvent(new Event('mousedown'));
+});
+botaoPX.addEventListener('touchend', function(e) {
+    e.preventDefault();
+    pararGravacao();
+});
+
+function pararGravacao() {
+    if (gravador && gravador.state === 'recording') {
+        gravador.stop();
+        botaoPX.classList.remove('ativo');
+        if (timerInterval) clearInterval(timerInterval);
+        document.getElementById('gravandoIndicator').style.display = 'none';
+    }
+}
+
+// Receber áudio
+db.ref('radio').orderByChild('timestamp').limitToLast(1).on('child_added', function(snap) {
+    const dados = snap.val();
+    if (dados && dados.usuario !== usuario) {
+        if (Date.now() - dados.timestamp < 5000) {
+            const audio = new Audio(dados.audio);
+            audio.volume = 1.0;
+            audio.play().catch(e => console.log("Erro ao reproduzir:", e));
+            
+            // Mostra indicador
+            const indicator = document.getElementById('recebendoIndicator');
+            indicator.style.display = 'flex';
+            setTimeout(() => {
+                indicator.style.display = 'none';
+            }, 2000);
+            
+            botaoPX.classList.add('ouvindo');
+            setTimeout(() => {
+                botaoPX.classList.remove('ouvindo');
+            }, 1000);
+        }
+    }
+});
 
 // ===== ROTA =====
 function buscarRota() {
@@ -567,134 +1378,6 @@ function buscarRota() {
         });
 }
 
-// ===== RÁDIO PX CORRIGIDO =====
-let gravador = null;
-let pedacosAudio = [];
-let streamAudio = null;
-const botaoPX = document.getElementById('btn-px');
-
-// Pede permissão antecipadamente
-async function pedirPermissaoMicrofone() {
-    try {
-        streamAudio = await navigator.mediaDevices.getUserMedia({ audio: true });
-        console.log("✅ Microfone liberado");
-        // Para não ficar gravando sem necessidade
-        streamAudio.getTracks().forEach(track => track.stop());
-        streamAudio = null;
-    } catch(e) {
-        console.log("❌ Microfone negado:", e);
-    }
-}
-pedirPermissaoMicrofone();
-
-botaoPX.addEventListener('mousedown', async function() {
-    try {
-        if (!streamAudio) {
-            streamAudio = await navigator.mediaDevices.getUserMedia({ 
-                audio: {
-                    echoCancellation: true,
-                    noiseSuppression: true,
-                    autoGainControl: true
-                }
-            });
-        }
-        
-        gravador = new MediaRecorder(streamAudio, {
-            mimeType: 'audio/webm;codecs=opus',
-            audioBitsPerSecond: 128000
-        });
-        
-        pedacosAudio = [];
-        
-        gravador.ondataavailable = function(e) {
-            if (e.data.size > 0) {
-                pedacosAudio.push(e.data);
-            }
-        };
-        
-        gravador.onstop = function() {
-            if (pedacosAudio.length > 0) {
-                const audioBlob = new Blob(pedacosAudio, { type: 'audio/webm' });
-                const reader = new FileReader();
-                
-                reader.onloadend = function() {
-                    try {
-                        db.ref('radio').push({
-                            audio: reader.result,
-                            usuario: usuario,
-                            timestamp: Date.now()
-                        });
-                        console.log("✅ Áudio enviado");
-                    } catch(e) {
-                        console.log("Erro ao enviar áudio:", e);
-                    }
-                };
-                
-                reader.readAsDataURL(audioBlob);
-            }
-            
-            if (streamAudio) {
-                streamAudio.getTracks().forEach(track => track.stop());
-                streamAudio = null;
-            }
-            pedacosAudio = [];
-        };
-        
-        gravador.start();
-        botaoPX.classList.add('ativo');
-        console.log("🎤 Gravando...");
-        
-    } catch(e) {
-        console.log("Erro microfone:", e);
-        alert('Permita acesso ao microfone');
-    }
-});
-
-botaoPX.addEventListener('mouseup', pararGravacao);
-botaoPX.addEventListener('mouseleave', pararGravacao);
-botaoPX.addEventListener('touchstart', function(e) {
-    e.preventDefault();
-    botaoPX.dispatchEvent(new Event('mousedown'));
-});
-botaoPX.addEventListener('touchend', function(e) {
-    e.preventDefault();
-    pararGravacao();
-});
-
-function pararGravacao() {
-    if (gravador && gravador.state === 'recording') {
-        gravador.stop();
-        botaoPX.classList.remove('ativo');
-    }
-}
-
-// Receber áudio
-try {
-    db.ref('radio').limitToLast(1).on('child_added', function(snap) {
-        const dados = snap.val();
-        if (dados && dados.usuario !== usuario) {
-            if (Date.now() - dados.timestamp < 5000) {
-                const audio = new Audio(dados.audio);
-                audio.volume = 1.0;
-                audio.play().catch(e => console.log("Erro ao reproduzir:", e));
-                
-                // Feedback visual
-                botaoPX.classList.add('ouvindo');
-                setTimeout(() => {
-                    botaoPX.classList.remove('ouvindo');
-                }, 1000);
-            }
-            
-            // Auto-delete após 10 segundos
-            setTimeout(() => {
-                snap.ref.remove();
-            }, 10000);
-        }
-    });
-} catch(e) {
-    console.log("Erro ao ouvir rádio:", e);
-}
-
 // ===== FUNÇÕES =====
 function toggleModoNoturno() {
     document.getElementById('map').classList.toggle('mapa-noturno');
@@ -706,13 +1389,14 @@ function recentralizar() {
     if (minhaLocalizacao) mapa.flyTo(minhaLocalizacao, 17);
 }
 
-function abrirChatGeral() {
-    alert('Chat em desenvolvimento');
-}
-
 // Enter na busca
 document.getElementById('buscaDestino').addEventListener('keypress', function(e) {
     if (e.key === 'Enter') buscarRota();
+});
+
+// Enter no chat
+document.getElementById('chatInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') enviarMsgGeral();
 });
 </script>
 </body>
