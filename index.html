@@ -18,7 +18,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.9);
+            background: rgba(0,0,0,0.95);
             z-index: 999999;
             display: flex;
             align-items: center;
@@ -26,275 +26,148 @@
         }
         
         .welcome-content {
-            background: white;
-            padding: 30px;
-            border-radius: 30px;
+            background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+            padding: 40px;
+            border-radius: 40px;
             text-align: center;
-            max-width: 350px;
+            max-width: 400px;
             width: 90%;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            border: 3px solid #075e54;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,215,0,0.3);
         }
         
         .welcome-content h2 {
-            color: #075e54;
+            color: #ffd700;
             margin-bottom: 10px;
-            font-size: 28px;
+            font-size: 32px;
+            text-shadow: 0 0 10px rgba(255,215,0,0.3);
         }
         
         .welcome-content input {
             width: 100%;
             padding: 15px;
-            border: 2px solid #ddd;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid #ffd700;
             border-radius: 30px;
             margin: 10px 0;
             font-size: 16px;
             outline: none;
-            transition: border 0.2s;
+            color: white;
+            transition: all 0.3s;
         }
         
         .welcome-content input:focus {
-            border-color: #075e54;
+            box-shadow: 0 0 20px rgba(255,215,0,0.3);
         }
         
-        .veiculo-selector {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin: 20px 0;
-        }
-        
-        .veiculo-option {
-            padding: 15px 5px;
-            border: 2px solid #ddd;
-            border-radius: 15px;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 24px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .veiculo-option span {
-            font-size: 12px;
-            color: #333;
-        }
-        
-        .veiculo-option.selected {
-            border-color: #075e54;
-            background: #dcf8c6;
-            transform: scale(1.02);
-        }
-        
-        .welcome-content button {
-            width: 100%;
-            padding: 15px;
-            background: #075e54;
-            color: white;
-            border: none;
-            border-radius: 30px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        
-        .welcome-content button:hover {
-            transform: scale(1.02);
-        }
-        
-        /* PAINEL DE ALERTAS - SOMENTE TEXTOS */
+        /* PAINEL DE ALERTAS - TEXTO PURO COM EFEITO */
         .alertas-panel {
             position: fixed;
             top: 70px;
-            left: 5px;
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            left: 50%;
+            transform: translateX(-50%);
             z-index: 9000;
-            border: 1px solid #ddd;
-            overflow: hidden;
-            width: 100px;
-        }
-        
-        .alertas-header {
-            background: #075e54;
-            color: white;
-            padding: 10px;
-            font-weight: bold;
-            text-align: center;
-            font-size: 12px;
-            letter-spacing: 1px;
-        }
-        
-        .alertas-lista {
-            padding: 5px;
+            display: flex;
+            gap: 8px;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            padding: 12px 20px;
+            border-radius: 50px;
+            border: 1px solid rgba(255,215,0,0.3);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
         }
         
         .alerta-item {
-            padding: 8px 5px;
-            text-align: center;
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
             cursor: pointer;
-            border-radius: 15px;
-            margin: 2px 0;
-            transition: all 0.2s;
-            font-size: 12px;
-            font-weight: 500;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
             color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .alerta-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .alerta-item:hover::before {
+            left: 100%;
         }
         
         .alerta-item:hover {
-            transform: scale(1.02);
-            filter: brightness(1.1);
+            transform: translateY(-2px);
+            filter: brightness(1.2);
         }
         
-        .alerta-acidente { background: #e53935; }
-        .alerta-obras { background: #ff9800; }
-        .alerta-pane { background: #795548; }
-        .alerta-animal { background: #9c27b0; }
-        .alerta-radar { background: #607d8b; }
-        .alerta-barreira { background: #8b4513; }
-        .alerta-neblina { background: #00acc1; }
-        .alerta-congestionamento { background: #f44336; }
-        .alerta-alagamento { background: #2196f3; }
-        .alerta-desvio { background: #4caf50; }
+        .alerta-acidente { background: linear-gradient(135deg, #e53935, #b71c1c); }
+        .alerta-obras { background: linear-gradient(135deg, #ff9800, #f57c00); }
+        .alerta-pane { background: linear-gradient(135deg, #795548, #5d4037); }
+        .alerta-animal { background: linear-gradient(135deg, #9c27b0, #7b1fa2); }
+        .alerta-radar { background: linear-gradient(135deg, #607d8b, #455a64); }
+        .alerta-barreira { background: linear-gradient(135deg, #8b4513, #5d3a1a); }
+        .alerta-neblina { background: linear-gradient(135deg, #00acc1, #0097a7); }
+        .alerta-congestionamento { background: linear-gradient(135deg, #f44336, #d32f2f); }
+        .alerta-alagamento { background: linear-gradient(135deg, #2196f3, #1976d2); }
+        .alerta-desvio { background: linear-gradient(135deg, #4caf50, #388e3c); }
         
-        /* CONTADOR DE USUÁRIOS - DISCRETO */
+        /* CONTADOR DE USUÁRIOS - CANTO ESQUERDO */
         .contador-usuarios {
             position: fixed;
-            top: 15px;
-            right: 15px;
+            bottom: 20px;
+            left: 20px;
             background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(10px);
             color: white;
-            padding: 6px 12px;
+            padding: 8px 16px;
             border-radius: 30px;
-            font-size: 12px;
-            z-index: 10000;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        }
-        
-        /* ALERTA SUSPENSO */
-        .alerta-suspenso {
-            position: fixed;
-            top: 70px;
-            right: 10px;
-            width: 300px;
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            z-index: 9500;
-            border: 1px solid #ddd;
-            overflow: hidden;
-            display: none;
-        }
-        
-        .alerta-suspenso-header {
-            background: #075e54;
-            color: white;
-            padding: 12px;
-            font-weight: bold;
-            display: flex;
-            justify-content: space-between;
-            cursor: pointer;
             font-size: 13px;
-        }
-        
-        .alerta-suspenso-conteudo {
-            max-height: 350px;
-            overflow-y: auto;
-            padding: 10px;
-        }
-        
-        .alerta-tempo-real {
-            padding: 12px;
-            border-bottom: 1px solid #eee;
+            z-index: 9000;
             display: flex;
             align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            transition: background 0.2s;
+            gap: 8px;
+            border: 1px solid #ffd700;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
         
-        .alerta-tempo-real:hover {
-            background: #f5f5f5;
-        }
-        
-        .alerta-tempo-real .icone {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 16px;
-        }
-        
-        .alerta-tempo-real .info {
-            flex: 1;
-        }
-        
-        .alerta-tempo-real .titulo {
-            font-weight: bold;
-            font-size: 13px;
-        }
-        
-        .alerta-tempo-real .endereco {
-            font-size: 11px;
-            color: #666;
-        }
-        
-        .alerta-tempo-real .distancia {
-            font-size: 10px;
-            color: #e53935;
-            font-weight: 500;
-        }
-        
-        /* CHAT WHATSAPP COMPLETO */
+        /* CHAT WHATSAPP */
         .chat-container {
             position: fixed;
             top: 10%;
             left: 5%;
             width: 90%;
             height: 80%;
-            background: #e5ddd5;
+            background: #0b141a;
             z-index: 20000;
             border-radius: 20px;
             display: none;
             flex-direction: column;
-            border: 2px solid #075e54;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            border: 2px solid #ffd700;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
         }
         
         .chat-header {
-            background: #075e54;
+            background: #202c33;
             color: white;
             padding: 15px;
             border-radius: 18px 18px 0 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-        
-        .chat-header-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .chat-header-info span {
-            font-size: 14px;
-            background: rgba(255,255,255,0.2);
-            padding: 3px 8px;
-            border-radius: 20px;
+            border-bottom: 1px solid #ffd700;
         }
         
         .chat-mensagens {
@@ -302,15 +175,14 @@
             overflow-y: auto;
             padding: 15px;
             display: flex;
-            flex-direction: column;
-            background: #e5ddd5;
-            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAAbklEQVQ4jc2UOwrAIAxA38WpU8fq2F2K6GQp/VhLKm0LBYNbeA8egfgEAYCQUkpYXlSEjDHCOWf1QUTQWg8d+whKKUQE5xzGmGOpqqoYYwR3zpVS0FrHGCMAQERgjDnH0lpjjBEA4Jzz7u0fY0fB+u8LjwQAAAAASUVORK5CYII=');
+            flex-direction: column-reverse;
+            background: #0b141a;
         }
         
         .mensagem-wrapper {
             display: flex;
             flex-direction: column;
-            margin: 2px 0;
+            margin: 8px 0;
             position: relative;
         }
         
@@ -324,17 +196,24 @@
         }
         
         .mensagem.minha {
-            background: #dcf8c6;
+            background: #005c4b;
+            color: white;
             align-self: flex-end;
             margin-left: auto;
-            border-bottom-right-radius: 2px;
         }
         
         .mensagem.outra {
-            background: white;
+            background: #202c33;
+            color: white;
             align-self: flex-start;
-            border-bottom-left-radius: 2px;
         }
+        
+        /* Cores personalizadas por usuário */
+        .mensagem[data-user="admin"] .mensagem-remetente { color: #ffd700; }
+        .mensagem[data-user="João"] .mensagem-remetente { color: #2196f3; }
+        .mensagem[data-user="Maria"] .mensagem-remetente { color: #e91e63; }
+        .mensagem[data-user="Pedro"] .mensagem-remetente { color: #4caf50; }
+        .mensagem[data-user="Ana"] .mensagem-remetente { color: #ff9800; }
         
         .mensagem-info {
             display: flex;
@@ -359,18 +238,41 @@
             font-size: 12px;
         }
         
+        .mention {
+            color: #ffd700;
+            font-weight: bold;
+            background: rgba(255,215,0,0.1);
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        
+        /* RESPOSTA - STYLE TELEGRAM */
+        .resposta-preview {
+            background: rgba(255,255,255,0.1);
+            border-left: 3px solid #ffd700;
+            padding: 6px 10px;
+            margin-bottom: 4px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .resposta-preview strong {
+            color: #ffd700;
+        }
+        
         .mensagem-acoes {
             position: absolute;
             top: -25px;
             right: 0;
-            background: white;
+            background: #2a3942;
             border-radius: 30px;
             padding: 4px 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
             display: none;
             gap: 12px;
             z-index: 10;
-            border: 1px solid #075e54;
+            border: 1px solid #ffd700;
         }
         
         .mensagem-wrapper:hover .mensagem-acoes {
@@ -380,36 +282,32 @@
         .mensagem-acoes span {
             cursor: pointer;
             font-size: 14px;
-            color: #666;
+            color: white;
             transition: color 0.2s;
         }
         
         .mensagem-acoes span:hover {
-            color: #075e54;
-        }
-        
-        .admin-delete {
-            color: #e53935 !important;
+            color: #ffd700;
         }
         
         .data-divider {
             text-align: center;
             margin: 15px 0;
-            position: relative;
         }
         
         .data-divider span {
-            background: rgba(0,0,0,0.5);
-            color: white;
+            background: rgba(255,215,0,0.2);
+            color: #ffd700;
             padding: 4px 15px;
             border-radius: 30px;
             font-size: 11px;
             backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,215,0,0.3);
         }
         
         .chat-input {
             padding: 15px;
-            background: #f0f0f0;
+            background: #202c33;
             display: flex;
             gap: 10px;
             border-radius: 0 0 18px 18px;
@@ -420,9 +318,15 @@
             flex: 1;
             padding: 12px 15px;
             border-radius: 30px;
-            border: 1px solid #ccc;
+            border: none;
             outline: none;
             font-size: 14px;
+            background: #2a3942;
+            color: white;
+        }
+        
+        .chat-input input::placeholder {
+            color: #999;
         }
         
         .chat-input button {
@@ -430,8 +334,8 @@
             height: 45px;
             border-radius: 50%;
             border: none;
-            background: #075e54;
-            color: white;
+            background: #ffd700;
+            color: #1a1a1a;
             cursor: pointer;
             transition: transform 0.2s;
         }
@@ -440,123 +344,42 @@
             transform: scale(1.05);
         }
         
-        /* BALÃO DO ALERTA */
-        .balao-alerta {
-            background: white;
-            border-radius: 16px;
-            padding: 0;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            border: 2px solid #075e54;
-            min-width: 260px;
-            overflow: hidden;
-        }
-        
-        .balao-header {
-            background: #075e54;
-            color: white;
-            padding: 10px;
-            font-weight: bold;
-            display: flex;
-            justify-content: space-between;
-            font-size: 13px;
-        }
-        
-        .balao-chat {
-            max-height: 200px;
-            overflow-y: auto;
-            padding: 10px;
-            background: #e5ddd5;
-        }
-        
-        .balao-mensagem {
-            background: white;
-            padding: 5px 8px;
-            border-radius: 12px;
-            margin: 3px 0;
-            font-size: 12px;
-        }
-        
-        .balao-mensagem.minha {
-            background: #dcf8c6;
-        }
-        
-        .balao-input {
-            display: flex;
-            padding: 8px;
-            background: #f0f0f0;
-            gap: 5px;
-        }
-        
-        .balao-input input {
-            flex: 1;
-            padding: 8px;
-            border-radius: 20px;
-            border: 1px solid #ccc;
-            outline: none;
-        }
-        
-        .balao-input button {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            border: none;
-            background: #075e54;
-            color: white;
-            cursor: pointer;
-        }
-        
-        /* LUPA */
-        .lupa-container {
+        /* INDICADORES */
+        .gravando-indicator {
             position: fixed;
-            top: 15px;
-            left: 115px;
-            width: 250px;
-            z-index: 10000;
-            background: white;
-            border-radius: 40px;
-            border: 3px solid #ffd700;
-            display: flex;
-            overflow: hidden;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
-        }
-        
-        .lupa-container input {
-            flex: 1;
-            padding: 10px 15px;
-            border: none;
-            font-size: 14px;
-            outline: none;
-        }
-        
-        .lupa-container button {
-            background: #075e54;
-            color: white;
-            border: none;
-            width: 45px;
-            cursor: pointer;
-        }
-        
-        /* BOTÃO RECENTRALIZAR */
-        .btn-recentrar {
-            position: fixed;
-            bottom: 120px;
+            bottom: 100px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.9);
             color: white;
-            border-radius: 40px;
-            padding: 8px 20px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-            cursor: pointer;
-            z-index: 9000;
+            padding: 10px 25px;
+            border-radius: 50px;
+            z-index: 10000;
             display: none;
-            font-weight: 500;
-            font-size: 13px;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255,255,255,0.2);
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+            border: 2px solid #ffd700;
         }
         
-        /* BOTÕES INFERIORES */
+        .audio-notification {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ffd700;
+            color: #1a1a1a;
+            padding: 10px 25px;
+            border-radius: 50px;
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        /* BOTÕES */
         .botoes-inferiores {
             position: fixed;
             bottom: 20px;
@@ -571,20 +394,23 @@
             width: 50px;
             height: 50px;
             border-radius: 50%;
-            background: white;
-            border: 2px solid #075e54;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px);
+            border: 2px solid #ffd700;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             font-size: 22px;
-            color: #075e54;
+            color: #ffd700;
             transition: all 0.2s;
         }
         
         .btn-acao:hover {
             transform: scale(1.05);
+            background: #ffd700;
+            color: #1a1a1a;
         }
         
         #btn-px { 
@@ -614,56 +440,28 @@
             transform: translateX(-50%) scale(0.95);
         }
         
-        .btn-mudo {
-            background: #075e54;
-            color: white;
-        }
-        
         .btn-mudo.mudo {
             background: #e53935;
+            border-color: white;
+            color: white;
         }
         
-        /* INDICADORES */
-        .gravando-indicator {
+        .btn-recentrar {
             position: fixed;
-            bottom: 100px;
+            bottom: 120px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0,0,0,0.8);
-            color: white;
-            padding: 10px 25px;
-            border-radius: 50px;
-            z-index: 10000;
-            display: none;
-            align-items: center;
-            gap: 15px;
-            font-size: 14px;
-            border: 2px solid #ffd700;
-            backdrop-filter: blur(5px);
-        }
-        
-        .gravando-timer {
-            font-weight: bold;
+            background: rgba(0,0,0,0.7);
             color: #ffd700;
-            font-size: 18px;
-        }
-        
-        .audio-notification {
-            position: fixed;
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #2196f3;
-            color: white;
-            padding: 10px 25px;
-            border-radius: 50px;
-            z-index: 10000;
+            border-radius: 40px;
+            padding: 8px 20px;
+            cursor: pointer;
+            z-index: 9000;
             display: none;
-            align-items: center;
-            gap: 15px;
-            font-size: 14px;
-            border: 2px solid white;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            font-weight: 500;
+            font-size: 13px;
+            backdrop-filter: blur(5px);
+            border: 1px solid #ffd700;
         }
         
         .mapa-noturno {
@@ -675,8 +473,8 @@
             height: 35px; 
             border-radius: 50%; 
             animation: pulse 1.5s infinite; 
-            background: rgba(33, 150, 243, 0.3); 
-            border: 3px solid #2196f3; 
+            background: rgba(255, 215, 0, 0.3); 
+            border: 3px solid #ffd700; 
         }
         
         @keyframes pulse { 
@@ -693,46 +491,49 @@
 <div class="welcome-modal" id="welcomeModal">
     <div class="welcome-content">
         <h2>🚛 BR-277</h2>
-        <p style="color:#666; margin-bottom:20px;">Bem-vindo ao sistema de trânsito</p>
+        <p style="color:#ffd700; margin-bottom:20px;">Bem-vindo ao sistema de trânsito</p>
         
         <input type="text" id="nomeUsuario" placeholder="Seu nome" value="Motorista">
         
-        <div style="margin:15px 0; text-align:left; color:#333; font-size:14px;">Escolha seu veículo:</div>
-        <div class="veiculo-selector" id="veiculoSelector">
-            <div class="veiculo-option selected" data-veiculo="carro" data-icone="🚗">
-                🚗 <span>Carro</span>
+        <div style="margin:20px 0; text-align:left; color:#ffd700;">Escolha seu veículo:</div>
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:20px;">
+            <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:15px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('carro', '🚗')" id="veiculo-carro">
+                <div style="font-size:30px;">🚗</div>
+                <div style="font-size:12px; color:white;">Carro</div>
             </div>
-            <div class="veiculo-option" data-veiculo="caminhao" data-icone="🚛">
-                🚛 <span>Caminhão</span>
+            <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:15px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('caminhao', '🚛')" id="veiculo-caminhao">
+                <div style="font-size:30px;">🚛</div>
+                <div style="font-size:12px; color:white;">Caminhão</div>
             </div>
-            <div class="veiculo-option" data-veiculo="moto" data-icone="🏍️">
-                🏍️ <span>Moto</span>
+            <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:15px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('moto', '🏍️')" id="veiculo-moto">
+                <div style="font-size:30px;">🏍️</div>
+                <div style="font-size:12px; color:white;">Moto</div>
             </div>
-            <div class="veiculo-option" data-veiculo="onibus" data-icone="🚌">
-                🚌 <span>Ônibus</span>
+            <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:15px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('onibus', '🚌')" id="veiculo-onibus">
+                <div style="font-size:30px;">🚌</div>
+                <div style="font-size:12px; color:white;">Ônibus</div>
             </div>
-            <div class="veiculo-option" data-veiculo="van" data-icone="🚐">
-                🚐 <span>Van</span>
+            <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:15px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('van', '🚐')" id="veiculo-van">
+                <div style="font-size:30px;">🚐</div>
+                <div style="font-size:12px; color:white;">Van</div>
             </div>
-            <div class="veiculo-option" data-veiculo="pickup" data-icone="🛻">
-                🛻 <span>Pickup</span>
+            <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:15px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('pickup', '🛻')" id="veiculo-pickup">
+                <div style="font-size:30px;">🛻</div>
+                <div style="font-size:12px; color:white;">Pickup</div>
             </div>
         </div>
         
-        <button onclick="salvarCadastro()">ENTRAR</button>
+        <button onclick="salvarCadastro()" style="width:100%; padding:15px; background:#ffd700; border:none; border-radius:30px; font-size:18px; font-weight:bold; cursor:pointer; color:#1a1a1a;">ENTRAR</button>
     </div>
 </div>
+
+<!-- PAINEL DE ALERTAS - TEXTO PURO -->
+<div class="alertas-panel" id="alertasLista"></div>
 
 <!-- CONTADOR DE USUÁRIOS -->
 <div class="contador-usuarios" id="contadorUsuarios">
     <i class="fas fa-users"></i>
     <span id="numUsuarios">0</span> online
-</div>
-
-<!-- PAINEL DE ALERTAS - SOMENTE TEXTOS -->
-<div class="alertas-panel">
-    <div class="alertas-header">ALERTAS</div>
-    <div class="alertas-lista" id="alertasLista"></div>
 </div>
 
 <!-- ALERTA SUSPENSO -->
@@ -778,18 +579,16 @@
 <!-- CHAT GERAL -->
 <div class="chat-container" id="chatGeral">
     <div class="chat-header">
-        <div class="chat-header-info">
+        <div style="display:flex; align-items:center; gap:10px;">
             <i class="fas fa-comments"></i>
             <span>CHAT GERAL</span>
-            <span id="adminBadge" style="display:none;">👑 ADMIN</span>
+            <span id="adminBadge" style="display:none; color:#ffd700;">👑 ADMIN</span>
         </div>
-        <div style="display:flex; gap:15px;">
-            <span onclick="fecharChatGeral()" style="cursor:pointer;">✖</span>
-        </div>
+        <span onclick="fecharChatGeral()" style="cursor:pointer;">✖</span>
     </div>
     <div class="chat-mensagens" id="chatMensagens"></div>
     <div class="chat-input">
-        <input type="text" id="chatInput" placeholder="Digite sua mensagem..." onkeypress="if(event.key==='Enter') enviarMsgGeral()">
+        <input type="text" id="chatInput" placeholder="Digite sua mensagem...">
         <button onclick="enviarMsgGeral()"><i class="fas fa-paper-plane"></i></button>
     </div>
 </div>
@@ -847,15 +646,30 @@ const alertas = [
     { tipo: 'desvio', nome: 'DESVIO', cor: '#4caf50' }
 ];
 
-// ===== BOAS-VINDAS =====
-document.querySelectorAll('.veiculo-option').forEach(opt => {
-    opt.addEventListener('click', function() {
-        document.querySelectorAll('.veiculo-option').forEach(o => o.classList.remove('selected'));
-        this.classList.add('selected');
-        veiculoUsuario = this.dataset.veiculo;
-        iconeVeiculo = this.dataset.icone;
+// ===== FUNÇÕES DO MODAL =====
+function selecionarVeiculo(tipo, icone) {
+    veiculoUsuario = tipo;
+    iconeVeiculo = icone;
+    document.querySelectorAll('[id^="veiculo-"]').forEach(el => {
+        el.style.borderColor = 'transparent';
     });
-});
+    document.getElementById(`veiculo-${tipo}`).style.borderColor = '#ffd700';
+}
+
+// ===== VERIFICA USUÁRIO =====
+const userSalvo = localStorage.getItem('br277_usuario');
+if (userSalvo) {
+    usuario = userSalvo;
+    veiculoUsuario = localStorage.getItem('br277_veiculo') || 'carro';
+    iconeVeiculo = localStorage.getItem('br277_icone') || '🚗';
+    document.getElementById('welcomeModal').style.display = 'none';
+    iniciarMapa();
+    iniciarGPS();
+    carregarAlertasTempoReal();
+    carregarUsuariosAtivos();
+    carregarAlertasFixos();
+    carregarChatGeral();
+}
 
 function salvarCadastro() {
     const nome = document.getElementById('nomeUsuario').value.trim();
@@ -866,8 +680,8 @@ function salvarCadastro() {
     
     usuario = nome;
     
-    // Verifica se é admin
-    if (nome.toLowerCase() === 'admin' || nome === 'ADMIN') {
+    // Verifica admin
+    if (nome.toLowerCase() === 'admin') {
         const senha = prompt('Digite a senha de admin:');
         if (senha === ADMIN_PASSWORD) {
             admin = true;
@@ -877,23 +691,10 @@ function salvarCadastro() {
     
     localStorage.setItem('br277_usuario', nome);
     localStorage.setItem('br277_veiculo', veiculoUsuario);
+    localStorage.setItem('br277_icone', iconeVeiculo);
     
     document.getElementById('welcomeModal').style.display = 'none';
     
-    iniciarMapa();
-    iniciarGPS();
-    carregarAlertasTempoReal();
-    carregarUsuariosAtivos();
-    carregarAlertasFixos();
-    carregarChatGeral();
-}
-
-// Verifica se já tem usuário
-const userSalvo = localStorage.getItem('br277_usuario');
-if (userSalvo) {
-    usuario = userSalvo;
-    veiculoUsuario = localStorage.getItem('br277_veiculo') || 'carro';
-    document.getElementById('welcomeModal').style.display = 'none';
     iniciarMapa();
     iniciarGPS();
     carregarAlertasTempoReal();
@@ -1207,6 +1008,11 @@ function fecharChatGeral() {
     document.getElementById('chatGeral').style.display = 'none';
 }
 
+function processarMencao(texto) {
+    // Procura por @nome e coloca em destaque
+    return texto.replace(/@(\w+)/g, '<span class="mention">@$1</span>');
+}
+
 function carregarChatGeral() {
     db.ref('chat_geral').orderByChild('timestamp').on('value', snap => {
         const msgs = snap.val();
@@ -1216,7 +1022,10 @@ function carregarChatGeral() {
         let html = '';
         let ultimaData = '';
         
-        Object.values(msgs).reverse().forEach(msg => {
+        // Ordena do mais novo para o mais velho para exibir corretamente
+        const msgsArray = Object.values(msgs).reverse();
+        
+        msgsArray.forEach(msg => {
             const dataMsg = new Date(msg.timestamp).toLocaleDateString();
             
             if (dataMsg !== ultimaData) {
@@ -1225,19 +1034,29 @@ function carregarChatGeral() {
             }
             
             const isMinha = msg.usuario === usuario;
+            
+            // Processa menções
+            const textoFormatado = processarMencao(msg.texto);
+            
             html += `
                 <div class="mensagem-wrapper">
-                    <div class="mensagem ${isMinha ? 'minha' : 'outra'}">
-                        <div class="mensagem-remetente">
-                            ${msg.veiculo || '🚗'} <b>${msg.usuario}</b>
+                    ${msg.resposta ? `
+                        <div class="resposta-preview">
+                            <strong>${msg.resposta.usuario}:</strong> ${msg.resposta.texto}
                         </div>
-                        ${msg.texto}
+                    ` : ''}
+                    <div class="mensagem ${isMinha ? 'minha' : 'outra'}" data-user="${msg.usuario}">
+                        <div class="mensagem-remetente">
+                            ${msg.veiculo || '🚗'} <b style="color:${getUserColor(msg.usuario)}">${msg.usuario}</b>
+                        </div>
+                        ${textoFormatado}
                         <div class="mensagem-info">
                             <span>${msg.hora}</span>
                         </div>
                     </div>
                     <div class="mensagem-acoes">
                         <span onclick="responderMsg('${msg.usuario}', '${msg.texto.replace(/'/g, "\\'")}')">↩️</span>
+                        <span onclick="mencionarUsuario('${msg.usuario}')">@</span>
                         ${isMinha || admin ? `<span class="admin-delete" onclick="apagarMsg('${msg.timestamp}')">🗑️</span>` : ''}
                     </div>
                 </div>
@@ -1245,8 +1064,19 @@ function carregarChatGeral() {
         });
         
         chatDiv.innerHTML = html;
-        chatDiv.scrollTop = chatDiv.scrollHeight;
+        chatDiv.scrollTop = 0; // Scroll para o topo (mensagens mais novas)
     });
+}
+
+function getUserColor(nome) {
+    const cores = {
+        'admin': '#ffd700',
+        'João': '#2196f3',
+        'Maria': '#e91e63',
+        'Pedro': '#4caf50',
+        'Ana': '#ff9800'
+    };
+    return cores[nome] || '#ffffff';
 }
 
 function enviarMsgGeral() {
@@ -1254,25 +1084,36 @@ function enviarMsgGeral() {
     let texto = input.value.trim();
     if (!texto) return;
     
-    if (mensagemRespondendo) {
-        texto = `↩️ ${mensagemRespondendo.usuario}: ${mensagemRespondendo.texto}\n${texto}`;
-        mensagemRespondendo = null;
-    }
-    
-    db.ref('chat_geral').push({
+    const mensagem = {
         usuario: usuario,
         veiculo: iconeVeiculo,
         texto: texto,
         hora: new Date().toLocaleTimeString(),
         timestamp: Date.now()
-    });
+    };
     
+    if (mensagemRespondendo) {
+        mensagem.resposta = {
+            usuario: mensagemRespondendo.usuario,
+            texto: mensagemRespondendo.texto
+        };
+        mensagemRespondendo = null;
+    }
+    
+    db.ref('chat_geral').push(mensagem);
     input.value = '';
 }
 
 function responderMsg(user, txt) {
     mensagemRespondendo = { usuario: user, texto: txt };
     document.getElementById('chatInput').focus();
+    document.getElementById('chatInput').placeholder = `Respondendo ${user}...`;
+}
+
+function mencionarUsuario(user) {
+    const input = document.getElementById('chatInput');
+    input.value += ` @${user} `;
+    input.focus();
 }
 
 function apagarMsg(timestamp) {
@@ -1299,9 +1140,34 @@ let timerInterval = null;
 let tempoRestante = 30;
 const botaoPX = document.getElementById('btn-px');
 
+// Service Worker para áudio em background
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(console.log);
+}
+
+// Mantém áudio ativo mesmo com tela desligada
+function playAudioEmBackground(audioUrl) {
+    const audio = new Audio(audioUrl);
+    audio.play().catch(() => {});
+    
+    // Tenta reproduzir novamente se falhar (tela desligada)
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+            audio.play().catch(() => {});
+        }
+    });
+}
+
 botaoPX.addEventListener('mousedown', async function() {
     try {
-        streamAudio = await navigator.mediaDevices.getUserMedia({ audio: true });
+        streamAudio = await navigator.mediaDevices.getUserMedia({ 
+            audio: {
+                echoCancellation: true,
+                noiseSuppression: true,
+                autoGainControl: true
+            }
+        });
+        
         gravador = new MediaRecorder(streamAudio);
         pedacosAudio = [];
         tempoRestante = 30;
@@ -1369,11 +1235,11 @@ function pararGravacao() {
     }
 }
 
-// Receber áudio
+// Receber áudio (funciona com tela desligada)
 db.ref('radio').orderByChild('timestamp').limitToLast(1).on('child_added', snap => {
     const d = snap.val();
     if (d && d.usuario !== usuario && !mudo && Date.now() - d.timestamp < 5000) {
-        new Audio(d.audio).play().catch(() => {});
+        playAudioEmBackground(d.audio);
         document.getElementById('audioNotification').style.display = 'flex';
         setTimeout(() => document.getElementById('audioNotification').style.display = 'none', 2000);
     }
@@ -1400,6 +1266,11 @@ function recentralizar() {
 // Enter na busca
 document.getElementById('buscaDestino').addEventListener('keypress', e => {
     if (e.key === 'Enter') buscarRota();
+});
+
+// Enter no chat
+document.getElementById('chatInput').addEventListener('keypress', e => {
+    if (e.key === 'Enter') enviarMsgGeral();
 });
 </script>
 </body>
