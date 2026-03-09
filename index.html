@@ -19,7 +19,69 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body, #map { height: 100%; width: 100%; font-family: 'Segoe UI', sans-serif; }
         
-        /* PAINEL DE ALERTAS - MAIS PROFISSIONAL */
+        /* MODAL DE CADASTRO */
+        .cadastro-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 20000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .cadastro-content {
+            background: linear-gradient(135deg, #075e54, #128C7E);
+            padding: 40px;
+            border-radius: 40px;
+            text-align: center;
+            max-width: 350px;
+            color: white;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        
+        .cadastro-content h2 {
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .cadastro-content p {
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+        
+        .cadastro-content input {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 30px;
+            margin: 10px 0;
+            font-size: 16px;
+            text-align: center;
+            outline: none;
+        }
+        
+        .cadastro-content button {
+            width: 100%;
+            padding: 15px;
+            background: #ffd700;
+            border: none;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: transform 0.2s;
+        }
+        
+        .cadastro-content button:hover {
+            transform: scale(1.02);
+        }
+        
+        /* PAINEL DE ALERTAS */
         .alertas-panel {
             position: fixed;
             top: 70px;
@@ -47,7 +109,6 @@
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
-            letter-spacing: 0.5px;
         }
         
         .alertas-lista {
@@ -91,95 +152,72 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
         
-        .alerta-item .info {
-            flex: 1;
-        }
-        
-        .alerta-item .titulo {
-            font-weight: 600;
-            font-size: 13px;
-            color: #1a1a1a;
-            margin-bottom: 2px;
-        }
-        
-        .alerta-item .desc {
-            font-size: 11px;
-            color: #666;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .alerta-item .distancia {
-            font-size: 10px;
-            background: #eef2f6;
-            padding: 2px 8px;
-            border-radius: 12px;
-            display: inline-block;
-            color: #2c3e50;
-        }
-        
-        .alerta-item .confiabilidade {
-            font-size: 10px;
-            padding: 2px 8px;
-            border-radius: 12px;
-            background: #e8f5e9;
-            color: #2e7d32;
-        }
-        
-        /* ÍCONES PROFISSIONAIS POR TIPO */
-        .icone-acidente { background: #e53935; }
-        .icone-obras { background: #ff9800; }
-        .icone-congestionamento { background: #f44336; }
-        .icone-perigo { background: #ff5722; }
-        .icone-interdicao { background: #455a64; }
-        .icone-neblina { background: #00acc1; }
-        .icone-animal { background: #8bc34a; color: #333; }
-        
         /* LUPA */
         .lupa-container {
             position: fixed;
             top: 15px;
             left: 50%;
             transform: translateX(-50%);
-            width: 320px;
+            width: 350px;
             z-index: 4500;
             background: white;
-            border-radius: 40px;
+            border-radius: 50px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.2);
             border: 2px solid var(--radio-gold);
             overflow: hidden;
-            display: flex;
-            align-items: center;
         }
         
         .lupa-container input {
-            flex: 1;
-            padding: 12px 20px;
+            width: 100%;
+            padding: 14px 20px;
             border: none;
-            font-size: 14px;
+            font-size: 15px;
             outline: none;
             background: transparent;
         }
         
-        .lupa-container i {
-            padding: 0 18px;
-            color: var(--ws-green);
-            font-size: 18px;
-            cursor: pointer;
-            transition: transform 0.2s;
+        /* SUGESTÕES DE ROTA */
+        .sugestoes-container {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 350px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 4499;
+            display: none;
+            overflow: hidden;
         }
         
-        .lupa-container i:hover { transform: scale(1.1); }
+        .sugestao-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
         
-        /* POPUP DO ALERTA - BALÃO PROFISSIONAL */
+        .sugestao-item:hover {
+            background: #f5f5f5;
+        }
+        
+        .sugestao-item i {
+            color: var(--ws-green);
+            font-size: 20px;
+        }
+        
+        /* POPUP DO ALERTA */
         .alerta-popup {
             background: white;
             border-radius: 16px;
             padding: 0;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             border: 1px solid rgba(7,94,84,0.2);
-            min-width: 250px;
+            min-width: 280px;
             overflow: hidden;
         }
         
@@ -206,11 +244,6 @@
             padding: 8px 12px;
             margin: 5px 0;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        
-        .popup-mensagem small {
-            color: #999;
-            font-size: 10px;
         }
         
         .popup-input {
@@ -258,8 +291,6 @@
             transition: all 0.2s;
         }
         
-        .f-btn:hover { transform: scale(1.05); }
-        
         #btn-chat { right: 15px; bottom: 110px; background: var(--ws-green); color: white; }
         #btn-mute { right: 15px; bottom: 175px; background: #fff; }
         #btn-luz { right: 15px; top: 130px; background: #ffcc00; }
@@ -290,7 +321,6 @@
             border-color: white; 
             color: white; 
             transform: translateX(-50%) scale(0.95);
-            box-shadow: 0 0 30px rgba(229,57,53,0.5);
         }
         
         .map-dark { filter: invert(100%) hue-rotate(180deg) brightness(95%); }
@@ -330,17 +360,33 @@
             100% { transform: scale(2); opacity: 0; } 
         }
 
-        .waze-credit {
+        .rotas-alternativas {
             position: fixed;
-            bottom: 5px;
-            right: 10px;
-            font-size: 9px;
-            color: #666;
-            background: rgba(255,255,255,0.9);
-            padding: 3px 8px;
-            border-radius: 20px;
-            z-index: 3000;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            bottom: 200px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            border-radius: 40px;
+            padding: 8px 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            display: flex;
+            gap: 10px;
+            z-index: 4500;
+            border: 2px solid var(--ws-green);
+        }
+        
+        .rota-alt-btn {
+            padding: 8px 15px;
+            border-radius: 30px;
+            background: #f0f0f0;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        
+        .rota-alt-btn:hover {
+            background: var(--ws-green);
+            color: white;
         }
     </style>
 </head>
@@ -354,6 +400,18 @@
 <div id="btn-mute" class="f-btn" onclick="toggleMute()">🔊</div>
 <div id="btn-chat" class="f-btn" onclick="toggleChat()">💬</div>
 <div id="btn-px">🎤</div>
+
+<!-- MODAL DE CADASTRO -->
+<div class="cadastro-modal" id="cadastroModal">
+    <div class="cadastro-content">
+        <h2>🚛 BR-277</h2>
+        <p>Bem-vindo ao sistema de trânsito</p>
+        <input type="text" id="nomeCadastro" placeholder="Digite seu nome" autocomplete="off">
+        <input type="text" id="veiculoCadastro" placeholder="Modelo do veículo (opcional)" autocomplete="off">
+        <input type="text" id="placaCadastro" placeholder="Placa (opcional)" autocomplete="off">
+        <button onclick="salvarCadastro()">ENTRAR</button>
+    </div>
+</div>
 
 <!-- CHAT GLOBAL -->
 <div id="chat-global" style="position:fixed; top:10%; left:5%; width:90%; height:80%; background:#e5ddd5; z-index:6000; border-radius:20px; display:none; flex-direction:column; border:2px solid var(--ws-green); box-shadow:0 10px 30px rgba(0,0,0,0.3);">
@@ -379,14 +437,18 @@
 
 <!-- LUPA -->
 <div class="lupa-container">
-    <input type="text" id="buscaDestino" placeholder="Para onde você quer ir? Ex: Curitiba, Centro" onkeypress="if(event.key==='Enter') buscarRota()">
-    <i class="fas fa-search" onclick="buscarRota()"></i>
+    <input type="text" id="buscaDestino" placeholder="Para onde você quer ir? Ex: Curitiba, Centro" autocomplete="off">
 </div>
 
-<!-- POPUP DO ALERTA (BALÃO) -->
-<div id="alertaPopup" style="display:none; position:absolute; z-index:10000;"></div>
+<!-- SUGESTÕES DE ROTA -->
+<div class="sugestoes-container" id="sugestoesRota"></div>
 
-<div class="waze-credit">🚗 Dados: Waze + Comunidade</div>
+<!-- ROTAS ALTERNATIVAS -->
+<div class="rotas-alternativas" id="rotasAlternativas" style="display:none;">
+    <div class="rota-alt-btn" onclick="traçarRotaAlternativa(1)">🔄 Rota 1 (45min)</div>
+    <div class="rota-alt-btn" onclick="traçarRotaAlternativa(2)">🔄 Rota 2 (52min)</div>
+    <div class="rota-alt-btn" onclick="traçarRotaAlternativa(3)">🔄 Rota 3 (1h10)</div>
+</div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
@@ -401,7 +463,8 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
 // ===== VARIÁVEIS =====
-let user = "Motorista_" + Math.floor(Math.random()*999);
+let user = null;
+let userData = null;
 let meuLatLng = null;
 let meuMarker = null;
 let follow = true;
@@ -409,7 +472,48 @@ let rotaControle = null;
 let isMuted = false;
 let alertaAtual = null;
 let popupAtual = null;
+let destinoAtual = null;
+let rotasAlternativas = [];
 const RAIO_MAXIMO = 300;
+
+// ===== VERIFICA CADASTRO =====
+const userSalvo = localStorage.getItem('br277_user');
+if (userSalvo) {
+    userData = JSON.parse(userSalvo);
+    user = userData.nome + (userData.veiculo ? ' - ' + userData.veiculo : '');
+    document.getElementById('cadastroModal').style.display = 'none';
+    iniciarGPS();
+} else {
+    document.getElementById('cadastroModal').style.display = 'flex';
+}
+
+function salvarCadastro() {
+    const nome = document.getElementById('nomeCadastro').value.trim();
+    if (!nome) {
+        alert('Por favor, digite seu nome!');
+        return;
+    }
+    
+    userData = {
+        nome: nome,
+        veiculo: document.getElementById('veiculoCadastro').value.trim(),
+        placa: document.getElementById('placaCadastro').value.trim(),
+        id: 'user_' + Date.now()
+    };
+    
+    user = nome + (userData.veiculo ? ' - ' + userData.veiculo : '');
+    
+    localStorage.setItem('br277_user', JSON.stringify(userData));
+    document.getElementById('cadastroModal').style.display = 'none';
+    
+    // Registra no Firebase
+    db.ref('usuarios/' + userData.id).set({
+        ...userData,
+        ultimo_acesso: new Date().toISOString()
+    });
+    
+    iniciarGPS();
+}
 
 // ===== MAPA =====
 const map = L.map('map', { 
@@ -418,102 +522,259 @@ const map = L.map('map', {
     zoomDelta: 0.5
 }).setView([-25.4284, -49.2733], 13);
 
-// Camada do Google com trânsito
 L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(map);
 
-// ===== GPS - ZOOM AUMENTADO =====
-navigator.geolocation.watchPosition(pos => {
-    meuLatLng = L.latLng(pos.coords.latitude, pos.coords.longitude);
-    
-    if(!meuMarker) {
-        meuMarker = L.marker(meuLatLng, { 
-            icon: L.divIcon({ 
-                html: `<div class="pulse-loc"></div><div style="font-size:32px; position:relative; top:-15px;">🚚</div>`, 
-                iconSize:[1,1],
-                className: ''
-            }) 
-        }).addTo(map);
+// ===== GPS =====
+function iniciarGPS() {
+    navigator.geolocation.watchPosition(pos => {
+        meuLatLng = L.latLng(pos.coords.latitude, pos.coords.longitude);
         
-        // ZOOM AUMENTADO PARA 17 (mais próximo)
-        map.setView(meuLatLng, 17);
+        if(!meuMarker) {
+            meuMarker = L.marker(meuLatLng, { 
+                icon: L.divIcon({ 
+                    html: `<div class="pulse-loc"></div><div style="font-size:32px; position:relative; top:-15px;">🚚</div>`, 
+                    iconSize:[1,1],
+                    className: ''
+                }) 
+            }).addTo(map);
+            
+            map.setView(meuLatLng, 17);
+            gerarAlertasSimulados();
+            setInterval(gerarAlertasSimulados, 120000);
+        } else { 
+            meuMarker.setLatLng(meuLatLng); 
+            
+            // Verifica se precisa sugerir rotas alternativas
+            if (destinoAtual && rotaControle) {
+                verificarTransitoNaRota();
+            }
+        }
         
-        // Inicia alertas
-        gerarAlertasSimulados();
-        setInterval(gerarAlertasSimulados, 120000);
-    } else { 
-        meuMarker.setLatLng(meuLatLng); 
+        if(follow) map.panTo(meuLatLng);
+        
+    }, null, { enableHighAccuracy: true });
+}
+
+// ===== LUPA CORRIGIDA =====
+const buscaInput = document.getElementById('buscaDestino');
+const sugestoesDiv = document.getElementById('sugestoesRota');
+
+buscaInput.addEventListener('input', function() {
+    const valor = this.value;
+    if (valor.length < 3) {
+        sugestoesDiv.style.display = 'none';
+        return;
     }
     
-    if(follow) map.panTo(meuLatLng);
+    // Sugestões rápidas
+    const sugestoes = [
+        'Curitiba, PR',
+        'Ponta Grossa, PR',
+        'Paranaguá, PR',
+        'Campo Largo, PR',
+        'São José dos Pinhais, PR',
+        'Araucária, PR',
+        'Colombo, PR',
+        'Pinhais, PR'
+    ].filter(s => s.toLowerCase().includes(valor.toLowerCase()));
     
-}, null, { enableHighAccuracy: true });
+    if (sugestoes.length > 0) {
+        sugestoesDiv.innerHTML = sugestoes.map(s => `
+            <div class="sugestao-item" onclick="selecionarDestino('${s}')">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>${s}</span>
+            </div>
+        `).join('');
+        sugestoesDiv.style.display = 'block';
+    } else {
+        sugestoesDiv.style.display = 'none';
+    }
+});
 
-// ===== ALERTAS EM PORTUGUÊS =====
+// Fecha sugestões ao clicar fora
+document.addEventListener('click', function(e) {
+    if (!buscaInput.contains(e.target) && !sugestoesDiv.contains(e.target)) {
+        sugestoesDiv.style.display = 'none';
+    }
+});
+
+function selecionarDestino(destino) {
+    buscaInput.value = destino;
+    sugestoesDiv.style.display = 'none';
+    buscarRota(destino);
+}
+
+// ===== ROTA PRINCIPAL =====
+function buscarRota(destinoTexto) {
+    if (!meuLatLng) {
+        alert('Aguardando localização GPS...');
+        return;
+    }
+    
+    const geocoder = L.Control.Geocoder.nominatim({
+        geocodingQueryParams: {
+            'countrycodes': 'br',
+            'limit': 1
+        }
+    });
+    
+    geocoder.geocode(destinoTexto, (results) => {
+        if (results && results.length > 0) {
+            const destino = results[0].center;
+            destinoAtual = destino;
+            
+            traçarRota(meuLatLng, destino);
+            buscarRotasAlternativas(meuLatLng, destino);
+        } else {
+            alert('Local não encontrado. Tente ser mais específico.');
+        }
+    });
+}
+
+function traçarRota(origem, destino) {
+    if (rotaControle) map.removeControl(rotaControle);
+    
+    rotaControle = L.Routing.control({
+        waypoints: [origem, destino],
+        lineOptions: { 
+            styles: [{ 
+                color: '#2196f3', 
+                weight: 6,
+                opacity: 0.8
+            }] 
+        },
+        createMarker: () => null,
+        show: false,
+        router: L.Routing.osrmv1({
+            serviceUrl: 'https://router.project-osrm.org/route/v1'
+        })
+    }).addTo(map);
+    
+    map.flyToBounds(L.latLngBounds([origem, destino]), { padding: [50, 50] });
+}
+
+// ===== ROTAS ALTERNATIVAS =====
+function buscarRotasAlternativas(origem, destino) {
+    // Simula 3 rotas diferentes
+    rotasAlternativas = [
+        {
+            waypoints: [origem, destino],
+            tempo: '45 min',
+            distancia: '42 km',
+            cor: '#4caf50'
+        },
+        {
+            waypoints: [origem, L.latLng(destino.lat + 0.05, destino.lng - 0.05)],
+            tempo: '52 min',
+            distancia: '48 km',
+            cor: '#ff9800'
+        },
+        {
+            waypoints: [origem, L.latLng(destino.lat - 0.03, destino.lng + 0.03)],
+            tempo: '1h 10min',
+            distancia: '55 km',
+            cor: '#f44336'
+        }
+    ];
+    
+    document.getElementById('rotasAlternativas').style.display = 'flex';
+}
+
+function traçarRotaAlternativa(index) {
+    if (!rotasAlternativas[index - 1]) return;
+    
+    const rota = rotasAlternativas[index - 1];
+    
+    if (rotaControle) map.removeControl(rotaControle);
+    
+    rotaControle = L.Routing.control({
+        waypoints: rota.waypoints,
+        lineOptions: { 
+            styles: [{ 
+                color: rota.cor, 
+                weight: 6,
+                opacity: 0.8,
+                dashArray: index === 1 ? null : '10, 10'
+            }] 
+        },
+        createMarker: () => null,
+        show: false
+    }).addTo(map);
+}
+
+// ===== VERIFICA TRÂNSITO NA ROTA =====
+function verificarTransitoNaRota() {
+    // Simula verificação de congestionamento
+    const temCongestionamento = Math.random() > 0.7;
+    
+    if (temCongestionamento) {
+        document.getElementById('rotasAlternativas').style.display = 'flex';
+        
+        // Notificação de congestionamento
+        const notificacao = document.createElement('div');
+        notificacao.style.cssText = `
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--danger);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            z-index: 10000;
+            font-weight: bold;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            animation: slideDown 0.3s;
+        `;
+        notificacao.innerHTML = '⚠️ Congestionamento detectado! Rotas alternativas disponíveis.';
+        document.body.appendChild(notificacao);
+        
+        setTimeout(() => {
+            notificacao.remove();
+        }, 5000);
+    }
+}
+
+// ===== ALERTAS =====
 function gerarAlertasSimulados() {
     if (!meuLatLng) return;
     
     const alertas = [];
     const tipos = [
-        { tipo: 'ACIDENTE', icone: 'car-crash', cor: '#e53935', classe: 'acidente' },
-        { tipo: 'OBRAS', icone: 'hard-hat', cor: '#ff9800', classe: 'obras' },
-        { tipo: 'CONGESTIONAMENTO', icone: 'traffic-light', cor: '#f44336', classe: 'congestionamento' },
-        { tipo: 'PERIGO', icone: 'exclamation-triangle', cor: '#ff5722', classe: 'perigo' },
-        { tipo: 'INTERDIÇÃO', icone: 'ban', cor: '#455a64', classe: 'interdicao' },
-        { tipo: 'NEBLINA', icone: 'smog', cor: '#00acc1', classe: 'neblina' },
-        { tipo: 'ANIMAL', icone: 'horse', cor: '#8bc34a', classe: 'animal' }
+        { tipo: 'ACIDENTE', icone: 'car-crash', cor: '#e53935' },
+        { tipo: 'OBRAS', icone: 'hard-hat', cor: '#ff9800' },
+        { tipo: 'CONGESTIONAMENTO', icone: 'traffic-light', cor: '#f44336' },
+        { tipo: 'PERIGO', icone: 'exclamation-triangle', cor: '#ff5722' },
+        { tipo: 'INTERDIÇÃO', icone: 'ban', cor: '#455a64' }
     ];
     
-    const descricoes = [
-        'Veículo parado no acostamento',
-        'Pista interditada para obras',
-        'Trânsito lento - 5km de fila',
-        'Óleo na pista',
-        'Animal solto na pista',
-        'Neblina intensa - visibilidade reduzida',
-        'Veículo em chamas',
-        'Deslizamento de barreira',
-        'Buraco na pista',
-        'Sinalização danificada'
-    ];
-    
-    // Pontos da BR-277
     const pontos = [
         { lat: -25.4284, lng: -49.2733, nome: 'BR-277 km 120' },
         { lat: -25.4384, lng: -49.2833, nome: 'BR-277 km 125' },
         { lat: -25.4184, lng: -49.2633, nome: 'BR-277 km 115' },
-        { lat: -25.4484, lng: -49.2933, nome: 'BR-277 km 130' },
-        { lat: -25.4084, lng: -49.2533, nome: 'BR-277 km 110' },
-        { lat: -25.4584, lng: -49.3033, nome: 'BR-277 km 135' }
+        { lat: -25.4484, lng: -49.2933, nome: 'BR-277 km 130' }
     ];
     
     pontos.forEach((ponto, index) => {
         if (Math.random() > 0.3) {
             const tipo = tipos[Math.floor(Math.random() * tipos.length)];
-            const desc = descricoes[Math.floor(Math.random() * descricoes.length)];
             const id = `alerta_${Date.now()}_${index}`;
             
             alertas.push({
                 id: id,
-                tipo: tipo.tipo,
-                tipo_pt: tipo.tipo,
-                icone: tipo.icone,
-                cor: tipo.cor,
-                classe: tipo.classe,
-                descricao: desc,
+                ...tipo,
+                descricao: `${tipo.tipo} em ${ponto.nome}`,
                 local: ponto.nome,
                 lat: ponto.lat,
                 lng: ponto.lng,
-                confiabilidade: Math.floor(Math.random() * 4) + 7, // 7-10
+                confiabilidade: Math.floor(Math.random() * 4) + 7,
                 horario: new Date().toLocaleTimeString()
             });
             
-            // Salva no Firebase
             db.ref(`alertas/${id}`).set({
                 tipo: tipo.tipo,
-                descricao: desc,
                 lat: ponto.lat,
                 lng: ponto.lng,
-                local: ponto.nome,
                 horario: new Date().toISOString()
             });
         }
@@ -525,59 +786,37 @@ function gerarAlertasSimulados() {
 function processarAlertas(alertas) {
     if (!meuLatLng) return;
     
-    // Limpa mapa antigo
-    map.eachLayer(layer => {
-        if (layer.options && layer.options.icon && layer.options.icon.options && 
-            layer.options.icon.options.html && layer.options.icon.options.html.includes('alerta-popup')) {
-            map.removeLayer(layer);
-        }
-    });
-    
     document.getElementById('alertasLista').innerHTML = '';
     
-    // Filtra por raio 300km
-    const alertasProximos = alertas.filter(a => {
-        const dist = calcularDistancia(meuLatLng.lat, meuLatLng.lng, a.lat, a.lng);
-        return dist <= RAIO_MAXIMO;
-    });
-    
-    // Ordena por distância
-    alertasProximos.sort((a, b) => {
-        const distA = calcularDistancia(meuLatLng.lat, meuLatLng.lng, a.lat, a.lng);
-        const distB = calcularDistancia(meuLatLng.lat, meuLatLng.lng, b.lat, b.lng);
-        return distA - distB;
-    });
-    
-    alertasProximos.forEach(alerta => {
-        adicionarMarcadorAlerta(alerta);
-        adicionarAlertaPainel(alerta);
+    alertas.forEach(alerta => {
+        const distancia = calcularDistancia(meuLatLng.lat, meuLatLng.lng, alerta.lat, alerta.lng);
+        
+        if (distancia <= RAIO_MAXIMO) {
+            adicionarMarcadorAlerta(alerta);
+            adicionarAlertaPainel(alerta, distancia);
+        }
     });
 }
 
 function adicionarMarcadorAlerta(alerta) {
-    // ÍCONES PROFISSIONAIS
     const icones = {
         'ACIDENTE': '💥',
         'OBRAS': '🚧',
         'CONGESTIONAMENTO': '🚦',
         'PERIGO': '⚠️',
-        'INTERDIÇÃO': '⛔',
-        'NEBLINA': '🌫️',
-        'ANIMAL': '🐂'
+        'INTERDIÇÃO': '⛔'
     };
     
     const marker = L.marker([alerta.lat, alerta.lng], {
         icon: L.divIcon({
-            html: `<div style="background:${alerta.cor}; color:white; padding:6px 12px; border-radius:30px; border:2px solid white; font-size:13px; font-weight:600; box-shadow:0 3px 10px rgba(0,0,0,0.3); display:flex; align-items:center; gap:5px; white-space:nowrap;">
-                <span>${icones[alerta.tipo] || '⚠️'}</span>
-                <span>${alerta.tipo}</span>
+            html: `<div style="background:${alerta.cor}; color:white; padding:6px 12px; border-radius:30px; border:2px solid white; font-size:13px; font-weight:600; box-shadow:0 3px 10px rgba(0,0,0,0.3);">
+                ${icones[alerta.tipo] || '⚠️'} ${alerta.tipo}
             </div>`,
             className: '',
             iconSize: [100, 36]
         })
     });
     
-    // BALÃO AO CLICAR
     marker.on('click', () => {
         abrirPopupAlerta(alerta, marker.getLatLng());
     });
@@ -585,22 +824,42 @@ function adicionarMarcadorAlerta(alerta) {
     marker.addTo(map);
 }
 
+function adicionarAlertaPainel(alerta, distancia) {
+    const div = document.createElement('div');
+    div.className = 'alerta-item';
+    div.innerHTML = `
+        <div class="icone" style="background:${alerta.cor};">
+            <i class="fas fa-${alerta.icone}"></i>
+        </div>
+        <div style="flex:1;">
+            <div style="font-weight:600;">${alerta.tipo}</div>
+            <div style="font-size:11px; color:#666;">${alerta.descricao}</div>
+            <div style="display:flex; gap:5px; margin-top:5px;">
+                <span style="font-size:10px; background:#eef2f6; padding:2px 8px; border-radius:12px;">📍 ${distancia} km</span>
+                <span style="font-size:10px; background:#e8f5e9; padding:2px 8px; border-radius:12px;">🔹 conf. ${alerta.confiabilidade}</span>
+            </div>
+        </div>
+    `;
+    
+    div.onclick = () => {
+        map.flyTo([alerta.lat, alerta.lng], 17);
+    };
+    
+    document.getElementById('alertasLista').appendChild(div);
+}
+
 function abrirPopupAlerta(alerta, latlng) {
-    // Fecha popup anterior
     if (popupAtual) map.closePopup(popupAtual);
     
-    // Cria conteúdo do popup
     const popupContent = document.createElement('div');
     popupContent.className = 'alerta-popup';
-    popupContent.style.width = '280px';
     
     popupContent.innerHTML = `
         <div class="popup-header">
             <span><i class="fas fa-${alerta.icone}" style="margin-right:8px;"></i>${alerta.tipo}</span>
-            <span style="font-size:11px; background:rgba(255,255,255,0.2); padding:3px 8px; border-radius:20px;">🔹 conf. ${alerta.confiabilidade}</span>
         </div>
         <div class="popup-body" id="popup-msgs-${alerta.id}">
-            <div style="text-align:center; color:#666; padding:10px;">Carregando mensagens...</div>
+            <div style="text-align:center; color:#666; padding:10px;">Carregando...</div>
         </div>
         <div class="popup-input">
             <input type="text" id="popup-input-${alerta.id}" placeholder="Digite sua mensagem...">
@@ -611,14 +870,12 @@ function abrirPopupAlerta(alerta, latlng) {
     popupAtual = L.popup({
         maxWidth: 300,
         minWidth: 280,
-        className: 'custom-popup',
         offset: [0, -20]
     })
     .setLatLng(latlng)
     .setContent(popupContent)
     .openOn(map);
     
-    // Carrega mensagens do Firebase
     carregarMensagensAlerta(alerta.id);
 }
 
@@ -635,10 +892,9 @@ function carregarMensagensAlerta(alertaId) {
         
         let html = '';
         Object.values(msgs).reverse().forEach(msg => {
-            const isMe = msg.user === user;
             html += `
-                <div class="popup-mensagem" style="margin:8px 0; ${isMe ? 'margin-left:20px;' : 'margin-right:20px;'}">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:3px;">
+                <div class="popup-mensagem" style="margin:8px 0;">
+                    <div style="display:flex; justify-content:space-between;">
                         <small><b>${msg.user}</b></small>
                         <small style="color:#999;">${msg.time}</small>
                     </div>
@@ -648,7 +904,6 @@ function carregarMensagensAlerta(alertaId) {
         });
         
         msgsDiv.innerHTML = html;
-        msgsDiv.scrollTop = msgsDiv.scrollHeight;
     });
 }
 
@@ -665,81 +920,6 @@ function enviarMsgPopup(alertaId) {
     input.value = "";
 }
 
-function adicionarAlertaPainel(alerta) {
-    const distancia = calcularDistancia(meuLatLng.lat, meuLatLng.lng, alerta.lat, alerta.lng);
-    
-    const div = document.createElement('div');
-    div.className = 'alerta-item';
-    div.innerHTML = `
-        <div class="icone icone-${alerta.classe}" style="background:${alerta.cor};">
-            <i class="fas fa-${alerta.icone}"></i>
-        </div>
-        <div class="info">
-            <div class="titulo">${alerta.tipo}</div>
-            <div class="desc">
-                <span>${alerta.descricao}</span>
-                <span class="distancia">${distancia} km</span>
-            </div>
-            <div style="display:flex; gap:5px; margin-top:5px;">
-                <span class="confiabilidade">🔹 confiabilidade ${alerta.confiabilidade}/10</span>
-            </div>
-        </div>
-    `;
-    
-    div.onclick = () => {
-        map.flyTo([alerta.lat, alerta.lng], 17);
-        setTimeout(() => {
-            abrirPopupAlerta(alerta, L.latLng(alerta.lat, alerta.lng));
-        }, 500);
-    };
-    
-    document.getElementById('alertasLista').appendChild(div);
-}
-
-// ===== ROTA CORRIGIDA =====
-function buscarRota() {
-    const destino = document.getElementById('buscaDestino').value;
-    if (!destino || !meuLatLng) return;
-    
-    // Usando Nominatim para busca
-    const geocoder = L.Control.Geocoder.nominatim({
-        geocodingQueryParams: {
-            'countrycodes': 'br',
-            'limit': 5,
-            'viewbox': '-54.6,-26.3,-48.3,-24.5',
-            'bounded': 1
-        }
-    });
-    
-    geocoder.geocode(destino, (results) => {
-        if (results && results.length > 0) {
-            const dest = results[0].center;
-            
-            if (rotaControle) map.removeControl(rotaControle);
-            
-            rotaControle = L.Routing.control({
-                waypoints: [meuLatLng, dest],
-                lineOptions: { 
-                    styles: [{ 
-                        color: '#2196f3', 
-                        weight: 6,
-                        opacity: 0.8
-                    }] 
-                },
-                createMarker: () => null,
-                show: false,
-                router: L.Routing.mapbox('sua-chave-aqui', { profile: 'mapbox/driving' })
-            }).addTo(map);
-            
-            // ZOOM NA ROTA
-            map.flyToBounds(L.latLngBounds([meuLatLng, dest]), { padding: [50, 50] });
-        } else {
-            alert("Local não encontrado. Tente ser mais específico.");
-        }
-    });
-}
-
-// ===== CALCULAR DISTÂNCIA =====
 function calcularDistancia(lat1, lon1, lat2, lon2) {
     const R = 6371;
     const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -802,7 +982,6 @@ function pararGravacao() {
     }
 }
 
-// Receber áudio
 db.ref("radio").limitToLast(1).on("child_added", snap => {
     const d = snap.val();
     if(d && d.user !== user && !isMuted && (Date.now() - d.time < 5000)) {
@@ -838,7 +1017,6 @@ function enviarMsg() {
     input.value = "";
 }
 
-// Chat geral
 db.ref("chat_geral").limitToLast(50).on("child_added", snap => {
     const msg = snap.val();
     const div = document.createElement('div');
