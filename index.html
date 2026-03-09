@@ -467,7 +467,6 @@
             border-radius: 40px;
             text-align: center;
             max-width: 400px;
-            animation: pulse 2s infinite;
         }
         
         .welcome-content input {
@@ -506,7 +505,7 @@
             display: none;
         }
         
-        /* BOTÕES FLUTUANTES ORIGINAIS (AJUSTADOS) */
+        /* BOTÕES FLUTUANTES ORIGINAIS */
         .f-btn { 
             position: fixed; 
             z-index: 5000; 
@@ -616,21 +615,21 @@
         <div class="icone-rota"><i class="fas fa-route"></i></div>
         <div class="info-rota">
             <div class="nome-rota">Curitiba → Campo Largo</div>
-            <div class="detalhes-rota">30 km • 35 min • Pedágio R$ 12,40</div>
+            <div class="detalhes-rota">30 km • 35 min</div>
         </div>
     </div>
     <div class="sugestao-item" onclick="traçarRotaSugerida('Curitiba', 'Ponta Grossa')">
         <div class="icone-rota"><i class="fas fa-route"></i></div>
         <div class="info-rota">
             <div class="nome-rota">Curitiba → Ponta Grossa</div>
-            <div class="detalhes-rota">112 km • 1h40 • Pedágio R$ 24,90</div>
+            <div class="detalhes-rota">112 km • 1h40</div>
         </div>
     </div>
     <div class="sugestao-item" onclick="traçarRotaSugerida('Paranaguá', 'Curitiba')">
         <div class="icone-rota"><i class="fas fa-route"></i></div>
         <div class="info-rota">
             <div class="nome-rota">Paranaguá → Curitiba</div>
-            <div class="detalhes-rota">91 km • 1h30 • Pedágio R$ 18,70</div>
+            <div class="detalhes-rota">91 km • 1h30</div>
         </div>
     </div>
 </div>
@@ -771,14 +770,12 @@ let isMuted = false;
 let alertasAtivos = [];
 let alertaSelecionado = "";
 let chatAlertaAtivo = null;
-let zoomAutomaticoAtivo = true;
 
 // INICIALIZAÇÃO DO MAPA
 const map = L.map('map', { 
     zoomControl: false,
     zoomSnap: 0.5,
-    zoomDelta: 0.5,
-    wheelPxPerZoomLevel: 120
+    zoomDelta: 0.5
 }).setView([-25.4284, -49.2733], 15);
 
 L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(map);
@@ -835,7 +832,7 @@ function iniciarGPS() {
         
         if(follow) map.panTo(meuLatLng);
         
-        // Auto-encerrar rota se chegar perto (50 metros)
+        // Auto-encerrar rota se chegar perto
         if(rotaControle && rotaControle.getWaypoints().length >= 2) {
             const destino = rotaControle.getWaypoints()[1].latLng;
             if(destino) {
@@ -849,7 +846,6 @@ function iniciarGPS() {
         }
     }, error => {
         console.log("Erro GPS:", error);
-        alert("Erro ao acessar GPS. Verifique as permissões!");
     }, { 
         enableHighAccuracy: true,
         maximumAge: 0,
@@ -861,13 +857,18 @@ function iniciarGPS() {
 if(localStorage.getItem('user_br277')) {
     user = localStorage.getItem('user_br277');
     document.getElementById('welcomeModal').style.display = 'none';
-    iniciarGPS(); // Inicia GPS automaticamente
+    iniciarGPS();
 }
 
-// FUNÇÕES DE INTERFACE ORIGINAIS
+// ===== FUNÇÕES DE INTERFACE =====
 function toggleDark() { 
     document.getElementById('map').classList.toggle('map-dark'); 
 }
 
 function toggleMute() { 
-    isMuted = !is
+    isMuted = !isMuted; 
+    document.getElementById('btn-mute').innerHTML = isMuted ? "🔇" : "🔊";
+    document.getElementById('btn-mute').style.color = isMuted ? "red" : "black";
+}
+
+function toggle
