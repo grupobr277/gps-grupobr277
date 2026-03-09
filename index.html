@@ -9,150 +9,176 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body, #map { height: 100%; width: 100%; font-family: 'Segoe UI', sans-serif; }
+        html, body, #map { height: 100%; width: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
         
-        /* PAINEL DE ALERTAS - COMPACTO */
+        /* MODAL DE BOAS-VINDAS */
+        .welcome-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 999999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .welcome-content {
+            background: white;
+            padding: 30px;
+            border-radius: 30px;
+            text-align: center;
+            max-width: 350px;
+            width: 90%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            border: 3px solid #075e54;
+        }
+        
+        .welcome-content h2 {
+            color: #075e54;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .welcome-content input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 30px;
+            margin: 10px 0;
+            font-size: 16px;
+            outline: none;
+            transition: border 0.2s;
+        }
+        
+        .welcome-content input:focus {
+            border-color: #075e54;
+        }
+        
+        .veiculo-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .veiculo-option {
+            padding: 15px 5px;
+            border: 2px solid #ddd;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .veiculo-option span {
+            font-size: 12px;
+            color: #333;
+        }
+        
+        .veiculo-option.selected {
+            border-color: #075e54;
+            background: #dcf8c6;
+            transform: scale(1.02);
+        }
+        
+        .welcome-content button {
+            width: 100%;
+            padding: 15px;
+            background: #075e54;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .welcome-content button:hover {
+            transform: scale(1.02);
+        }
+        
+        /* PAINEL DE ALERTAS - SOMENTE TEXTOS */
         .alertas-panel {
             position: fixed;
             top: 70px;
             left: 5px;
             background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(5px);
-            border-radius: 30px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
             z-index: 9000;
-            border: 2px solid #075e54;
+            border: 1px solid #ddd;
             overflow: hidden;
-            width: 50px;
+            width: 100px;
         }
         
         .alertas-header {
             background: #075e54;
             color: white;
-            padding: 8px;
-            font-size: 12px;
+            padding: 10px;
+            font-weight: bold;
             text-align: center;
-            writing-mode: vertical-rl;
-            transform: rotate(180deg);
-            height: 70px;
+            font-size: 12px;
+            letter-spacing: 1px;
         }
         
         .alertas-lista {
             padding: 5px;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
         }
         
         .alerta-item {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            padding: 8px 5px;
+            text-align: center;
             cursor: pointer;
-            font-size: 18px;
-            color: white;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            border-radius: 15px;
+            margin: 2px 0;
             transition: all 0.2s;
-            position: relative;
+            font-size: 12px;
+            font-weight: 500;
+            color: white;
         }
         
         .alerta-item:hover {
-            transform: scale(1.1);
+            transform: scale(1.02);
+            filter: brightness(1.1);
         }
         
-        .alerta-item .nome {
-            position: absolute;
-            left: 45px;
-            background: rgba(0,0,0,0.8);
-            color: white;
-            padding: 3px 8px;
-            border-radius: 15px;
-            font-size: 11px;
-            white-space: nowrap;
-            display: none;
-        }
+        .alerta-acidente { background: #e53935; }
+        .alerta-obras { background: #ff9800; }
+        .alerta-pane { background: #795548; }
+        .alerta-animal { background: #9c27b0; }
+        .alerta-radar { background: #607d8b; }
+        .alerta-barreira { background: #8b4513; }
+        .alerta-neblina { background: #00acc1; }
+        .alerta-congestionamento { background: #f44336; }
+        .alerta-alagamento { background: #2196f3; }
+        .alerta-desvio { background: #4caf50; }
         
-        .alerta-item:hover .nome {
-            display: block;
-        }
-        
-        .acidente { background: #e53935; }
-        .obras { background: #ff9800; }
-        .pane { background: #795548; }
-        .animal { background: #9c27b0; }
-        .radar { background: #607d8b; }
-        .barreira { background: #8b4513; }
-        .neblina { background: #00acc1; }
-        .congestionamento { background: #f44336; }
-        .alagamento { background: #2196f3; }
-        .desvio { background: #4caf50; }
-        
-        /* CONTADOR DE USUÁRIOS - TECNOLÓGICO */
+        /* CONTADOR DE USUÁRIOS - DISCRETO */
         .contador-usuarios {
             position: fixed;
             top: 15px;
             right: 15px;
-            background: linear-gradient(135deg, #075e54, #0a7a6b);
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
             color: white;
-            padding: 10px 18px;
-            border-radius: 40px;
-            font-size: 13px;
-            font-weight: bold;
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-size: 12px;
             z-index: 10000;
             display: flex;
             align-items: center;
-            gap: 8px;
-            border: 2px solid #ffd700;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            backdrop-filter: blur(5px);
-        }
-        
-        .contador-usuarios i {
-            color: #ffd700;
-            animation: pulse 2s infinite;
-        }
-        
-        .online-pulse {
-            width: 8px;
-            height: 8px;
-            background: #4caf50;
-            border-radius: 50%;
-            margin-left: 5px;
-            animation: pulse-green 2s infinite;
-        }
-        
-        @keyframes pulse-green {
-            0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(76, 175, 80, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
-        }
-        
-        /* BOTÃO MUDO */
-        .btn-mudo {
-            position: fixed;
-            right: 15px;
-            bottom: 190px;
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background: white;
-            border: 2px solid #075e54;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 9000;
-            font-size: 20px;
-            color: #075e54;
-        }
-        
-        .btn-mudo.mudo {
-            background: #e53935;
-            color: white;
+            gap: 5px;
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
         
         /* ALERTA SUSPENSO */
@@ -163,9 +189,9 @@
             width: 300px;
             background: white;
             border-radius: 16px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
             z-index: 9500;
-            border: 2px solid #075e54;
+            border: 1px solid #ddd;
             overflow: hidden;
             display: none;
         }
@@ -178,6 +204,7 @@
             display: flex;
             justify-content: space-between;
             cursor: pointer;
+            font-size: 13px;
         }
         
         .alerta-suspenso-conteudo {
@@ -201,67 +228,288 @@
         }
         
         .alerta-tempo-real .icone {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 18px;
+            font-size: 16px;
         }
         
-        /* NOTIFICAÇÃO DE ÁUDIO */
-        .audio-notification {
+        .alerta-tempo-real .info {
+            flex: 1;
+        }
+        
+        .alerta-tempo-real .titulo {
+            font-weight: bold;
+            font-size: 13px;
+        }
+        
+        .alerta-tempo-real .endereco {
+            font-size: 11px;
+            color: #666;
+        }
+        
+        .alerta-tempo-real .distancia {
+            font-size: 10px;
+            color: #e53935;
+            font-weight: 500;
+        }
+        
+        /* CHAT WHATSAPP COMPLETO */
+        .chat-container {
             position: fixed;
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #2196f3;
-            color: white;
-            padding: 12px 25px;
-            border-radius: 50px;
-            z-index: 10000;
+            top: 10%;
+            left: 5%;
+            width: 90%;
+            height: 80%;
+            background: #e5ddd5;
+            z-index: 20000;
+            border-radius: 20px;
             display: none;
-            align-items: center;
-            gap: 15px;
-            font-size: 14px;
-            border: 2px solid white;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-            animation: slideUp 0.3s;
+            flex-direction: column;
+            border: 2px solid #075e54;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
         }
         
-        .audio-notification i {
-            font-size: 20px;
-        }
-        
-        .audio-wave {
+        .chat-header {
+            background: #075e54;
+            color: white;
+            padding: 15px;
+            border-radius: 18px 18px 0 0;
             display: flex;
-            gap: 3px;
+            justify-content: space-between;
+            align-items: center;
         }
         
-        .audio-wave span {
-            width: 4px;
-            height: 15px;
+        .chat-header-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .chat-header-info span {
+            font-size: 14px;
+            background: rgba(255,255,255,0.2);
+            padding: 3px 8px;
+            border-radius: 20px;
+        }
+        
+        .chat-mensagens {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            background: #e5ddd5;
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAAbklEQVQ4jc2UOwrAIAxA38WpU8fq2F2K6GQp/VhLKm0LBYNbeA8egfgEAYCQUkpYXlSEjDHCOWf1QUTQWg8d+whKKUQE5xzGmGOpqqoYYwR3zpVS0FrHGCMAQERgjDnH0lpjjBEA4Jzz7u0fY0fB+u8LjwQAAAAASUVORK5CYII=');
+        }
+        
+        .mensagem-wrapper {
+            display: flex;
+            flex-direction: column;
+            margin: 2px 0;
+            position: relative;
+        }
+        
+        .mensagem {
+            max-width: 65%;
+            padding: 8px 12px;
+            border-radius: 15px;
+            font-size: 14px;
+            word-wrap: break-word;
+            position: relative;
+        }
+        
+        .mensagem.minha {
+            background: #dcf8c6;
+            align-self: flex-end;
+            margin-left: auto;
+            border-bottom-right-radius: 2px;
+        }
+        
+        .mensagem.outra {
             background: white;
-            animation: wave 1s infinite;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
         }
         
-        @keyframes wave {
-            0%, 100% { height: 5px; }
-            50% { height: 20px; }
+        .mensagem-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 3px;
+            font-size: 10px;
+            color: #999;
+            justify-content: flex-end;
         }
         
-        @keyframes slideUp {
-            from { transform: translateX(-50%) translateY(20px); opacity: 0; }
-            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        .mensagem-remetente {
+            font-weight: bold;
+            font-size: 12px;
+            margin-bottom: 2px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .mensagem-remetente .veiculo-icon {
+            font-size: 12px;
+        }
+        
+        .mensagem-acoes {
+            position: absolute;
+            top: -25px;
+            right: 0;
+            background: white;
+            border-radius: 30px;
+            padding: 4px 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: none;
+            gap: 12px;
+            z-index: 10;
+            border: 1px solid #075e54;
+        }
+        
+        .mensagem-wrapper:hover .mensagem-acoes {
+            display: flex;
+        }
+        
+        .mensagem-acoes span {
+            cursor: pointer;
+            font-size: 14px;
+            color: #666;
+            transition: color 0.2s;
+        }
+        
+        .mensagem-acoes span:hover {
+            color: #075e54;
+        }
+        
+        .admin-delete {
+            color: #e53935 !important;
+        }
+        
+        .data-divider {
+            text-align: center;
+            margin: 15px 0;
+            position: relative;
+        }
+        
+        .data-divider span {
+            background: rgba(0,0,0,0.5);
+            color: white;
+            padding: 4px 15px;
+            border-radius: 30px;
+            font-size: 11px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .chat-input {
+            padding: 15px;
+            background: #f0f0f0;
+            display: flex;
+            gap: 10px;
+            border-radius: 0 0 18px 18px;
+            align-items: center;
+        }
+        
+        .chat-input input {
+            flex: 1;
+            padding: 12px 15px;
+            border-radius: 30px;
+            border: 1px solid #ccc;
+            outline: none;
+            font-size: 14px;
+        }
+        
+        .chat-input button {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: none;
+            background: #075e54;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .chat-input button:hover {
+            transform: scale(1.05);
+        }
+        
+        /* BALÃO DO ALERTA */
+        .balao-alerta {
+            background: white;
+            border-radius: 16px;
+            padding: 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 2px solid #075e54;
+            min-width: 260px;
+            overflow: hidden;
+        }
+        
+        .balao-header {
+            background: #075e54;
+            color: white;
+            padding: 10px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+        }
+        
+        .balao-chat {
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 10px;
+            background: #e5ddd5;
+        }
+        
+        .balao-mensagem {
+            background: white;
+            padding: 5px 8px;
+            border-radius: 12px;
+            margin: 3px 0;
+            font-size: 12px;
+        }
+        
+        .balao-mensagem.minha {
+            background: #dcf8c6;
+        }
+        
+        .balao-input {
+            display: flex;
+            padding: 8px;
+            background: #f0f0f0;
+            gap: 5px;
+        }
+        
+        .balao-input input {
+            flex: 1;
+            padding: 8px;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+            outline: none;
+        }
+        
+        .balao-input button {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            border: none;
+            background: #075e54;
+            color: white;
+            cursor: pointer;
         }
         
         /* LUPA */
         .lupa-container {
             position: fixed;
             top: 15px;
-            left: 60px;
+            left: 115px;
             width: 250px;
             z-index: 10000;
             background: white;
@@ -269,7 +517,7 @@
             border: 3px solid #ffd700;
             display: flex;
             overflow: hidden;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
         }
         
         .lupa-container input {
@@ -288,80 +536,68 @@
             cursor: pointer;
         }
         
-        /* INDICADOR DE GRAVAÇÃO */
-        .gravando-indicator {
+        /* BOTÃO RECENTRALIZAR */
+        .btn-recentrar {
             position: fixed;
-            bottom: 100px;
+            bottom: 120px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0,0,0,0.9);
+            background: rgba(0,0,0,0.7);
             color: white;
-            padding: 12px 25px;
-            border-radius: 50px;
-            z-index: 10000;
+            border-radius: 40px;
+            padding: 8px 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            cursor: pointer;
+            z-index: 9000;
             display: none;
-            align-items: center;
-            gap: 15px;
-            font-size: 16px;
-            border: 2px solid #ffd700;
+            font-weight: 500;
+            font-size: 13px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.2);
         }
         
-        .gravando-timer {
-            font-weight: bold;
-            color: #ffd700;
-            font-size: 20px;
-        }
-        
-        /* BOTÕES */
-        .btn-flutuante {
+        /* BOTÕES INFERIORES */
+        .botoes-inferiores {
             position: fixed;
-            width: 45px;
-            height: 45px;
+            bottom: 20px;
+            right: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 9000;
+        }
+        
+        .btn-acao {
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             background: white;
             border: 2px solid #075e54;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            z-index: 9000;
-            font-size: 20px;
+            font-size: 22px;
             color: #075e54;
+            transition: all 0.2s;
         }
         
-        #btn-chat {
-            right: 15px;
-            bottom: 120px;
-            background: #075e54;
-            color: white;
-        }
-        
-        #btn-luz {
-            right: 15px;
-            top: 130px;
-            background: #ffcc00;
-            color: #333;
-        }
-        
-        #btn-alerta {
-            right: 15px;
-            top: 190px;
-            background: #e53935;
-            color: white;
+        .btn-acao:hover {
+            transform: scale(1.05);
         }
         
         #btn-px { 
-            bottom: 20px; 
-            left: 50%; 
-            transform: translateX(-50%); 
-            width: 70px; 
-            height: 70px; 
-            background: #333; 
-            border: 4px solid #ffd700; 
-            color: #ffd700; 
-            font-size: 30px;
             position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 70px;
+            background: #333;
+            border: 4px solid #ffd700;
+            color: #ffd700;
+            font-size: 30px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -369,6 +605,7 @@
             cursor: pointer;
             z-index: 9001;
             transition: all 0.2s;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
         }
         
         #btn-px.ativo { 
@@ -377,21 +614,56 @@
             transform: translateX(-50%) scale(0.95);
         }
         
-        .btn-recentrar {
+        .btn-mudo {
+            background: #075e54;
+            color: white;
+        }
+        
+        .btn-mudo.mudo {
+            background: #e53935;
+        }
+        
+        /* INDICADORES */
+        .gravando-indicator {
             position: fixed;
-            bottom: 120px;
+            bottom: 100px;
             left: 50%;
             transform: translateX(-50%);
-            background: white;
-            border: 2px solid #075e54;
-            border-radius: 40px;
-            padding: 8px 20px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-            cursor: pointer;
-            z-index: 9000;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 50px;
+            z-index: 10000;
             display: none;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+            border: 2px solid #ffd700;
+            backdrop-filter: blur(5px);
+        }
+        
+        .gravando-timer {
             font-weight: bold;
-            color: #075e54;
+            color: #ffd700;
+            font-size: 18px;
+        }
+        
+        .audio-notification {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2196f3;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 50px;
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+            border: 2px solid white;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
         }
         
         .mapa-noturno {
@@ -417,26 +689,56 @@
 
 <div id="map"></div>
 
+<!-- MODAL DE BOAS-VINDAS -->
+<div class="welcome-modal" id="welcomeModal">
+    <div class="welcome-content">
+        <h2>🚛 BR-277</h2>
+        <p style="color:#666; margin-bottom:20px;">Bem-vindo ao sistema de trânsito</p>
+        
+        <input type="text" id="nomeUsuario" placeholder="Seu nome" value="Motorista">
+        
+        <div style="margin:15px 0; text-align:left; color:#333; font-size:14px;">Escolha seu veículo:</div>
+        <div class="veiculo-selector" id="veiculoSelector">
+            <div class="veiculo-option selected" data-veiculo="carro" data-icone="🚗">
+                🚗 <span>Carro</span>
+            </div>
+            <div class="veiculo-option" data-veiculo="caminhao" data-icone="🚛">
+                🚛 <span>Caminhão</span>
+            </div>
+            <div class="veiculo-option" data-veiculo="moto" data-icone="🏍️">
+                🏍️ <span>Moto</span>
+            </div>
+            <div class="veiculo-option" data-veiculo="onibus" data-icone="🚌">
+                🚌 <span>Ônibus</span>
+            </div>
+            <div class="veiculo-option" data-veiculo="van" data-icone="🚐">
+                🚐 <span>Van</span>
+            </div>
+            <div class="veiculo-option" data-veiculo="pickup" data-icone="🛻">
+                🛻 <span>Pickup</span>
+            </div>
+        </div>
+        
+        <button onclick="salvarCadastro()">ENTRAR</button>
+    </div>
+</div>
+
 <!-- CONTADOR DE USUÁRIOS -->
 <div class="contador-usuarios" id="contadorUsuarios">
     <i class="fas fa-users"></i>
     <span id="numUsuarios">0</span> online
-    <div class="online-pulse"></div>
 </div>
 
-<!-- PAINEL DE ALERTAS - ÍCONES -->
+<!-- PAINEL DE ALERTAS - SOMENTE TEXTOS -->
 <div class="alertas-panel">
-    <div class="alertas-header">🚨</div>
+    <div class="alertas-header">ALERTAS</div>
     <div class="alertas-lista" id="alertasLista"></div>
 </div>
 
 <!-- ALERTA SUSPENSO -->
 <div class="alerta-suspenso" id="alertaSuspenso">
     <div class="alerta-suspenso-header" onclick="toggleAlertaSuspenso()">
-        <span>
-            <i class="fas fa-exclamation-triangle"></i>
-            TEMPO REAL
-        </span>
+        <span><i class="fas fa-exclamation-triangle"></i> TEMPO REAL</span>
         <i class="fas fa-chevron-up" id="setaSuspenso"></i>
     </div>
     <div class="alerta-suspenso-conteudo" id="conteudoSuspenso">
@@ -455,41 +757,52 @@
     <i class="fas fa-location-arrow"></i> RECENTRALIZAR
 </div>
 
-<!-- BOTÃO MUDO -->
-<div class="btn-mudo" id="btnMudo" onclick="toggleMudo()">
-    <i class="fas fa-volume-up"></i>
-</div>
-
-<!-- BOTÕES -->
-<div class="btn-flutuante" id="btn-chat" onclick="toggleChatGeral()">
-    <i class="fas fa-comment"></i>
-</div>
-
-<div class="btn-flutuante" id="btn-luz" onclick="toggleModoNoturno()">
-    💡
-</div>
-
-<div class="btn-flutuante" id="btn-alerta" onclick="toggleAlertaSuspenso()">
-    <i class="fas fa-bell"></i>
+<!-- BOTÕES INFERIORES -->
+<div class="botoes-inferiores">
+    <div class="btn-acao" id="btn-chat" onclick="toggleChatGeral()">
+        <i class="fas fa-comment"></i>
+    </div>
+    <div class="btn-acao" id="btn-luz" onclick="toggleModoNoturno()">
+        💡
+    </div>
+    <div class="btn-acao" id="btn-alerta" onclick="toggleAlertaSuspenso()">
+        <i class="fas fa-bell"></i>
+    </div>
+    <div class="btn-acao btn-mudo" id="btnMudo" onclick="toggleMudo()">
+        <i class="fas fa-volume-up"></i>
+    </div>
 </div>
 
 <div id="btn-px">🎤</div>
 
-<!-- NOTIFICAÇÃO DE ÁUDIO -->
-<div class="audio-notification" id="audioNotification">
-    <i class="fas fa-headphones"></i>
-    <span>Áudio recebido...</span>
-    <div class="audio-wave">
-        <span></span>
-        <span></span>
-        <span></span>
+<!-- CHAT GERAL -->
+<div class="chat-container" id="chatGeral">
+    <div class="chat-header">
+        <div class="chat-header-info">
+            <i class="fas fa-comments"></i>
+            <span>CHAT GERAL</span>
+            <span id="adminBadge" style="display:none;">👑 ADMIN</span>
+        </div>
+        <div style="display:flex; gap:15px;">
+            <span onclick="fecharChatGeral()" style="cursor:pointer;">✖</span>
+        </div>
+    </div>
+    <div class="chat-mensagens" id="chatMensagens"></div>
+    <div class="chat-input">
+        <input type="text" id="chatInput" placeholder="Digite sua mensagem..." onkeypress="if(event.key==='Enter') enviarMsgGeral()">
+        <button onclick="enviarMsgGeral()"><i class="fas fa-paper-plane"></i></button>
     </div>
 </div>
 
-<!-- INDICADOR DE GRAVAÇÃO -->
+<!-- INDICADORES -->
 <div class="gravando-indicator" id="gravandoIndicator">
     <span>🎤 Gravando...</span>
     <span class="gravando-timer" id="gravandoTimer">30s</span>
+</div>
+
+<div class="audio-notification" id="audioNotification">
+    <i class="fas fa-headphones"></i>
+    <span>Áudio recebido...</span>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -506,7 +819,11 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
 // ===== VARIÁVEIS =====
-let usuario = "Motorista_" + Math.floor(Math.random() * 1000);
+let usuario = null;
+let veiculoUsuario = 'carro';
+let iconeVeiculo = '🚗';
+let admin = false;
+const ADMIN_PASSWORD = 'br277admin';
 let minhaLocalizacao = null;
 let meuMarcador = null;
 let seguirLocalizacao = true;
@@ -514,48 +831,89 @@ let rotaAtual = null;
 let mapa = null;
 let usuariosAtivos = {};
 let mudo = false;
+let mensagemRespondendo = null;
 
 // ===== 10 ALERTAS =====
 const alertas = [
-    { tipo: 'acidente', icone: '💥', nome: 'Acidente', cor: '#e53935' },
-    { tipo: 'obras', icone: '🚧', nome: 'Obras', cor: '#ff9800' },
-    { tipo: 'pane', icone: '🔧', nome: 'Pane', cor: '#795548' },
-    { tipo: 'animal', icone: '🐂', nome: 'Animal', cor: '#9c27b0' },
-    { tipo: 'radar', icone: '📷', nome: 'Radar', cor: '#607d8b' },
-    { tipo: 'barreira', icone: '⛰️', nome: 'Barreira', cor: '#8b4513' },
-    { tipo: 'neblina', icone: '🌫️', nome: 'Neblina', cor: '#00acc1' },
-    { tipo: 'congestionamento', icone: '⚫', nome: 'Congestionamento', cor: '#f44336' },
-    { tipo: 'alagamento', icone: '💧', nome: 'Alagamento', cor: '#2196f3' },
-    { tipo: 'desvio', icone: '↩️', nome: 'Desvio', cor: '#4caf50' }
+    { tipo: 'acidente', nome: 'ACIDENTE', cor: '#e53935' },
+    { tipo: 'obras', nome: 'OBRAS', cor: '#ff9800' },
+    { tipo: 'pane', nome: 'PANE', cor: '#795548' },
+    { tipo: 'animal', nome: 'ANIMAL', cor: '#9c27b0' },
+    { tipo: 'radar', nome: 'RADAR', cor: '#607d8b' },
+    { tipo: 'barreira', nome: 'BARREIRA', cor: '#8b4513' },
+    { tipo: 'neblina', nome: 'NEBLINA', cor: '#00acc1' },
+    { tipo: 'congestionamento', nome: 'CONGEST.', cor: '#f44336' },
+    { tipo: 'alagamento', nome: 'ALAGAMENTO', cor: '#2196f3' },
+    { tipo: 'desvio', nome: 'DESVIO', cor: '#4caf50' }
 ];
 
-// ===== INICIALIZAÇÃO =====
-document.addEventListener('DOMContentLoaded', function() {
-    criarIconesAlertas();
+// ===== BOAS-VINDAS =====
+document.querySelectorAll('.veiculo-option').forEach(opt => {
+    opt.addEventListener('click', function() {
+        document.querySelectorAll('.veiculo-option').forEach(o => o.classList.remove('selected'));
+        this.classList.add('selected');
+        veiculoUsuario = this.dataset.veiculo;
+        iconeVeiculo = this.dataset.icone;
+    });
+});
+
+function salvarCadastro() {
+    const nome = document.getElementById('nomeUsuario').value.trim();
+    if (!nome) {
+        alert('Digite seu nome!');
+        return;
+    }
+    
+    usuario = nome;
+    
+    // Verifica se é admin
+    if (nome.toLowerCase() === 'admin' || nome === 'ADMIN') {
+        const senha = prompt('Digite a senha de admin:');
+        if (senha === ADMIN_PASSWORD) {
+            admin = true;
+            document.getElementById('adminBadge').style.display = 'inline';
+        }
+    }
+    
+    localStorage.setItem('br277_usuario', nome);
+    localStorage.setItem('br277_veiculo', veiculoUsuario);
+    
+    document.getElementById('welcomeModal').style.display = 'none';
+    
     iniciarMapa();
     iniciarGPS();
     carregarAlertasTempoReal();
     carregarUsuariosAtivos();
     carregarAlertasFixos();
-});
+    carregarChatGeral();
+}
 
+// Verifica se já tem usuário
+const userSalvo = localStorage.getItem('br277_usuario');
+if (userSalvo) {
+    usuario = userSalvo;
+    veiculoUsuario = localStorage.getItem('br277_veiculo') || 'carro';
+    document.getElementById('welcomeModal').style.display = 'none';
+    iniciarMapa();
+    iniciarGPS();
+    carregarAlertasTempoReal();
+    carregarUsuariosAtivos();
+    carregarAlertasFixos();
+    carregarChatGeral();
+}
+
+// ===== ICONES ALERTAS =====
 function criarIconesAlertas() {
     const lista = document.getElementById('alertasLista');
     alertas.forEach(alerta => {
         const div = document.createElement('div');
-        div.className = `alerta-item ${alerta.tipo}`;
-        div.innerHTML = alerta.icone;
-        div.setAttribute('data-nome', alerta.nome);
+        div.className = `alerta-item alerta-${alerta.tipo}`;
+        div.textContent = alerta.nome;
         div.onclick = () => ativarAlerta(alerta);
-        
-        const nomeSpan = document.createElement('span');
-        nomeSpan.className = 'nome';
-        nomeSpan.textContent = alerta.nome;
-        div.appendChild(nomeSpan);
-        
         lista.appendChild(div);
     });
 }
+criarIconesAlertas();
 
 // ===== MAPA =====
 function iniciarMapa() {
@@ -570,10 +928,7 @@ function iniciarMapa() {
 
 // ===== GPS =====
 function iniciarGPS() {
-    if (!navigator.geolocation) {
-        alert("GPS não suportado!");
-        return;
-    }
+    if (!navigator.geolocation) return;
     
     navigator.geolocation.watchPosition(pos => {
         minhaLocalizacao = L.latLng(pos.coords.latitude, pos.coords.longitude);
@@ -583,7 +938,7 @@ function iniciarGPS() {
                 icon: L.divIcon({
                     html: `<div style="position:relative;">
                         <div class="pulse-loc" style="position:absolute; left:-12px; top:-12px;"></div>
-                        <div style="font-size:28px;">🚗</div>
+                        <div style="font-size:28px;">${iconeVeiculo}</div>
                     </div>`,
                     iconSize: [1, 1]
                 })
@@ -594,6 +949,7 @@ function iniciarGPS() {
             db.ref('usuarios_ativos/' + usuario).set({
                 lat: minhaLocalizacao.lat,
                 lng: minhaLocalizacao.lng,
+                veiculo: iconeVeiculo,
                 timestamp: Date.now()
             });
             
@@ -606,9 +962,8 @@ function iniciarGPS() {
             });
         }
         
-        if (seguirLocalizacao) {
-            mapa.panTo(minhaLocalizacao);
-        }
+        if (seguirLocalizacao) mapa.panTo(minhaLocalizacao);
+        
     }, null, { enableHighAccuracy: true });
     
     window.addEventListener('beforeunload', () => {
@@ -621,10 +976,7 @@ function carregarUsuariosAtivos() {
     db.ref('usuarios_ativos').on('value', snap => {
         const usuarios = snap.val();
         
-        Object.values(usuariosAtivos).forEach(marker => {
-            if (marker) mapa.removeLayer(marker);
-        });
-        
+        Object.values(usuariosAtivos).forEach(m => m && mapa.removeLayer(m));
         usuariosAtivos = {};
         
         if (!usuarios) {
@@ -637,7 +989,6 @@ function carregarUsuariosAtivos() {
         
         Object.entries(usuarios).forEach(([id, dados]) => {
             if (id === usuario) return;
-            
             if (Date.now() - dados.timestamp > 10000) {
                 db.ref('usuarios_ativos/' + id).remove();
                 return;
@@ -645,7 +996,7 @@ function carregarUsuariosAtivos() {
             
             const marcador = L.marker([dados.lat, dados.lng], {
                 icon: L.divIcon({
-                    html: `<div style="font-size:24px;">🚗</div>`,
+                    html: `<div style="font-size:24px;">${dados.veiculo || '🚗'}</div>`,
                     iconSize: [24, 24]
                 })
             }).addTo(mapa);
@@ -663,8 +1014,7 @@ function carregarAlertasFixos() {
         
         const marcador = L.marker([alerta.lat, alerta.lng], {
             icon: L.divIcon({
-                html: `<div style="background:${alerta.cor}; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:16px; border:2px solid white; box-shadow:0 2px 10px rgba(0,0,0,0.3);">${alerta.icone}</div>`,
-                className: '',
+                html: `<div style="background:${alerta.cor}; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:16px; border:2px solid white; box-shadow:0 2px 10px rgba(0,0,0,0.3);">⚠️</div>`,
                 iconSize: [34, 34]
             })
         }).addTo(mapa);
@@ -675,51 +1025,35 @@ function carregarAlertasFixos() {
     });
 }
 
-// ===== ATIVAR ALERTA =====
 function ativarAlerta(alerta) {
-    if (!minhaLocalizacao) {
-        alert('Aguardando localização...');
-        return;
-    }
+    if (!minhaLocalizacao) return;
     
     const id = Date.now();
-    
-    const alertaData = {
-        ...alerta,
-        lat: minhaLocalizacao.lat,
-        lng: minhaLocalizacao.lng,
-        timestamp: id
-    };
+    const alertaData = { ...alerta, lat: minhaLocalizacao.lat, lng: minhaLocalizacao.lng, timestamp: id };
     
     db.ref('alertas_fixos/' + id).set(alertaData);
     
     const marcador = L.marker(minhaLocalizacao, {
         icon: L.divIcon({
-            html: `<div style="background:${alerta.cor}; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:16px; border:2px solid white; box-shadow:0 2px 10px rgba(0,0,0,0.3);">${alerta.icone}</div>`,
+            html: `<div style="background:${alerta.cor}; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:16px; border:2px solid white; box-shadow:0 2px 10px rgba(0,0,0,0.3);">⚠️</div>`,
             iconSize: [34, 34]
         })
     }).addTo(mapa);
     
-    marcador.on('click', () => {
-        abrirChatAlerta(alertaData, minhaLocalizacao, id);
-    });
-    
-    setTimeout(() => {
-        abrirChatAlerta(alertaData, minhaLocalizacao, id);
-    }, 200);
+    marcador.on('click', () => abrirChatAlerta(alertaData, minhaLocalizacao, id));
+    setTimeout(() => abrirChatAlerta(alertaData, minhaLocalizacao, id), 200);
 }
 
-// ===== CHAT DO ALERTA =====
 function abrirChatAlerta(alerta, posicao, id) {
     const conteudo = document.createElement('div');
     conteudo.innerHTML = `
-        <div style="padding:10px; background:#075e54; color:white; font-weight:bold;">${alerta.icone} ${alerta.nome}</div>
+        <div style="padding:10px; background:${alerta.cor}; color:white; font-weight:bold;">⚠️ ${alerta.nome}</div>
         <div style="padding:10px; max-height:200px; overflow-y:auto;" id="chatAlerta-${id}">
             <div style="text-align:center; color:#999;">Carregando...</div>
         </div>
         <div style="display:flex; padding:8px; gap:5px;">
             <input type="text" id="inputAlerta-${id}" style="flex:1; padding:8px; border-radius:20px; border:1px solid #ccc;" placeholder="Digite..." onkeypress="if(event.key==='Enter') enviarMsgAlerta('${id}')">
-            <button onclick="enviarMsgAlerta('${id}')" style="width:35px; height:35px; border-radius:50%; border:none; background:#075e54; color:white; cursor:pointer;">➔</button>
+            <button onclick="enviarMsgAlerta('${id}')" style="width:35px; height:35px; border-radius:50%; border:none; background:${alerta.cor}; color:white; cursor:pointer;">➔</button>
         </div>
     `;
     
@@ -773,15 +1107,19 @@ function carregarAlertasTempoReal() {
     }
     
     const pontosReais = [
-        { lat: -25.4284, lng: -49.2733, nome: 'BR-277, km 120, Curitiba' },
-        { lat: -25.4384, lng: -49.2833, nome: 'BR-277, km 125, Curitiba' },
-        { lat: -25.4184, lng: -49.2633, nome: 'BR-277, km 115, São José' }
+        { lat: -25.4284, lng: -49.2733, nome: 'Rua XV de Novembro, 500 - Centro, Curitiba' },
+        { lat: -25.4384, lng: -49.2833, nome: 'Av. Cândido de Abreu, 817 - Centro Cívico, Curitiba' },
+        { lat: -25.4184, lng: -49.2633, nome: 'Rua da Paz, 150 - Jardim das Américas, Curitiba' },
+        { lat: -25.4484, lng: -49.2933, nome: 'Av. República Argentina, 3120 - Portão, Curitiba' },
+        { lat: -25.4084, lng: -49.2533, nome: 'Rua Padre Anchieta, 1755 - Bigorrilho, Curitiba' }
     ];
     
     const tipos = [
         { tipo: 'Acidente', icone: '💥', cor: '#e53935' },
         { tipo: 'Obras', icone: '🚧', cor: '#ff9800' },
-        { tipo: 'Congestionamento', icone: '⚫', cor: '#f44336' }
+        { tipo: 'Congestionamento', icone: '⚫', cor: '#f44336' },
+        { tipo: 'Alagamento', icone: '💧', cor: '#2196f3' },
+        { tipo: 'Desvio', icone: '↩️', cor: '#4caf50' }
     ];
     
     let html = '';
@@ -796,10 +1134,10 @@ function carregarAlertasTempoReal() {
         html += `
             <div class="alerta-tempo-real" onclick="irParaAlerta(${ponto.lat}, ${ponto.lng})">
                 <div class="icone" style="background:${tipo.cor}">${tipo.icone}</div>
-                <div style="flex:1;">
-                    <div style="font-weight:bold;">${tipo.tipo}</div>
-                    <div style="font-size:11px;">${ponto.nome}</div>
-                    <div style="font-size:10px; color:#e53935;">${distancia} km</div>
+                <div class="info">
+                    <div class="titulo">${tipo.tipo}</div>
+                    <div class="endereco">${ponto.nome}</div>
+                    <div class="distancia">${distancia} km</div>
                 </div>
             </div>
         `;
@@ -810,6 +1148,7 @@ function carregarAlertasTempoReal() {
 
 function irParaAlerta(lat, lng) {
     mapa.flyTo([lat, lng], 16);
+    document.getElementById('alertaSuspenso').style.display = 'none';
 }
 
 function calcularDistancia(lat1, lon1, lat2, lon2) {
@@ -824,24 +1163,16 @@ function calcularDistancia(lat1, lon1, lat2, lon2) {
 }
 
 function toggleAlertaSuspenso() {
-    const alerta = document.getElementById('alertaSuspenso');
-    const seta = document.getElementById('setaSuspenso');
-    alerta.style.display = alerta.style.display === 'none' ? 'block' : 'none';
-    seta.className = alerta.style.display === 'block' ? 'fas fa-chevron-down' : 'fas fa-chevron-up';
+    const a = document.getElementById('alertaSuspenso');
+    const s = document.getElementById('setaSuspenso');
+    a.style.display = a.style.display === 'none' ? 'block' : 'none';
+    s.className = a.style.display === 'block' ? 'fas fa-chevron-down' : 'fas fa-chevron-up';
 }
 
-// ===== ROTA CORRIGIDA =====
+// ===== ROTA =====
 function buscarRota() {
     const destino = document.getElementById('buscaDestino').value;
-    if (!destino) {
-        alert('Digite um destino');
-        return;
-    }
-    
-    if (!minhaLocalizacao) {
-        alert('Aguardando GPS...');
-        return;
-    }
+    if (!destino || !minhaLocalizacao) return;
     
     fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(destino)}, Brasil&limit=1`)
         .then(res => res.json())
@@ -851,32 +1182,113 @@ function buscarRota() {
                 return;
             }
             
-            const lugar = data[0];
-            const destinoLatLng = L.latLng(parseFloat(lugar.lat), parseFloat(lugar.lon));
+            const dest = L.latLng(parseFloat(data[0].lat), parseFloat(data[0].lon));
             
-            if (rotaAtual) {
-                mapa.removeControl(rotaAtual);
-            }
+            if (rotaAtual) mapa.removeControl(rotaAtual);
             
             rotaAtual = L.Routing.control({
-                waypoints: [minhaLocalizacao, destinoLatLng],
-                lineOptions: { 
-                    styles: [{ 
-                        color: '#2196F3', 
-                        weight: 8,
-                        opacity: 0.8
-                    }] 
-                },
+                waypoints: [minhaLocalizacao, dest],
+                lineOptions: { styles: [{ color: '#2196F3', weight: 8 }] },
                 createMarker: () => null,
                 show: false
             }).addTo(mapa);
             
-            const bounds = L.latLngBounds([minhaLocalizacao, destinoLatLng]);
-            mapa.flyToBounds(bounds, { padding: [50, 50] });
-        })
-        .catch(erro => {
-            alert('Erro ao buscar local');
+            mapa.flyToBounds(L.latLngBounds([minhaLocalizacao, dest]), { padding: [50, 50] });
         });
+}
+
+// ===== CHAT GERAL =====
+function toggleChatGeral() {
+    const chat = document.getElementById('chatGeral');
+    chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
+}
+
+function fecharChatGeral() {
+    document.getElementById('chatGeral').style.display = 'none';
+}
+
+function carregarChatGeral() {
+    db.ref('chat_geral').orderByChild('timestamp').on('value', snap => {
+        const msgs = snap.val();
+        const chatDiv = document.getElementById('chatMensagens');
+        if (!msgs) return;
+        
+        let html = '';
+        let ultimaData = '';
+        
+        Object.values(msgs).reverse().forEach(msg => {
+            const dataMsg = new Date(msg.timestamp).toLocaleDateString();
+            
+            if (dataMsg !== ultimaData) {
+                html += `<div class="data-divider"><span>${formatarData(dataMsg)}</span></div>`;
+                ultimaData = dataMsg;
+            }
+            
+            const isMinha = msg.usuario === usuario;
+            html += `
+                <div class="mensagem-wrapper">
+                    <div class="mensagem ${isMinha ? 'minha' : 'outra'}">
+                        <div class="mensagem-remetente">
+                            ${msg.veiculo || '🚗'} <b>${msg.usuario}</b>
+                        </div>
+                        ${msg.texto}
+                        <div class="mensagem-info">
+                            <span>${msg.hora}</span>
+                        </div>
+                    </div>
+                    <div class="mensagem-acoes">
+                        <span onclick="responderMsg('${msg.usuario}', '${msg.texto.replace(/'/g, "\\'")}')">↩️</span>
+                        ${isMinha || admin ? `<span class="admin-delete" onclick="apagarMsg('${msg.timestamp}')">🗑️</span>` : ''}
+                    </div>
+                </div>
+            `;
+        });
+        
+        chatDiv.innerHTML = html;
+        chatDiv.scrollTop = chatDiv.scrollHeight;
+    });
+}
+
+function enviarMsgGeral() {
+    const input = document.getElementById('chatInput');
+    let texto = input.value.trim();
+    if (!texto) return;
+    
+    if (mensagemRespondendo) {
+        texto = `↩️ ${mensagemRespondendo.usuario}: ${mensagemRespondendo.texto}\n${texto}`;
+        mensagemRespondendo = null;
+    }
+    
+    db.ref('chat_geral').push({
+        usuario: usuario,
+        veiculo: iconeVeiculo,
+        texto: texto,
+        hora: new Date().toLocaleTimeString(),
+        timestamp: Date.now()
+    });
+    
+    input.value = '';
+}
+
+function responderMsg(user, txt) {
+    mensagemRespondendo = { usuario: user, texto: txt };
+    document.getElementById('chatInput').focus();
+}
+
+function apagarMsg(timestamp) {
+    if (confirm('Apagar mensagem?')) {
+        db.ref('chat_geral').orderByChild('timestamp').equalTo(parseInt(timestamp)).once('value', snap => {
+            snap.forEach(child => child.ref.remove());
+        });
+    }
+}
+
+function formatarData(data) {
+    const hoje = new Date().toLocaleDateString();
+    const ontem = new Date(Date.now() - 86400000).toLocaleDateString();
+    if (data === hoje) return 'Hoje';
+    if (data === ontem) return 'Ontem';
+    return data;
 }
 
 // ===== RÁDIO PX =====
@@ -889,27 +1301,17 @@ const botaoPX = document.getElementById('btn-px');
 
 botaoPX.addEventListener('mousedown', async function() {
     try {
-        streamAudio = await navigator.mediaDevices.getUserMedia({ 
-            audio: {
-                echoCancellation: true,
-                noiseSuppression: true
-            }
-        });
-        
+        streamAudio = await navigator.mediaDevices.getUserMedia({ audio: true });
         gravador = new MediaRecorder(streamAudio);
         pedacosAudio = [];
         tempoRestante = 30;
         
-        gravador.ondataavailable = function(e) {
-            if (e.data.size > 0) pedacosAudio.push(e.data);
-        };
+        gravador.ondataavailable = e => e.data.size > 0 && pedacosAudio.push(e.data);
         
-        gravador.onstop = function() {
+        gravador.onstop = () => {
             if (pedacosAudio.length > 0) {
-                const audioBlob = new Blob(pedacosAudio, { type: 'audio/webm' });
                 const reader = new FileReader();
-                
-                reader.onloadend = function() {
+                reader.onloadend = () => {
                     db.ref('radio').push({
                         audio: reader.result,
                         usuario: usuario,
@@ -922,12 +1324,11 @@ botaoPX.addEventListener('mousedown', async function() {
                         });
                     }, 30000);
                 };
-                
-                reader.readAsDataURL(audioBlob);
+                reader.readAsDataURL(new Blob(pedacosAudio, { type: 'audio/webm' }));
             }
             
             if (streamAudio) {
-                streamAudio.getTracks().forEach(track => track.stop());
+                streamAudio.getTracks().forEach(t => t.stop());
                 streamAudio = null;
             }
             
@@ -947,9 +1348,7 @@ botaoPX.addEventListener('mousedown', async function() {
             if (tempoRestante <= 0) pararGravacao();
         }, 1000);
         
-        setTimeout(() => {
-            if (gravador && gravador.state === 'recording') pararGravacao();
-        }, 30000);
+        setTimeout(() => gravador && gravador.state === 'recording' && pararGravacao(), 30000);
         
     } catch(e) {
         alert('Permita acesso ao microfone');
@@ -971,20 +1370,12 @@ function pararGravacao() {
 }
 
 // Receber áudio
-db.ref('radio').orderByChild('timestamp').limitToLast(1).on('child_added', function(snap) {
-    const dados = snap.val();
-    if (dados && dados.usuario !== usuario && !mudo) {
-        if (Date.now() - dados.timestamp < 5000) {
-            const audio = new Audio(dados.audio);
-            audio.volume = 1.0;
-            audio.play().catch(() => {});
-            
-            // Notificação visual
-            document.getElementById('audioNotification').style.display = 'flex';
-            setTimeout(() => {
-                document.getElementById('audioNotification').style.display = 'none';
-            }, 2000);
-        }
+db.ref('radio').orderByChild('timestamp').limitToLast(1).on('child_added', snap => {
+    const d = snap.val();
+    if (d && d.usuario !== usuario && !mudo && Date.now() - d.timestamp < 5000) {
+        new Audio(d.audio).play().catch(() => {});
+        document.getElementById('audioNotification').style.display = 'flex';
+        setTimeout(() => document.getElementById('audioNotification').style.display = 'none', 2000);
     }
 });
 
@@ -1004,10 +1395,6 @@ function recentralizar() {
     seguirLocalizacao = true;
     document.getElementById('btnRecenter').style.display = 'none';
     if (minhaLocalizacao) mapa.flyTo(minhaLocalizacao, 17);
-}
-
-function toggleChatGeral() {
-    alert('Chat em desenvolvimento');
 }
 
 // Enter na busca
