@@ -2,20 +2,13 @@
 <html lang="pt-br">
 <head>
     <meta charset="utf-8">
-    <title>BR-277 | TRÂNSITO</title>
+    <title>BR-277 | GPS INTELIGENTE</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { 
-            --ws-green: #075e54; 
-            --radio-gold: #ffd700; 
-            --danger: #e53935;
-            --warning: #ff9800;
-        }
-        
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body, #map { height: 100%; width: 100%; font-family: 'Segoe UI', sans-serif; }
         
@@ -26,7 +19,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.9);
             z-index: 20000;
             display: flex;
             align-items: center;
@@ -34,23 +27,13 @@
         }
         
         .cadastro-content {
-            background: linear-gradient(135deg, #075e54, #128C7E);
+            background: linear-gradient(135deg, #075e54, #0a7a6b);
             padding: 40px;
             border-radius: 40px;
             text-align: center;
             max-width: 350px;
             color: white;
             box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-        }
-        
-        .cadastro-content h2 {
-            margin-bottom: 10px;
-            font-size: 28px;
-        }
-        
-        .cadastro-content p {
-            margin-bottom: 20px;
-            opacity: 0.9;
         }
         
         .cadastro-content input {
@@ -61,7 +44,6 @@
             margin: 10px 0;
             font-size: 16px;
             text-align: center;
-            outline: none;
         }
         
         .cadastro-content button {
@@ -74,109 +56,46 @@
             font-weight: bold;
             cursor: pointer;
             margin-top: 10px;
-            transition: transform 0.2s;
         }
         
-        .cadastro-content button:hover {
-            transform: scale(1.02);
-        }
-        
-        /* PAINEL DE ALERTAS */
-        .alertas-panel {
-            position: fixed;
-            top: 70px;
-            left: 10px;
-            width: 260px;
-            max-height: 60vh;
-            background: rgba(255,255,255,0.98);
-            backdrop-filter: blur(5px);
-            border-radius: 16px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-            z-index: 4000;
-            display: flex;
-            flex-direction: column;
-            border: 1px solid rgba(7,94,84,0.3);
-            overflow: hidden;
-            font-size: 13px;
-        }
-        
-        .alertas-header {
-            background: linear-gradient(135deg, var(--ws-green), #0a7a6b);
-            color: white;
-            padding: 12px 15px;
-            font-weight: 600;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-        }
-        
-        .alertas-lista {
-            flex: 1;
-            overflow-y: auto;
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            max-height: 45vh;
-            background: #f8f9fa;
-        }
-        
-        .alerta-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            cursor: pointer;
-            transition: all 0.2s;
-            border-left: 4px solid transparent;
-        }
-        
-        .alerta-item:hover {
-            transform: translateX(3px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        
-        .alerta-item .icone {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            color: white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-        
-        /* LUPA */
+        /* LUPA - VERSÃO CORRIGIDA */
         .lupa-container {
             position: fixed;
             top: 15px;
             left: 50%;
             transform: translateX(-50%);
             width: 350px;
-            z-index: 4500;
+            z-index: 10000;
             background: white;
             border-radius: 50px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-            border: 2px solid var(--radio-gold);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            border: 3px solid #ffd700;
             overflow: hidden;
+            display: flex;
+            align-items: center;
         }
         
         .lupa-container input {
-            width: 100%;
-            padding: 14px 20px;
+            flex: 1;
+            padding: 15px 20px;
             border: none;
             font-size: 15px;
             outline: none;
-            background: transparent;
         }
         
-        /* SUGESTÕES DE ROTA */
+        .lupa-container button {
+            background: #075e54;
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 5px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        
+        /* SUGESTÕES */
         .sugestoes-container {
             position: fixed;
             top: 80px;
@@ -186,16 +105,16 @@
             background: white;
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            z-index: 4499;
+            z-index: 9999;
             display: none;
-            overflow: hidden;
+            max-height: 300px;
+            overflow-y: auto;
         }
         
         .sugestao-item {
             padding: 15px 20px;
             border-bottom: 1px solid #eee;
             cursor: pointer;
-            transition: background 0.2s;
             display: flex;
             align-items: center;
             gap: 15px;
@@ -206,77 +125,124 @@
         }
         
         .sugestao-item i {
-            color: var(--ws-green);
-            font-size: 20px;
+            color: #075e54;
+            font-size: 18px;
         }
         
-        /* POPUP DO ALERTA */
-        .alerta-popup {
+        /* PAINEL DE ROTAS */
+        .rotas-panel {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 400px;
             background: white;
-            border-radius: 16px;
-            padding: 0;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            border: 1px solid rgba(7,94,84,0.2);
-            min-width: 280px;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            z-index: 9000;
+            display: none;
+            border: 2px solid #075e54;
             overflow: hidden;
         }
         
-        .popup-header {
-            background: linear-gradient(135deg, var(--ws-green), #0a7a6b);
+        .rota-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .rota-item:hover {
+            background: #f0f0f0;
+        }
+        
+        .rota-cor {
+            width: 8px;
+            height: 40px;
+            border-radius: 4px;
+        }
+        
+        .rota-info {
+            flex: 1;
+        }
+        
+        .rota-tempo {
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .rota-distancia {
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .rota-atraso {
+            color: #e53935;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        /* ALERTA DE CONGESTIONAMENTO */
+        .congestionamento-alerta {
+            position: fixed;
+            top: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #e53935;
             color: white;
-            padding: 12px 15px;
-            font-weight: 600;
+            padding: 12px 25px;
+            border-radius: 50px;
+            z-index: 9500;
+            font-weight: bold;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            animation: pulse 2s infinite;
+            display: none;
+        }
+        
+        @keyframes pulse {
+            0% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.05); }
+            100% { transform: translateX(-50%) scale(1); }
+        }
+        
+        /* PAINEL DE ALERTAS */
+        .alertas-panel {
+            position: fixed;
+            top: 70px;
+            left: 10px;
+            width: 250px;
+            max-height: 60vh;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            z-index: 8000;
+            border: 1px solid #075e54;
+            overflow: hidden;
+        }
+        
+        .alertas-header {
+            background: #075e54;
+            color: white;
+            padding: 12px;
+            font-weight: bold;
             display: flex;
             justify-content: space-between;
-            align-items: center;
-        }
-        
-        .popup-body {
-            padding: 15px;
-            max-height: 250px;
-            overflow-y: auto;
-            background: #f5f5f5;
-        }
-        
-        .popup-mensagem {
-            background: white;
-            border-radius: 12px;
-            padding: 8px 12px;
-            margin: 5px 0;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        
-        .popup-input {
-            display: flex;
-            padding: 10px;
-            background: white;
-            border-top: 1px solid #eee;
-            gap: 8px;
-        }
-        
-        .popup-input input {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 25px;
-            font-size: 12px;
-            outline: none;
-        }
-        
-        .popup-input button {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border: none;
-            background: var(--ws-green);
-            color: white;
             cursor: pointer;
         }
         
-        /* BOTÕES FLUTUANTES */
+        .alertas-lista {
+            max-height: 45vh;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        
+        /* BOTÕES */
         .f-btn { 
             position: fixed; 
-            z-index: 5000; 
+            z-index: 7000; 
             border-radius: 50%; 
             display: flex; 
             align-items: center; 
@@ -288,10 +254,9 @@
             width: 50px; 
             height: 50px; 
             font-size: 22px; 
-            transition: all 0.2s;
         }
         
-        #btn-chat { right: 15px; bottom: 110px; background: var(--ws-green); color: white; }
+        #btn-chat { right: 15px; bottom: 110px; background: #075e54; color: white; }
         #btn-mute { right: 15px; bottom: 175px; background: #fff; }
         #btn-luz { right: 15px; top: 130px; background: #ffcc00; }
         
@@ -303,44 +268,35 @@
             width: 70px; 
             height: 70px; 
             background: #333; 
-            border: 4px solid var(--radio-gold); 
+            border: 4px solid #ffd700; 
             border-radius: 50%; 
-            z-index: 5001; 
+            z-index: 7001; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
             font-size: 30px; 
-            color: var(--radio-gold); 
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3); 
-            transition: all 0.2s; 
+            color: #ffd700; 
             cursor: pointer;
         }
         
         #btn-px.ativo { 
-            background: var(--danger); 
-            border-color: white; 
+            background: #e53935; 
             color: white; 
             transform: translateX(-50%) scale(0.95);
         }
-        
-        .map-dark { filter: invert(100%) hue-rotate(180deg) brightness(95%); }
         
         #btn-rec { 
             position: fixed; 
             bottom: 120px; 
             left: 50%; 
             transform: translateX(-50%); 
-            z-index: 4001; 
+            z-index: 7000; 
             background: white; 
-            border: 2px solid var(--ws-green); 
+            border: 2px solid #075e54; 
             border-radius: 30px; 
             padding: 8px 20px; 
-            font-weight: 600; 
-            color: var(--ws-green); 
             display: none; 
             cursor: pointer; 
-            font-size: 13px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         
         .pulse-loc { 
@@ -359,41 +315,12 @@
             0% { transform: scale(0.8); opacity: 1; } 
             100% { transform: scale(2); opacity: 0; } 
         }
-
-        .rotas-alternativas {
-            position: fixed;
-            bottom: 200px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: white;
-            border-radius: 40px;
-            padding: 8px 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-            display: flex;
-            gap: 10px;
-            z-index: 4500;
-            border: 2px solid var(--ws-green);
-        }
-        
-        .rota-alt-btn {
-            padding: 8px 15px;
-            border-radius: 30px;
-            background: #f0f0f0;
-            cursor: pointer;
-            font-size: 13px;
-            transition: all 0.2s;
-        }
-        
-        .rota-alt-btn:hover {
-            background: var(--ws-green);
-            color: white;
-        }
     </style>
 </head>
 <body>
 
 <div id="map"></div>
-<div id="btn-rec" onclick="recentralizar()">📍 RECENTRALIZAR</div>
+<div id="btn-rec" onclick="recentralizar()">📍 MINHA LOCALIZAÇÃO</div>
 
 <!-- BOTÕES -->
 <div id="btn-luz" class="f-btn" onclick="toggleDark()">💡</div>
@@ -405,24 +332,37 @@
 <div class="cadastro-modal" id="cadastroModal">
     <div class="cadastro-content">
         <h2>🚛 BR-277</h2>
-        <p>Bem-vindo ao sistema de trânsito</p>
-        <input type="text" id="nomeCadastro" placeholder="Digite seu nome" autocomplete="off">
-        <input type="text" id="veiculoCadastro" placeholder="Modelo do veículo (opcional)" autocomplete="off">
-        <input type="text" id="placaCadastro" placeholder="Placa (opcional)" autocomplete="off">
-        <button onclick="salvarCadastro()">ENTRAR</button>
+        <p>Bem-vindo ao GPS Inteligente</p>
+        <input type="text" id="nomeCadastro" placeholder="Digite seu nome" value="Motorista">
+        <button onclick="salvarCadastro()">COMEÇAR</button>
     </div>
 </div>
 
+<!-- LUPA CORRIGIDA -->
+<div class="lupa-container">
+    <input type="text" id="buscaDestino" placeholder="Digite seu destino...">
+    <button onclick="buscarDestino()"><i class="fas fa-search"></i></button>
+</div>
+
+<!-- SUGESTÕES -->
+<div class="sugestoes-container" id="sugestoes"></div>
+
+<!-- PAINEL DE ROTAS -->
+<div class="rotas-panel" id="rotasPanel"></div>
+
+<!-- ALERTA CONGESTIONAMENTO -->
+<div class="congestionamento-alerta" id="congestionamentoAlerta"></div>
+
 <!-- CHAT GLOBAL -->
-<div id="chat-global" style="position:fixed; top:10%; left:5%; width:90%; height:80%; background:#e5ddd5; z-index:6000; border-radius:20px; display:none; flex-direction:column; border:2px solid var(--ws-green); box-shadow:0 10px 30px rgba(0,0,0,0.3);">
-    <div style="background:linear-gradient(135deg, var(--ws-green), #0a7a6b); color:white; padding:15px 20px; border-radius:18px 18px 0 0; display:flex; justify-content:space-between; font-weight:600;">
+<div id="chat-global" style="position:fixed; top:10%; left:5%; width:90%; height:80%; background:#e5ddd5; z-index:10000; border-radius:20px; display:none; flex-direction:column; border:2px solid #075e54;">
+    <div style="background:#075e54; color:white; padding:15px; display:flex; justify-content:space-between">
         <span>CHAT GERAL</span>
         <span onclick="toggleChat()" style="cursor:pointer">✖</span>
     </div>
-    <div id="chat-msgs" style="flex:1; overflow-y:auto; padding:15px; display:flex; flex-direction:column; gap:5px;"></div>
-    <div style="padding:15px; background:#f0f0f0; display:flex; gap:10px; border-radius:0 0 18px 18px;">
-        <input type="text" id="msg-input" style="flex:1; padding:12px; border-radius:30px; border:1px solid #ccc; outline:none;" placeholder="Digite sua mensagem...">
-        <button onclick="enviarMsg()" style="background:var(--ws-green); color:white; border:none; border-radius:50%; width:45px; height:45px; cursor:pointer;">➔</button>
+    <div id="chat-msgs" style="flex:1; overflow-y:auto; padding:15px;"></div>
+    <div style="padding:15px; background:#f0f0f0; display:flex; gap:10px;">
+        <input type="text" id="msg-input" style="flex:1; padding:12px; border-radius:30px; border:1px solid #ccc;">
+        <button onclick="enviarMsg()" style="background:#075e54; color:white; border:none; border-radius:50%; width:45px; height:45px;">➔</button>
     </div>
 </div>
 
@@ -433,21 +373,6 @@
         <i class="fas fa-chevron-down" id="setaAlertas"></i>
     </div>
     <div class="alertas-lista" id="alertasLista"></div>
-</div>
-
-<!-- LUPA -->
-<div class="lupa-container">
-    <input type="text" id="buscaDestino" placeholder="Para onde você quer ir? Ex: Curitiba, Centro" autocomplete="off">
-</div>
-
-<!-- SUGESTÕES DE ROTA -->
-<div class="sugestoes-container" id="sugestoesRota"></div>
-
-<!-- ROTAS ALTERNATIVAS -->
-<div class="rotas-alternativas" id="rotasAlternativas" style="display:none;">
-    <div class="rota-alt-btn" onclick="traçarRotaAlternativa(1)">🔄 Rota 1 (45min)</div>
-    <div class="rota-alt-btn" onclick="traçarRotaAlternativa(2)">🔄 Rota 2 (52min)</div>
-    <div class="rota-alt-btn" onclick="traçarRotaAlternativa(3)">🔄 Rota 3 (1h10)</div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -463,24 +388,19 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
 // ===== VARIÁVEIS =====
-let user = null;
-let userData = null;
+let user = "Motorista";
 let meuLatLng = null;
 let meuMarker = null;
 let follow = true;
-let rotaControle = null;
+let rotaAtual = null;
 let isMuted = false;
-let alertaAtual = null;
-let popupAtual = null;
 let destinoAtual = null;
-let rotasAlternativas = [];
-const RAIO_MAXIMO = 300;
+let waypointsAtuais = [];
 
-// ===== VERIFICA CADASTRO =====
+// ===== VERIFICA USUÁRIO =====
 const userSalvo = localStorage.getItem('br277_user');
 if (userSalvo) {
-    userData = JSON.parse(userSalvo);
-    user = userData.nome + (userData.veiculo ? ' - ' + userData.veiculo : '');
+    user = userSalvo;
     document.getElementById('cadastroModal').style.display = 'none';
     iniciarGPS();
 } else {
@@ -488,40 +408,15 @@ if (userSalvo) {
 }
 
 function salvarCadastro() {
-    const nome = document.getElementById('nomeCadastro').value.trim();
-    if (!nome) {
-        alert('Por favor, digite seu nome!');
-        return;
-    }
-    
-    userData = {
-        nome: nome,
-        veiculo: document.getElementById('veiculoCadastro').value.trim(),
-        placa: document.getElementById('placaCadastro').value.trim(),
-        id: 'user_' + Date.now()
-    };
-    
-    user = nome + (userData.veiculo ? ' - ' + userData.veiculo : '');
-    
-    localStorage.setItem('br277_user', JSON.stringify(userData));
+    const nome = document.getElementById('nomeCadastro').value.trim() || "Motorista";
+    user = nome;
+    localStorage.setItem('br277_user', nome);
     document.getElementById('cadastroModal').style.display = 'none';
-    
-    // Registra no Firebase
-    db.ref('usuarios/' + userData.id).set({
-        ...userData,
-        ultimo_acesso: new Date().toISOString()
-    });
-    
     iniciarGPS();
 }
 
 // ===== MAPA =====
-const map = L.map('map', { 
-    zoomControl: false,
-    zoomSnap: 0.5,
-    zoomDelta: 0.5
-}).setView([-25.4284, -49.2733], 13);
-
+const map = L.map('map', { zoomControl: false }).setView([-25.4284, -49.2733], 13);
 L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(map);
 
 // ===== GPS =====
@@ -533,116 +428,85 @@ function iniciarGPS() {
             meuMarker = L.marker(meuLatLng, { 
                 icon: L.divIcon({ 
                     html: `<div class="pulse-loc"></div><div style="font-size:32px; position:relative; top:-15px;">🚚</div>`, 
-                    iconSize:[1,1],
-                    className: ''
+                    iconSize:[1,1]
                 }) 
             }).addTo(map);
-            
             map.setView(meuLatLng, 17);
-            gerarAlertasSimulados();
-            setInterval(gerarAlertasSimulados, 120000);
+            gerarAlertas();
         } else { 
             meuMarker.setLatLng(meuLatLng); 
-            
-            // Verifica se precisa sugerir rotas alternativas
-            if (destinoAtual && rotaControle) {
-                verificarTransitoNaRota();
-            }
+            verificarCongestionamentos();
         }
         
         if(follow) map.panTo(meuLatLng);
-        
     }, null, { enableHighAccuracy: true });
 }
 
 // ===== LUPA CORRIGIDA =====
-const buscaInput = document.getElementById('buscaDestino');
-const sugestoesDiv = document.getElementById('sugestoesRota');
-
-buscaInput.addEventListener('input', function() {
-    const valor = this.value;
-    if (valor.length < 3) {
-        sugestoesDiv.style.display = 'none';
+function buscarDestino() {
+    const destino = document.getElementById('buscaDestino').value;
+    if (!destino || destino.length < 3) {
+        alert('Digite um destino válido');
         return;
     }
     
-    // Sugestões rápidas
-    const sugestoes = [
-        'Curitiba, PR',
-        'Ponta Grossa, PR',
-        'Paranaguá, PR',
-        'Campo Largo, PR',
-        'São José dos Pinhais, PR',
-        'Araucária, PR',
-        'Colombo, PR',
-        'Pinhais, PR'
-    ].filter(s => s.toLowerCase().includes(valor.toLowerCase()));
+    // Mostra loading
+    document.getElementById('sugestoes').innerHTML = '<div style="padding:15px; text-align:center;">Buscando...</div>';
+    document.getElementById('sugestoes').style.display = 'block';
     
-    if (sugestoes.length > 0) {
-        sugestoesDiv.innerHTML = sugestoes.map(s => `
-            <div class="sugestao-item" onclick="selecionarDestino('${s}')">
-                <i class="fas fa-map-marker-alt"></i>
-                <span>${s}</span>
-            </div>
-        `).join('');
-        sugestoesDiv.style.display = 'block';
-    } else {
-        sugestoesDiv.style.display = 'none';
-    }
-});
-
-// Fecha sugestões ao clicar fora
-document.addEventListener('click', function(e) {
-    if (!buscaInput.contains(e.target) && !sugestoesDiv.contains(e.target)) {
-        sugestoesDiv.style.display = 'none';
-    }
-});
-
-function selecionarDestino(destino) {
-    buscaInput.value = destino;
-    sugestoesDiv.style.display = 'none';
-    buscarRota(destino);
+    // Busca cidades
+    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(destino)}, Brasil&limit=5`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.length === 0) {
+                document.getElementById('sugestoes').innerHTML = '<div style="padding:15px; text-align:center;">Nenhum local encontrado</div>';
+                return;
+            }
+            
+            let html = '';
+            data.forEach(lugar => {
+                html += `
+                    <div class="sugestao-item" onclick="selecionarDestino('${lugar.lat}', '${lugar.lon}', '${lugar.display_name.replace(/'/g, "\\'")}')">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <div style="font-weight:500;">${lugar.display_name.split(',')[0]}</div>
+                            <div style="font-size:12px; color:#666;">${lugar.display_name}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('sugestoes').innerHTML = html;
+        })
+        .catch(error => {
+            document.getElementById('sugestoes').innerHTML = '<div style="padding:15px; text-align:center;">Erro na busca</div>';
+        });
 }
 
-// ===== ROTA PRINCIPAL =====
-function buscarRota(destinoTexto) {
+function selecionarDestino(lat, lon, nome) {
+    document.getElementById('sugestoes').style.display = 'none';
+    document.getElementById('buscaDestino').value = nome.split(',')[0];
+    
+    const destino = L.latLng(parseFloat(lat), parseFloat(lon));
+    destinoAtual = destino;
+    
     if (!meuLatLng) {
         alert('Aguardando localização GPS...');
         return;
     }
     
-    const geocoder = L.Control.Geocoder.nominatim({
-        geocodingQueryParams: {
-            'countrycodes': 'br',
-            'limit': 1
-        }
-    });
-    
-    geocoder.geocode(destinoTexto, (results) => {
-        if (results && results.length > 0) {
-            const destino = results[0].center;
-            destinoAtual = destino;
-            
-            traçarRota(meuLatLng, destino);
-            buscarRotasAlternativas(meuLatLng, destino);
-        } else {
-            alert('Local não encontrado. Tente ser mais específico.');
-        }
-    });
+    tracarRotas(meuLatLng, destino);
 }
 
-function traçarRota(origem, destino) {
-    if (rotaControle) map.removeControl(rotaControle);
+// ===== ROTAS =====
+function tracarRotas(origem, destino) {
+    // Remove rota anterior
+    if (rotaAtual) map.removeControl(rotaAtual);
     
-    rotaControle = L.Routing.control({
+    // Rota principal (azul)
+    const rotaPrincipal = L.Routing.control({
         waypoints: [origem, destino],
-        lineOptions: { 
-            styles: [{ 
-                color: '#2196f3', 
-                weight: 6,
-                opacity: 0.8
-            }] 
-        },
+        lineOptions: { styles: [{ color: '#2196F3', weight: 6 }] },
         createMarker: () => null,
         show: false,
         router: L.Routing.osrmv1({
@@ -650,288 +514,141 @@ function traçarRota(origem, destino) {
         })
     }).addTo(map);
     
+    rotaAtual = rotaPrincipal;
+    
+    // Busca rotas alternativas
+    setTimeout(() => {
+        buscarRotasAlternativas(origem, destino);
+    }, 1000);
+    
+    // Zoom na rota
     map.flyToBounds(L.latLngBounds([origem, destino]), { padding: [50, 50] });
 }
 
-// ===== ROTAS ALTERNATIVAS =====
 function buscarRotasAlternativas(origem, destino) {
-    // Simula 3 rotas diferentes
-    rotasAlternativas = [
+    // Simula 3 rotas diferentes com tempos variados
+    const rotas = [
         {
-            waypoints: [origem, destino],
-            tempo: '45 min',
-            distancia: '42 km',
-            cor: '#4caf50'
+            nome: 'Rota Principal',
+            tempo: '35 min',
+            distancia: '32 km',
+            atraso: '0 min',
+            cor: '#2196F3',
+            waypoints: [origem, destino]
         },
         {
-            waypoints: [origem, L.latLng(destino.lat + 0.05, destino.lng - 0.05)],
-            tempo: '52 min',
-            distancia: '48 km',
-            cor: '#ff9800'
+            nome: 'Rota Alternativa 1',
+            tempo: '42 min',
+            distancia: '38 km',
+            atraso: '+7 min',
+            cor: '#4CAF50',
+            waypoints: [origem, L.latLng(destino.lat + 0.02, destino.lng - 0.02)]
         },
         {
-            waypoints: [origem, L.latLng(destino.lat - 0.03, destino.lng + 0.03)],
-            tempo: '1h 10min',
-            distancia: '55 km',
-            cor: '#f44336'
+            nome: 'Rota Alternativa 2',
+            tempo: '48 min',
+            distancia: '45 km',
+            atraso: '+13 min',
+            cor: '#FF9800',
+            waypoints: [origem, L.latLng(destino.lat - 0.03, destino.lng + 0.03)]
         }
     ];
     
-    document.getElementById('rotasAlternativas').style.display = 'flex';
+    let html = '<div style="padding:10px; background:#f0f0f0; font-weight:bold;">📋 ROTAS DISPONÍVEIS</div>';
+    
+    rotas.forEach((rota, index) => {
+        html += `
+            <div class="rota-item" onclick="selecionarRota(${index})">
+                <div class="rota-cor" style="background:${rota.cor};"></div>
+                <div class="rota-info">
+                    <div class="rota-tempo">${rota.tempo} <span style="font-size:12px; font-weight:normal;">${rota.distancia}</span></div>
+                    <div style="display:flex; gap:10px;">
+                        <span>${rota.nome}</span>
+                        ${index > 0 ? '<span class="rota-atraso">⏱️ ' + rota.atraso + '</span>' : ''}
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    document.getElementById('rotasPanel').innerHTML = html;
+    document.getElementById('rotasPanel').style.display = 'block';
 }
 
-function traçarRotaAlternativa(index) {
-    if (!rotasAlternativas[index - 1]) return;
+function selecionarRota(index) {
+    document.getElementById('rotasPanel').style.display = 'none';
     
-    const rota = rotasAlternativas[index - 1];
+    if (!meuLatLng || !destinoAtual) return;
     
-    if (rotaControle) map.removeControl(rotaControle);
+    const rotas = [
+        { cor: '#2196F3', waypoints: [meuLatLng, destinoAtual] },
+        { cor: '#4CAF50', waypoints: [meuLatLng, L.latLng(destinoAtual.lat + 0.02, destinoAtual.lng - 0.02)] },
+        { cor: '#FF9800', waypoints: [meuLatLng, L.latLng(destinoAtual.lat - 0.03, destinoAtual.lng + 0.03)] }
+    ];
     
-    rotaControle = L.Routing.control({
-        waypoints: rota.waypoints,
-        lineOptions: { 
-            styles: [{ 
-                color: rota.cor, 
-                weight: 6,
-                opacity: 0.8,
-                dashArray: index === 1 ? null : '10, 10'
-            }] 
-        },
+    if (rotaAtual) map.removeControl(rotaAtual);
+    
+    rotaAtual = L.Routing.control({
+        waypoints: rotas[index].waypoints,
+        lineOptions: { styles: [{ color: rotas[index].cor, weight: 6 }] },
         createMarker: () => null,
         show: false
     }).addTo(map);
 }
 
-// ===== VERIFICA TRÂNSITO NA ROTA =====
-function verificarTransitoNaRota() {
-    // Simula verificação de congestionamento
-    const temCongestionamento = Math.random() > 0.7;
+// ===== CONGESTIONAMENTOS =====
+function verificarCongestionamentos() {
+    // Simula detecção de congestionamento
+    const congestionado = Math.random() > 0.7;
     
-    if (temCongestionamento) {
-        document.getElementById('rotasAlternativas').style.display = 'flex';
+    if (congestionado && destinoAtual) {
+        const alerta = document.getElementById('congestionamentoAlerta');
+        alerta.innerHTML = '⚠️ CONGESTIONAMENTO 2km À FRENTE • ATRASO ESTIMADO: 15 MIN';
+        alerta.style.display = 'block';
         
-        // Notificação de congestionamento
-        const notificacao = document.createElement('div');
-        notificacao.style.cssText = `
-            position: fixed;
-            top: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--danger);
-            color: white;
-            padding: 12px 25px;
-            border-radius: 50px;
-            z-index: 10000;
-            font-weight: bold;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-            animation: slideDown 0.3s;
-        `;
-        notificacao.innerHTML = '⚠️ Congestionamento detectado! Rotas alternativas disponíveis.';
-        document.body.appendChild(notificacao);
+        // Adiciona marcador vermelho pulsante
+        L.marker([meuLatLng.lat + 0.02, meuLatLng.lng + 0.01], {
+            icon: L.divIcon({
+                html: `<div style="background:#e53935; width:20px; height:20px; border-radius:50%; animation:pulse 1s infinite; border:3px solid white;"></div>`,
+                className: '',
+                iconSize: [20, 20]
+            }
+        }).addTo(map);
         
         setTimeout(() => {
-            notificacao.remove();
-        }, 5000);
+            alerta.style.display = 'none';
+        }, 8000);
     }
 }
 
 // ===== ALERTAS =====
-function gerarAlertasSimulados() {
-    if (!meuLatLng) return;
-    
-    const alertas = [];
-    const tipos = [
-        { tipo: 'ACIDENTE', icone: 'car-crash', cor: '#e53935' },
-        { tipo: 'OBRAS', icone: 'hard-hat', cor: '#ff9800' },
-        { tipo: 'CONGESTIONAMENTO', icone: 'traffic-light', cor: '#f44336' },
-        { tipo: 'PERIGO', icone: 'exclamation-triangle', cor: '#ff5722' },
-        { tipo: 'INTERDIÇÃO', icone: 'ban', cor: '#455a64' }
+function gerarAlertas() {
+    const alertas = [
+        { tipo: 'ACIDENTE', local: 'km 120', cor: '#e53935', icone: 'car-crash' },
+        { tipo: 'OBRAS', local: 'km 125', cor: '#ff9800', icone: 'hard-hat' },
+        { tipo: 'CONGESTIONAMENTO', local: 'km 115', cor: '#f44336', icone: 'traffic-light' }
     ];
     
-    const pontos = [
-        { lat: -25.4284, lng: -49.2733, nome: 'BR-277 km 120' },
-        { lat: -25.4384, lng: -49.2833, nome: 'BR-277 km 125' },
-        { lat: -25.4184, lng: -49.2633, nome: 'BR-277 km 115' },
-        { lat: -25.4484, lng: -49.2933, nome: 'BR-277 km 130' }
-    ];
-    
-    pontos.forEach((ponto, index) => {
-        if (Math.random() > 0.3) {
-            const tipo = tipos[Math.floor(Math.random() * tipos.length)];
-            const id = `alerta_${Date.now()}_${index}`;
-            
-            alertas.push({
-                id: id,
-                ...tipo,
-                descricao: `${tipo.tipo} em ${ponto.nome}`,
-                local: ponto.nome,
-                lat: ponto.lat,
-                lng: ponto.lng,
-                confiabilidade: Math.floor(Math.random() * 4) + 7,
-                horario: new Date().toLocaleTimeString()
-            });
-            
-            db.ref(`alertas/${id}`).set({
-                tipo: tipo.tipo,
-                lat: ponto.lat,
-                lng: ponto.lng,
-                horario: new Date().toISOString()
-            });
-        }
-    });
-    
-    processarAlertas(alertas);
-}
-
-function processarAlertas(alertas) {
-    if (!meuLatLng) return;
-    
-    document.getElementById('alertasLista').innerHTML = '';
+    const lista = document.getElementById('alertasLista');
+    lista.innerHTML = '';
     
     alertas.forEach(alerta => {
-        const distancia = calcularDistancia(meuLatLng.lat, meuLatLng.lng, alerta.lat, alerta.lng);
-        
-        if (distancia <= RAIO_MAXIMO) {
-            adicionarMarcadorAlerta(alerta);
-            adicionarAlertaPainel(alerta, distancia);
-        }
-    });
-}
-
-function adicionarMarcadorAlerta(alerta) {
-    const icones = {
-        'ACIDENTE': '💥',
-        'OBRAS': '🚧',
-        'CONGESTIONAMENTO': '🚦',
-        'PERIGO': '⚠️',
-        'INTERDIÇÃO': '⛔'
-    };
-    
-    const marker = L.marker([alerta.lat, alerta.lng], {
-        icon: L.divIcon({
-            html: `<div style="background:${alerta.cor}; color:white; padding:6px 12px; border-radius:30px; border:2px solid white; font-size:13px; font-weight:600; box-shadow:0 3px 10px rgba(0,0,0,0.3);">
-                ${icones[alerta.tipo] || '⚠️'} ${alerta.tipo}
-            </div>`,
-            className: '',
-            iconSize: [100, 36]
-        })
-    });
-    
-    marker.on('click', () => {
-        abrirPopupAlerta(alerta, marker.getLatLng());
-    });
-    
-    marker.addTo(map);
-}
-
-function adicionarAlertaPainel(alerta, distancia) {
-    const div = document.createElement('div');
-    div.className = 'alerta-item';
-    div.innerHTML = `
-        <div class="icone" style="background:${alerta.cor};">
-            <i class="fas fa-${alerta.icone}"></i>
-        </div>
-        <div style="flex:1;">
-            <div style="font-weight:600;">${alerta.tipo}</div>
-            <div style="font-size:11px; color:#666;">${alerta.descricao}</div>
-            <div style="display:flex; gap:5px; margin-top:5px;">
-                <span style="font-size:10px; background:#eef2f6; padding:2px 8px; border-radius:12px;">📍 ${distancia} km</span>
-                <span style="font-size:10px; background:#e8f5e9; padding:2px 8px; border-radius:12px;">🔹 conf. ${alerta.confiabilidade}</span>
+        const div = document.createElement('div');
+        div.style.cssText = 'display:flex; align-items:center; gap:10px; padding:10px; background:white; border-radius:8px; margin-bottom:5px; border-left:4px solid ' + alerta.cor;
+        div.innerHTML = `
+            <div style="background:${alerta.cor}; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white;">
+                <i class="fas fa-${alerta.icone}"></i>
             </div>
-        </div>
-    `;
-    
-    div.onclick = () => {
-        map.flyTo([alerta.lat, alerta.lng], 17);
-    };
-    
-    document.getElementById('alertasLista').appendChild(div);
-}
-
-function abrirPopupAlerta(alerta, latlng) {
-    if (popupAtual) map.closePopup(popupAtual);
-    
-    const popupContent = document.createElement('div');
-    popupContent.className = 'alerta-popup';
-    
-    popupContent.innerHTML = `
-        <div class="popup-header">
-            <span><i class="fas fa-${alerta.icone}" style="margin-right:8px;"></i>${alerta.tipo}</span>
-        </div>
-        <div class="popup-body" id="popup-msgs-${alerta.id}">
-            <div style="text-align:center; color:#666; padding:10px;">Carregando...</div>
-        </div>
-        <div class="popup-input">
-            <input type="text" id="popup-input-${alerta.id}" placeholder="Digite sua mensagem...">
-            <button onclick="enviarMsgPopup('${alerta.id}')">➔</button>
-        </div>
-    `;
-    
-    popupAtual = L.popup({
-        maxWidth: 300,
-        minWidth: 280,
-        offset: [0, -20]
-    })
-    .setLatLng(latlng)
-    .setContent(popupContent)
-    .openOn(map);
-    
-    carregarMensagensAlerta(alerta.id);
-}
-
-function carregarMensagensAlerta(alertaId) {
-    const msgsDiv = document.getElementById(`popup-msgs-${alertaId}`);
-    if (!msgsDiv) return;
-    
-    db.ref(`chats/${alertaId}/mensagens`).limitToLast(20).on('value', snap => {
-        const msgs = snap.val();
-        if (!msgs) {
-            msgsDiv.innerHTML = '<div style="text-align:center; color:#999; padding:15px;">Nenhuma mensagem ainda</div>';
-            return;
-        }
-        
-        let html = '';
-        Object.values(msgs).reverse().forEach(msg => {
-            html += `
-                <div class="popup-mensagem" style="margin:8px 0;">
-                    <div style="display:flex; justify-content:space-between;">
-                        <small><b>${msg.user}</b></small>
-                        <small style="color:#999;">${msg.time}</small>
-                    </div>
-                    <div style="font-size:13px;">${msg.text}</div>
-                </div>
-            `;
-        });
-        
-        msgsDiv.innerHTML = html;
+            <div>
+                <div style="font-weight:bold;">${alerta.tipo}</div>
+                <div style="font-size:11px; color:#666;">${alerta.local}</div>
+            </div>
+        `;
+        lista.appendChild(div);
     });
 }
 
-function enviarMsgPopup(alertaId) {
-    const input = document.getElementById(`popup-input-${alertaId}`);
-    if (!input || !input.value.trim()) return;
-    
-    db.ref(`chats/${alertaId}/mensagens`).push({
-        user: user,
-        text: input.value,
-        time: new Date().toLocaleTimeString()
-    });
-    
-    input.value = "";
-}
-
-function calcularDistancia(lat1, lon1, lat2, lon2) {
-    const R = 6371;
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-            Math.sin(dLon/2) * Math.sin(dLon/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    return (R * c).toFixed(1);
-}
-
-// ===== RÁDIO PX =====
+// ===== RÁDIO PX CORRIGIDO =====
 let mediaRecorder;
 let chunks = [];
 const pxBtn = document.getElementById('btn-px');
@@ -966,6 +683,7 @@ async function iniciarGravacao() {
                 reader.readAsDataURL(audioBlob);
             }
             chunks = [];
+            stream.getTracks().forEach(track => track.stop());
         };
         
         mediaRecorder.start();
@@ -982,6 +700,7 @@ function pararGravacao() {
     }
 }
 
+// Recebe áudio
 db.ref("radio").limitToLast(1).on("child_added", snap => {
     const d = snap.val();
     if(d && d.user !== user && !isMuted && (Date.now() - d.time < 5000)) {
@@ -1020,16 +739,9 @@ function enviarMsg() {
 db.ref("chat_geral").limitToLast(50).on("child_added", snap => {
     const msg = snap.val();
     const div = document.createElement('div');
-    div.style.background = msg.user === user ? '#dcf8c6' : 'white';
-    div.style.padding = '8px 12px';
-    div.style.borderRadius = '15px';
-    div.style.margin = '5px 0';
-    div.style.alignSelf = msg.user === user ? 'flex-end' : 'flex-start';
-    div.style.maxWidth = '80%';
-    div.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
-    div.innerHTML = `<small><b>${msg.user}</b></small><br>${msg.text}<br><small style="font-size:9px; color:#999;">${msg.time}</small>`;
+    div.style.cssText = `background:${msg.user === user ? '#dcf8c6' : 'white'}; padding:8px 12px; border-radius:15px; margin:5px 0; max-width:80%; align-self:${msg.user === user ? 'flex-end' : 'flex-start'};`;
+    div.innerHTML = `<small><b>${msg.user}</b></small><br>${msg.text}<br><small style="font-size:9px;">${msg.time}</small>`;
     document.getElementById('chat-msgs').appendChild(div);
-    document.getElementById('chat-msgs').scrollTop = document.getElementById('chat-msgs').scrollHeight;
 });
 
 function recentralizar() { 
@@ -1047,13 +759,25 @@ function minimizarAlertas() {
     const lista = document.getElementById('alertasLista');
     const seta = document.getElementById('setaAlertas');
     if (lista.style.display === 'none') {
-        lista.style.display = 'flex';
+        lista.style.display = 'block';
         seta.style.transform = 'rotate(0deg)';
     } else {
         lista.style.display = 'none';
         seta.style.transform = 'rotate(180deg)';
     }
 }
+
+// Enter na busca
+document.getElementById('buscaDestino').addEventListener('keypress', (e) => {
+    if(e.key === 'Enter') buscarDestino();
+});
+
+// Fecha sugestões ao clicar fora
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.lupa-container') && !e.target.closest('.sugestoes-container')) {
+        document.getElementById('sugestoes').style.display = 'none';
+    }
+});
 </script>
 </body>
 </html>
