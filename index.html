@@ -2,46 +2,57 @@
 <html lang="pt-br">
 <head>
     <meta charset="utf-8">
-    <title>BR-277 | OPERACIONAL V17</title>
+    <title>BR-277 | OPERACIONAL ELITE V18</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
     <style>
-        :root { --ws-green: #075e54; --ws-light: #dcf8c6; }
-        html, body, #map { margin: 0; padding: 0; height: 100%; width: 100%; background: #000; font-family: sans-serif; }
+        :root { --ws-green: #075e54; --ws-light: #dcf8c6; --ws-teal: #128c7e; }
+        html, body, #map { margin: 0; padding: 0; height: 100%; width: 100%; background: #000; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         .map-dark { filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%); }
 
-        /* LUPA DE BUSCA - POSIÇÃO FIXA */
-        .leaflet-control-geocoder { top: 10px; left: 10px; margin: 0 !important; }
+        /* TELA DE LOGIN/BOAS-VINDAS */
+        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(7, 94, 84, 0.95); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; text-align: center; padding: 20px; box-sizing: border-box; }
+        #login-screen input { padding: 15px; border-radius: 30px; border: none; width: 80%; max-width: 300px; margin: 15px 0; font-size: 16px; text-align: center; }
+        #login-screen button { padding: 12px 40px; border-radius: 30px; border: none; background: #25d366; color: white; font-weight: bold; cursor: pointer; }
+        .aviso-gps { font-size: 11px; margin-top: 20px; color: #dcf8c6; opacity: 0.8; }
 
-        /* PAINEL ALERTAS LATERAIS (FIXO) */
+        /* INTERFACE E ALERTAS */
         .painel-alertas { position: absolute; top: 70px; left: 10px; z-index: 2000; display: flex; flex-direction: column; gap: 4px; }
-        .btn-a { border: 2px solid #d4af37; padding: 6px; border-radius: 8px; width: 92px; display: flex; flex-direction: column; align-items: center; cursor: pointer; color: white; font-weight: bold; font-size: 10px; text-shadow: 1px 1px #000; background: #1a1a1a; }
+        .btn-a { border: 2px solid #d4af37; padding: 6px; border-radius: 8px; width: 92px; display: flex; flex-direction: column; align-items: center; cursor: pointer; color: white; font-weight: bold; font-size: 10px; background: #1a1a1a; }
         .bg-r { background: #b00020; } .bg-o { background: #ff6d00; } .bg-b { background: #333; }
 
-        /* BOTÕES FLUTUANTES */
-        .f-btn { position: fixed; z-index: 4001; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border: 2px solid white; cursor: pointer; background: white; touch-action: none; }
+        /* CARRO E BOTÕES */
+        .pulse-loc { border-radius: 50%; animation: pulse-blue 2s infinite; background: rgba(0, 122, 255, 0.4); border: 2px solid white; position: absolute; }
+        @keyframes pulse-blue { 0% { box-shadow: 0 0 0 0px rgba(0, 122, 255, 0.7); } 100% { box-shadow: 0 0 0 20px rgba(0, 122, 255, 0); } }
+        .f-btn { position: fixed; z-index: 4001; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border: 2px solid white; cursor: pointer; background: white; }
         #chat-trigger { width: 65px; height: 65px; background: #25d366; color: white; right: 20px; bottom: 20px; font-size: 30px; }
         #btn-luz { width: 45px; height: 45px; background: #ffcc00; right: 25px; top: 15px; font-size: 20px; }
         #btn-bussola { width: 50px; height: 50px; left: 20px; bottom: 20px; font-size: 25px; border: 2px solid #d4af37; }
 
-        /* CARRO PULSANTE */
-        .pulse-loc { border-radius: 50%; animation: pulse-blue 2s infinite; background: rgba(0, 122, 255, 0.4); border: 2px solid white; position: absolute; }
-        @keyframes pulse-blue { 0% { box-shadow: 0 0 0 0px rgba(0, 122, 255, 0.7); } 100% { box-shadow: 0 0 0 20px rgba(0, 122, 255, 0); } }
-
-        /* CHAT WHATSAPP */
+        /* CHAT WHATSAPP PRO */
         #chat-box { position: fixed; right: -100%; top: 0; width: 100%; max-width: 400px; height: 100%; background: #e5ddd5; z-index: 5000; transition: 0.3s; display: flex; flex-direction: column; }
         #chat-box.aberto { right: 0; }
-        #mensagens { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
-        .balao { padding: 12px; border-radius: 12px; max-width: 80%; position: relative; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
-        .balao-eu { background: var(--ws-light); align-self: flex-end; }
-        .balao-outro { background: white; align-self: flex-start; }
+        #mensagens { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 8px; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); }
+        .balao { padding: 10px; border-radius: 12px; max-width: 85%; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.2); font-size: 14px; }
+        .balao-eu { background: var(--ws-light); align-self: flex-end; border-top-right-radius: 2px; }
+        .balao-outro { background: white; align-self: flex-start; border-top-left-radius: 2px; }
+        .reply-box { font-size: 11px; background: rgba(0,0,0,0.05); padding: 5px; border-left: 3px solid var(--ws-green); margin-bottom: 5px; border-radius: 4px; }
         
-        .popup-chat-box { width: 200px; }
-        .popup-msgs { max-height: 80px; overflow-y: auto; font-size: 11px; background: #f0f0f0; padding: 5px; border-radius: 5px; margin: 5px 0; }
+        /* POPUP ALERTAS */
+        .popup-pro { width: 220px; font-size: 12px; }
+        .popup-chat-list { max-height: 100px; overflow-y: auto; background: #fdfdfd; padding: 5px; border-radius: 5px; margin: 5px 0; border: 1px solid #ddd; }
     </style>
 </head>
 <body>
+
+<div id="login-screen">
+    <h2 style="margin-bottom:0;">GRUPO BR-277</h2>
+    <p>Monitoramento Operacional em Tempo Real</p>
+    <input type="text" id="user-name" placeholder="Seu Nome ou Viatura">
+    <button onclick="fazerLogin()">ACESSAR SISTEMA</button>
+    <p class="aviso-gps">🛡️ TECNOLOGIA DE PONTA: Geolocalização ativa.<br>Sua identidade está vinculada à sua posição GPS.</p>
+</div>
 
 <div id="map"></div>
 
@@ -63,14 +74,17 @@
 <div id="chat-trigger" class="f-btn">💬</div>
 
 <div id="chat-box">
-    <div style="padding:15px; background:var(--ws-green); color:white; display:flex; justify-content:space-between;">
-        <b>BR-277 MONITOR</b>
+    <div style="padding:15px; background:var(--ws-green); color:white; display:flex; justify-content:space-between; align-items:center;">
+        <b>BR-277 WHATSAPP</b>
         <span onclick="document.getElementById('chat-box').classList.remove('aberto')" style="cursor:pointer; font-size:25px;">✕</span>
     </div>
     <div id="mensagens"></div>
+    <div id="reply-preview" style="display:none; padding:8px; background:#cfd8dc; border-left:4px solid var(--ws-green); font-size:11px;">
+        <span id="reply-txt"></span> <span onclick="cancelarRep()" style="float:right">✕</span>
+    </div>
     <div style="padding:10px; background:#f0f0f0; display:flex; gap:10px;">
         <input type="text" id="chat-input" placeholder="Mensagem..." style="flex:1; padding:12px; border-radius:20px; border:none;">
-        <button onclick="mandarChat()" style="background:var(--ws-green); color:white; border-radius:50%; border:none; width:45px; height:45px;">➤</button>
+        <button onclick="mandarChat()" style="background:var(--ws-green); color:white; border-radius:50%; width:45px; height:45px; border:none;">➤</button>
     </div>
 </div>
 
@@ -85,83 +99,83 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
 const map = L.map('map', { zoomControl: false }).setView([-25.4284, -49.2733], 13);
-const googleTraffic = L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(map);
-
-// LUPA DE BUSCA
+L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(map);
 L.Control.geocoder({ defaultMarkGeocode: true }).addTo(map);
 
-let isNight = false;
-document.getElementById('btn-luz').onclick = () => {
-    isNight = !isNight;
-    document.getElementById('map').classList.toggle('map-dark', isNight);
-};
+let user = { n: "", id: "", c: "#" + Math.floor(Math.random()*16777215).toString(16) };
+let meuLatLng, meuMarker, replyData = null;
 
-let user = { n: "Danilo", id: "u_danilo", c: "#075e54", v: "🚗" };
-let meuLatLng, meuMarker;
+function fazerLogin() {
+    const nome = document.getElementById('user-name').value;
+    if(nome.length < 3) return alert("Por favor, digite seu nome.");
+    user.n = nome; user.id = "u_" + Date.now();
+    document.getElementById('login-screen').style.display = 'none';
+}
 
+// LUZ NOTURNA
+document.getElementById('btn-luz').onclick = () => document.getElementById('map').classList.toggle('map-dark');
+
+// BÚSSOLA E GPS
 document.getElementById('btn-bussola').onclick = () => { if(meuLatLng) map.flyTo(meuLatLng, 17); };
-
 navigator.geolocation.watchPosition(pos => {
     meuLatLng = L.latLng(pos.coords.latitude, pos.coords.longitude);
-    const html = `<div class="pulse-loc" style="width:40px;height:40px;left:-5px;top:-5px;"></div><div style="font-size:35px;filter:drop-shadow(2px 2px 2px #000);">${user.v}</div>`;
+    const html = `<div class="pulse-loc" style="width:40px;height:40px;left:-5px;top:-5px;"></div><div style="font-size:35px;filter:drop-shadow(2px 2px 2px #000);">🚗</div>`;
     if(!meuMarker) { meuMarker = L.marker(meuLatLng, { icon: L.divIcon({ html, className: '', iconSize:[40,40] }) }).addTo(map); map.setView(meuLatLng, 16); }
     else { meuMarker.setLatLng(meuLatLng); }
 });
 
-// CHAT DUPLO TOQUE
-function bindBtn(id) {
-    const el = document.getElementById(id); let last = 0;
-    el.addEventListener('touchstart', e => {
-        const now = Date.now(); if(now - last < 300) document.getElementById('chat-box').classList.toggle('aberto');
-        last = now;
-    });
-}
-bindBtn('chat-trigger');
+// CHAT WHATSAPP
+document.getElementById('chat-trigger').onclick = () => document.getElementById('chat-box').classList.toggle('aberto');
 
 function mandarChat() {
     const i = document.getElementById('chat-input'); if(!i.value) return;
-    db.ref("chat").push({ u: user.n, m: i.value, uid: user.id, t: Date.now() });
-    i.value = "";
+    db.ref("chat").push({ u: user.n, uid: user.id, m: i.value, c: user.c, t: Date.now(), rep: replyData });
+    i.value = ""; cancelarRep();
 }
 
-db.ref("chat").limitToLast(30).on("value", snap => {
+function prepararRep(u, m) {
+    replyData = { u, m };
+    document.getElementById('reply-preview').style.display = 'block';
+    document.getElementById('reply-txt').innerText = u + ": " + m;
+}
+function cancelarRep() { replyData = null; document.getElementById('reply-preview').style.display = 'none'; }
+
+db.ref("chat").limitToLast(40).on("value", snap => {
     const box = document.getElementById('mensagens'); box.innerHTML = "";
     snap.forEach(s => {
-        const m = s.val(); const eu = m.uid === user.id;
-        box.innerHTML += `<div class="balao ${eu?'balao-eu':'balao-outro'}">
-            <b>${m.u}</b> ${eu?`<span onclick="db.ref('chat/${s.key}').remove()" style="color:red; float:right">✕</span>`:''}
-            <br>${m.m}
-        </div>`;
+        const d = s.val(); const eu = d.uid === user.id;
+        box.innerHTML += `
+            <div class="balao ${eu?'balao-eu':'balao-outro'}" onclick="prepararRep('${d.u}', '${d.m}')">
+                ${d.rep ? `<div class="reply-box"><b>${d.rep.u}</b>: ${d.rep.m}</div>` : ''}
+                <b style="color:${d.c}; font-size:11px;">${d.u}</b>
+                ${eu ? `<span onclick="db.ref('chat/${s.key}').remove()" style="color:red; float:right; margin-left:10px;">✕</span>` : ''}
+                <br>${d.m}
+            </div>`;
     });
     box.scrollTop = box.scrollHeight;
 });
 
-// ALERTAS FIXOS NO MAPA (VISIBILIDADE TOTAL)
+// ALERTAS
 function enviarAlerta(tipo, emoji) {
     if(!meuLatLng) return;
-    db.ref("alertas").push({ tipo, emoji, lat: meuLatLng.lat, lng: meuLatLng.lng, t: Date.now(), u: user.n });
+    db.ref("alertas").push({ tipo, emoji, lat: meuLatLng.lat, lng: meuLatLng.lng, u: user.n, t: Date.now() });
 }
 
 db.ref("alertas").on("value", snap => {
     map.eachLayer(l => { if(l instanceof L.Marker && l !== meuMarker) map.removeLayer(l); });
     snap.forEach(s => {
         const a = s.val();
-        const m = L.marker([a.lat, a.lng], { 
-            icon: L.divIcon({ html: `<div style="font-size:35px; filter: drop-shadow(2px 2px 2px #000);">${a.emoji}</div>`, className:'' }),
-            zIndexOffset: 1000 
-        }).addTo(map);
-        
+        const m = L.marker([a.lat, a.lng], { icon: L.divIcon({ html: `<div style="font-size:35px; filter: drop-shadow(2px 2px 2px #000);">${a.emoji}</div>`, className:'' }), zIndexOffset: 1000 }).addTo(map);
         m.bindPopup(`
-            <div class="popup-chat-box">
-                <b>${a.tipo}</b> (Por: ${a.u})
-                <div id="pop-${s.key}" class="popup-msgs"></div>
+            <div class="popup-pro">
+                <b>${a.tipo}</b> (Viatura: ${a.u})
+                <div id="pop-${s.key}" class="popup-chat-list"></div>
                 <input id="in-${s.key}" style="width:70%"><button onclick="addPopMsg('${s.key}')">➤</button>
             </div>`);
-        
         m.on('click', () => {
             db.ref(`alertas/${s.key}/msgs`).on('value', ms => {
-                const box = document.getElementById(`pop-${s.key}`);
-                if(box) { box.innerHTML = ""; ms.forEach(msg => box.innerHTML += `<p><b>${msg.val().u}:</b> ${msg.val().m}</p>`); }
+                const b = document.getElementById(`pop-${s.key}`);
+                if(b) { b.innerHTML = ""; ms.forEach(msg => b.innerHTML += `<p style="margin:2px;"><b>${msg.val().u}:</b> ${msg.val().m}</p>`); }
             });
         });
     });
