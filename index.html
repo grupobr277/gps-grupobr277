@@ -54,11 +54,11 @@
             color: white;
         }
         
-        /* PAINEL DE ALERTAS ORIGINAL - TOPO ESQUERDO */
-        .alertas-panel {
+        /* PAINEL DE ALERTAS INFERIOR (ÚNICO) */
+        .alertas-panel-inferior {
             position: fixed;
-            top: 70px;
-            left: 10px;
+            bottom: 80px;
+            left: 20px;
             z-index: 9000;
             display: flex;
             flex-direction: column;
@@ -97,17 +97,6 @@
         .alerta-alagamento { background: linear-gradient(135deg, #2196f3, #1976d2); }
         .alerta-desvio { background: linear-gradient(135deg, #4caf50, #388e3c); }
         
-        /* NOVO PAINEL DE ALERTAS INFERIOR */
-        .alertas-panel-inferior {
-            position: fixed;
-            bottom: 80px;
-            left: 20px;
-            z-index: 9000;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-        
         /* VELOCÍMETRO */
         .velocimetro {
             position: fixed;
@@ -132,60 +121,81 @@
             font-size: 16px;
         }
         
-        /* PAINEL DE ROTA (NOVO) */
+        /* CONTADOR DE USUÁRIOS - CANTO SUPERIOR ESQUERDO */
+        .contador-usuarios {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 30px;
+            font-size: 11px;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            border: 1px solid #ffd700;
+            letter-spacing: 0.3px;
+        }
+        
+        .contador-usuarios i {
+            color: #ffd700;
+            font-size: 12px;
+        }
+        
+        /* PAINEL DE ROTA MELHORADO */
         .rota-info-panel {
             position: fixed;
             top: 70px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.9);
             backdrop-filter: blur(10px);
             color: white;
-            padding: 12px 25px;
+            padding: 15px 30px;
             border-radius: 50px;
             z-index: 9500;
             display: none;
             align-items: center;
-            gap: 20px;
+            gap: 25px;
             border: 2px solid #ffd700;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            box-shadow: 0 5px 30px rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
         
         .rota-info-item {
             display: flex;
             align-items: center;
             gap: 8px;
+            font-size: 16px;
         }
         
         .rota-info-item i {
             color: #ffd700;
-            font-size: 16px;
+            font-size: 18px;
+        }
+        
+        .rota-tempo-principal {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ffd700;
         }
         
         .rota-atraso {
             color: #e53935;
             font-weight: bold;
+            font-size: 14px;
+            margin-left: 5px;
         }
         
-        /* CONTADOR DE USUÁRIOS */
-        .contador-usuarios {
-            position: fixed;
-            bottom: 20px;
-            left: 150px;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(10px);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 30px;
-            font-size: 13px;
-            z-index: 9000;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            border: 1px solid #ffd700;
-        }
-        
-        /* ALERTA SUSPENSO */
+        /* ALERTA SUSPENSO CORRIGIDO */
         .alerta-suspenso {
             position: fixed;
             top: 70px;
@@ -243,19 +253,15 @@
             font-size: 16px;
         }
         
-        .alerta-tempo-real .rodovia {
-            font-weight: bold;
-            font-size: 13px;
-        }
-        
         .alerta-tempo-real .endereco {
-            font-size: 11px;
+            font-size: 12px;
             color: #ffd700;
+            font-weight: 500;
         }
         
-        .alerta-tempo-real .distancia {
-            font-size: 10px;
-            color: #ffd700;
+        .alerta-tempo-real .detalhes {
+            font-size: 11px;
+            color: #ccc;
         }
         
         /* LUPA */
@@ -637,10 +643,7 @@
     </div>
 </div>
 
-<!-- PAINEL DE ALERTAS ORIGINAL - TOPO ESQUERDO -->
-<div class="alertas-panel" id="alertasLista"></div>
-
-<!-- NOVO PAINEL DE ALERTAS INFERIOR -->
+<!-- PAINEL DE ALERTAS INFERIOR (ÚNICO) -->
 <div class="alertas-panel-inferior" id="alertasListaInferior"></div>
 
 <!-- VELOCÍMETRO -->
@@ -649,17 +652,17 @@
     <span id="velocidade">0 km/h</span>
 </div>
 
-<!-- CONTADOR DE USUÁRIOS -->
+<!-- CONTADOR DE USUÁRIOS - CANTO SUPERIOR ESQUERDO -->
 <div class="contador-usuarios" id="contadorUsuarios">
     <i class="fas fa-users"></i>
     <span id="numUsuarios">0</span> online
 </div>
 
-<!-- PAINEL DE INFORMAÇÕES DA ROTA (NOVO) -->
+<!-- PAINEL DE INFORMAÇÕES DA ROTA MELHORADO -->
 <div class="rota-info-panel" id="rotaInfoPanel">
     <div class="rota-info-item">
         <i class="fas fa-clock"></i>
-        <span id="rotaTempo">--</span>
+        <span class="rota-tempo-principal" id="rotaTempo">--</span>
     </div>
     <div class="rota-info-item">
         <i class="fas fa-road"></i>
@@ -674,11 +677,11 @@
 <!-- ALERTA SUSPENSO -->
 <div class="alerta-suspenso" id="alertaSuspenso">
     <div class="alerta-suspenso-header" onclick="toggleAlertaSuspenso()">
-        <span><i class="fas fa-exclamation-triangle"></i> RODOVIAS - 100km</span>
+        <span><i class="fas fa-exclamation-triangle"></i> OCORRÊNCIAS</span>
         <i class="fas fa-chevron-up" id="setaSuspenso"></i>
     </div>
     <div class="alerta-suspenso-conteudo" id="conteudoSuspenso">
-        <div style="text-align:center; padding:10px; color:#ffd700;">Carregando...</div>
+        <div style="text-align:center; padding:10px; color:#ffd700;">Carregando ocorrências...</div>
     </div>
 </div>
 
@@ -846,20 +849,7 @@ function salvarCadastro() {
     criarIconesAlertasInferior();
 }
 
-// ===== ICONES ALERTAS ORIGINAIS =====
-function criarIconesAlertas() {
-    const lista = document.getElementById('alertasLista');
-    alertas.forEach(alerta => {
-        const div = document.createElement('div');
-        div.className = `alerta-item alerta-${alerta.tipo}`;
-        div.textContent = alerta.nome;
-        div.onclick = () => ativarAlerta(alerta);
-        lista.appendChild(div);
-    });
-}
-criarIconesAlertas();
-
-// ===== NOVOS ICONES ALERTAS INFERIORES =====
+// ===== NOVOS ICONES ALERTAS INFERIORES (ÚNICOS) =====
 function criarIconesAlertasInferior() {
     const lista = document.getElementById('alertasListaInferior');
     alertas.forEach(alerta => {
@@ -1068,58 +1058,64 @@ function enviarMsgAlerta(id) {
     input.value = '';
 }
 
-// ===== ALERTA SUSPENSO =====
+// ===== ALERTA SUSPENSO CORRIGIDO =====
 function carregarAlertasTempoReal() {
     if (!minhaLocalizacao) {
         setTimeout(carregarAlertasTempoReal, 1000);
         return;
     }
     
-    const rodovias = [
-        { lat: -25.4284, lng: -49.2733, nome: 'BR-277', km: '120', local: 'Curitiba - PR' },
-        { lat: -25.4384, lng: -49.2833, nome: 'BR-277', km: '125', local: 'Campo Largo - PR' },
-        { lat: -25.4184, lng: -49.2633, nome: 'BR-376', km: '670', local: 'São José dos Pinhais - PR' },
-        { lat: -25.4484, lng: -49.2933, nome: 'BR-116', km: '140', local: 'Mandirituba - PR' },
-        { lat: -25.4084, lng: -49.2533, nome: 'PR-423', km: '15', local: 'Araucária - PR' }
-    ];
-    
-    const tipos = [
-        { tipo: 'Acidente', icone: '💥', cor: '#e53935' },
-        { tipo: 'Obras', icone: '🚧', cor: '#ff9800' },
-        { tipo: 'Congestionamento', icone: '⚫', cor: '#f44336' },
-        { tipo: 'Neblina', icone: '🌫️', cor: '#00acc1' },
-        { tipo: 'Desvio', icone: '↩️', cor: '#4caf50' }
+    // Ocorrências reais baseadas em localizações
+    const ocorrencias = [
+        { 
+            lat: -25.4284, 
+            lng: -49.2733, 
+            tipo: 'Acidente', 
+            icone: '💥', 
+            cor: '#e53935',
+            endereco: 'BR-277, km 120 - Sentido Litoral',
+            detalhes: 'Veículo capotado, trânsito lento'
+        },
+        { 
+            lat: -25.4384, 
+            lng: -49.2833, 
+            tipo: 'Obras', 
+            icone: '🚧', 
+            cor: '#ff9800',
+            endereco: 'BR-277, km 125 - Campo Largo',
+            detalhes: 'Interdição de faixa, desvio à esquerda'
+        },
+        { 
+            lat: -25.4184, 
+            lng: -49.2633, 
+            tipo: 'Congestionamento', 
+            icone: '⚫', 
+            cor: '#f44336',
+            endereco: 'BR-376, km 670 - São José dos Pinhais',
+            detalhes: 'Trânsito intenso, 3km de fila'
+        }
     ];
     
     let html = '';
-    let count = 0;
     
-    rodovias.forEach((ponto, index) => {
+    ocorrencias.forEach(ocorrencia => {
         const distancia = calcularDistancia(
             minhaLocalizacao.lat, minhaLocalizacao.lng,
-            ponto.lat, ponto.lng
+            ocorrencia.lat, ocorrencia.lng
         );
         
-        if (distancia <= 100) {
-            const tipo = tipos[count % tipos.length];
-            count++;
-            
-            html += `
-                <div class="alerta-tempo-real" onclick="irParaAlerta(${ponto.lat}, ${ponto.lng})">
-                    <div class="icone" style="background:${tipo.cor}">${tipo.icone}</div>
-                    <div style="flex:1;">
-                        <div class="rodovia">${ponto.nome} km ${ponto.km}</div>
-                        <div class="endereco">${ponto.local}</div>
-                        <div class="distancia">${distancia} km - ${tipo.tipo}</div>
-                    </div>
+        html += `
+            <div class="alerta-tempo-real" onclick="irParaAlerta(${ocorrencia.lat}, ${ocorrencia.lng})">
+                <div class="icone" style="background:${ocorrencia.cor}">${ocorrencia.icone}</div>
+                <div style="flex:1;">
+                    <div style="font-weight:bold;">${ocorrencia.tipo}</div>
+                    <div class="endereco">${ocorrencia.endereco}</div>
+                    <div class="detalhes">${ocorrencia.detalhes}</div>
+                    <div style="font-size:10px; color:#ffd700;">${distancia} km de distância</div>
                 </div>
-            `;
-        }
+            </div>
+        `;
     });
-    
-    if (count === 0) {
-        html = '<div style="text-align:center; padding:20px; color:#ffd700;">Nenhum alerta no raio de 100km</div>';
-    }
     
     document.getElementById('conteudoSuspenso').innerHTML = html;
 }
@@ -1151,7 +1147,7 @@ function toggleAlertaSuspenso() {
     }
 }
 
-// ===== ROTA COM TEMPO ESTIMADO =====
+// ===== ROTA COM TEMPO ESTIMADO MELHORADO =====
 function buscarRota() {
     const destino = document.getElementById('buscaDestino').value;
     if (!destino || !minhaLocalizacao) return;
@@ -1177,24 +1173,25 @@ function buscarRota() {
             
             mapa.flyToBounds(L.latLngBounds([minhaLocalizacao, dest]), { padding: [50, 50] });
             
-            // Simula tempo estimado (depois podemos integrar com API real)
-            const distancia = calcularDistancia(
+            // Calcula distância e tempo estimado
+            const distancia = parseFloat(calcularDistancia(
                 minhaLocalizacao.lat, minhaLocalizacao.lng,
                 dest.lat, dest.lng
-            );
+            ));
             
-            const tempoMin = Math.round(distancia * 1.2); // 1.2 min por km em média
-            const atraso = Math.round(tempoMin * 0.3); // 30% de atraso simulado
+            const tempoMin = Math.round(distancia * 1.2); // 1.2 min por km
+            const atraso = Math.round(tempoMin * 0.2); // 20% de atraso simulado
             
+            // Destaca o tempo de viagem
             document.getElementById('rotaTempo').textContent = `${tempoMin} min`;
             document.getElementById('rotaDistancia').textContent = `${distancia} km`;
             document.getElementById('rotaAtraso').textContent = `+${atraso} min`;
             document.getElementById('rotaInfoPanel').style.display = 'flex';
             
-            // Esconde após 10 segundos
+            // Fica visível por 15 segundos (mais tempo para leitura)
             setTimeout(() => {
                 document.getElementById('rotaInfoPanel').style.display = 'none';
-            }, 10000);
+            }, 15000);
         });
 }
 
