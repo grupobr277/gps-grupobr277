@@ -54,7 +54,7 @@
             color: white;
         }
         
-        /* BOTÃO REPORTE - NOVO LAYOUT */
+        /* BOTÃO REPORTE */
         .reporte-container {
             position: fixed;
             bottom: 90px;
@@ -137,12 +137,12 @@
             background: rgba(0,0,0,0.6);
             backdrop-filter: blur(15px);
             border: 2px solid #ffd700;
-            border-radius: 25px;
-            padding: 15px;
+            border-radius: 20px;
+            padding: 12px;
             display: none;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            width: 300px;
+            gap: 8px;
+            width: 260px;
             max-height: none;
             overflow: visible;
             box-shadow: 0 10px 40px rgba(0,0,0,0.5);
@@ -161,19 +161,19 @@
         .alerta-item {
             width: 100%;
             aspect-ratio: 1/1;
-            border-radius: 20px;
+            border-radius: 16px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 5px;
+            gap: 4px;
             cursor: pointer;
             transition: all 0.2s ease;
             border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
             position: relative;
             overflow: hidden;
-            padding: 5px;
+            padding: 4px;
         }
         
         .alerta-item::before {
@@ -198,16 +198,16 @@
         }
         
         .alerta-icone {
-            font-size: 32px;
+            font-size: 28px;
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
         }
         
         .alerta-nome {
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 600;
             color: white;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
             text-shadow: 0 2px 4px rgba(0,0,0,0.3);
             text-align: center;
         }
@@ -227,10 +227,10 @@
         /* VELOCÍMETRO REDONDO */
         .velocimetro-redondo {
             position: fixed;
-            top: 130px;
-            right: 20px;
-            width: 80px;
-            height: 80px;
+            bottom: 90px;
+            left: 290px;
+            width: 70px;
+            height: 70px;
             background: rgba(0,0,0,0.7);
             backdrop-filter: blur(10px);
             border: 3px solid #ffd700;
@@ -239,20 +239,20 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            z-index: 9500;
+            z-index: 9000;
             box-shadow: 0 5px 20px rgba(0,0,0,0.4);
             color: white;
             font-weight: bold;
         }
         
         .velocimetro-valor {
-            font-size: 24px;
+            font-size: 22px;
             line-height: 1;
             color: #ffd700;
         }
         
         .velocimetro-unidade {
-            font-size: 10px;
+            font-size: 9px;
             color: #ccc;
             margin-top: 2px;
         }
@@ -759,67 +759,96 @@
             to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
         
-        /* ÍCONE DO CARRO ESTILO UBER */
-        .carro-uber {
-            width: 32px;
-            height: 32px;
+        /* ESTILO DO CARRO - VERSÃO MINIMALISTA */
+        .carro-minimalista {
+            width: 36px;
+            height: 36px;
             position: relative;
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
         }
         
-        .carro-uber .carroceria {
+        .carro-minimalista .sombra {
             position: absolute;
-            width: 24px;
+            width: 30px;
             height: 10px;
-            background: #1a1a1a;
-            border-radius: 4px 4px 0 0;
-            bottom: 8px;
-            left: 4px;
-            box-shadow: 0 0 0 2px #ffd700;
+            background: rgba(0,0,0,0.2);
+            border-radius: 50%;
+            bottom: -8px;
+            left: 3px;
+            filter: blur(3px);
         }
         
-        .carro-uber .capo {
+        .carro-minimalista .carroceria {
             position: absolute;
             width: 28px;
+            height: 18px;
+            background: #FFFFFF;
+            border-radius: 8px 8px 6px 6px;
+            top: 6px;
+            left: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border: 1px solid #E0E0E0;
+        }
+        
+        .carro-minimalista .vidro {
+            position: absolute;
+            width: 20px;
             height: 8px;
-            background: #1a1a1a;
-            border-radius: 6px;
-            bottom: 0;
-            left: 2px;
-            box-shadow: 0 0 0 2px #ffd700;
+            background: #333333;
+            border-radius: 6px 6px 3px 3px;
+            top: 8px;
+            left: 8px;
+            opacity: 0.9;
         }
         
-        .carro-uber .farol-esq {
+        .carro-minimalista .farol-esq {
             position: absolute;
-            width: 4px;
-            height: 4px;
-            background: #ffd700;
+            width: 3px;
+            height: 3px;
+            background: #FFD700;
             border-radius: 50%;
-            bottom: 2px;
+            top: 14px;
             left: 6px;
-            box-shadow: 0 0 8px #ffd700;
         }
         
-        .carro-uber .farol-dir {
+        .carro-minimalista .farol-dir {
             position: absolute;
-            width: 4px;
-            height: 4px;
-            background: #ffd700;
+            width: 3px;
+            height: 3px;
+            background: #FFD700;
             border-radius: 50%;
-            bottom: 2px;
+            top: 14px;
             right: 6px;
-            box-shadow: 0 0 8px #ffd700;
         }
         
-        .carro-uber .teto {
+        .carro-minimalista .lanterna-esq {
             position: absolute;
-            width: 14px;
-            height: 6px;
-            background: #1a1a1a;
-            border-radius: 3px 3px 0 0;
-            top: 2px;
-            left: 9px;
-            box-shadow: 0 0 0 2px #ffd700;
+            width: 2px;
+            height: 2px;
+            background: #E53935;
+            border-radius: 50%;
+            bottom: 10px;
+            left: 7px;
+        }
+        
+        .carro-minimalista .lanterna-dir {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #E53935;
+            border-radius: 50%;
+            bottom: 10px;
+            right: 7px;
+        }
+        
+        /* VERSÃO PARA OUTROS USUÁRIOS (CINZA) */
+        .carro-minimalista.outro .carroceria {
+            background: #CCCCCC;
+            border-color: #AAAAAA;
+        }
+        
+        .carro-minimalista.outro .vidro {
+            background: #555555;
         }
     </style>
 </head>
@@ -838,27 +867,27 @@
         
         <div style="margin:20px 0; text-align:left; color:#ffd700;">Escolha seu veículo:</div>
         <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:20px;">
-            <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:15px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('carro', 'carro-uber')" id="veiculo-carro">
+            <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:15px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('carro', 'carro')" id="veiculo-carro">
                 <div style="font-size:30px;">🚗</div>
                 <div style="font-size:12px; color:white;">Carro</div>
             </div>
-            <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:15px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('caminhao', '🚛')" id="veiculo-caminhao">
+            <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:15px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('caminhao', 'caminhao')" id="veiculo-caminhao">
                 <div style="font-size:30px;">🚛</div>
                 <div style="font-size:12px; color:white;">Caminhão</div>
             </div>
-            <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:15px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('moto', '🏍️')" id="veiculo-moto">
+            <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:15px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('moto', 'moto')" id="veiculo-moto">
                 <div style="font-size:30px;">🏍️</div>
                 <div style="font-size:12px; color:white;">Moto</div>
             </div>
-            <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:15px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('onibus', '🚌')" id="veiculo-onibus">
+            <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:15px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('onibus', 'onibus')" id="veiculo-onibus">
                 <div style="font-size:30px;">🚌</div>
                 <div style="font-size:12px; color:white;">Ônibus</div>
             </div>
-            <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:15px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('van', '🚐')" id="veiculo-van">
+            <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:15px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('van', 'van')" id="veiculo-van">
                 <div style="font-size:30px;">🚐</div>
                 <div style="font-size:12px; color:white;">Van</div>
             </div>
-            <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:15px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('pickup', '🛻')" id="veiculo-pickup">
+            <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:15px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('pickup', 'pickup')" id="veiculo-pickup">
                 <div style="font-size:30px;">🛻</div>
                 <div style="font-size:12px; color:white;">Pickup</div>
             </div>
@@ -884,7 +913,7 @@
     </div>
 </div>
 
-<!-- NOVO SISTEMA REPORTE - GRID 2x5 -->
+<!-- NOVO SISTEMA REPORTE -->
 <div class="reporte-container">
     <div class="reporte-toggle" onclick="toggleReporte()">
         <span class="led"></span>
@@ -992,7 +1021,6 @@ const db = firebase.database();
 let usuario = null;
 let telefone = '';
 let veiculoUsuario = 'carro';
-let iconeVeiculo = 'carro-uber';
 let admin = false;
 const ADMIN_PASSWORD = 'br277admin';
 const ADMIN_USER = 'Danilo Chulik';
@@ -1010,7 +1038,7 @@ const INTERVALO_GPS = 1000;
 let zoomAtual = 13;
 let ultimaMsgCongestionamento = 0;
 
-// ===== 10 ALERTAS (removeu DESVIO) =====
+// ===== 10 ALERTAS =====
 const alertas = [
     { tipo: 'acidente', nome: 'ACIDENTE', icone: '💥', cor: '#e53935' },
     { tipo: 'obras', nome: 'OBRAS', icone: '🚧', cor: '#ff9800' },
@@ -1027,7 +1055,6 @@ const alertas = [
 // ===== FUNÇÕES DO MODAL =====
 function selecionarVeiculo(tipo, icone) {
     veiculoUsuario = tipo;
-    iconeVeiculo = icone;
     document.querySelectorAll('[id^="veiculo-"]').forEach(el => {
         el.style.borderColor = 'transparent';
     });
@@ -1040,7 +1067,6 @@ if (userSalvo) {
     usuario = userSalvo;
     telefone = localStorage.getItem('br277_telefone') || '';
     veiculoUsuario = localStorage.getItem('br277_veiculo') || 'carro';
-    iconeVeiculo = localStorage.getItem('br277_icone') || 'carro-uber';
     
     if (usuario === ADMIN_USER) {
         admin = true;
@@ -1074,7 +1100,6 @@ function salvarCadastro() {
     localStorage.setItem('br277_usuario', nome);
     localStorage.setItem('br277_telefone', telefone);
     localStorage.setItem('br277_veiculo', veiculoUsuario);
-    localStorage.setItem('br277_icone', iconeVeiculo);
     
     document.getElementById('welcomeModal').style.display = 'none';
     
@@ -1094,7 +1119,7 @@ function toggleReporte() {
     toggle.classList.toggle('ativo');
 }
 
-// ===== NOVOS ICONES ALERTAS GRID 2x5 =====
+// ===== ICONES ALERTAS =====
 function criarIconesAlertas() {
     const lista = document.getElementById('alertasPanel');
     alertas.forEach(alerta => {
@@ -1109,19 +1134,23 @@ function criarIconesAlertas() {
     });
 }
 
-// ===== FUNÇÃO PARA CRIAR ÍCONE DO CARRO ESTILO UBER =====
-function criarIconeCarroUber(rotacao = 0) {
+// ===== FUNÇÃO PARA CRIAR ÍCONE DO CARRO MINIMALISTA =====
+function criarIconeCarro(corCarro = '#FFFFFF', corVidro = '#333333', ehMeu = true) {
+    const classeExtra = ehMeu ? '' : 'outro';
+    
     return L.divIcon({
-        html: `<div class="carro-uber" style="transform: rotate(${rotacao}deg); transition: transform 0.3s ease;">
+        html: `<div class="carro-minimalista ${classeExtra}" style="transform: rotate(0deg);">
+            <div class="sombra"></div>
             <div class="carroceria"></div>
-            <div class="capo"></div>
+            <div class="vidro"></div>
             <div class="farol-esq"></div>
             <div class="farol-dir"></div>
-            <div class="teto"></div>
+            <div class="lanterna-esq"></div>
+            <div class="lanterna-dir"></div>
         </div>`,
         className: '',
-        iconSize: [32, 32],
-        iconAnchor: [16, 16]
+        iconSize: [36, 40],
+        iconAnchor: [18, 20]
     });
 }
 
@@ -1141,7 +1170,7 @@ function iniciarMapa() {
     });
 }
 
-// ===== ATUALIZA VELOCÍMETRO PESSOAL =====
+// ===== ATUALIZA VELOCÍMETRO =====
 function atualizarVelocimetroPessoal(velocidade) {
     const velocidadeInt = Math.round(velocidade);
     document.getElementById('velocidadeRedonda').textContent = velocidadeInt;
@@ -1155,8 +1184,10 @@ function atualizarIconeCarro() {
     
     if (zoomAtual >= 15) {
         meuMarcador = L.marker(minhaLocalizacao, {
-            icon: criarIconeCarroUber(ultimoHeading),
-            zIndexOffset: 1000
+            icon: criarIconeCarro('#FFFFFF', '#333333', true),
+            zIndexOffset: 1000,
+            rotationAngle: ultimoHeading || 0,
+            rotationOrigin: 'center center'
         }).addTo(mapa);
     } else {
         meuMarcador = L.marker(minhaLocalizacao, {
@@ -1197,8 +1228,10 @@ function iniciarGPS() {
         if (!meuMarcador) {
             if (zoomAtual >= 15) {
                 meuMarcador = L.marker(minhaLocalizacao, {
-                    icon: criarIconeCarroUber(ultimoHeading),
-                    zIndexOffset: 1000
+                    icon: criarIconeCarro('#FFFFFF', '#333333', true),
+                    zIndexOffset: 1000,
+                    rotationAngle: ultimoHeading || 0,
+                    rotationOrigin: 'center center'
                 }).addTo(mapa);
             } else {
                 meuMarcador = L.marker(minhaLocalizacao, {
@@ -1216,7 +1249,7 @@ function iniciarGPS() {
             db.ref('usuarios_ativos/' + usuario).set({
                 lat: minhaLocalizacao.lat,
                 lng: minhaLocalizacao.lng,
-                veiculo: '🚗',
+                veiculo: veiculoUsuario,
                 timestamp: Date.now()
             });
             
@@ -1224,8 +1257,8 @@ function iniciarGPS() {
             meuMarcador.setLatLng(minhaLocalizacao);
             
             // Atualiza rotação do carro
-            if (zoomAtual >= 15) {
-                meuMarcador.setIcon(criarIconeCarroUber(ultimoHeading));
+            if (zoomAtual >= 15 && meuMarcador.setRotationAngle) {
+                meuMarcador.setRotationAngle(ultimoHeading || 0);
             }
             
             db.ref('usuarios_ativos/' + usuario).update({
@@ -1267,11 +1300,9 @@ function carregarUsuariosAtivos() {
                 return;
             }
             
+            // Carro cinza para outros usuários
             const marcador = L.marker([dados.lat, dados.lng], {
-                icon: L.divIcon({
-                    html: `<div style="font-size:20px;">${dados.veiculo || '🚗'}</div>`,
-                    iconSize: [24, 24]
-                })
+                icon: criarIconeCarro('#CCCCCC', '#555555', false)
             }).addTo(mapa);
             
             usuariosAtivos[id] = marcador;
@@ -1386,7 +1417,7 @@ function formatarTempo(minutos) {
     }
 }
 
-// ===== ROTA COM TRAÇADO AZUL =====
+// ===== ROTA =====
 function buscarRota() {
     const destino = document.getElementById('buscaDestino').value;
     if (!destino || !minhaLocalizacao) return;
@@ -1403,7 +1434,6 @@ function buscarRota() {
             
             if (rotaAtual) mapa.removeControl(rotaAtual);
             
-            // TRAÇADO AZUL COM OPACIDADE
             rotaAtual = L.Routing.control({
                 waypoints: [minhaLocalizacao, dest],
                 lineOptions: { 
@@ -1513,7 +1543,7 @@ function carregarChatGeral() {
                     ` : ''}
                     <div class="mensagem ${isMinha ? 'minha' : 'outra'}" data-user="${msg.usuario}">
                         <div class="mensagem-remetente" style="color:${corUsuario}">
-                            ${msg.veiculo || '🚗'} ${msg.usuario}
+                            🚗 ${msg.usuario}
                             ${msg.telefone ? `<span class="mensagem-telefone">📱${msg.telefone}</span>` : ''}
                         </div>
                         ${textoFormatado}
@@ -1543,7 +1573,6 @@ function enviarMsgGeral() {
     const mensagem = {
         usuario: usuario,
         telefone: telefone,
-        veiculo: '🚗',
         texto: texto,
         hora: new Date().toLocaleTimeString(),
         timestamp: Date.now()
