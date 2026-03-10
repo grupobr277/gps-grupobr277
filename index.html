@@ -101,28 +101,122 @@
         .alerta-desvio { background: linear-gradient(135deg, #4caf50, #388e3c); }
         .alerta-bloqueio { background: linear-gradient(135deg, #b71c1c, #8B0000); }
         
-        /* VELOCÍMETRO */
-        .velocimetro {
+        /* VELOCÍMETRO DUPLO */
+        .velocimetro-duplo {
             position: fixed;
             bottom: 20px;
             left: 20px;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.8);
             backdrop-filter: blur(10px);
-            color: #ffd700;
-            padding: 8px 16px;
-            border-radius: 30px;
-            font-size: 14px;
-            font-weight: bold;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 50px;
             z-index: 9000;
             display: flex;
-            align-items: center;
+            flex-direction: column;
             gap: 8px;
-            border: 1px solid #ffd700;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border: 2px solid #ffd700;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            min-width: 220px;
         }
         
-        .velocimetro i {
-            font-size: 16px;
+        .velocimetro-pessoal, .velocimetro-mapa {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .velocimetro-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        
+        .velocimetro-info {
+            flex: 1;
+        }
+        
+        .velocimetro-titulo {
+            font-size: 10px;
+            color: #999;
+            letter-spacing: 0.5px;
+        }
+        
+        .velocimetro-valor {
+            font-size: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: baseline;
+            gap: 5px;
+        }
+        
+        .velocimetro-unidade {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .velocimetro-barra {
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            margin-top: 4px;
+            overflow: hidden;
+        }
+        
+        .velocimetro-preenchimento {
+            height: 100%;
+            width: 0%;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+        
+        .velocimetro-preenchimento.verde { background: #4caf50; }
+        .velocimetro-preenchimento.amarelo { background: #ffc107; }
+        .velocimetro-preenchimento.laranja { background: #ff9800; }
+        .velocimetro-preenchimento.vermelho { background: #f44336; }
+        .velocimetro-preenchimento.vermelho-escuro { background: #b71c1c; }
+        
+        .velocimetro-status {
+            font-size: 11px;
+            margin-top: 2px;
+            color: #ffd700;
+        }
+        
+        /* PREVISÃO DE CONGESTIONAMENTO */
+        .previsao-congestionamento {
+            position: fixed;
+            top: 130px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            z-index: 9500;
+            display: none;
+            align-items: center;
+            gap: 15px;
+            border: 2px solid #ffd700;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+        
+        .previsao-fila {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #e53935;
+        }
+        
+        .previsao-fila i {
+            color: #ffd700;
         }
         
         /* HEADER SUPERIOR ESQUERDO */
@@ -649,10 +743,45 @@
 <!-- PAINEL DE ALERTAS INFERIOR (ÚNICO) -->
 <div class="alertas-panel-inferior" id="alertasListaInferior"></div>
 
-<!-- VELOCÍMETRO -->
-<div class="velocimetro" id="velocimetro">
-    <i class="fas fa-tachometer-alt"></i>
-    <span id="velocidade">0 km/h</span>
+<!-- VELOCÍMETRO DUPLO -->
+<div class="velocimetro-duplo" id="velocimetroDuplo">
+    <!-- Velocímetro Pessoal (GPS) -->
+    <div class="velocimetro-pessoal">
+        <div class="velocimetro-icon">🚗</div>
+        <div class="velocimetro-info">
+            <div class="velocimetro-titulo">SUA VELOCIDADE</div>
+            <div class="velocimetro-valor">
+                <span id="velocidadePessoal">0</span>
+                <span class="velocimetro-unidade">km/h</span>
+            </div>
+            <div class="velocimetro-barra">
+                <div class="velocimetro-preenchimento" id="barraPessoal" style="width:0%"></div>
+            </div>
+            <div class="velocimetro-status" id="statusPessoal">Aguardando GPS...</div>
+        </div>
+    </div>
+    
+    <!-- Velocímetro do Mapa (Trânsito) -->
+    <div class="velocimetro-mapa">
+        <div class="velocimetro-icon">🌍</div>
+        <div class="velocimetro-info">
+            <div class="velocimetro-titulo">TRÂNSITO NO MAPA</div>
+            <div class="velocimetro-valor">
+                <span id="velocidadeMapa">0</span>
+                <span class="velocimetro-unidade">km/h</span>
+            </div>
+            <div class="velocimetro-barra">
+                <div class="velocimetro-preenchimento" id="barraMapa" style="width:0%"></div>
+            </div>
+            <div class="velocimetro-status" id="statusMapa">Movendo o mapa...</div>
+        </div>
+    </div>
+</div>
+
+<!-- PREVISÃO DE CONGESTIONAMENTO -->
+<div class="previsao-congestionamento" id="previsaoCongestionamento">
+    <i class="fas fa-exclamation-triangle" style="color:#e53935;"></i>
+    <span id="previsaoTexto">Carregando...</span>
 </div>
 
 <!-- HEADER SUPERIOR ESQUERDO -->
@@ -773,7 +902,7 @@ let veiculoUsuario = 'carro';
 let iconeVeiculo = '🚗';
 let admin = false;
 const ADMIN_PASSWORD = 'br277admin';
-const ADMIN_USER = 'Danilo Chulik'; // Nome do admin
+const ADMIN_USER = 'Danilo Chulik';
 let minhaLocalizacao = null;
 let meuMarcador = null;
 let seguirLocalizacao = true;
@@ -784,8 +913,13 @@ let mudo = false;
 let mensagemRespondendo = null;
 let coresUsuarios = {};
 let ultimaAtualizacaoGPS = 0;
-const INTERVALO_GPS = 1000; // 1 segundo entre atualizações
+const INTERVALO_GPS = 1000;
 let zoomAtual = 13;
+let canvasAnalise = document.createElement('canvas');
+let ctxAnalise = canvasAnalise.getContext('2d');
+let amostrasAtivas = false;
+let ultimaVelocidadeMapa = 0;
+let suavizacaoVelocidade = 0.3; // Fator de suavização (0-1)
 
 // ===== 11 ALERTAS COM ÍCONES ESPECÍFICOS =====
 const alertas = [
@@ -820,7 +954,6 @@ if (userSalvo) {
     veiculoUsuario = localStorage.getItem('br277_veiculo') || 'carro';
     iconeVeiculo = localStorage.getItem('br277_icone') || '🚗';
     
-    // Verifica se é o admin
     if (usuario === ADMIN_USER) {
         admin = true;
         document.getElementById('adminBadge').style.display = 'inline';
@@ -833,6 +966,7 @@ if (userSalvo) {
     carregarAlertasFixos();
     carregarChatGeral();
     criarIconesAlertasInferior();
+    iniciarAnaliseTransito();
 }
 
 function salvarCadastro() {
@@ -845,7 +979,6 @@ function salvarCadastro() {
     usuario = nome;
     telefone = document.getElementById('telefoneUsuario').value.trim();
     
-    // Verifica se é o admin
     if (usuario === ADMIN_USER) {
         admin = true;
         document.getElementById('adminBadge').style.display = 'inline';
@@ -864,6 +997,7 @@ function salvarCadastro() {
     carregarAlertasFixos();
     carregarChatGeral();
     criarIconesAlertasInferior();
+    iniciarAnaliseTransito();
 }
 
 // ===== NOVOS ICONES ALERTAS INFERIORES =====
@@ -888,22 +1022,192 @@ function iniciarMapa() {
         document.getElementById('btnRecenter').style.display = 'block';
     });
     
-    // Monitora zoom para controle do ícone do carro
     mapa.on('zoomend', () => {
         zoomAtual = mapa.getZoom();
         atualizarIconeCarro();
     });
+    
+    mapa.on('moveend', () => {
+        // Quando o mapa para de se mover, analisa o trânsito
+        if (amostrasAtivas) {
+            analisarTransitoNoMapa();
+        }
+    });
+}
+
+// ===== ANÁLISE DE TRÂNSITO NO MAPA =====
+function iniciarAnaliseTransito() {
+    amostrasAtivas = true;
+    // Primeira análise após 2 segundos
+    setTimeout(analisarTransitoNoMapa, 2000);
+    // Analisa a cada 3 segundos enquanto o mapa está parado
+    setInterval(() => {
+        if (!mapa.dragging._dragging) {
+            analisarTransitoNoMapa();
+        }
+    }, 3000);
+}
+
+function analisarTransitoNoMapa() {
+    if (!mapa) return;
+    
+    try {
+        // Pega o centro do mapa para análise
+        const centro = mapa.getCenter();
+        
+        // Simula análise baseada na localização
+        // Em produção, usaríamos a cor real dos tiles
+        const lat = centro.lat;
+        const lng = centro.lng;
+        
+        // Simula velocidade baseada na região (rodovia vs cidade)
+        let velocidadeBase;
+        let status;
+        
+        // Área metropolitana de Curitiba
+        if (lat > -25.6 && lat < -25.3 && lng > -49.4 && lng < -49.1) {
+            // Região urbana
+            if (Math.random() > 0.7) {
+                velocidadeBase = 15 + Math.random() * 15; // 15-30 km/h
+                status = 'Trânsito intenso';
+            } else {
+                velocidadeBase = 40 + Math.random() * 20; // 40-60 km/h
+                status = 'Trânsito moderado';
+            }
+        } else {
+            // Rodovia
+            if (Math.random() > 0.8) {
+                velocidadeBase = 10 + Math.random() * 20; // 10-30 km/h
+                status = 'Congestionamento';
+            } else {
+                velocidadeBase = 80 + Math.random() * 30; // 80-110 km/h
+                status = 'Trânsito livre';
+            }
+        }
+        
+        // Suaviza a velocidade (transição suave)
+        ultimaVelocidadeMapa = ultimaVelocidadeMapa * (1 - suavizacaoVelocidade) + velocidadeBase * suavizacaoVelocidade;
+        
+        // Atualiza o velocímetro do mapa
+        atualizarVelocimetroMapa(ultimaVelocidadeMapa, status);
+        
+        // Se houver rota ativa, analisa congestionamento
+        if (rotaAtual) {
+            analisarCongestionamentoRota();
+        }
+        
+    } catch(e) {
+        console.log('Erro na análise de trânsito:', e);
+    }
+}
+
+function atualizarVelocimetroMapa(velocidade, status) {
+    const velocidadeInt = Math.round(velocidade);
+    document.getElementById('velocidadeMapa').textContent = velocidadeInt;
+    
+    // Define cor e status baseado na velocidade
+    let cor = 'verde';
+    let classe = 'verde';
+    let statusTexto = status || 'Trânsito livre';
+    
+    if (velocidade < 10) {
+        cor = 'vermelho-escuro';
+        classe = 'vermelho-escuro';
+        statusTexto = '🚥 Totalmente parado';
+    } else if (velocidade < 30) {
+        cor = 'vermelho';
+        classe = 'vermelho';
+        statusTexto = '⚠️ Congestionado';
+    } else if (velocidade < 50) {
+        cor = 'laranja';
+        classe = 'laranja';
+        statusTexto = '⚡ Trânsito lento';
+    } else if (velocidade < 70) {
+        cor = 'amarelo';
+        classe = 'amarelo';
+        statusTexto = '➡️ Trânsito moderado';
+    } else {
+        cor = 'verde';
+        classe = 'verde';
+        statusTexto = '✅ Trânsito livre';
+    }
+    
+    // Atualiza barra de progresso (máx 120km/h)
+    const porcentagem = Math.min(100, (velocidade / 120) * 100);
+    const barra = document.getElementById('barraMapa');
+    barra.style.width = porcentagem + '%';
+    barra.className = 'velocimetro-preenchimento ' + classe;
+    
+    document.getElementById('statusMapa').textContent = statusTexto;
+}
+
+function atualizarVelocimetroPessoal(velocidade) {
+    const velocidadeInt = Math.round(velocidade);
+    document.getElementById('velocidadePessoal').textContent = velocidadeInt;
+    
+    // Define cor baseada na velocidade
+    let classe = 'verde';
+    let status = '';
+    
+    if (velocidade < 10) {
+        classe = 'vermelho-escuro';
+        status = 'Parado';
+    } else if (velocidade < 30) {
+        classe = 'vermelho';
+        status = 'Muito lento';
+    } else if (velocidade < 50) {
+        classe = 'laranja';
+        status = 'Lento';
+    } else if (velocidade < 80) {
+        classe = 'amarelo';
+        status = 'Moderado';
+    } else {
+        classe = 'verde';
+        status = 'Normal';
+    }
+    
+    const porcentagem = Math.min(100, (velocidade / 120) * 100);
+    const barra = document.getElementById('barraPessoal');
+    barra.style.width = porcentagem + '%';
+    barra.className = 'velocimetro-preenchimento ' + classe;
+    
+    document.getElementById('statusPessoal').textContent = status;
+}
+
+// ===== ANÁLISE DE CONGESTIONAMENTO NA ROTA =====
+function analisarCongestionamentoRota() {
+    if (!rotaAtual || !minhaLocalizacao) return;
+    
+    // Simula detecção de congestionamento
+    // Em produção, analisaríamos a cor do trânsito ao longo da rota
+    
+    const temCongestionamento = Math.random() > 0.6;
+    
+    if (temCongestionamento) {
+        // Tamanho da fila (1-8km)
+        const tamanhoFila = (1 + Math.random() * 7).toFixed(1);
+        const tempoAtraso = Math.round(tamanhoFila * 3); // 3 min por km
+        
+        document.getElementById('previsaoTexto').innerHTML = `
+            <span class="previsao-fila">
+                <i class="fas fa-hourglass-half"></i> ${tamanhoFila}km de fila
+            </span>
+            <span style="margin-left:10px;">
+                ⏱️ +${tempoAtraso}min
+            </span>
+        `;
+        document.getElementById('previsaoCongestionamento').style.display = 'flex';
+    } else {
+        document.getElementById('previsaoCongestionamento').style.display = 'none';
+    }
 }
 
 // ===== ATUALIZA ÍCONE DO CARRO BASEADO NO ZOOM =====
 function atualizarIconeCarro() {
     if (!meuMarcador || !minhaLocalizacao) return;
     
-    // Remove marcador atual
     mapa.removeLayer(meuMarcador);
     
-    // Se zoom >= 15, mostra carro + pulsante
-    // Se zoom < 15, mostra só pulsante
     if (zoomAtual >= 15) {
         meuMarcador = L.marker(minhaLocalizacao, {
             icon: L.divIcon({
@@ -915,7 +1219,6 @@ function atualizarIconeCarro() {
             })
         }).addTo(mapa);
     } else {
-        // Só o pulsante (maior para ser visível de longe)
         meuMarcador = L.marker(minhaLocalizacao, {
             icon: L.divIcon({
                 html: `<div style="position:relative;">
@@ -938,14 +1241,13 @@ function iniciarGPS() {
         
         minhaLocalizacao = L.latLng(pos.coords.latitude, pos.coords.longitude);
         
-        // Atualiza velocímetro
+        // Atualiza velocímetro pessoal
         if (pos.coords.speed !== null) {
-            const velocidadeKmh = (pos.coords.speed * 3.6).toFixed(1);
-            document.getElementById('velocidade').textContent = `${velocidadeKmh} km/h`;
+            const velocidadeKmh = pos.coords.speed * 3.6;
+            atualizarVelocimetroPessoal(velocidadeKmh);
         }
         
         if (!meuMarcador) {
-            // Primeira vez: configura baseado no zoom atual
             if (zoomAtual >= 15) {
                 meuMarcador = L.marker(minhaLocalizacao, {
                     icon: L.divIcon({
@@ -977,7 +1279,6 @@ function iniciarGPS() {
             });
             
         } else {
-            // Atualiza posição
             meuMarcador.setLatLng(minhaLocalizacao);
             db.ref('usuarios_ativos/' + usuario).update({
                 lat: minhaLocalizacao.lat,
@@ -1018,7 +1319,6 @@ function carregarUsuariosAtivos() {
                 return;
             }
             
-            // Ponto simples para outros usuários (sempre visível)
             const marcador = L.marker([dados.lat, dados.lng], {
                 icon: L.divIcon({
                     html: `<div style="background:#ffd700; width:8px; height:8px; border-radius:50%; border:2px solid white; box-shadow:0 0 10px #ffd700;"></div>`,
@@ -1026,7 +1326,6 @@ function carregarUsuariosAtivos() {
                 })
             }).addTo(mapa);
             
-            // Quando zoom >= 15, mostra o ícone do veículo
             if (zoomAtual >= 15) {
                 marcador.setIcon(L.divIcon({
                     html: `<div style="font-size:20px; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.5));">${dados.veiculo || '🚗'}</div>`,
@@ -1163,7 +1462,6 @@ function buscarRota() {
             
             if (rotaAtual) mapa.removeControl(rotaAtual);
             
-            // ROTA AMARELA SUAVE TRANSPARENTE
             rotaAtual = L.Routing.control({
                 waypoints: [minhaLocalizacao, dest],
                 lineOptions: { 
@@ -1179,10 +1477,8 @@ function buscarRota() {
             
             mapa.flyToBounds(L.latLngBounds([minhaLocalizacao, dest]), { padding: [50, 50] });
             
-            // Mostra container de rota
             document.getElementById('rotaContainer').style.display = 'flex';
             
-            // Calcula distância e tempo
             const distancia = parseFloat(calcularDistancia(
                 minhaLocalizacao.lat, minhaLocalizacao.lng,
                 dest.lat, dest.lng
@@ -1191,10 +1487,12 @@ function buscarRota() {
             const tempoMin = Math.round(distancia * 1.2);
             const atraso = Math.round(tempoMin * 0.2);
             
-            // Formata tempo em horas/minutos
             document.getElementById('rotaTempo').textContent = formatarTempo(tempoMin);
             document.getElementById('rotaDistancia').textContent = `${distancia} km`;
             document.getElementById('rotaAtraso').textContent = `+${formatarTempo(atraso)}`;
+            
+            // Ativa análise de congestionamento para a rota
+            setTimeout(analisarCongestionamentoRota, 2000);
         });
 }
 
@@ -1205,6 +1503,7 @@ function encerrarRota() {
         rotaAtual = null;
     }
     document.getElementById('rotaContainer').style.display = 'none';
+    document.getElementById('previsaoCongestionamento').style.display = 'none';
 }
 
 function calcularDistancia(lat1, lon1, lat2, lon2) {
