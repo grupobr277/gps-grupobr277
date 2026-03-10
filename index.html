@@ -54,101 +54,222 @@
             color: white;
         }
         
-        /* MIRA CENTRAL - ESTILO TECNOLÓGICO */
-        .mira-central {
+        /* BOTÃO REPORTE - NOVO DESIGN TECNOLÓGICO */
+        .reporte-container {
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 80px;
-            height: 80px;
-            pointer-events: none;
-            z-index: 8000;
-            opacity: 0.9;
+            bottom: 20px;
+            left: 10px;
+            z-index: 9000;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
         }
         
-        .mira-central .linha-horizontal {
-            position: absolute;
-            width: 50px;
-            height: 2px;
-            background: white;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 0 10px rgba(255,255,255,0.8), 0 0 20px rgba(0,0,0,0.5);
-            border-radius: 2px;
-        }
-        
-        .mira-central .linha-vertical {
-            position: absolute;
-            width: 2px;
-            height: 50px;
-            background: white;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 0 10px rgba(255,255,255,0.8), 0 0 20px rgba(0,0,0,0.5);
-            border-radius: 2px;
-        }
-        
-        .mira-central .circulo-externo {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            border: 2px solid white;
-            border-radius: 50%;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 0 15px rgba(255,255,255,0.8), 0 0 25px rgba(0,0,0,0.5);
-        }
-        
-        .mira-central .circulo-interno {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            background: white;
-            border-radius: 50%;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 0 15px rgba(255,255,255,1);
-        }
-        
-        /* DISPLAY DE VELOCIDADE DA MIRA */
-        .velocidade-display {
-            position: fixed;
-            top: calc(50% - 60px);
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(5px);
+        .reporte-toggle {
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px);
             color: white;
-            padding: 6px 16px;
-            border-radius: 30px;
-            border: 1px solid rgba(255,255,255,0.3);
-            z-index: 8001;
-            font-size: 20px;
+            border: 2px solid #ffd700;
+            border-radius: 40px;
+            padding: 12px 30px;
+            font-size: 16px;
             font-weight: bold;
-            letter-spacing: 1px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            pointer-events: none;
+            cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 15px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 1px;
+            text-transform: uppercase;
         }
         
-        .velocidade-display span {
+        .reporte-toggle::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,215,0,0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .reporte-toggle:hover::before {
+            left: 100%;
+        }
+        
+        .reporte-toggle .led {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #4caf50;
+            box-shadow: 0 0 15px #4caf50;
+            animation: pulse-led 2s infinite;
+        }
+        
+        .reporte-toggle.ativo .led {
+            background: #ffd700;
+            box-shadow: 0 0 20px #ffd700;
+        }
+        
+        @keyframes pulse-led {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.3); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        .reporte-toggle i {
             color: #ffd700;
+            transition: transform 0.3s;
             font-size: 14px;
-            margin-left: 3px;
         }
         
-        .velocidade-display.parado { border-left: 4px solid #b71c1c; }
-        .velocidade-display.congestionado { border-left: 4px solid #e53935; }
-        .velocidade-display.lento { border-left: 4px solid #ff9800; }
-        .velocidade-display.moderado { border-left: 4px solid #ffd700; }
-        .velocidade-display.livre { border-left: 4px solid #4caf50; }
+        .reporte-toggle.ativo i {
+            transform: rotate(180deg);
+        }
+        
+        /* PAINEL DE ALERTAS - ÍCONES GRANDES E TECNOLÓGICOS */
+        .alertas-panel {
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(15px);
+            border: 2px solid #ffd700;
+            border-radius: 25px;
+            padding: 15px;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            width: 280px;
+            max-height: none;
+            overflow: visible;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            animation: slideUp 0.3s ease;
+        }
+        
+        .alertas-panel.visivel {
+            display: flex;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .alerta-item {
+            width: 100%;
+            height: 60px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 0 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .alerta-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.4s;
+        }
+        
+        .alerta-item:hover::before {
+            left: 100%;
+        }
+        
+        .alerta-item:hover {
+            transform: translateX(5px);
+            filter: brightness(1.1);
+            border-color: #ffd700;
+        }
+        
+        .alerta-icone {
+            width: 40px;
+            height: 40px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .alerta-nome {
+            font-size: 15px;
+            font-weight: 600;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        /* CORES DOS ALERTAS */
+        .alerta-acidente { background: linear-gradient(135deg, #e53935, #b71c1c); }
+        .alerta-obras { background: linear-gradient(135deg, #ff9800, #f57c00); }
+        .alerta-pane { background: linear-gradient(135deg, #795548, #5d4037); }
+        .alerta-animal { background: linear-gradient(135deg, #9c27b0, #7b1fa2); }
+        .alerta-radar { background: linear-gradient(135deg, #607d8b, #455a64); }
+        .alerta-barreira { background: linear-gradient(135deg, #8b4513, #5d3a1a); }
+        .alerta-neblina { background: linear-gradient(135deg, #00acc1, #0097a7); }
+        .alerta-congestionamento { background: linear-gradient(135deg, #f44336, #d32f2f); }
+        .alerta-alagamento { background: linear-gradient(135deg, #2196f3, #1976d2); }
+        .alerta-desvio { background: linear-gradient(135deg, #4caf50, #388e3c); }
+        .alerta-bloqueio { background: linear-gradient(135deg, #b71c1c, #8B0000); }
+        
+        /* VELOCÍMETRO PESSOAL - ESTILO UBER */
+        .velocimetro-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9000;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+        }
+        
+        .velocimetro-pessoal {
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 2px solid #ffd700;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+        }
+        
+        .velocimetro-pessoal i {
+            color: #ffd700;
+            font-size: 20px;
+        }
+        
+        .velocimetro-pessoal .valor {
+            color: white;
+            margin-right: 2px;
+        }
+        
+        .velocimetro-pessoal span {
+            color: #ffd700;
+        }
         
         /* PAINEL DE ROTA */
         .rota-info-panel {
@@ -167,6 +288,7 @@
             border: 2px solid #ffd700;
             z-index: 9500;
             font-size: 14px;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.5);
         }
         
         .rota-info-item {
@@ -187,155 +309,6 @@
         .rota-atraso {
             color: #e53935;
             font-weight: bold;
-        }
-        
-        /* PAINEL DE ALERTAS - TRANSPARENTE */
-        .alertas-container {
-            position: fixed;
-            bottom: 90px;
-            left: 10px;
-            z-index: 9000;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-        
-        .alertas-toggle {
-            background: transparent;
-            color: white;
-            border: 2px solid #ffd700;
-            border-radius: 30px;
-            padding: 10px 25px;
-            font-size: 13px;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            transition: all 0.3s;
-            backdrop-filter: blur(5px);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .alertas-toggle::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,215,0,0.3), transparent);
-            transition: left 0.5s;
-        }
-        
-        .alertas-toggle:hover::before {
-            left: 100%;
-        }
-        
-        .alertas-toggle .led {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #4caf50;
-            box-shadow: 0 0 10px #4caf50;
-            animation: pulse-led 2s infinite;
-        }
-        
-        .alertas-toggle.ativo .led {
-            background: #ffd700;
-            box-shadow: 0 0 15px #ffd700;
-        }
-        
-        @keyframes pulse-led {
-            0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.6; transform: scale(1.2); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-        
-        .alertas-toggle i {
-            color: #ffd700;
-            transition: transform 0.3s;
-        }
-        
-        .alertas-toggle.ativo i {
-            transform: rotate(180deg);
-        }
-        
-        .alertas-panel-inferior {
-            background: transparent;
-            backdrop-filter: none;
-            border: none;
-            display: none;
-            flex-direction: column;
-            gap: 8px;
-            max-height: none;
-            overflow: visible;
-            width: 200px;
-        }
-        
-        .alertas-panel-inferior.visivel {
-            display: flex;
-        }
-        
-        .alerta-item {
-            padding: 8px 12px;
-            border-radius: 25px;
-            font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            color: white;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            width: 100%;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            border: 1px solid rgba(255,215,0,0.3);
-            background: rgba(0,0,0,0.3);
-            backdrop-filter: blur(5px);
-        }
-        
-        .alerta-item:hover {
-            transform: translateX(5px);
-            background: rgba(255,215,0,0.2);
-            border-color: #ffd700;
-        }
-        
-        /* VELOCÍMETRO PESSOAL */
-        .velocimetro-pessoal {
-            position: fixed;
-            bottom: 20px;
-            left: 10px;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(10px);
-            color: white;
-            padding: 6px 12px;
-            border-radius: 30px;
-            z-index: 9001;
-            display: flex;
-            align-items: center;
-            gap: 3px;
-            border: 1px solid #ffd700;
-            font-size: 14px;
-            font-weight: bold;
-        }
-        
-        .velocimetro-pessoal span {
-            color: #ffd700;
-        }
-        
-        .velocimetro-pessoal .valor {
-            font-size: 16px;
-            color: white;
-            margin-right: 2px;
         }
         
         /* HEADER SUPERIOR ESQUERDO */
@@ -403,11 +376,11 @@
             transform: scale(1.1);
         }
         
-        /* BOTÕES PADRÃO DIREITA */
+        /* BOTÕES PADRÃO */
         .botoes-direita {
             position: fixed;
             bottom: 20px;
-            right: 15px;
+            right: 20px;
             display: flex;
             flex-direction: column;
             gap: 10px;
@@ -415,9 +388,9 @@
         }
         
         .btn-padrao {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            border-radius: 25px;
             background: rgba(0,0,0,0.7);
             backdrop-filter: blur(10px);
             border: 2px solid #ffd700;
@@ -425,10 +398,10 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 20px;
+            font-size: 22px;
             color: #ffd700;
             transition: all 0.2s;
-            position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
         
         .btn-padrao:hover {
@@ -438,47 +411,6 @@
         
         .btn-padrao.ativo {
             background: rgba(255,215,0,0.3);
-            color: white;
-        }
-        
-        /* ÍCONE MIRA PERSONALIZADO */
-        .icone-mira {
-            width: 24px;
-            height: 24px;
-            position: relative;
-        }
-        
-        .icone-mira .linha-h {
-            position: absolute;
-            width: 16px;
-            height: 2px;
-            background: #ffd700;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            border-radius: 1px;
-        }
-        
-        .icone-mira .linha-v {
-            position: absolute;
-            width: 2px;
-            height: 16px;
-            background: #ffd700;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            border-radius: 1px;
-        }
-        
-        .icone-mira .circulo {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            border: 2px solid #ffd700;
-            border-radius: 50%;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
         }
         
         /* BOTÃO ENCERRAR ROTA */
@@ -716,7 +648,6 @@
             font-size: 20px;
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
             cursor: pointer;
-            pointer-events: auto;
         }
         
         /* BOTÃO RECENTRALIZAR */
@@ -735,6 +666,7 @@
             border: 1px solid #ffd700;
             font-size: 12px;
             font-weight: bold;
+            backdrop-filter: blur(5px);
         }
         
         #btn-px { 
@@ -840,20 +772,6 @@
 
 <div id="map"></div>
 
-<!-- MIRA CENTRAL - NOVO DESIGN -->
-<div class="mira-central" id="miraCentral">
-    <div class="linha-horizontal"></div>
-    <div class="linha-vertical"></div>
-    <div class="circulo-externo"></div>
-    <div class="circulo-interno"></div>
-</div>
-
-<!-- DISPLAY DE VELOCIDADE DA MIRA -->
-<div class="velocidade-display" id="velocidadeDisplay">
-    <span id="velocidadeMira">0</span>
-    <span>km/h</span>
-</div>
-
 <!-- MODAL DE BOAS-VINDAS -->
 <div class="welcome-modal" id="welcomeModal">
     <div class="welcome-content">
@@ -911,21 +829,14 @@
     </div>
 </div>
 
-<!-- CONTAINER DE ALERTAS -->
-<div class="alertas-container">
-    <div class="alertas-toggle" onclick="toggleAlertas()">
+<!-- NOVO SISTEMA REPORTE -->
+<div class="reporte-container">
+    <div class="reporte-toggle" onclick="toggleReporte()">
         <span class="led"></span>
         REPORTE
         <i class="fas fa-chevron-up"></i>
     </div>
-    <div class="alertas-panel-inferior" id="alertasListaInferior"></div>
-</div>
-
-<!-- VELOCÍMETRO PESSOAL -->
-<div class="velocimetro-pessoal" id="velocimetroPessoal">
-    <i class="fas fa-car" style="color:#ffd700; font-size:12px;"></i>
-    <span class="valor" id="velocidadePessoal">0</span>
-    <span>km/h</span>
+    <div class="alertas-panel" id="alertasPanel"></div>
 </div>
 
 <!-- HEADER SUPERIOR ESQUERDO -->
@@ -946,15 +857,17 @@
     </div>
 </div>
 
+<!-- VELOCÍMETRO CONTAINER -->
+<div class="velocimetro-container">
+    <div class="velocimetro-pessoal" id="velocimetroPessoal">
+        <i class="fas fa-car"></i>
+        <span class="valor" id="velocidadePessoal">0</span>
+        <span>km/h</span>
+    </div>
+</div>
+
 <!-- BOTÕES PADRÃO DIREITA -->
 <div class="botoes-direita">
-    <div class="btn-padrao" id="btn-mira" onclick="toggleMira()">
-        <div class="icone-mira">
-            <div class="linha-h"></div>
-            <div class="linha-v"></div>
-            <div class="circulo"></div>
-        </div>
-    </div>
     <div class="btn-padrao" id="btn-chat" onclick="toggleChatGeral()">
         <i class="fas fa-comment"></i>
     </div>
@@ -1043,15 +956,7 @@ let coresUsuarios = {};
 let ultimaAtualizacaoGPS = 0;
 const INTERVALO_GPS = 1000;
 let zoomAtual = 13;
-let miraAtiva = true;
-let historicoVelocidades = []; // Para suavização
 let ultimaMsgCongestionamento = 0;
-
-// Canvas para leitura de cores
-let canvas = document.createElement('canvas');
-let ctx = canvas.getContext('2d');
-canvas.width = 1;
-canvas.height = 1;
 
 // ===== 11 ALERTAS =====
 const alertas = [
@@ -1097,8 +1002,7 @@ if (userSalvo) {
     carregarUsuariosAtivos();
     carregarAlertasFixos();
     carregarChatGeral();
-    criarIconesAlertasInferior();
-    iniciarAnaliseMira();
+    criarIconesAlertas();
 }
 
 function salvarCadastro() {
@@ -1128,42 +1032,27 @@ function salvarCadastro() {
     carregarUsuariosAtivos();
     carregarAlertasFixos();
     carregarChatGeral();
-    criarIconesAlertasInferior();
-    iniciarAnaliseMira();
+    criarIconesAlertas();
 }
 
 // ===== FUNÇÕES DE INTERFACE =====
-function toggleAlertas() {
-    const panel = document.getElementById('alertasListaInferior');
-    const toggle = document.querySelector('.alertas-toggle');
+function toggleReporte() {
+    const panel = document.getElementById('alertasPanel');
+    const toggle = document.querySelector('.reporte-toggle');
     panel.classList.toggle('visivel');
     toggle.classList.toggle('ativo');
 }
 
-function toggleMira() {
-    miraAtiva = !miraAtiva;
-    const btnMira = document.getElementById('btn-mira');
-    const mira = document.getElementById('miraCentral');
-    const display = document.getElementById('velocidadeDisplay');
-    
-    if (miraAtiva) {
-        btnMira.classList.add('ativo');
-        mira.style.display = 'block';
-        display.style.display = 'flex';
-    } else {
-        btnMira.classList.remove('ativo');
-        mira.style.display = 'none';
-        display.style.display = 'none';
-    }
-}
-
 // ===== NOVOS ICONES ALERTAS =====
-function criarIconesAlertasInferior() {
-    const lista = document.getElementById('alertasListaInferior');
+function criarIconesAlertas() {
+    const lista = document.getElementById('alertasPanel');
     alertas.forEach(alerta => {
         const div = document.createElement('div');
         div.className = `alerta-item alerta-${alerta.tipo}`;
-        div.innerHTML = `${alerta.icone} ${alerta.nome}`;
+        div.innerHTML = `
+            <div class="alerta-icone">${alerta.icone}</div>
+            <div class="alerta-nome">${alerta.nome}</div>
+        `;
         div.onclick = () => ativarAlerta(alerta);
         lista.appendChild(div);
     });
@@ -1183,135 +1072,6 @@ function iniciarMapa() {
         zoomAtual = mapa.getZoom();
         atualizarIconeCarro();
     });
-    
-    mapa.on('move', () => {
-        if (miraAtiva) {
-            analisarCorNoCentro();
-        }
-    });
-}
-
-// ===== ANÁLISE DE COR NO CENTRO DO MAPA =====
-function analisarCorNoCentro() {
-    if (!mapa || !miraAtiva) return;
-    
-    try {
-        // Simulação de leitura de cor baseada em coordenadas
-        // Em produção, usaríamos canvas para ler a cor real dos tiles
-        const centro = mapa.getCenter();
-        const lat = centro.lat;
-        const lng = centro.lng;
-        
-        // Mapa de calor baseado em coordenadas reais
-        let velocidade;
-        let classe;
-        
-        // ZONA 1: Congestionamento intenso (vermelho escuro)
-        if (lat > -25.44 && lat < -25.42 && lng > -49.28 && lng < -49.26) {
-            velocidade = 3 + Math.random() * 4; // 3-7 km/h
-            classe = 'parado';
-        }
-        // ZONA 2: Congestionamento (vermelho)
-        else if (lat > -25.46 && lat < -25.43 && lng > -49.27 && lng < -49.24) {
-            velocidade = 8 + Math.random() * 7; // 8-15 km/h
-            classe = 'congestionado';
-        }
-        // ZONA 3: Trânsito lento (laranja)
-        else if (lat > -25.48 && lat < -25.45 && lng > -49.29 && lng < -49.25) {
-            velocidade = 20 + Math.random() * 10; // 20-30 km/h
-            classe = 'lento';
-        }
-        // ZONA 4: Trânsito moderado (amarelo)
-        else if (lat > -25.52 && lat < -25.48 && lng > -49.24 && lng < -49.20) {
-            velocidade = 40 + Math.random() * 15; // 40-55 km/h
-            classe = 'moderado';
-        }
-        // ZONA 5: Rodovia livre (verde)
-        else if (lat < -25.5 || lat > -25.3 || lng < -49.4 || lng > -49.1) {
-            velocidade = 80 + Math.random() * 20; // 80-100 km/h
-            classe = 'livre';
-        }
-        // ZONA 6: Vias urbanas normais
-        else {
-            velocidade = 50 + Math.random() * 20; // 50-70 km/h
-            classe = velocidade > 65 ? 'livre' : 'moderado';
-        }
-        
-        // Arredonda para inteiro
-        velocidade = Math.round(velocidade);
-        
-        // Adiciona ao histórico para suavização (últimas 5 leituras)
-        historicoVelocidades.push(velocidade);
-        if (historicoVelocidades.length > 5) {
-            historicoVelocidades.shift();
-        }
-        
-        // Calcula média suave
-        let velocidadeSuave = Math.round(historicoVelocidades.reduce((a, b) => a + b, 0) / historicoVelocidades.length);
-        
-        // Atualiza display
-        const miraElement = document.getElementById('velocidadeMira');
-        miraElement.textContent = velocidadeSuave;
-        
-        const displayDiv = document.getElementById('velocidadeDisplay');
-        displayDiv.className = `velocidade-display ${classe}`;
-        
-        // Se tiver rota ativa, verifica congestionamento
-        if (rotaAtual && (classe === 'parado' || classe === 'congestionado')) {
-            verificarCongestionamentoNaRota(velocidadeSuave, classe);
-        }
-        
-    } catch(e) {
-        console.log('Erro na análise de cor:', e);
-    }
-}
-
-function iniciarAnaliseMira() {
-    setTimeout(analisarCorNoCentro, 1000);
-    setInterval(() => {
-        if (miraAtiva) {
-            analisarCorNoCentro();
-        }
-    }, 200); // 200ms para transição suave
-}
-
-// ===== VERIFICA CONGESTIONAMENTO NA ROTA =====
-function verificarCongestionamentoNaRota(velocidade, classe) {
-    if (!rotaAtual) return;
-    
-    const agora = Date.now();
-    
-    if (agora - ultimaMsgCongestionamento > 10000) {
-        
-        let tamanhoFila;
-        if (velocidade < 5) tamanhoFila = (3 + Math.random() * 4).toFixed(1);
-        else if (velocidade < 10) tamanhoFila = (2 + Math.random() * 3).toFixed(1);
-        else tamanhoFila = (1 + Math.random() * 2).toFixed(1);
-        
-        const tempoAtraso = Math.round(tamanhoFila * 4);
-        
-        const anterior = document.getElementById('congestionamentoMsg');
-        if (anterior) anterior.remove();
-        
-        const msgDiv = document.createElement('div');
-        msgDiv.id = 'congestionamentoMsg';
-        msgDiv.className = 'congestionamento-msg';
-        msgDiv.innerHTML = `
-            <i class="fas fa-hourglass-half" style="color:#ffd700;"></i>
-            <span><strong style="color:#e53935;">${tamanhoFila}km</strong> de fila à frente</span>
-            <span style="color:#ffd700;">+${tempoAtraso}min</span>
-            <i class="fas fa-times" style="cursor:pointer; margin-left:10px;" onclick="this.parentElement.remove()"></i>
-        `;
-        
-        document.body.appendChild(msgDiv);
-        
-        ultimaMsgCongestionamento = agora;
-        
-        setTimeout(() => {
-            const msg = document.getElementById('congestionamentoMsg');
-            if (msg) msg.remove();
-        }, 8000);
-    }
 }
 
 // ===== ATUALIZA VELOCÍMETRO PESSOAL =====
@@ -1331,7 +1091,7 @@ function atualizarIconeCarro() {
             icon: L.divIcon({
                 html: `<div style="position:relative;">
                     <div class="pulse-loc" style="position:absolute; left:-12px; top:-12px;"></div>
-                    <div style="font-size:28px;">${iconeVeiculo}</div>
+                    <div style="font-size:28px; transform:rotate(${ultimoHeading || 0}deg); transition:transform 0.3s;">${iconeVeiculo}</div>
                 </div>`,
                 iconSize: [1, 1]
             })
@@ -1349,6 +1109,8 @@ function atualizarIconeCarro() {
 }
 
 // ===== GPS =====
+let ultimoHeading = 0;
+
 function iniciarGPS() {
     if (!navigator.geolocation) return;
     
@@ -1359,6 +1121,12 @@ function iniciarGPS() {
         
         minhaLocalizacao = L.latLng(pos.coords.latitude, pos.coords.longitude);
         
+        // Atualiza direção do carro
+        if (pos.coords.heading !== null) {
+            ultimoHeading = pos.coords.heading;
+        }
+        
+        // Atualiza velocidade
         if (pos.coords.speed !== null) {
             const velocidadeKmh = pos.coords.speed * 3.6;
             atualizarVelocimetroPessoal(velocidadeKmh);
@@ -1370,7 +1138,7 @@ function iniciarGPS() {
                     icon: L.divIcon({
                         html: `<div style="position:relative;">
                             <div class="pulse-loc" style="position:absolute; left:-12px; top:-12px;"></div>
-                            <div style="font-size:28px;">${iconeVeiculo}</div>
+                            <div style="font-size:28px; transform:rotate(${ultimoHeading}deg); transition:transform 0.3s;">${iconeVeiculo}</div>
                         </div>`,
                         iconSize: [1, 1]
                     })
@@ -1397,6 +1165,18 @@ function iniciarGPS() {
             
         } else {
             meuMarcador.setLatLng(minhaLocalizacao);
+            
+            // Atualiza rotação do carro
+            if (zoomAtual >= 15) {
+                meuMarcador.setIcon(L.divIcon({
+                    html: `<div style="position:relative;">
+                        <div class="pulse-loc" style="position:absolute; left:-12px; top:-12px;"></div>
+                        <div style="font-size:28px; transform:rotate(${ultimoHeading}deg); transition:transform 0.3s;">${iconeVeiculo}</div>
+                    </div>`,
+                    iconSize: [1, 1]
+                }));
+            }
+            
             db.ref('usuarios_ativos/' + usuario).update({
                 lat: minhaLocalizacao.lat,
                 lng: minhaLocalizacao.lng,
@@ -1438,17 +1218,10 @@ function carregarUsuariosAtivos() {
             
             const marcador = L.marker([dados.lat, dados.lng], {
                 icon: L.divIcon({
-                    html: `<div style="background:#ffd700; width:8px; height:8px; border-radius:50%; border:2px solid white; box-shadow:0 0 10px #ffd700;"></div>`,
-                    iconSize: [12, 12]
+                    html: `<div style="font-size:20px;">${dados.veiculo || '🚗'}</div>`,
+                    iconSize: [24, 24]
                 })
             }).addTo(mapa);
-            
-            if (zoomAtual >= 15) {
-                marcador.setIcon(L.divIcon({
-                    html: `<div style="font-size:20px; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.5));">${dados.veiculo || '🚗'}</div>`,
-                    iconSize: [24, 24]
-                }));
-            }
             
             usuariosAtivos[id] = marcador;
         });
@@ -1463,7 +1236,7 @@ function carregarAlertasFixos() {
         
         const marcador = L.marker([alerta.lat, alerta.lng], {
             icon: L.divIcon({
-                html: `<div class="alerta-mapa-marcador" style="color:${alerta.cor};">${alerta.icone}</div>`,
+                html: `<div style="font-size:24px; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3));">${alerta.icone}</div>`,
                 className: '',
                 iconSize: [24, 24]
             })
@@ -1485,7 +1258,7 @@ function ativarAlerta(alerta) {
     
     const marcador = L.marker(minhaLocalizacao, {
         icon: L.divIcon({
-            html: `<div class="alerta-mapa-marcador" style="color:${alerta.cor};">${alerta.icone}</div>`,
+            html: `<div style="font-size:24px; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3));">${alerta.icone}</div>`,
             className: '',
             iconSize: [24, 24]
         })
@@ -1619,9 +1392,6 @@ function encerrarRota() {
     }
     document.getElementById('rotaInfoPanel').style.display = 'none';
     document.getElementById('btnEncerrarRota').style.display = 'none';
-    
-    const msg = document.getElementById('congestionamentoMsg');
-    if (msg) msg.remove();
 }
 
 function calcularDistancia(lat1, lon1, lat2, lon2) {
