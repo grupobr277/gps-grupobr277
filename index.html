@@ -54,7 +54,7 @@
             color: white;
         }
         
-        /* PAINEL DE ALERTAS - VERTICAL ESQUERDO */
+        /* PAINEL DE ALERTAS - VERTICAL ESQUERDO ACIMA DO CONTADOR */
         .alertas-panel {
             position: fixed;
             top: 70px;
@@ -62,21 +62,21 @@
             z-index: 9000;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
         }
         
         .alerta-item {
-            padding: 8px 16px;
-            border-radius: 30px;
-            font-size: 13px;
+            padding: 5px 12px;
+            border-radius: 25px;
+            font-size: 11px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
             color: white;
             text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
             width: fit-content;
             backdrop-filter: blur(5px);
         }
@@ -115,7 +115,7 @@
             border: 1px solid #ffd700;
         }
         
-        /* ALERTA SUSPENSO - CORRIGIDO */
+        /* ALERTA SUSPENSO - RODOVIAS */
         .alerta-suspenso {
             position: fixed;
             top: 70px;
@@ -173,6 +173,11 @@
             font-size: 16px;
         }
         
+        .alerta-tempo-real .rodovia {
+            font-weight: bold;
+            font-size: 13px;
+        }
+        
         .alerta-tempo-real .endereco {
             font-size: 11px;
             color: #ffd700;
@@ -214,23 +219,24 @@
             cursor: pointer;
         }
         
-        /* CHAT WHATSAPP */
+        /* CHAT WHATSAPP - CORES ORIGINAIS */
         .chat-container {
             position: fixed;
             top: 10%;
             left: 5%;
             width: 90%;
             height: 80%;
-            background: #0b141a;
+            background: #e5ddd5;
             z-index: 20000;
             border-radius: 20px;
             display: none;
             flex-direction: column;
-            border: 2px solid #ffd700;
+            border: 2px solid #075e54;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
         }
         
         .chat-header {
-            background: #202c33;
+            background: #075e54;
             color: white;
             padding: 15px;
             border-radius: 18px 18px 0 0;
@@ -245,7 +251,8 @@
             padding: 15px;
             display: flex;
             flex-direction: column-reverse;
-            background: #0b141a;
+            background: #e5ddd5;
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAAbklEQVQ4jc2UOwrAIAxA38WpU8fq2F2K6GQp/VhLKm0LBYNbeA8egfgEAYCQUkpYXlSEjDHCOWf1QUTQWg8d+whKKUQE5xzGmGOpqqoYYwR3zpVS0FrHGCMAQERgjDnH0lpjjBEA4Jzz7u0fY0fB+u8LjwQAAAAASUVORK5CYII=');
         }
         
         .mensagem-wrapper {
@@ -256,23 +263,25 @@
         }
         
         .mensagem {
-            max-width: 65%;
+            max-width: 75%;
             padding: 8px 12px;
             border-radius: 15px;
             font-size: 14px;
             word-wrap: break-word;
-            color: white;
+            position: relative;
         }
         
         .mensagem.minha {
-            background: #005c4b;
+            background: #dcf8c6;
             align-self: flex-end;
             margin-left: auto;
+            border-bottom-right-radius: 2px;
         }
         
         .mensagem.outra {
-            background: #202c33;
+            background: white;
             align-self: flex-start;
+            border-bottom-left-radius: 2px;
         }
         
         .mensagem-remetente {
@@ -284,37 +293,57 @@
             gap: 5px;
         }
         
+        .mensagem-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 3px;
+            font-size: 10px;
+            color: #999;
+            justify-content: flex-end;
+        }
+        
+        .mensagem-telefone {
+            font-size: 10px;
+            color: #075e54;
+            margin-left: 5px;
+        }
+        
         /* CORES DOS USUÁRIOS - ALEATÓRIAS */
         .mensagem[data-user] .mensagem-remetente {
-            color: var(--user-color, #ffd700);
+            color: var(--user-color, #075e54);
         }
         
         .mention {
-            color: #ffd700;
+            color: #075e54;
             font-weight: bold;
+            background: rgba(7,94,84,0.1);
+            padding: 2px 4px;
+            border-radius: 4px;
         }
         
         .resposta-preview {
-            background: rgba(255,255,255,0.1);
-            border-left: 3px solid #ffd700;
+            background: rgba(0,0,0,0.05);
+            border-left: 3px solid #075e54;
             padding: 6px 10px;
             margin-bottom: 4px;
             border-radius: 8px;
             font-size: 12px;
-            color: #999;
+            color: #666;
         }
         
         .mensagem-acoes {
             position: absolute;
             top: -25px;
             right: 0;
-            background: #2a3942;
+            background: white;
             border-radius: 30px;
             padding: 4px 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             display: none;
             gap: 12px;
             z-index: 10;
+            border: 1px solid #075e54;
         }
         
         .mensagem-wrapper:hover .mensagem-acoes {
@@ -324,7 +353,7 @@
         .mensagem-acoes span {
             cursor: pointer;
             font-size: 14px;
-            color: white;
+            color: #075e54;
         }
         
         .data-divider {
@@ -333,8 +362,8 @@
         }
         
         .data-divider span {
-            background: rgba(255,215,0,0.2);
-            color: #ffd700;
+            background: rgba(0,0,0,0.5);
+            color: white;
             padding: 4px 15px;
             border-radius: 30px;
             font-size: 11px;
@@ -342,7 +371,7 @@
         
         .chat-input {
             padding: 15px;
-            background: #202c33;
+            background: #f0f0f0;
             display: flex;
             gap: 10px;
             border-radius: 0 0 18px 18px;
@@ -352,10 +381,9 @@
             flex: 1;
             padding: 12px 15px;
             border-radius: 30px;
-            border: none;
+            border: 1px solid #ccc;
             outline: none;
-            background: #2a3942;
-            color: white;
+            font-size: 14px;
         }
         
         .chat-input button {
@@ -363,12 +391,12 @@
             height: 45px;
             border-radius: 50%;
             border: none;
-            background: #ffd700;
-            color: #1a1a1a;
+            background: #075e54;
+            color: white;
             cursor: pointer;
         }
         
-        /* ÍCONES DE ALERTA NO MAPA - SEM FUNDO */
+        /* ÍCONES DE ALERTA NO MAPA */
         .alerta-mapa-marcador {
             font-size: 24px;
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
@@ -510,6 +538,7 @@
         <p style="color:#ffd700; margin-bottom:20px;">Bem-vindo ao sistema de trânsito</p>
         
         <input type="text" id="nomeUsuario" placeholder="Seu nome" value="Motorista">
+        <input type="text" id="telefoneUsuario" placeholder="WhatsApp (opcional)" value="">
         
         <div style="margin:20px 0; text-align:left; color:#ffd700;">Escolha seu veículo:</div>
         <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:20px;">
@@ -555,7 +584,7 @@
 <!-- ALERTA SUSPENSO -->
 <div class="alerta-suspenso" id="alertaSuspenso">
     <div class="alerta-suspenso-header" onclick="toggleAlertaSuspenso()">
-        <span><i class="fas fa-exclamation-triangle"></i> TEMPO REAL</span>
+        <span><i class="fas fa-exclamation-triangle"></i> RODOVIAS - 100km</span>
         <i class="fas fa-chevron-up" id="setaSuspenso"></i>
     </div>
     <div class="alerta-suspenso-conteudo" id="conteudoSuspenso">
@@ -635,6 +664,7 @@ const db = firebase.database();
 
 // ===== VARIÁVEIS =====
 let usuario = null;
+let telefone = '';
 let veiculoUsuario = 'carro';
 let iconeVeiculo = '🚗';
 let admin = false;
@@ -677,6 +707,7 @@ function selecionarVeiculo(tipo, icone) {
 const userSalvo = localStorage.getItem('br277_usuario');
 if (userSalvo) {
     usuario = userSalvo;
+    telefone = localStorage.getItem('br277_telefone') || '';
     veiculoUsuario = localStorage.getItem('br277_veiculo') || 'carro';
     iconeVeiculo = localStorage.getItem('br277_icone') || '🚗';
     document.getElementById('welcomeModal').style.display = 'none';
@@ -696,6 +727,7 @@ function salvarCadastro() {
     }
     
     usuario = nome;
+    telefone = document.getElementById('telefoneUsuario').value.trim();
     
     if (nome.toLowerCase() === 'admin') {
         const senha = prompt('Digite a senha de admin:');
@@ -706,6 +738,7 @@ function salvarCadastro() {
     }
     
     localStorage.setItem('br277_usuario', nome);
+    localStorage.setItem('br277_telefone', telefone);
     localStorage.setItem('br277_veiculo', veiculoUsuario);
     localStorage.setItem('br277_icone', iconeVeiculo);
     
@@ -823,7 +856,7 @@ function carregarUsuariosAtivos() {
     });
 }
 
-// ===== ALERTAS FIXOS - SEM FUNDO =====
+// ===== ALERTAS FIXOS =====
 function carregarAlertasFixos() {
     db.ref('alertas_fixos').on('child_added', snap => {
         const alerta = snap.val();
@@ -919,49 +952,60 @@ function enviarMsgAlerta(id) {
     input.value = '';
 }
 
-// ===== ALERTA SUSPENSO - ENDEREÇOS REAIS =====
+// ===== ALERTA SUSPENSO - RODOVIAS 100km =====
 function carregarAlertasTempoReal() {
     if (!minhaLocalizacao) {
-        setTimeout(carregarAlertasTempoReal, 2000);
+        setTimeout(carregarAlertasTempoReal, 1000);
         return;
     }
     
-    const pontosReais = [
-        { lat: -25.4284, lng: -49.2733, nome: 'Rua XV de Novembro, 500 - Centro, Curitiba' },
-        { lat: -25.4384, lng: -49.2833, nome: 'Av. Cândido de Abreu, 817 - Centro Cívico, Curitiba' },
-        { lat: -25.4184, lng: -49.2633, nome: 'Rua da Paz, 150 - Jardim das Américas, Curitiba' },
-        { lat: -25.4484, lng: -49.2933, nome: 'Av. República Argentina, 3120 - Portão, Curitiba' },
-        { lat: -25.4084, lng: -49.2533, nome: 'Rua Padre Anchieta, 1755 - Bigorrilho, Curitiba' }
+    // Rodovias federais e estaduais do Paraná
+    const rodovias = [
+        { lat: -25.4284, lng: -49.2733, nome: 'BR-277', km: '120', local: 'Curitiba - PR' },
+        { lat: -25.4384, lng: -49.2833, nome: 'BR-277', km: '125', local: 'Campo Largo - PR' },
+        { lat: -25.4184, lng: -49.2633, nome: 'BR-376', km: '670', local: 'São José dos Pinhais - PR' },
+        { lat: -25.4484, lng: -49.2933, nome: 'BR-116', km: '140', local: 'Mandirituba - PR' },
+        { lat: -25.4084, lng: -49.2533, nome: 'PR-423', km: '15', local: 'Araucária - PR' }
     ];
     
     const tipos = [
         { tipo: 'Acidente', icone: '💥', cor: '#e53935' },
         { tipo: 'Obras', icone: '🚧', cor: '#ff9800' },
         { tipo: 'Congestionamento', icone: '⚫', cor: '#f44336' },
-        { tipo: 'Alagamento', icone: '💧', cor: '#2196f3' },
+        { tipo: 'Neblina', icone: '🌫️', cor: '#00acc1' },
         { tipo: 'Desvio', icone: '↩️', cor: '#4caf50' }
     ];
     
     let html = '';
+    let count = 0;
     
-    pontosReais.forEach((ponto, index) => {
-        const tipo = tipos[index % tipos.length];
+    rodovias.forEach((ponto, index) => {
         const distancia = calcularDistancia(
             minhaLocalizacao.lat, minhaLocalizacao.lng,
             ponto.lat, ponto.lng
         );
         
-        html += `
-            <div class="alerta-tempo-real" onclick="irParaAlerta(${ponto.lat}, ${ponto.lng})">
-                <div class="icone" style="background:${tipo.cor}">${tipo.icone}</div>
-                <div style="flex:1;">
-                    <div style="font-weight:bold;">${tipo.tipo}</div>
-                    <div class="endereco">${ponto.nome}</div>
-                    <div class="distancia">${distancia} km</div>
+        // Filtra por 100km
+        if (distancia <= 100) {
+            const tipo = tipos[count % tipos.length];
+            count++;
+            
+            html += `
+                <div class="alerta-tempo-real" onclick="irParaAlerta(${ponto.lat}, ${ponto.lng})">
+                    <div class="icone" style="background:${tipo.cor}">${tipo.icone}</div>
+                    <div style="flex:1;">
+                        <div class="rodovia">${ponto.nome} km ${ponto.km}</div>
+                        <div class="endereco">${ponto.local}</div>
+                        <div class="distancia">${distancia} km - ${tipo.tipo}</div>
+                    </div>
                 </div>
-            </div>
-        `;
+            `;
+        }
     });
+    
+    if (count === 0) {
+        html = '<div style="text-align:center; padding:20px; color:#ffd700;">Nenhum alerta no raio de 100km</div>';
+    }
     
     document.getElementById('conteudoSuspenso').innerHTML = html;
 }
@@ -987,6 +1031,11 @@ function toggleAlertaSuspenso() {
     const s = document.getElementById('setaSuspenso');
     a.style.display = a.style.display === 'none' ? 'block' : 'none';
     s.className = a.style.display === 'block' ? 'fas fa-chevron-down' : 'fas fa-chevron-up';
+    
+    // Atualiza ao abrir
+    if (a.style.display === 'block') {
+        carregarAlertasTempoReal();
+    }
 }
 
 // ===== ROTA =====
@@ -1023,7 +1072,7 @@ function gerarCorUsuario(nome) {
     for (let i = 0; i < nome.length; i++) {
         hash = nome.charCodeAt(i) + ((hash << 5) - hash);
     }
-    const cor = `hsl(${hash % 360}, 70%, 60%)`;
+    const cor = `hsl(${hash % 360}, 70%, 40%)`; // Cores mais escuras para contraste
     return cor;
 }
 
@@ -1074,6 +1123,7 @@ function carregarChatGeral() {
                     <div class="mensagem ${isMinha ? 'minha' : 'outra'}" data-user="${msg.usuario}">
                         <div class="mensagem-remetente" style="color:${corUsuario}">
                             ${msg.veiculo || '🚗'} ${msg.usuario}
+                            ${msg.telefone ? `<span class="mensagem-telefone">📱${msg.telefone}</span>` : ''}
                         </div>
                         ${textoFormatado}
                         <div class="mensagem-info">
@@ -1101,6 +1151,7 @@ function enviarMsgGeral() {
     
     const mensagem = {
         usuario: usuario,
+        telefone: telefone,
         veiculo: iconeVeiculo,
         texto: texto,
         hora: new Date().toLocaleTimeString(),
@@ -1260,6 +1311,9 @@ document.getElementById('buscaDestino').addEventListener('keypress', e => {
 document.getElementById('chatInput').addEventListener('keypress', e => {
     if (e.key === 'Enter') enviarMsgGeral();
 });
+
+// Carrega alertas automaticamente
+setInterval(carregarAlertasTempoReal, 30000);
 </script>
 </body>
 </html>
