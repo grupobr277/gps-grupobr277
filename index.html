@@ -54,11 +54,109 @@
             color: white;
         }
         
+        /* MIRA CENTRAL */
+        .mira-central {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 48px;
+            height: 48px;
+            background: rgba(255,215,0,0.15);
+            border: 2px solid #ffd700;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffd700;
+            font-size: 20px;
+            pointer-events: none;
+            z-index: 8000;
+            backdrop-filter: blur(2px);
+            box-shadow: 0 0 20px rgba(255,215,0,0.3);
+            transition: all 0.2s ease;
+        }
+        
+        .mira-central.ativa {
+            background: rgba(255,215,0,0.3);
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+        
+        /* PAINEL DE INFORMAÇÕES DA MIRA */
+        .painel-mira {
+            position: fixed;
+            top: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            border: 2px solid #ffd700;
+            z-index: 9500;
+            display: none;
+            align-items: center;
+            gap: 15px;
+            font-size: 16px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+        
+        .velocidade-mira {
+            font-weight: bold;
+            min-width: 60px;
+            text-align: center;
+        }
+        
+        .velocidade-mira.vermelho { color: #e53935; }
+        .velocidade-mira.laranja { color: #ff9800; }
+        .velocidade-mira.amarelo { color: #ffd700; }
+        .velocidade-mira.verde { color: #4caf50; }
+        
+        /* PAINEL DE ROTA */
+        .rota-info-panel {
+            position: fixed;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            display: none;
+            align-items: center;
+            gap: 25px;
+            border: 2px solid #ffd700;
+            z-index: 9500;
+            font-size: 14px;
+        }
+        
+        .rota-info-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .rota-info-item i {
+            color: #ffd700;
+        }
+        
+        .rota-tempo-principal {
+            font-weight: bold;
+            color: #ffd700;
+        }
+        
+        .rota-atraso {
+            color: #e53935;
+            font-weight: bold;
+        }
+        
         /* PAINEL DE ALERTAS TRANSPARENTE */
         .alertas-container {
             position: fixed;
-            bottom: 20px;
-            left: 20px;
+            bottom: 90px;
+            left: 10px;
             z-index: 9000;
             display: flex;
             flex-direction: column;
@@ -66,9 +164,8 @@
         }
         
         .alertas-toggle {
-            background: rgba(7,94,84,0.7);
-            backdrop-filter: blur(5px);
-            color: white;
+            background: transparent;
+            color: #ffd700;
             border: 2px solid #ffd700;
             border-radius: 30px;
             padding: 8px 20px;
@@ -79,13 +176,13 @@
             align-items: center;
             gap: 8px;
             margin-bottom: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
             transition: all 0.2s;
+            backdrop-filter: blur(5px);
         }
         
         .alertas-toggle:hover {
-            transform: scale(1.02);
-            background: rgba(10,122,107,0.8);
+            background: rgba(255,215,0,0.1);
         }
         
         .alertas-toggle i {
@@ -101,14 +198,14 @@
             background: rgba(0,0,0,0.4);
             backdrop-filter: blur(10px);
             border-radius: 20px;
-            padding: 10px;
+            padding: 15px;
             border: 2px solid #ffd700;
             display: none;
             flex-direction: column;
-            gap: 6px;
-            max-height: 300px;
+            gap: 10px;
+            max-height: 350px;
             overflow-y: auto;
-            width: 180px;
+            width: 200px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.4);
         }
         
@@ -117,7 +214,7 @@
         }
         
         .alerta-item {
-            padding: 6px 12px;
+            padding: 8px 12px;
             border-radius: 25px;
             font-size: 11px;
             font-weight: 600;
@@ -152,118 +249,138 @@
         .alerta-desvio { background: linear-gradient(135deg, #4caf50, #388e3c); }
         .alerta-bloqueio { background: linear-gradient(135deg, #b71c1c, #8B0000); }
         
-        /* VELOCÍMETRO PESSOAL SIMPLIFICADO */
+        /* VELOCÍMETRO PESSOAL */
         .velocimetro-pessoal {
             position: fixed;
             bottom: 20px;
-            left: 20px;
-            background: rgba(0,0,0,0.7);
+            left: 10px;
+            background: rgba(0,0,0,0.6);
             backdrop-filter: blur(10px);
-            color: #ffd700;
-            padding: 10px 15px;
-            border-radius: 40px;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 30px;
             z-index: 9001;
             display: flex;
             align-items: center;
-            gap: 5px;
-            border: 2px solid #ffd700;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-            font-size: 24px;
+            gap: 3px;
+            border: 1px solid #ffd700;
+            font-size: 14px;
             font-weight: bold;
-            min-width: 80px;
-            justify-content: center;
         }
         
         .velocimetro-pessoal span {
-            font-size: 24px;
-            color: white;
-        }
-        
-        .velocimetro-pessoal .unidade {
-            font-size: 14px;
             color: #ffd700;
-            margin-left: 2px;
         }
         
-        /* PAINEL ÚNICO DE ROTA + MIRA */
-        .painel-unico {
+        .velocimetro-pessoal .valor {
+            font-size: 16px;
+            color: white;
+            margin-right: 2px;
+        }
+        
+        /* HEADER SUPERIOR ESQUERDO */
+        .header-esquerdo {
             position: fixed;
-            top: 70px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.8);
+            top: 15px;
+            left: 15px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .contador-usuarios {
+            background: rgba(0,0,0,0.5);
             backdrop-filter: blur(10px);
             color: white;
-            padding: 12px 25px;
-            border-radius: 50px;
-            z-index: 9500;
-            display: flex;
-            align-items: center;
-            gap: 30px;
-            border: 2px solid #ffd700;
-            box-shadow: 0 5px 30px rgba(0,0,0,0.5);
-        }
-        
-        .painel-esquerdo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border-right: 1px solid rgba(255,215,0,0.3);
-            padding-right: 20px;
-        }
-        
-        .seta-mira {
-            font-size: 20px;
-            color: #ffd700;
-            animation: pulseSeta 1.5s infinite;
-        }
-        
-        .velocidade-mira {
-            font-size: 24px;
-            font-weight: bold;
-            color: white;
-            min-width: 60px;
-            text-align: center;
-        }
-        
-        .velocidade-mira.pequeno {
-            font-size: 20px;
-        }
-        
-        .painel-direito {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-        
-        .rota-info-item {
+            padding: 4px 10px;
+            border-radius: 30px;
+            font-size: 10px;
             display: flex;
             align-items: center;
             gap: 5px;
-            font-size: 14px;
+            border: 1px solid #ffd700;
+            width: fit-content;
         }
         
-        .rota-info-item i {
+        .contador-usuarios i {
             color: #ffd700;
         }
         
-        .rota-tempo-principal {
-            font-weight: bold;
+        .marca-grupo {
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(10px);
             color: #ffd700;
+            padding: 3px 8px;
+            border-radius: 30px;
+            font-size: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            border: 1px solid #ffd700;
+            width: fit-content;
         }
         
-        .rota-atraso {
-            color: #e53935;
+        .marca-grupo span {
             font-weight: bold;
+            letter-spacing: 0.3px;
         }
         
-        @keyframes pulseSeta {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.1); opacity: 0.8; }
-            100% { transform: scale(1); opacity: 1; }
+        .social-icons {
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
         
-        /* BOTÃO ENCERRAR ROTA (SÓ X) */
+        .social-icons a {
+            color: #ffd700;
+            font-size: 9px;
+            text-decoration: none;
+            transition: transform 0.2s;
+        }
+        
+        .social-icons a:hover {
+            transform: scale(1.1);
+        }
+        
+        /* BOTÕES PADRÃO */
+        .botoes-direita {
+            position: fixed;
+            bottom: 20px;
+            right: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 9000;
+        }
+        
+        .btn-padrao {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px);
+            border: 2px solid #ffd700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+            color: #ffd700;
+            transition: all 0.2s;
+        }
+        
+        .btn-padrao:hover {
+            transform: scale(1.05);
+            background: rgba(255,215,0,0.2);
+        }
+        
+        .btn-padrao.ativo {
+            background: rgba(255,215,0,0.3);
+            color: white;
+        }
+        
+        /* BOTÃO ENCERRAR ROTA */
         .btn-encerrar-rota {
             position: fixed;
             top: 70px;
@@ -288,137 +405,6 @@
         .btn-encerrar-rota:hover {
             background: #c62828;
             transform: scale(1.05);
-        }
-        
-        /* ÍCONE MUNDO NOVO POSICIONAMENTO */
-        .btn-mundo {
-            position: fixed;
-            bottom: 90px;
-            right: 15px;
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(10px);
-            border: 2px solid #ffd700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 22px;
-            color: #ffd700;
-            transition: all 0.2s;
-            z-index: 9500;
-        }
-        
-        .btn-mundo:hover {
-            transform: scale(1.05);
-            background: rgba(255,215,0,0.2);
-        }
-        
-        /* PREVISÃO DE CONGESTIONAMENTO (MAIS DURADOURO) */
-        .previsao-congestionamento {
-            position: fixed;
-            top: 130px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.9);
-            backdrop-filter: blur(10px);
-            color: white;
-            padding: 12px 25px;
-            border-radius: 50px;
-            z-index: 9400;
-            display: none;
-            align-items: center;
-            gap: 20px;
-            border: 2px solid #ffd700;
-            font-size: 13px;
-            white-space: nowrap;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            animation: slideDown 0.3s;
-        }
-        
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
-            to { opacity: 1; transform: translateX(-50%) translateY(0); }
-        }
-        
-        .previsao-fila {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #e53935;
-        }
-        
-        .previsao-fila i {
-            color: #ffd700;
-        }
-        
-        /* HEADER SUPERIOR ESQUERDO */
-        .header-esquerdo {
-            position: fixed;
-            top: 15px;
-            left: 15px;
-            z-index: 10000;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-        
-        .contador-usuarios {
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(10px);
-            color: white;
-            padding: 5px 12px;
-            border-radius: 30px;
-            font-size: 11px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            border: 1px solid #ffd700;
-            width: fit-content;
-        }
-        
-        .contador-usuarios i {
-            color: #ffd700;
-        }
-        
-        .marca-grupo {
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(10px);
-            color: #ffd700;
-            padding: 4px 12px;
-            border-radius: 30px;
-            font-size: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            border: 1px solid #ffd700;
-            width: fit-content;
-        }
-        
-        .marca-grupo span {
-            font-weight: bold;
-            letter-spacing: 0.5px;
-        }
-        
-        .social-icons {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-left: 5px;
-        }
-        
-        .social-icons a {
-            color: #ffd700;
-            font-size: 12px;
-            text-decoration: none;
-            transition: transform 0.2s;
-        }
-        
-        .social-icons a:hover {
-            transform: scale(1.1);
-            color: white;
         }
         
         /* LUPA */
@@ -631,35 +617,20 @@
             cursor: pointer;
         }
         
-        /* BOTÕES */
-        .botoes-inferiores {
+        /* BOTÃO RECENTRALIZAR */
+        .btn-recentrar {
             position: fixed;
-            bottom: 20px;
-            right: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            z-index: 9000;
-        }
-        
-        .btn-acao {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
+            bottom: 120px;
+            left: 50%;
+            transform: translateX(-50%);
             background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(10px);
-            border: 2px solid #ffd700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 20px;
             color: #ffd700;
-            transition: all 0.2s;
-        }
-        
-        .btn-acao:hover {
-            transform: scale(1.05);
+            border-radius: 40px;
+            padding: 8px 20px;
+            cursor: pointer;
+            z-index: 9000;
+            display: none;
+            border: 1px solid #ffd700;
         }
         
         #btn-px { 
@@ -686,26 +657,6 @@
             background: #e53935; 
             color: white; 
             transform: translateX(-50%) scale(0.95);
-        }
-        
-        .btn-mudo.mudo {
-            background: #e53935;
-            color: white;
-        }
-        
-        .btn-recentrar {
-            position: fixed;
-            bottom: 120px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.7);
-            color: #ffd700;
-            border-radius: 40px;
-            padding: 8px 20px;
-            cursor: pointer;
-            z-index: 9000;
-            display: none;
-            border: 1px solid #ffd700;
         }
         
         .mapa-noturno {
@@ -759,6 +710,16 @@
 
 <div id="map"></div>
 
+<!-- MIRA CENTRAL -->
+<div class="mira-central" id="miraCentral">🎯</div>
+
+<!-- PAINEL DA MIRA (VELOCIDADE) -->
+<div class="painel-mira" id="painelMira">
+    <i class="fas fa-location-dot" style="color:#ffd700;"></i>
+    <span class="velocidade-mira" id="velocidadeMira">0</span>
+    <span style="color:#999; font-size:12px;">km/h</span>
+</div>
+
 <!-- MODAL DE BOAS-VINDAS -->
 <div class="welcome-modal" id="welcomeModal">
     <div class="welcome-content">
@@ -800,7 +761,23 @@
     </div>
 </div>
 
-<!-- CONTAINER DE ALERTAS TRANSPARENTE -->
+<!-- PAINEL DE ROTA -->
+<div class="rota-info-panel" id="rotaInfoPanel">
+    <div class="rota-info-item">
+        <i class="fas fa-clock"></i>
+        <span class="rota-tempo-principal" id="rotaTempo">--</span>
+    </div>
+    <div class="rota-info-item">
+        <i class="fas fa-road"></i>
+        <span id="rotaDistancia">--</span>
+    </div>
+    <div class="rota-info-item">
+        <i class="fas fa-exclamation-triangle" style="color:#e53935;"></i>
+        <span id="rotaAtraso" class="rota-atraso">--</span>
+    </div>
+</div>
+
+<!-- CONTAINER DE ALERTAS -->
 <div class="alertas-container">
     <div class="alertas-toggle" onclick="toggleAlertas()">
         <i class="fas fa-chevron-up"></i> REPORTE
@@ -808,44 +785,11 @@
     <div class="alertas-panel-inferior" id="alertasListaInferior"></div>
 </div>
 
-<!-- VELOCÍMETRO PESSOAL SIMPLIFICADO -->
+<!-- VELOCÍMETRO PESSOAL -->
 <div class="velocimetro-pessoal" id="velocimetroPessoal">
-    <span id="velocidadePessoal">0</span>
-    <span class="unidade">km/h</span>
-</div>
-
-<!-- PAINEL ÚNICO (MIRA + ROTA) -->
-<div class="painel-unico" id="painelUnico" style="display: none;">
-    <div class="painel-esquerdo">
-        <div class="seta-mira">🎯</div>
-        <div class="velocidade-mira" id="velocidadeMira">0</div>
-    </div>
-    <div class="painel-direito" id="painelDireito">
-        <div class="rota-info-item">
-            <i class="fas fa-clock"></i>
-            <span class="rota-tempo-principal" id="rotaTempo">--</span>
-        </div>
-        <div class="rota-info-item">
-            <i class="fas fa-road"></i>
-            <span id="rotaDistancia">--</span>
-        </div>
-        <div class="rota-info-item">
-            <i class="fas fa-exclamation-triangle" style="color:#e53935;"></i>
-            <span id="rotaAtraso" class="rota-atraso">--</span>
-        </div>
-    </div>
-</div>
-
-<!-- BOTÃO ENCERRAR ROTA (SÓ X) -->
-<div class="btn-encerrar-rota" id="btnEncerrarRota" onclick="encerrarRota()">✖</div>
-
-<!-- ÍCONE MUNDO NOVO POSICIONAMENTO -->
-<div class="btn-mundo" id="btnMundo" onclick="toggleVelocimetroMapa()">🌍</div>
-
-<!-- PREVISÃO DE CONGESTIONAMENTO -->
-<div class="previsao-congestionamento" id="previsaoCongestionamento">
-    <i class="fas fa-exclamation-triangle" style="color:#e53935;"></i>
-    <span id="previsaoTexto">Carregando...</span>
+    <i class="fas fa-car" style="color:#ffd700; font-size:12px;"></i>
+    <span class="valor" id="velocidadePessoal">0</span>
+    <span>km/h</span>
 </div>
 
 <!-- HEADER SUPERIOR ESQUERDO -->
@@ -866,6 +810,25 @@
     </div>
 </div>
 
+<!-- BOTÕES PADRÃO DIREITA -->
+<div class="botoes-direita">
+    <div class="btn-padrao" id="btn-mira" onclick="toggleMira()">
+        🎯
+    </div>
+    <div class="btn-padrao" id="btn-chat" onclick="toggleChatGeral()">
+        <i class="fas fa-comment"></i>
+    </div>
+    <div class="btn-padrao" id="btn-luz" onclick="toggleModoNoturno()">
+        💡
+    </div>
+    <div class="btn-padrao btn-mudo" id="btnMudo" onclick="toggleMudo()">
+        <i class="fas fa-volume-up"></i>
+    </div>
+</div>
+
+<!-- BOTÃO ENCERRAR ROTA -->
+<div class="btn-encerrar-rota" id="btnEncerrarRota" onclick="encerrarRota()">✖</div>
+
 <!-- LUPA -->
 <div class="lupa-container">
     <input type="text" id="buscaDestino" placeholder="Digite seu destino...">
@@ -875,19 +838,6 @@
 <!-- BOTÃO RECENTRALIZAR -->
 <div class="btn-recentrar" id="btnRecenter" onclick="recentralizar()">
     <i class="fas fa-location-arrow"></i> RECENTRALIZAR
-</div>
-
-<!-- BOTÕES INFERIORES -->
-<div class="botoes-inferiores">
-    <div class="btn-acao" id="btn-chat" onclick="toggleChatGeral()">
-        <i class="fas fa-comment"></i>
-    </div>
-    <div class="btn-acao" id="btn-luz" onclick="toggleModoNoturno()">
-        💡
-    </div>
-    <div class="btn-acao btn-mudo" id="btnMudo" onclick="toggleMudo()">
-        <i class="fas fa-volume-up"></i>
-    </div>
 </div>
 
 <div id="btn-px">🎤</div>
@@ -953,7 +903,8 @@ let coresUsuarios = {};
 let ultimaAtualizacaoGPS = 0;
 const INTERVALO_GPS = 1000;
 let zoomAtual = 13;
-let ultimaVelocidadeMapa = 0;
+let miraAtiva = true;
+let ultimaVelocidadeMira = 0;
 let timerPrevisao = null;
 
 // ===== 11 ALERTAS =====
@@ -1043,9 +994,21 @@ function toggleAlertas() {
     toggle.classList.toggle('ativo');
 }
 
-function toggleVelocimetroMapa() {
-    const painel = document.getElementById('painelUnico');
-    painel.style.display = painel.style.display === 'none' ? 'flex' : 'none';
+function toggleMira() {
+    miraAtiva = !miraAtiva;
+    const btnMira = document.getElementById('btn-mira');
+    const mira = document.getElementById('miraCentral');
+    const painelMira = document.getElementById('painelMira');
+    
+    if (miraAtiva) {
+        btnMira.classList.add('ativo');
+        mira.style.display = 'flex';
+        painelMira.style.display = 'flex';
+    } else {
+        btnMira.classList.remove('ativo');
+        mira.style.display = 'none';
+        painelMira.style.display = 'none';
+    }
 }
 
 // ===== NOVOS ICONES ALERTAS =====
@@ -1076,12 +1039,15 @@ function iniciarMapa() {
     });
     
     mapa.on('move', () => {
-        // Atualiza velocidade da mira durante o movimento
-        analisarVelocidadeNaMira();
+        if (miraAtiva) {
+            analisarVelocidadeNaMira();
+        }
     });
     
     mapa.on('moveend', () => {
-        analisarVelocidadeNaMira();
+        if (miraAtiva) {
+            analisarVelocidadeNaMira();
+        }
     });
 }
 
@@ -1089,63 +1055,57 @@ function iniciarMapa() {
 function iniciarAnaliseMira() {
     setTimeout(analisarVelocidadeNaMira, 2000);
     setInterval(() => {
-        if (!mapa.dragging._dragging) {
+        if (miraAtiva && !mapa.dragging._dragging) {
             analisarVelocidadeNaMira();
         }
-    }, 2000);
+    }, 1000);
 }
 
 function analisarVelocidadeNaMira() {
-    if (!mapa) return;
+    if (!mapa || !miraAtiva) return;
     
     try {
         const centro = mapa.getCenter();
         const lat = centro.lat;
         const lng = centro.lng;
         
-        // Simula cor baseada na localização
-        // Em produção, analisaríamos a cor real do tile
+        // Simula cor baseada na localização com transição suave
         let velocidade;
-        let cor;
+        let classe;
         
-        // Simulação baseada em coordenadas
+        // Sistema de zonas baseado em coordenadas
         if (lat > -25.45 && lat < -25.4 && lng > -49.3 && lng < -49.25) {
-            // Área de congestionamento
-            velocidade = 5 + Math.random() * 15;
-            cor = 'vermelho';
+            // Área de congestionamento intenso
+            velocidade = 5 + Math.sin(Date.now() / 1000) * 5;
+            classe = 'vermelho';
         } else if (lat > -25.5 && lat < -25.45 && lng > -49.35 && lng < -49.3) {
             // Área de trânsito lento
-            velocidade = 20 + Math.random() * 20;
-            cor = 'laranja';
+            velocidade = 25 + Math.sin(Date.now() / 800) * 8;
+            classe = 'laranja';
         } else if (lat > -25.38 && lat < -25.33 && lng > -49.25 && lng < -49.2) {
             // Área moderada
-            velocidade = 40 + Math.random() * 20;
-            cor = 'amarelo';
+            velocidade = 45 + Math.sin(Date.now() / 600) * 10;
+            classe = 'amarelo';
+        } else if (lat > -25.6 && lat < -25.3 && lng > -49.4 && lng < -49.1) {
+            // Área urbana variável
+            velocidade = 35 + Math.sin(Date.now() / 700) * 15;
+            if (velocidade < 30) classe = 'laranja';
+            else if (velocidade < 50) classe = 'amarelo';
+            else classe = 'verde';
         } else {
             // Rodovia livre
-            velocidade = 70 + Math.random() * 30;
-            cor = 'verde';
+            velocidade = 85 + Math.sin(Date.now() / 500) * 10;
+            classe = 'verde';
         }
         
-        // Garante valores inteiros
-        velocidade = Math.round(velocidade);
+        // Suaviza a transição
+        ultimaVelocidadeMira = ultimaVelocidadeMira * 0.7 + velocidade * 0.3;
+        velocidade = Math.round(ultimaVelocidadeMira);
         
-        // Atualiza display da mira
+        // Atualiza display
         const miraElement = document.getElementById('velocidadeMira');
         miraElement.textContent = velocidade;
-        
-        // Muda cor baseada na velocidade
-        if (velocidade < 20) {
-            miraElement.style.color = '#e53935';
-        } else if (velocidade < 40) {
-            miraElement.style.color = '#ff9800';
-        } else if (velocidade < 60) {
-            miraElement.style.color = '#ffc107';
-        } else {
-            miraElement.style.color = '#4caf50';
-        }
-        
-        ultimaVelocidadeMapa = velocidade;
+        miraElement.className = `velocidade-mira ${classe}`;
         
     } catch(e) {
         console.log('Erro na análise da mira:', e);
@@ -1156,31 +1116,54 @@ function analisarVelocidadeNaMira() {
 function analisarCongestionamentoRota() {
     if (!rotaAtual || !minhaLocalizacao) return;
     
-    const temCongestionamento = Math.random() > 0.6;
+    const temCongestionamento = Math.random() > 0.5;
     
     if (temCongestionamento) {
-        const tamanhoFila = (1 + Math.random() * 7).toFixed(1);
+        const tamanhoFila = (1 + Math.random() * 5).toFixed(1);
         const tempoAtraso = Math.round(tamanhoFila * 3);
         
-        document.getElementById('previsaoTexto').innerHTML = `
-            <span class="previsao-fila">
-                <i class="fas fa-hourglass-half"></i> ${tamanhoFila}km de fila
-            </span>
-            <span style="margin-left:10px;">
-                ⏱️ +${tempoAtraso}min
-            </span>
+        // Mostra no painel de rota
+        document.getElementById('rotaAtraso').innerHTML = `+${tempoAtraso}min`;
+        
+        // Mostra mensagem de previsão
+        const previsaoDiv = document.createElement('div');
+        previsaoDiv.className = 'previsao-congestionamento';
+        previsaoDiv.id = 'previsaoTemp';
+        previsaoDiv.innerHTML = `
+            <i class="fas fa-hourglass-half" style="color:#ffd700;"></i>
+            <span>${tamanhoFila}km de fila · +${tempoAtraso}min</span>
         `;
-        document.getElementById('previsaoCongestionamento').style.display = 'flex';
+        previsaoDiv.style.cssText = `
+            position: fixed;
+            top: 130px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            border: 2px solid #ffd700;
+            z-index: 9400;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            animation: slideDown 0.3s;
+        `;
         
-        // Limpa timer anterior se existir
-        if (timerPrevisao) clearTimeout(timerPrevisao);
+        // Remove mensagem anterior se existir
+        const anterior = document.getElementById('previsaoTemp');
+        if (anterior) anterior.remove();
         
-        // Mensagem fica visível por 15 segundos (mais tempo)
-        timerPrevisao = setTimeout(() => {
-            document.getElementById('previsaoCongestionamento').style.display = 'none';
-        }, 15000);
-    } else {
-        document.getElementById('previsaoCongestionamento').style.display = 'none';
+        document.body.appendChild(previsaoDiv);
+        
+        // Remove após 10 segundos
+        setTimeout(() => {
+            const temp = document.getElementById('previsaoTemp');
+            if (temp) temp.remove();
+        }, 10000);
     }
 }
 
@@ -1464,7 +1447,7 @@ function buscarRota() {
             
             mapa.flyToBounds(L.latLngBounds([minhaLocalizacao, dest]), { padding: [50, 50] });
             
-            document.getElementById('painelUnico').style.display = 'flex';
+            document.getElementById('rotaInfoPanel').style.display = 'flex';
             document.getElementById('btnEncerrarRota').style.display = 'flex';
             
             const distancia = parseFloat(calcularDistancia(
@@ -1489,10 +1472,12 @@ function encerrarRota() {
         mapa.removeControl(rotaAtual);
         rotaAtual = null;
     }
-    document.getElementById('painelUnico').style.display = 'none';
+    document.getElementById('rotaInfoPanel').style.display = 'none';
     document.getElementById('btnEncerrarRota').style.display = 'none';
-    document.getElementById('previsaoCongestionamento').style.display = 'none';
-    if (timerPrevisao) clearTimeout(timerPrevisao);
+    
+    // Remove mensagem de previsão se existir
+    const temp = document.getElementById('previsaoTemp');
+    if (temp) temp.remove();
 }
 
 function calcularDistancia(lat1, lon1, lat2, lon2) {
