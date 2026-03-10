@@ -132,17 +132,17 @@
             transform: rotate(180deg);
         }
         
-        /* PAINEL DE ALERTAS - GRID 2x5 */
+        /* PAINEL DE ALERTAS - GRID 2x5 + FECHAR */
         .alertas-panel {
             background: rgba(0,0,0,0.6);
             backdrop-filter: blur(15px);
             border: 2px solid #ffd700;
             border-radius: 16px;
-            padding: 10px;
+            padding: 12px;
             display: none;
             grid-template-columns: repeat(2, 1fr);
-            gap: 6px;
-            width: 220px;
+            gap: 8px;
+            width: 240px;
             max-height: none;
             overflow: visible;
             box-shadow: 0 10px 40px rgba(0,0,0,0.5);
@@ -166,11 +166,11 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 2px;
+            gap: 4px;
             cursor: pointer;
             transition: all 0.2s ease;
-            border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.1) inset;
             position: relative;
             overflow: hidden;
             padding: 4px;
@@ -198,18 +198,52 @@
         }
         
         .alerta-icone {
-            font-size: 24px;
+            font-size: 28px;
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
         }
         
         .alerta-nome {
-            font-size: 8px;
-            font-weight: 600;
+            font-size: 10px;
+            font-weight: 700;
             color: white;
             text-transform: uppercase;
             letter-spacing: 0.3px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
             text-align: center;
+        }
+        
+        /* ÍTEM ESPECIAL PARA FECHAR */
+        .alerta-fechar {
+            grid-column: span 2;
+            width: 100%;
+            height: 36px;
+            border-radius: 30px;
+            background: linear-gradient(135deg, #ffd700, #b8860b);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: all 0.2s ease;
+            margin-top: 4px;
+        }
+        
+        .alerta-fechar:hover {
+            transform: scale(1.02);
+            filter: brightness(1.1);
+        }
+        
+        .alerta-fechar .alerta-icone {
+            font-size: 18px;
+            color: #1a1a1a;
+        }
+        
+        .alerta-fechar .alerta-nome {
+            font-size: 12px;
+            color: #1a1a1a;
+            font-weight: bold;
         }
         
         /* CORES DOS ALERTAS */
@@ -224,7 +258,7 @@
         .alerta-alagamento { background: linear-gradient(135deg, #2196f3, #1976d2); }
         .alerta-bloqueio { background: linear-gradient(135deg, #b71c1c, #8B0000); }
         
-        /* VELOCÍMETRO - CANTO INFERIOR ESQUERDO */
+        /* VELOCÍMETRO */
         .velocimetro-container {
             position: fixed;
             bottom: 20px;
@@ -263,60 +297,142 @@
             margin-top: 2px;
         }
         
-        /* ÍCONE DO CARRO - VERSÃO SIMPLIFICADA (ESTILO UBER) */
-        .carro-simples {
-            width: 32px;
-            height: 32px;
+        /* ÍCONE DO CARRO - SEDAN REALISTA */
+        .carro-real {
+            width: 40px;
+            height: 28px;
             position: relative;
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+            filter: drop-shadow(0 6px 8px rgba(0,0,0,0.4));
         }
         
-        .carro-simples .corpo {
+        .carro-real .carroceria {
             position: absolute;
-            width: 24px;
-            height: 16px;
-            background: #FFFFFF;
-            border-radius: 8px 8px 4px 4px;
-            top: 8px;
+            width: 36px;
+            height: 22px;
+            background: #1E1E1E;
+            border-radius: 10px 10px 8px 8px;
+            top: 3px;
+            left: 2px;
+            box-shadow: inset 0 -2px 3px rgba(255,255,255,0.1), 0 3px 6px rgba(0,0,0,0.5);
+            border: 1px solid #444;
+        }
+        
+        .carro-real .vidro-dianteiro {
+            position: absolute;
+            width: 16px;
+            height: 10px;
+            background: #2A2A2A;
+            border-radius: 8px 8px 2px 2px;
+            top: 5px;
+            left: 12px;
+            border: 1px solid #555;
+            box-shadow: inset 0 2px 3px rgba(255,255,255,0.2);
+        }
+        
+        .carro-real .vidro-traseiro {
+            position: absolute;
+            width: 12px;
+            height: 8px;
+            background: #2A2A2A;
+            border-radius: 2px 2px 6px 6px;
+            bottom: 5px;
+            left: 14px;
+            border: 1px solid #555;
+            box-shadow: inset 0 -2px 3px rgba(255,255,255,0.1);
+        }
+        
+        .carro-real .capo {
+            position: absolute;
+            width: 20px;
+            height: 6px;
+            background: #1E1E1E;
+            top: 11px;
+            left: 10px;
+            z-index: 2;
+        }
+        
+        .carro-real .farol-esq {
+            position: absolute;
+            width: 4px;
+            height: 3px;
+            background: #FFD700;
+            border-radius: 2px 0 0 2px;
+            top: 12px;
             left: 4px;
-            border: 1.5px solid #333;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            box-shadow: 0 0 6px #FFD700;
         }
         
-        .carro-simples .frente {
+        .carro-real .farol-dir {
             position: absolute;
-            width: 10px;
-            height: 6px;
-            background: #333;
-            border-radius: 4px 4px 0 0;
-            top: 10px;
-            left: 11px;
+            width: 4px;
+            height: 3px;
+            background: #FFD700;
+            border-radius: 0 2px 2px 0;
+            top: 12px;
+            right: 4px;
+            box-shadow: 0 0 6px #FFD700;
         }
         
-        .carro-simples .roda-esq, .carro-simples .roda-dir {
+        .carro-real .lanterna-esq {
             position: absolute;
-            width: 6px;
-            height: 6px;
+            width: 3px;
+            height: 3px;
+            background: #E53935;
+            border-radius: 1px;
+            bottom: 6px;
+            left: 5px;
+        }
+        
+        .carro-real .lanterna-dir {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: #E53935;
+            border-radius: 1px;
+            bottom: 6px;
+            right: 5px;
+        }
+        
+        .carro-real .roda {
+            position: absolute;
+            width: 7px;
+            height: 7px;
             background: #333;
             border-radius: 50%;
-            bottom: 6px;
+            border: 2px solid #AAA;
+            bottom: 3px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
         
-        .carro-simples .roda-esq { left: 7px; }
-        .carro-simples .roda-dir { right: 7px; }
-        
-        /* VERSÃO PARA OUTROS USUÁRIOS */
-        .carro-simples.outro .corpo {
-            background: #AAAAAA;
-            border-color: #666;
+        .carro-real .roda-traseira {
+            left: 7px;
         }
         
-        .carro-simples.outro .frente {
-            background: #555;
+        .carro-real .roda-dianteira {
+            right: 7px;
         }
         
-        .carro-simples.outro .roda-esq, .carro-simples.outro .roda-dir {
-            background: #555;
+        .carro-real .sombra {
+            position: absolute;
+            width: 38px;
+            height: 10px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 50%;
+            bottom: -5px;
+            left: 1px;
+            filter: blur(3px);
+        }
+        
+        .carro-real.outro .carroceria {
+            background: #4A4A4A;
+        }
+        .carro-real.outro .vidro-dianteiro,
+        .carro-real.outro .vidro-traseiro {
+            background: #5A5A5A;
+        }
+        .carro-real.outro .farol-esq,
+        .carro-real.outro .farol-dir {
+            opacity: 0.5;
         }
         
         /* PAINEL DE ROTA */
@@ -465,41 +581,6 @@
             background: #e53935;
             border-color: white;
             color: white;
-        }
-        
-        /* BOTÃO MICROFONE COM PULSANTE */
-        #btn-px { 
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 70px;
-            height: 70px;
-            background: #333;
-            border: 4px solid #ffd700;
-            color: #ffd700;
-            font-size: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 9001;
-            transition: all 0.2s;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-        }
-        
-        #btn-px.ativo { 
-            background: #e53935; 
-            color: white; 
-            border-color: white;
-            animation: pulse-vermelho 1.5s infinite;
-        }
-        
-        @keyframes pulse-vermelho {
-            0% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.7); }
-            70% { box-shadow: 0 0 0 20px rgba(229, 57, 53, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0); }
         }
         
         .btn-encerrar-rota {
@@ -757,6 +838,40 @@
             backdrop-filter: blur(5px);
         }
         
+        #btn-px { 
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 70px;
+            background: #333;
+            border: 4px solid #ffd700;
+            color: #ffd700;
+            font-size: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 9001;
+            transition: all 0.2s;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+        
+        #btn-px.ativo { 
+            background: #e53935; 
+            color: white; 
+            border-color: white;
+            animation: pulse-vermelho 1.5s infinite;
+        }
+        
+        @keyframes pulse-vermelho {
+            0% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(229, 57, 53, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0); }
+        }
+        
         .mapa-noturno {
             filter: invert(100%) hue-rotate(180deg) brightness(95%);
         }
@@ -891,7 +1006,7 @@
     </div>
 </div>
 
-<!-- NOVO SISTEMA REPORTE -->
+<!-- SISTEMA REPORTE COM FECHAR -->
 <div class="reporte-container">
     <div class="reporte-toggle" onclick="toggleReporte()">
         <span class="led"></span>
@@ -901,7 +1016,7 @@
     <div class="alertas-panel" id="alertasPanel"></div>
 </div>
 
-<!-- VELOCÍMETRO - CANTO INFERIOR ESQUERDO -->
+<!-- VELOCÍMETRO -->
 <div class="velocimetro-container">
     <div class="velocimetro-redondo" id="velocimetroRedondo">
         <div class="velocimetro-valor" id="velocidadeRedonda">0</div>
@@ -1018,7 +1133,7 @@ const INTERVALO_GPS = 1000;
 let zoomAtual = 13;
 let ultimaMsgCongestionamento = 0;
 
-// ===== 10 ALERTAS =====
+// ===== 10 ALERTAS + FECHAR =====
 const alertas = [
     { tipo: 'acidente', nome: 'ACIDENTE', icone: '💥', cor: '#e53935' },
     { tipo: 'obras', nome: 'OBRAS', icone: '🚧', cor: '#ff9800' },
@@ -1099,7 +1214,7 @@ function toggleReporte() {
     toggle.classList.toggle('ativo');
 }
 
-// ===== ICONES ALERTAS =====
+// ===== ICONES ALERTAS COM FECHAR =====
 function criarIconesAlertas() {
     const lista = document.getElementById('alertasPanel');
     alertas.forEach(alerta => {
@@ -1112,22 +1227,39 @@ function criarIconesAlertas() {
         div.onclick = () => ativarAlerta(alerta);
         lista.appendChild(div);
     });
+    
+    // Adiciona botão de fechar
+    const fecharDiv = document.createElement('div');
+    fecharDiv.className = 'alerta-fechar';
+    fecharDiv.innerHTML = `
+        <div class="alerta-icone">✖</div>
+        <div class="alerta-nome">FECHAR</div>
+    `;
+    fecharDiv.onclick = toggleReporte;
+    lista.appendChild(fecharDiv);
 }
 
-// ===== FUNÇÃO PARA CRIAR ÍCONE DO CARRO SIMPLES =====
+// ===== FUNÇÃO PARA CRIAR ÍCONE DO CARRO REALISTA =====
 function criarIconeCarro(ehMeu = true) {
     const classeExtra = ehMeu ? '' : 'outro';
     
     return L.divIcon({
-        html: `<div class="carro-simples ${classeExtra}">
-            <div class="corpo"></div>
-            <div class="frente"></div>
-            <div class="roda-esq"></div>
-            <div class="roda-dir"></div>
+        html: `<div class="carro-real ${classeExtra}">
+            <div class="carroceria"></div>
+            <div class="vidro-dianteiro"></div>
+            <div class="vidro-traseiro"></div>
+            <div class="capo"></div>
+            <div class="farol-esq"></div>
+            <div class="farol-dir"></div>
+            <div class="lanterna-esq"></div>
+            <div class="lanterna-dir"></div>
+            <div class="roda roda-traseira"></div>
+            <div class="roda roda-dianteira"></div>
+            <div class="sombra"></div>
         </div>`,
         className: '',
-        iconSize: [32, 32],
-        iconAnchor: [16, 16]
+        iconSize: [40, 40],
+        iconAnchor: [20, 20]
     });
 }
 
@@ -1191,12 +1323,10 @@ function iniciarGPS() {
         
         minhaLocalizacao = L.latLng(pos.coords.latitude, pos.coords.longitude);
         
-        // Atualiza direção do carro
         if (pos.coords.heading !== null) {
             ultimoHeading = pos.coords.heading;
         }
         
-        // Atualiza velocidade
         if (pos.coords.speed !== null) {
             const velocidadeKmh = pos.coords.speed * 3.6;
             atualizarVelocimetroPessoal(velocidadeKmh);
@@ -1233,7 +1363,6 @@ function iniciarGPS() {
         } else {
             meuMarcador.setLatLng(minhaLocalizacao);
             
-            // Atualiza rotação do carro
             if (zoomAtual >= 15 && meuMarcador.setRotationAngle) {
                 meuMarcador.setRotationAngle(ultimoHeading || 0);
             }
@@ -1277,7 +1406,6 @@ function carregarUsuariosAtivos() {
                 return;
             }
             
-            // Carro cinza para outros usuários
             const marcador = L.marker([dados.lat, dados.lng], {
                 icon: criarIconeCarro(false)
             }).addTo(mapa);
@@ -1596,7 +1724,7 @@ function formatarData(data) {
     return data;
 }
 
-// ===== RÁDIO PX (20 SEGUNDOS) =====
+// ===== RÁDIO PX =====
 let gravador = null;
 let pedacosAudio = [];
 let streamAudio = null;
@@ -1606,10 +1734,8 @@ const botaoPX = document.getElementById('btn-px');
 
 botaoPX.addEventListener('click', async function() {
     if (gravador && gravador.state === 'recording') {
-        // Se estiver gravando, para a gravação
         pararGravacao();
     } else {
-        // Se não estiver gravando, inicia
         try {
             streamAudio = await navigator.mediaDevices.getUserMedia({ audio: true });
             gravador = new MediaRecorder(streamAudio);
