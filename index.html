@@ -147,40 +147,52 @@
             color: #ffd700;
         }
         
-        /* PAINEL DE ROTA */
-        .rota-info-panel {
+        /* PAINEL DE ROTA PROFISSIONAL */
+        .rota-container {
             position: fixed;
             top: 70px;
             left: 50%;
             transform: translateX(-50%);
+            z-index: 9500;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            width: auto;
+            min-width: 320px;
+        }
+        
+        .rota-info-panel {
             background: rgba(0,0,0,0.9);
             backdrop-filter: blur(10px);
             color: white;
-            padding: 15px 30px;
+            padding: 12px 25px;
             border-radius: 50px;
-            z-index: 9500;
-            display: none;
+            display: flex;
             align-items: center;
             gap: 25px;
             border: 2px solid #ffd700;
             box-shadow: 0 5px 30px rgba(0,0,0,0.5);
+            width: 100%;
+            justify-content: center;
         }
         
         .rota-info-item {
             display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 16px;
+            font-size: 15px;
         }
         
         .rota-info-item i {
             color: #ffd700;
+            font-size: 16px;
         }
         
         .rota-tempo-principal {
-            font-size: 20px;
             font-weight: bold;
             color: #ffd700;
+            font-size: 16px;
         }
         
         .rota-atraso {
@@ -190,23 +202,22 @@
         
         /* BOTÃO ENCERRAR ROTA - REPOSICIONADO */
         .btn-encerrar-rota {
-            position: fixed;
-            top: 70px;
-            right: 20px;
             background: #e53935;
             color: white;
             border: 2px solid #ffd700;
             border-radius: 40px;
-            padding: 8px 20px;
+            padding: 8px 25px;
             font-weight: bold;
             cursor: pointer;
-            z-index: 9500;
-            display: none;
+            display: flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-            font-size: 13px;
+            font-size: 14px;
             transition: all 0.2s;
+            width: fit-content;
+            margin: 0 auto;
         }
         
         .btn-encerrar-rota:hover {
@@ -608,25 +619,28 @@
     <span id="numUsuarios">0</span> online
 </div>
 
-<!-- PAINEL DE INFORMAÇÕES DA ROTA -->
-<div class="rota-info-panel" id="rotaInfoPanel">
-    <div class="rota-info-item">
-        <i class="fas fa-clock"></i>
-        <span class="rota-tempo-principal" id="rotaTempo">--</span>
+<!-- CONTAINER DE ROTA (PAINEL + BOTÃO) -->
+<div class="rota-container" id="rotaContainer">
+    <!-- PAINEL DE INFORMAÇÕES DA ROTA -->
+    <div class="rota-info-panel" id="rotaInfoPanel">
+        <div class="rota-info-item">
+            <i class="fas fa-clock"></i>
+            <span class="rota-tempo-principal" id="rotaTempo">--</span>
+        </div>
+        <div class="rota-info-item">
+            <i class="fas fa-road"></i>
+            <span id="rotaDistancia">--</span>
+        </div>
+        <div class="rota-info-item">
+            <i class="fas fa-exclamation-triangle" style="color:#e53935;"></i>
+            <span id="rotaAtraso" class="rota-atraso">--</span>
+        </div>
     </div>
-    <div class="rota-info-item">
-        <i class="fas fa-road"></i>
-        <span id="rotaDistancia">--</span>
+    
+    <!-- BOTÃO ENCERRAR ROTA - ABAIXO DO PAINEL -->
+    <div class="btn-encerrar-rota" id="btnEncerrarRota" onclick="encerrarRota()">
+        <i class="fas fa-times-circle"></i> ENCERRAR ROTA
     </div>
-    <div class="rota-info-item">
-        <i class="fas fa-exclamation-triangle" style="color:#e53935;"></i>
-        <span id="rotaAtraso" class="rota-atraso">--</span>
-    </div>
-</div>
-
-<!-- BOTÃO ENCERRAR ROTA - REPOSICIONADO -->
-<div class="btn-encerrar-rota" id="btnEncerrarRota" onclick="encerrarRota()">
-    <i class="fas fa-times-circle"></i> ENCERRAR ROTA
 </div>
 
 <!-- LUPA -->
@@ -998,6 +1012,17 @@ function enviarMsgAlerta(id) {
     input.value = '';
 }
 
+// ===== FUNÇÃO PARA FORMATAR TEMPO (HORAS E MINUTOS) =====
+function formatarTempo(minutos) {
+    if (minutos < 60) {
+        return `${minutos}min`;
+    } else {
+        const horas = Math.floor(minutos / 60);
+        const mins = minutos % 60;
+        return mins > 0 ? `${horas}h${mins}min` : `${horas}h`;
+    }
+}
+
 // ===== ROTA COM TEMPO ESTIMADO =====
 function buscarRota() {
     const destino = document.getElementById('buscaDestino').value;
@@ -1015,17 +1040,24 @@ function buscarRota() {
             
             if (rotaAtual) mapa.removeControl(rotaAtual);
             
+            // ROTA AMARELA SUAVE TRANSPARENTE
             rotaAtual = L.Routing.control({
                 waypoints: [minhaLocalizacao, dest],
-                lineOptions: { styles: [{ color: '#2196F3', weight: 8 }] },
+                lineOptions: { 
+                    styles: [{ 
+                        color: '#ffd700', 
+                        weight: 4, 
+                        opacity: 0.4 
+                    }] 
+                },
                 createMarker: () => null,
                 show: false
             }).addTo(mapa);
             
             mapa.flyToBounds(L.latLngBounds([minhaLocalizacao, dest]), { padding: [50, 50] });
             
-            // Mostra botão encerrar rota
-            document.getElementById('btnEncerrarRota').style.display = 'flex';
+            // Mostra container de rota
+            document.getElementById('rotaContainer').style.display = 'flex';
             
             // Calcula distância e tempo
             const distancia = parseFloat(calcularDistancia(
@@ -1036,14 +1068,10 @@ function buscarRota() {
             const tempoMin = Math.round(distancia * 1.2);
             const atraso = Math.round(tempoMin * 0.2);
             
-            document.getElementById('rotaTempo').textContent = `${tempoMin} min`;
+            // Formata tempo em horas/minutos
+            document.getElementById('rotaTempo').textContent = formatarTempo(tempoMin);
             document.getElementById('rotaDistancia').textContent = `${distancia} km`;
-            document.getElementById('rotaAtraso').textContent = `+${atraso} min`;
-            document.getElementById('rotaInfoPanel').style.display = 'flex';
-            
-            setTimeout(() => {
-                document.getElementById('rotaInfoPanel').style.display = 'none';
-            }, 15000);
+            document.getElementById('rotaAtraso').textContent = `+${formatarTempo(atraso)}`;
         });
 }
 
@@ -1053,8 +1081,7 @@ function encerrarRota() {
         mapa.removeControl(rotaAtual);
         rotaAtual = null;
     }
-    document.getElementById('btnEncerrarRota').style.display = 'none';
-    document.getElementById('rotaInfoPanel').style.display = 'none';
+    document.getElementById('rotaContainer').style.display = 'none';
 }
 
 function calcularDistancia(lat1, lon1, lat2, lon2) {
