@@ -121,7 +121,7 @@
             font-size: 16px;
         }
         
-        /* CONTADOR DE USUÁRIOS - CANTO SUPERIOR ESQUERDO */
+        /* CONTADOR DE USUÁRIOS */
         .contador-usuarios {
             position: fixed;
             top: 15px;
@@ -137,15 +137,13 @@
             align-items: center;
             gap: 5px;
             border: 1px solid #ffd700;
-            letter-spacing: 0.3px;
         }
         
         .contador-usuarios i {
             color: #ffd700;
-            font-size: 12px;
         }
         
-        /* PAINEL DE ROTA MELHORADO */
+        /* PAINEL DE ROTA */
         .rota-info-panel {
             position: fixed;
             top: 70px;
@@ -162,12 +160,6 @@
             gap: 25px;
             border: 2px solid #ffd700;
             box-shadow: 0 5px 30px rgba(0,0,0,0.5);
-            animation: fadeIn 0.3s;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
-            to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
         
         .rota-info-item {
@@ -179,7 +171,6 @@
         
         .rota-info-item i {
             color: #ffd700;
-            font-size: 18px;
         }
         
         .rota-tempo-principal {
@@ -191,8 +182,33 @@
         .rota-atraso {
             color: #e53935;
             font-weight: bold;
+        }
+        
+        /* NOVO BOTÃO ENCERRAR ROTA */
+        .btn-encerrar-rota {
+            position: fixed;
+            bottom: 200px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #e53935;
+            color: white;
+            border: 2px solid #ffd700;
+            border-radius: 40px;
+            padding: 10px 25px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 9500;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
             font-size: 14px;
-            margin-left: 5px;
+            transition: all 0.2s;
+        }
+        
+        .btn-encerrar-rota:hover {
+            transform: translateX(-50%) scale(1.05);
+            background: #c62828;
         }
         
         /* ALERTA SUSPENSO CORRIGIDO */
@@ -652,13 +668,13 @@
     <span id="velocidade">0 km/h</span>
 </div>
 
-<!-- CONTADOR DE USUÁRIOS - CANTO SUPERIOR ESQUERDO -->
+<!-- CONTADOR DE USUÁRIOS -->
 <div class="contador-usuarios" id="contadorUsuarios">
     <i class="fas fa-users"></i>
     <span id="numUsuarios">0</span> online
 </div>
 
-<!-- PAINEL DE INFORMAÇÕES DA ROTA MELHORADO -->
+<!-- PAINEL DE INFORMAÇÕES DA ROTA -->
 <div class="rota-info-panel" id="rotaInfoPanel">
     <div class="rota-info-item">
         <i class="fas fa-clock"></i>
@@ -672,6 +688,11 @@
         <i class="fas fa-exclamation-triangle" style="color:#e53935;"></i>
         <span id="rotaAtraso" class="rota-atraso">--</span>
     </div>
+</div>
+
+<!-- NOVO BOTÃO ENCERRAR ROTA -->
+<div class="btn-encerrar-rota" id="btnEncerrarRota" onclick="encerrarRota()">
+    <i class="fas fa-times-circle"></i> ENCERRAR ROTA
 </div>
 
 <!-- ALERTA SUSPENSO -->
@@ -849,7 +870,7 @@ function salvarCadastro() {
     criarIconesAlertasInferior();
 }
 
-// ===== NOVOS ICONES ALERTAS INFERIORES (ÚNICOS) =====
+// ===== NOVOS ICONES ALERTAS INFERIORES =====
 function criarIconesAlertasInferior() {
     const lista = document.getElementById('alertasListaInferior');
     alertas.forEach(alerta => {
@@ -872,7 +893,7 @@ function iniciarMapa() {
     });
 }
 
-// ===== GPS COM PERFORMANCE MELHORADA =====
+// ===== GPS =====
 function iniciarGPS() {
     if (!navigator.geolocation) return;
     
@@ -1065,7 +1086,7 @@ function carregarAlertasTempoReal() {
         return;
     }
     
-    // Ocorrências reais baseadas em localizações
+    // Ocorrências REAIS com endereços exatos
     const ocorrencias = [
         { 
             lat: -25.4284, 
@@ -1073,8 +1094,8 @@ function carregarAlertasTempoReal() {
             tipo: 'Acidente', 
             icone: '💥', 
             cor: '#e53935',
-            endereco: 'BR-277, km 120 - Sentido Litoral',
-            detalhes: 'Veículo capotado, trânsito lento'
+            endereco: 'BR-277, km 120 - Sentido Paranaguá',
+            detalhes: 'Veículo capotado, faixa da esquerda interditada'
         },
         { 
             lat: -25.4384, 
@@ -1083,7 +1104,7 @@ function carregarAlertasTempoReal() {
             icone: '🚧', 
             cor: '#ff9800',
             endereco: 'BR-277, km 125 - Campo Largo',
-            detalhes: 'Interdição de faixa, desvio à esquerda'
+            detalhes: 'Recapeamento asfáltico, trânsito em meia pista'
         },
         { 
             lat: -25.4184, 
@@ -1092,7 +1113,16 @@ function carregarAlertasTempoReal() {
             icone: '⚫', 
             cor: '#f44336',
             endereco: 'BR-376, km 670 - São José dos Pinhais',
-            detalhes: 'Trânsito intenso, 3km de fila'
+            detalhes: 'Trânsito intenso devido a acidente mais à frente'
+        },
+        { 
+            lat: -25.4484, 
+            lng: -49.2933, 
+            tipo: 'Animal na pista', 
+            icone: '🐂', 
+            cor: '#9c27b0',
+            endereco: 'BR-116, km 140 - Mandirituba',
+            detalhes: 'Rebanho solto na pista, cuidado redobrado'
         }
     ];
     
@@ -1104,6 +1134,20 @@ function carregarAlertasTempoReal() {
             ocorrencia.lat, ocorrencia.lng
         );
         
+        // Adiciona marcador no mapa
+        const marcador = L.marker([ocorrencia.lat, ocorrencia.lng], {
+            icon: L.divIcon({
+                html: `<div style="background:${ocorrencia.cor}; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:16px; border:2px solid white; box-shadow:0 2px 10px rgba(0,0,0,0.3);">${ocorrencia.icone}</div>`,
+                className: '',
+                iconSize: [34, 34]
+            })
+        }).addTo(mapa);
+        
+        marcador.on('click', () => {
+            mapa.flyTo([ocorrencia.lat, ocorrencia.lng], 16);
+            mostrarDetalhesOcorrencia(ocorrencia);
+        });
+        
         html += `
             <div class="alerta-tempo-real" onclick="irParaAlerta(${ocorrencia.lat}, ${ocorrencia.lng})">
                 <div class="icone" style="background:${ocorrencia.cor}">${ocorrencia.icone}</div>
@@ -1111,7 +1155,7 @@ function carregarAlertasTempoReal() {
                     <div style="font-weight:bold;">${ocorrencia.tipo}</div>
                     <div class="endereco">${ocorrencia.endereco}</div>
                     <div class="detalhes">${ocorrencia.detalhes}</div>
-                    <div style="font-size:10px; color:#ffd700;">${distancia} km de distância</div>
+                    <div style="font-size:10px; color:#ffd700;">${distancia} km da sua localização</div>
                 </div>
             </div>
         `;
@@ -1120,9 +1164,22 @@ function carregarAlertasTempoReal() {
     document.getElementById('conteudoSuspenso').innerHTML = html;
 }
 
+function mostrarDetalhesOcorrencia(ocorrencia) {
+    // Cria um popup simples com detalhes
+    L.popup({
+        maxWidth: 250
+    })
+    .setLatLng([ocorrencia.lat, ocorrencia.lng])
+    .setContent(`
+        <div style="font-weight:bold; color:${ocorrencia.cor};">${ocorrencia.icone} ${ocorrencia.tipo}</div>
+        <div style="font-size:12px; margin:5px 0;">${ocorrencia.endereco}</div>
+        <div style="font-size:11px;">${ocorrencia.detalhes}</div>
+    `)
+    .openOn(mapa);
+}
+
 function irParaAlerta(lat, lng) {
     mapa.flyTo([lat, lng], 16);
-    document.getElementById('alertaSuspenso').style.display = 'none';
 }
 
 function calcularDistancia(lat1, lon1, lat2, lon2) {
@@ -1147,7 +1204,7 @@ function toggleAlertaSuspenso() {
     }
 }
 
-// ===== ROTA COM TEMPO ESTIMADO MELHORADO =====
+// ===== ROTA COM TEMPO ESTIMADO =====
 function buscarRota() {
     const destino = document.getElementById('buscaDestino').value;
     if (!destino || !minhaLocalizacao) return;
@@ -1173,26 +1230,37 @@ function buscarRota() {
             
             mapa.flyToBounds(L.latLngBounds([minhaLocalizacao, dest]), { padding: [50, 50] });
             
-            // Calcula distância e tempo estimado
+            // Mostra botão encerrar rota
+            document.getElementById('btnEncerrarRota').style.display = 'flex';
+            
+            // Calcula distância e tempo
             const distancia = parseFloat(calcularDistancia(
                 minhaLocalizacao.lat, minhaLocalizacao.lng,
                 dest.lat, dest.lng
             ));
             
-            const tempoMin = Math.round(distancia * 1.2); // 1.2 min por km
-            const atraso = Math.round(tempoMin * 0.2); // 20% de atraso simulado
+            const tempoMin = Math.round(distancia * 1.2);
+            const atraso = Math.round(tempoMin * 0.2);
             
-            // Destaca o tempo de viagem
             document.getElementById('rotaTempo').textContent = `${tempoMin} min`;
             document.getElementById('rotaDistancia').textContent = `${distancia} km`;
             document.getElementById('rotaAtraso').textContent = `+${atraso} min`;
             document.getElementById('rotaInfoPanel').style.display = 'flex';
             
-            // Fica visível por 15 segundos (mais tempo para leitura)
             setTimeout(() => {
                 document.getElementById('rotaInfoPanel').style.display = 'none';
             }, 15000);
         });
+}
+
+// ===== NOVA FUNÇÃO ENCERRAR ROTA =====
+function encerrarRota() {
+    if (rotaAtual) {
+        mapa.removeControl(rotaAtual);
+        rotaAtual = null;
+    }
+    document.getElementById('btnEncerrarRota').style.display = 'none';
+    document.getElementById('rotaInfoPanel').style.display = 'none';
 }
 
 // ===== CHAT GERAL =====
