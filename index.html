@@ -54,64 +54,96 @@
             color: white;
         }
         
-        /* MIRA CENTRAL */
+        /* MIRA CENTRAL - ESTILO VIDEOGAME */
         .mira-central {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 48px;
-            height: 48px;
-            background: rgba(255,215,0,0.15);
-            border: 2px solid #ffd700;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ffd700;
-            font-size: 20px;
+            width: 60px;
+            height: 60px;
             pointer-events: none;
             z-index: 8000;
-            backdrop-filter: blur(2px);
-            box-shadow: 0 0 20px rgba(255,215,0,0.3);
-            transition: all 0.2s ease;
+            opacity: 0.8;
         }
         
-        .mira-central.ativa {
+        .mira-central::before,
+        .mira-central::after {
+            content: '';
+            position: absolute;
+            background: #ffd700;
+            box-shadow: 0 0 10px rgba(255,215,0,0.5);
+        }
+        
+        /* Linha horizontal */
+        .mira-central::before {
+            width: 40px;
+            height: 2px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        /* Linha vertical */
+        .mira-central::after {
+            width: 2px;
+            height: 40px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        /* Círculo central */
+        .mira-central .circulo {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border: 2px solid #ffd700;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 15px rgba(255,215,0,0.8);
+        }
+        
+        .mira-central.ativa .circulo {
             background: rgba(255,215,0,0.3);
-            transform: translate(-50%, -50%) scale(1.1);
         }
         
-        /* PAINEL DE INFORMAÇÕES DA MIRA */
+        /* PAINEL DA MIRA (VELOCIDADE) */
         .painel-mira {
             position: fixed;
             top: 120px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.8);
             backdrop-filter: blur(10px);
             color: white;
-            padding: 8px 20px;
+            padding: 10px 25px;
             border-radius: 40px;
             border: 2px solid #ffd700;
             z-index: 9500;
-            display: none;
+            display: flex;
             align-items: center;
             gap: 15px;
-            font-size: 16px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            font-size: 18px;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.5);
+            letter-spacing: 1px;
         }
         
         .velocidade-mira {
             font-weight: bold;
-            min-width: 60px;
+            min-width: 70px;
             text-align: center;
+            font-size: 24px;
+            transition: color 0.1s ease;
         }
         
-        .velocidade-mira.vermelho { color: #e53935; }
-        .velocidade-mira.laranja { color: #ff9800; }
-        .velocidade-mira.amarelo { color: #ffd700; }
-        .velocidade-mira.verde { color: #4caf50; }
+        .velocidade-mira.parado { color: #b71c1c; text-shadow: 0 0 15px rgba(183,28,28,0.5); }
+        .velocidade-mira.congestionado { color: #e53935; text-shadow: 0 0 15px rgba(229,57,53,0.5); }
+        .velocidade-mira.lento { color: #ff9800; text-shadow: 0 0 15px rgba(255,152,0,0.5); }
+        .velocidade-mira.moderado { color: #ffd700; text-shadow: 0 0 15px rgba(255,215,0,0.5); }
+        .velocidade-mira.livre { color: #4caf50; text-shadow: 0 0 15px rgba(76,175,80,0.5); }
         
         /* PAINEL DE ROTA */
         .rota-info-panel {
@@ -203,10 +235,16 @@
             display: none;
             flex-direction: column;
             gap: 10px;
-            max-height: 350px;
+            max-height: 400px;
             overflow-y: auto;
             width: 200px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE/Edge */
+        }
+        
+        .alertas-panel-inferior::-webkit-scrollbar {
+            display: none; /* Chrome/Safari/Opera */
         }
         
         .alertas-panel-inferior.visivel {
@@ -615,6 +653,7 @@
             font-size: 20px;
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
             cursor: pointer;
+            pointer-events: auto;
         }
         
         /* BOTÃO RECENTRALIZAR */
@@ -631,6 +670,8 @@
             z-index: 9000;
             display: none;
             border: 1px solid #ffd700;
+            font-size: 12px;
+            font-weight: bold;
         }
         
         #btn-px { 
@@ -704,20 +745,48 @@
             display: none;
             font-weight: bold;
         }
+        
+        /* MENSAGEM DE CONGESTIONAMENTO */
+        .congestionamento-msg {
+            position: fixed;
+            top: 130px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 50px;
+            border: 2px solid #ffd700;
+            z-index: 9400;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 13px;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.5);
+            animation: slideDown 0.3s;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
     </style>
 </head>
 <body>
 
 <div id="map"></div>
 
-<!-- MIRA CENTRAL -->
-<div class="mira-central" id="miraCentral">🎯</div>
+<!-- MIRA CENTRAL - ESTILO VIDEOGAME -->
+<div class="mira-central" id="miraCentral">
+    <div class="circulo"></div>
+</div>
 
 <!-- PAINEL DA MIRA (VELOCIDADE) -->
 <div class="painel-mira" id="painelMira">
-    <i class="fas fa-location-dot" style="color:#ffd700;"></i>
+    <i class="fas fa-crosshairs" style="color:#ffd700;"></i>
     <span class="velocidade-mira" id="velocidadeMira">0</span>
-    <span style="color:#999; font-size:12px;">km/h</span>
+    <span style="color:#ffd700;">km/h</span>
 </div>
 
 <!-- MODAL DE BOAS-VINDAS -->
@@ -905,7 +974,7 @@ const INTERVALO_GPS = 1000;
 let zoomAtual = 13;
 let miraAtiva = true;
 let ultimaVelocidadeMira = 0;
-let timerPrevisao = null;
+let ultimaCorMira = '';
 
 // ===== 11 ALERTAS =====
 const alertas = [
@@ -1002,7 +1071,7 @@ function toggleMira() {
     
     if (miraAtiva) {
         btnMira.classList.add('ativo');
-        mira.style.display = 'flex';
+        mira.style.display = 'block';
         painelMira.style.display = 'flex';
     } else {
         btnMira.classList.remove('ativo');
@@ -1043,22 +1112,16 @@ function iniciarMapa() {
             analisarVelocidadeNaMira();
         }
     });
-    
-    mapa.on('moveend', () => {
-        if (miraAtiva) {
-            analisarVelocidadeNaMira();
-        }
-    });
 }
 
 // ===== ANÁLISE DA VELOCIDADE NA MIRA =====
 function iniciarAnaliseMira() {
-    setTimeout(analisarVelocidadeNaMira, 2000);
+    setTimeout(analisarVelocidadeNaMira, 1000);
     setInterval(() => {
-        if (miraAtiva && !mapa.dragging._dragging) {
+        if (miraAtiva) {
             analisarVelocidadeNaMira();
         }
-    }, 1000);
+    }, 100); // 100ms = 10 vezes por segundo (super rápido)
 }
 
 function analisarVelocidadeNaMira() {
@@ -1069,101 +1132,106 @@ function analisarVelocidadeNaMira() {
         const lat = centro.lat;
         const lng = centro.lng;
         
-        // Simula cor baseada na localização com transição suave
+        // Mapa de calor baseado em coordenadas reais (simulação precisa)
         let velocidade;
         let classe;
         
-        // Sistema de zonas baseado em coordenadas
-        if (lat > -25.45 && lat < -25.4 && lng > -49.3 && lng < -49.25) {
-            // Área de congestionamento intenso
-            velocidade = 5 + Math.sin(Date.now() / 1000) * 5;
-            classe = 'vermelho';
-        } else if (lat > -25.5 && lat < -25.45 && lng > -49.35 && lng < -49.3) {
-            // Área de trânsito lento
-            velocidade = 25 + Math.sin(Date.now() / 800) * 8;
-            classe = 'laranja';
-        } else if (lat > -25.38 && lat < -25.33 && lng > -49.25 && lng < -49.2) {
-            // Área moderada
-            velocidade = 45 + Math.sin(Date.now() / 600) * 10;
-            classe = 'amarelo';
-        } else if (lat > -25.6 && lat < -25.3 && lng > -49.4 && lng < -49.1) {
-            // Área urbana variável
-            velocidade = 35 + Math.sin(Date.now() / 700) * 15;
-            if (velocidade < 30) classe = 'laranja';
-            else if (velocidade < 50) classe = 'amarelo';
-            else classe = 'verde';
-        } else {
-            // Rodovia livre
-            velocidade = 85 + Math.sin(Date.now() / 500) * 10;
-            classe = 'verde';
+        // ZONA 1: Congestionamento intenso (vermelho escuro) - Centro de Curitiba
+        if (lat > -25.44 && lat < -25.42 && lng > -49.28 && lng < -49.26) {
+            velocidade = 2 + Math.random() * 5; // 2-7 km/h
+            classe = 'parado';
+        }
+        // ZONA 2: Congestionamento (vermelho) - Batel/Água Verde
+        else if (lat > -25.46 && lat < -25.43 && lng > -49.27 && lng < -49.24) {
+            velocidade = 8 + Math.random() * 10; // 8-18 km/h
+            classe = 'congestionado';
+        }
+        // ZONA 3: Trânsito lento (laranja) - Portão
+        else if (lat > -25.48 && lat < -25.45 && lng > -49.29 && lng < -49.25) {
+            velocidade = 20 + Math.random() * 15; // 20-35 km/h
+            classe = 'lento';
+        }
+        // ZONA 4: Trânsito moderado (amarelo) - Região do Boqueirão
+        else if (lat > -25.52 && lat < -25.48 && lng > -49.24 && lng < -49.20) {
+            velocidade = 40 + Math.random() * 15; // 40-55 km/h
+            classe = 'moderado';
+        }
+        // ZONA 5: Rodovia livre (verde) - BR-277 fora da cidade
+        else if (lat < -25.5 || lat > -25.3 || lng < -49.4 || lng > -49.1) {
+            velocidade = 80 + Math.random() * 25; // 80-105 km/h
+            classe = 'livre';
+        }
+        // ZONA 6: Vias urbanas normais (amarelo/verde) - Demais regiões
+        else {
+            velocidade = 50 + Math.random() * 25; // 50-75 km/h
+            classe = velocidade > 65 ? 'livre' : 'moderado';
         }
         
-        // Suaviza a transição
-        ultimaVelocidadeMira = ultimaVelocidadeMira * 0.7 + velocidade * 0.3;
-        velocidade = Math.round(ultimaVelocidadeMira);
+        // Garante valores inteiros
+        velocidade = Math.round(velocidade);
+        
+        // Suaviza a transição (50% da velocidade anterior + 50% da nova)
+        ultimaVelocidadeMira = Math.round(ultimaVelocidadeMira * 0.3 + velocidade * 0.7);
+        velocidade = ultimaVelocidadeMira;
         
         // Atualiza display
         const miraElement = document.getElementById('velocidadeMira');
         miraElement.textContent = velocidade;
         miraElement.className = `velocidade-mira ${classe}`;
         
+        // Se tiver rota ativa, verifica congestionamento
+        if (rotaAtual) {
+            verificarCongestionamentoNaRota(velocidade, classe);
+        }
+        
     } catch(e) {
         console.log('Erro na análise da mira:', e);
     }
 }
 
-// ===== ANÁLISE DE CONGESTIONAMENTO =====
-function analisarCongestionamentoRota() {
-    if (!rotaAtual || !minhaLocalizacao) return;
+// ===== VERIFICA CONGESTIONAMENTO NA ROTA =====
+let ultimaMsgCongestionamento = 0;
+
+function verificarCongestionamentoNaRota(velocidade, classe) {
+    if (!rotaAtual) return;
     
-    const temCongestionamento = Math.random() > 0.5;
+    const agora = Date.now();
     
-    if (temCongestionamento) {
-        const tamanhoFila = (1 + Math.random() * 5).toFixed(1);
-        const tempoAtraso = Math.round(tamanhoFila * 3);
+    // Só mostra mensagem se estiver congestionado e já passaram 10 segundos da última
+    if ((classe === 'parado' || classe === 'congestionado') && agora - ultimaMsgCongestionamento > 10000) {
         
-        // Mostra no painel de rota
-        document.getElementById('rotaAtraso').innerHTML = `+${tempoAtraso}min`;
+        // Calcula tamanho da fila baseado na velocidade
+        let tamanhoFila;
+        if (velocidade < 5) tamanhoFila = (3 + Math.random() * 4).toFixed(1); // 3-7 km
+        else if (velocidade < 10) tamanhoFila = (2 + Math.random() * 3).toFixed(1); // 2-5 km
+        else tamanhoFila = (1 + Math.random() * 2).toFixed(1); // 1-3 km
         
-        // Mostra mensagem de previsão
-        const previsaoDiv = document.createElement('div');
-        previsaoDiv.className = 'previsao-congestionamento';
-        previsaoDiv.id = 'previsaoTemp';
-        previsaoDiv.innerHTML = `
-            <i class="fas fa-hourglass-half" style="color:#ffd700;"></i>
-            <span>${tamanhoFila}km de fila · +${tempoAtraso}min</span>
-        `;
-        previsaoDiv.style.cssText = `
-            position: fixed;
-            top: 130px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.9);
-            backdrop-filter: blur(10px);
-            color: white;
-            padding: 8px 20px;
-            border-radius: 40px;
-            border: 2px solid #ffd700;
-            z-index: 9400;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 12px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-            animation: slideDown 0.3s;
-        `;
+        const tempoAtraso = Math.round(tamanhoFila * 4); // 4 min por km
         
         // Remove mensagem anterior se existir
-        const anterior = document.getElementById('previsaoTemp');
+        const anterior = document.getElementById('congestionamentoMsg');
         if (anterior) anterior.remove();
         
-        document.body.appendChild(previsaoDiv);
+        // Cria nova mensagem
+        const msgDiv = document.createElement('div');
+        msgDiv.id = 'congestionamentoMsg';
+        msgDiv.className = 'congestionamento-msg';
+        msgDiv.innerHTML = `
+            <i class="fas fa-hourglass-half" style="color:#ffd700;"></i>
+            <span><strong style="color:#e53935;">${tamanhoFila}km</strong> de fila à frente</span>
+            <span style="color:#ffd700;">+${tempoAtraso}min</span>
+            <i class="fas fa-times" style="cursor:pointer; margin-left:10px;" onclick="this.parentElement.remove()"></i>
+        `;
         
-        // Remove após 10 segundos
+        document.body.appendChild(msgDiv);
+        
+        ultimaMsgCongestionamento = agora;
+        
+        // Remove após 8 segundos
         setTimeout(() => {
-            const temp = document.getElementById('previsaoTemp');
-            if (temp) temp.remove();
-        }, 10000);
+            const msg = document.getElementById('congestionamentoMsg');
+            if (msg) msg.remove();
+        }, 8000);
     }
 }
 
@@ -1461,8 +1529,6 @@ function buscarRota() {
             document.getElementById('rotaTempo').textContent = formatarTempo(tempoMin);
             document.getElementById('rotaDistancia').textContent = `${distancia} km`;
             document.getElementById('rotaAtraso').textContent = `+${formatarTempo(atraso)}`;
-            
-            setTimeout(analisarCongestionamentoRota, 2000);
         });
 }
 
@@ -1475,9 +1541,9 @@ function encerrarRota() {
     document.getElementById('rotaInfoPanel').style.display = 'none';
     document.getElementById('btnEncerrarRota').style.display = 'none';
     
-    // Remove mensagem de previsão se existir
-    const temp = document.getElementById('previsaoTemp');
-    if (temp) temp.remove();
+    // Remove mensagem de congestionamento
+    const msg = document.getElementById('congestionamentoMsg');
+    if (msg) msg.remove();
 }
 
 function calcularDistancia(lat1, lon1, lat2, lon2) {
