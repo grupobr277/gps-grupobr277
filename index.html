@@ -125,26 +125,68 @@
             font-size: 16px;
         }
         
-        /* CONTADOR DE USUÁRIOS */
-        .contador-usuarios {
+        /* HEADER SUPERIOR ESQUERDO */
+        .header-esquerdo {
             position: fixed;
             top: 15px;
             left: 15px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        /* CONTADOR DE USUÁRIOS */
+        .contador-usuarios {
             background: rgba(0,0,0,0.6);
             backdrop-filter: blur(10px);
             color: white;
             padding: 5px 12px;
             border-radius: 30px;
             font-size: 11px;
-            z-index: 10000;
             display: flex;
             align-items: center;
             gap: 5px;
             border: 1px solid #ffd700;
+            width: fit-content;
         }
         
         .contador-usuarios i {
             color: #ffd700;
+        }
+        
+        /* MARCA GRUPO BR-277 */
+        .marca-grupo {
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            color: #ffd700;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid #ffd700;
+            width: fit-content;
+        }
+        
+        .social-icons {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-left: 5px;
+        }
+        
+        .social-icons a {
+            color: #ffd700;
+            font-size: 12px;
+            text-decoration: none;
+            transition: transform 0.2s;
+        }
+        
+        .social-icons a:hover {
+            transform: scale(1.1);
+            color: white;
         }
         
         /* PAINEL DE ROTA PROFISSIONAL */
@@ -200,7 +242,7 @@
             font-weight: bold;
         }
         
-        /* BOTÃO ENCERRAR ROTA - REPOSICIONADO */
+        /* BOTÃO ENCERRAR ROTA */
         .btn-encerrar-rota {
             background: #e53935;
             color: white;
@@ -613,10 +655,24 @@
     <span id="velocidade">0 km/h</span>
 </div>
 
-<!-- CONTADOR DE USUÁRIOS -->
-<div class="contador-usuarios" id="contadorUsuarios">
-    <i class="fas fa-users"></i>
-    <span id="numUsuarios">0</span> online
+<!-- HEADER SUPERIOR ESQUERDO -->
+<div class="header-esquerdo">
+    <!-- CONTADOR DE USUÁRIOS -->
+    <div class="contador-usuarios" id="contadorUsuarios">
+        <i class="fas fa-users"></i>
+        <span id="numUsuarios">0</span> online
+    </div>
+    
+    <!-- MARCA GRUPO BR-277 COM ÍCONES SOCIAIS -->
+    <div class="marca-grupo">
+        <span>Grupo BR-277</span>
+        <div class="social-icons">
+            <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="#" target="_blank"><i class="fab fa-facebook"></i></a>
+            <a href="#" target="_blank"><i class="fab fa-whatsapp"></i></a>
+            <a href="#" target="_blank"><i class="fab fa-telegram"></i></a>
+        </div>
+    </div>
 </div>
 
 <!-- CONTAINER DE ROTA (PAINEL + BOTÃO) -->
@@ -717,6 +773,7 @@ let veiculoUsuario = 'carro';
 let iconeVeiculo = '🚗';
 let admin = false;
 const ADMIN_PASSWORD = 'br277admin';
+const ADMIN_USER = 'Danilo Chulik'; // Nome do admin
 let minhaLocalizacao = null;
 let meuMarcador = null;
 let seguirLocalizacao = true;
@@ -728,6 +785,7 @@ let mensagemRespondendo = null;
 let coresUsuarios = {};
 let ultimaAtualizacaoGPS = 0;
 const INTERVALO_GPS = 1000; // 1 segundo entre atualizações
+let zoomAtual = 13;
 
 // ===== 11 ALERTAS COM ÍCONES ESPECÍFICOS =====
 const alertas = [
@@ -761,6 +819,13 @@ if (userSalvo) {
     telefone = localStorage.getItem('br277_telefone') || '';
     veiculoUsuario = localStorage.getItem('br277_veiculo') || 'carro';
     iconeVeiculo = localStorage.getItem('br277_icone') || '🚗';
+    
+    // Verifica se é o admin
+    if (usuario === ADMIN_USER) {
+        admin = true;
+        document.getElementById('adminBadge').style.display = 'inline';
+    }
+    
     document.getElementById('welcomeModal').style.display = 'none';
     iniciarMapa();
     iniciarGPS();
@@ -780,12 +845,10 @@ function salvarCadastro() {
     usuario = nome;
     telefone = document.getElementById('telefoneUsuario').value.trim();
     
-    if (nome.toLowerCase() === 'admin') {
-        const senha = prompt('Digite a senha de admin:');
-        if (senha === ADMIN_PASSWORD) {
-            admin = true;
-            document.getElementById('adminBadge').style.display = 'inline';
-        }
+    // Verifica se é o admin
+    if (usuario === ADMIN_USER) {
+        admin = true;
+        document.getElementById('adminBadge').style.display = 'inline';
     }
     
     localStorage.setItem('br277_usuario', nome);
@@ -824,6 +887,44 @@ function iniciarMapa() {
         seguirLocalizacao = false;
         document.getElementById('btnRecenter').style.display = 'block';
     });
+    
+    // Monitora zoom para controle do ícone do carro
+    mapa.on('zoomend', () => {
+        zoomAtual = mapa.getZoom();
+        atualizarIconeCarro();
+    });
+}
+
+// ===== ATUALIZA ÍCONE DO CARRO BASEADO NO ZOOM =====
+function atualizarIconeCarro() {
+    if (!meuMarcador || !minhaLocalizacao) return;
+    
+    // Remove marcador atual
+    mapa.removeLayer(meuMarcador);
+    
+    // Se zoom >= 15, mostra carro + pulsante
+    // Se zoom < 15, mostra só pulsante
+    if (zoomAtual >= 15) {
+        meuMarcador = L.marker(minhaLocalizacao, {
+            icon: L.divIcon({
+                html: `<div style="position:relative;">
+                    <div class="pulse-loc" style="position:absolute; left:-12px; top:-12px;"></div>
+                    <div style="font-size:28px;">${iconeVeiculo}</div>
+                </div>`,
+                iconSize: [1, 1]
+            })
+        }).addTo(mapa);
+    } else {
+        // Só o pulsante (maior para ser visível de longe)
+        meuMarcador = L.marker(minhaLocalizacao, {
+            icon: L.divIcon({
+                html: `<div style="position:relative;">
+                    <div class="pulse-loc" style="position:absolute; left:-17px; top:-17px; width:45px; height:45px;"></div>
+                </div>`,
+                iconSize: [1, 1]
+            })
+        }).addTo(mapa);
+    }
 }
 
 // ===== GPS =====
@@ -844,15 +945,27 @@ function iniciarGPS() {
         }
         
         if (!meuMarcador) {
-            meuMarcador = L.marker(minhaLocalizacao, {
-                icon: L.divIcon({
-                    html: `<div style="position:relative;">
-                        <div class="pulse-loc" style="position:absolute; left:-12px; top:-12px;"></div>
-                        <div style="font-size:28px;">${iconeVeiculo}</div>
-                    </div>`,
-                    iconSize: [1, 1]
-                })
-            }).addTo(mapa);
+            // Primeira vez: configura baseado no zoom atual
+            if (zoomAtual >= 15) {
+                meuMarcador = L.marker(minhaLocalizacao, {
+                    icon: L.divIcon({
+                        html: `<div style="position:relative;">
+                            <div class="pulse-loc" style="position:absolute; left:-12px; top:-12px;"></div>
+                            <div style="font-size:28px;">${iconeVeiculo}</div>
+                        </div>`,
+                        iconSize: [1, 1]
+                    })
+                }).addTo(mapa);
+            } else {
+                meuMarcador = L.marker(minhaLocalizacao, {
+                    icon: L.divIcon({
+                        html: `<div style="position:relative;">
+                            <div class="pulse-loc" style="position:absolute; left:-17px; top:-17px; width:45px; height:45px;"></div>
+                        </div>`,
+                        iconSize: [1, 1]
+                    })
+                }).addTo(mapa);
+            }
             
             mapa.setView(minhaLocalizacao, 17);
             
@@ -864,6 +977,7 @@ function iniciarGPS() {
             });
             
         } else {
+            // Atualiza posição
             meuMarcador.setLatLng(minhaLocalizacao);
             db.ref('usuarios_ativos/' + usuario).update({
                 lat: minhaLocalizacao.lat,
@@ -904,12 +1018,21 @@ function carregarUsuariosAtivos() {
                 return;
             }
             
+            // Ponto simples para outros usuários (sempre visível)
             const marcador = L.marker([dados.lat, dados.lng], {
                 icon: L.divIcon({
-                    html: `<div style="font-size:24px;">${dados.veiculo || '🚗'}</div>`,
-                    iconSize: [24, 24]
+                    html: `<div style="background:#ffd700; width:8px; height:8px; border-radius:50%; border:2px solid white; box-shadow:0 0 10px #ffd700;"></div>`,
+                    iconSize: [12, 12]
                 })
             }).addTo(mapa);
+            
+            // Quando zoom >= 15, mostra o ícone do veículo
+            if (zoomAtual >= 15) {
+                marcador.setIcon(L.divIcon({
+                    html: `<div style="font-size:20px; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.5));">${dados.veiculo || '🚗'}</div>`,
+                    iconSize: [24, 24]
+                }));
+            }
             
             usuariosAtivos[id] = marcador;
         });
