@@ -509,10 +509,10 @@
             transform: scale(1.05);
         }
         
-        /* PAINEL DE INSTRUÇÕES (SETA DE DIREÇÃO) - MAIS DISCRETO */
+        /* PAINEL DE INSTRUÇÕES - REPOSICIONADO */
         .instrucoes-panel {
             position: fixed;
-            bottom: 100px;
+            bottom: 150px; /* Acima do recentralizar */
             left: 50%;
             transform: translateX(-50%);
             background: rgba(0,0,0,0.8);
@@ -553,7 +553,7 @@
             margin-left: 5px;
         }
         
-        /* POP-UP DE CONFIRMAÇÃO - MELHORADO */
+        /* POP-UP DE CONFIRMAÇÃO */
         .confirmacao-popup {
             position: fixed;
             top: 50%;
@@ -637,233 +637,50 @@
             background: #d32f2f;
         }
         
-        /* PAINEL DE INSTRUÇÕES OCULTADO POR PADRÃO */
-        .routing-panel {
-            display: none !important;
-        }
-        
-        /* LUPA */
+        /* LUPA - ÁREA DE CLIQUE AUMENTADA */
         .lupa-container {
             position: fixed;
             top: 15px;
             left: 180px;
-            width: 250px;
+            width: 280px; /* Aumentada */
             z-index: 10000;
             background: white;
-            border-radius: 40px;
+            border-radius: 50px; /* Mais arredondado */
             border: 3px solid #ffd700;
             display: flex;
             overflow: hidden;
             box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            height: 50px; /* Altura fixa maior */
         }
         
         .lupa-container input {
             flex: 1;
-            padding: 10px 15px;
+            padding: 12px 18px; /* Padding maior */
             border: none;
-            font-size: 14px;
+            font-size: 16px; /* Fonte maior */
             outline: none;
+            height: 100%;
         }
         
         .lupa-container button {
             background: #075e54;
             color: white;
             border: none;
-            width: 45px;
+            width: 55px; /* Botão maior */
             cursor: pointer;
-        }
-        
-        /* CHAT WHATSAPP */
-        .chat-container {
-            position: fixed;
-            top: 10%;
-            left: 5%;
-            width: 90%;
-            height: 80%;
-            background: #e5ddd5;
-            z-index: 20000;
-            border-radius: 20px;
-            display: none;
-            flex-direction: column;
-            border: 2px solid #075e54;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-        }
-        
-        .chat-header {
-            background: #075e54;
-            color: white;
-            padding: 15px;
-            border-radius: 18px 18px 0 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .chat-mensagens {
-            flex: 1;
-            overflow-y: auto;
-            padding: 15px;
-            display: flex;
-            flex-direction: column-reverse;
-            background: #e5ddd5;
-            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAAbklEQVQ4jc2UOwrAIAxA38WpU8fq2F2K6GQp/VhLKm0LBYNbeA8egfgEAYCQUkpYXlSEjDHCOWf1QUTQWg8d+whKKUQE5xzGmGOpqqoYYwR3zpVS0FrHGCMAQERgjDnH0lpjjBEA4Jzz7u0fY0fB+u8LjwQAAAAASUVORK5CYII=');
-        }
-        
-        .mensagem-wrapper {
-            display: flex;
-            flex-direction: column;
-            margin: 8px 0;
-            position: relative;
-        }
-        
-        .mensagem {
-            max-width: 75%;
-            padding: 8px 12px;
-            border-radius: 15px;
-            font-size: 14px;
-            word-wrap: break-word;
-            position: relative;
-        }
-        
-        .mensagem.minha {
-            background: #dcf8c6;
-            align-self: flex-end;
-            margin-left: auto;
-            border-bottom-right-radius: 2px;
-        }
-        
-        .mensagem.outra {
-            background: white;
-            align-self: flex-start;
-            border-bottom-left-radius: 2px;
-        }
-        
-        .mensagem-remetente {
-            font-weight: bold;
-            font-size: 12px;
-            margin-bottom: 2px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .mensagem-info {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 3px;
-            font-size: 10px;
-            color: #999;
-            justify-content: flex-end;
-        }
-        
-        .mensagem-telefone {
-            font-size: 10px;
-            color: #075e54;
-            margin-left: 5px;
-        }
-        
-        .mention {
-            color: #075e54;
-            font-weight: bold;
-            background: rgba(7,94,84,0.1);
-            padding: 2px 4px;
-            border-radius: 4px;
-        }
-        
-        .resposta-preview {
-            background: rgba(0,0,0,0.05);
-            border-left: 3px solid #075e54;
-            padding: 6px 10px;
-            margin-bottom: 4px;
-            border-radius: 8px;
-            font-size: 12px;
-            color: #666;
-        }
-        
-        .mensagem-acoes {
-            position: absolute;
-            top: -25px;
-            right: 0;
-            background: white;
-            border-radius: 30px;
-            padding: 4px 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            display: none;
-            gap: 12px;
-            z-index: 10;
-            border: 1px solid #075e54;
-        }
-        
-        .mensagem-wrapper:hover .mensagem-acoes {
-            display: flex;
-        }
-        
-        .mensagem-acoes span {
-            cursor: pointer;
-            font-size: 14px;
-            color: #075e54;
-        }
-        
-        .data-divider {
-            text-align: center;
-            margin: 15px 0;
-        }
-        
-        .data-divider span {
-            background: rgba(0,0,0,0.5);
-            color: white;
-            padding: 4px 15px;
-            border-radius: 30px;
-            font-size: 11px;
-        }
-        
-        .chat-input {
-            padding: 15px;
-            background: #f0f0f0;
-            display: flex;
-            gap: 10px;
-            border-radius: 0 0 18px 18px;
-        }
-        
-        .chat-input input {
-            flex: 1;
-            padding: 12px 15px;
-            border-radius: 30px;
-            border: 1px solid #ccc;
-            outline: none;
-            font-size: 14px;
-        }
-        
-        .chat-input button {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            border: none;
-            background: #075e54;
-            color: white;
-            cursor: pointer;
-        }
-        
-        /* ÍCONES DE ALERTA NO MAPA */
-        .alerta-mapa-marcador {
-            font-size: 20px !important;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
-            cursor: pointer;
-            z-index: 500;
-            pointer-events: auto !important;
-            min-width: 30px;
-            min-height: 30px;
+            font-size: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: transparent;
-            border-radius: 50%;
+            transition: background 0.2s;
         }
         
-        .alerta-mapa-marcador:hover {
-            transform: scale(1.1);
-            filter: brightness(1.2);
+        .lupa-container button:hover {
+            background: #0a7a6b;
+        }
+        
+        .lupa-container button:active {
+            transform: scale(0.95);
         }
         
         /* BOTÃO RECENTRALIZAR */
@@ -1090,7 +907,7 @@
     </div>
 </div>
 
-<!-- PAINEL DE INSTRUÇÕES (SETA DE DIREÇÃO) - DISCRETO -->
+<!-- PAINEL DE INSTRUÇÕES - REPOSICIONADO -->
 <div class="instrucoes-panel" id="instrucoesPanel">
     <div class="instrucao-icone" id="instrucaoIcone">
         <i class="fas fa-arrow-up"></i>
@@ -1148,9 +965,9 @@
 <!-- BOTÃO ENCERRAR ROTA -->
 <div class="btn-encerrar-rota" id="btnEncerrarRota" onclick="encerrarRota()">✖</div>
 
-<!-- LUPA -->
+<!-- LUPA - ÁREA MAIOR -->
 <div class="lupa-container">
-    <input type="text" id="buscaDestino" placeholder="Digite seu destino...">
+    <input type="text" id="buscaDestino" placeholder="Digite seu destino..." value="Curitiba">
     <button onclick="buscarRota()"><i class="fas fa-search"></i></button>
 </div>
 
@@ -1785,6 +1602,12 @@ function traduzirInstrucao(instrucao) {
     if (texto.includes('merge')) return 'Entre na via';
     if (texto.includes('keep left')) return 'Mantenha-se à esquerda';
     if (texto.includes('keep right')) return 'Mantenha-se à direita';
+    if (texto.includes('head')) return 'Siga em direção a';
+    if (texto.includes('northwest')) return 'noroeste';
+    if (texto.includes('north')) return 'norte';
+    if (texto.includes('south')) return 'sul';
+    if (texto.includes('east')) return 'leste';
+    if (texto.includes('west')) return 'oeste';
     
     return instrucao;
 }
