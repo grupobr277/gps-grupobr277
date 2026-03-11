@@ -132,67 +132,59 @@
             transform: rotate(180deg);
         }
         
-        /* PAINEL DE ALERTAS - COM CABEÇALHO E FECHAR */
+        /* PAINEL DE ALERTAS - COM FECHAR NA BORDA */
         .alertas-panel {
             background: rgba(0,0,0,0.6);
             backdrop-filter: blur(15px);
             border: 2px solid #ffd700;
             border-radius: 16px;
-            padding: 0;
+            padding: 10px;
             display: none;
             width: 240px;
             max-height: none;
             overflow: visible;
             box-shadow: 0 10px 40px rgba(0,0,0,0.5);
             animation: slideUp 0.3s ease;
+            position: relative;
         }
         
         .alertas-panel.visivel {
             display: block;
         }
         
-        .alertas-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 12px;
-            border-bottom: 1px solid rgba(255,215,0,0.3);
-        }
-        
-        .alertas-header span {
-            color: #ffd700;
-            font-size: 12px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .btn-fechar-painel {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: rgba(255,215,0,0.2);
-            border: 2px solid #ffd700;
-            color: #ffd700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-        
-        .btn-fechar-painel:hover {
-            background: #ffd700;
-            color: #1a1a1a;
-            transform: scale(1.05);
-        }
-        
         .alertas-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 8px;
-            padding: 12px;
+        }
+        
+        /* Botão FECHAR na borda direita, alinhado com BARREIRA */
+        .btn-fechar-painel {
+            position: absolute;
+            right: -20px;
+            top: 128px; /* Posiciona ao lado da BARREIRA (4ª linha: 3 linhas acima * 40px) */
+            width: 36px;
+            height: 36px;
+            background: #ffd700;
+            border: 2px solid white;
+            border-radius: 50%;
+            color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: all 0.2s;
+            z-index: 10;
+        }
+        
+        .btn-fechar-painel:hover {
+            transform: scale(1.1);
+            background: white;
+            border-color: #ffd700;
+            color: #ffd700;
         }
         
         @keyframes slideUp {
@@ -307,150 +299,6 @@
             font-size: 9px;
             color: #ccc;
             margin-top: 2px;
-        }
-        
-        /* ÍCONE DO CARRO - SEDAN TECNOLÓGICO (INSPIRADO NO UBER) */
-        .carro-uber {
-            width: 42px;
-            height: 32px;
-            position: relative;
-            filter: drop-shadow(0 8px 12px rgba(0,0,0,0.4));
-        }
-        
-        .carro-uber .carroceria {
-            position: absolute;
-            width: 38px;
-            height: 20px;
-            background: #3A3A3A;  /* Cinza tecnológico */
-            border-radius: 10px 10px 8px 8px;
-            top: 6px;
-            left: 2px;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.3), inset 0 1px 2px rgba(255,255,255,0.2);
-            border: 1px solid #555;
-        }
-        
-        .carro-uber .vidro-dianteiro {
-            position: absolute;
-            width: 16px;
-            height: 8px;
-            background: #4A6B8F;  /* Azul tecnológico */
-            border-radius: 6px 6px 2px 2px;
-            top: 8px;
-            left: 13px;
-            border: 1px solid #2A4A6A;
-            box-shadow: inset 0 1px 3px rgba(255,255,255,0.3);
-        }
-        
-        .carro-uber .vidro-traseiro {
-            position: absolute;
-            width: 12px;
-            height: 6px;
-            background: #4A6B8F;
-            border-radius: 2px 2px 4px 4px;
-            bottom: 8px;
-            left: 15px;
-            border: 1px solid #2A4A6A;
-            box-shadow: inset 0 -1px 2px rgba(255,255,255,0.2);
-        }
-        
-        .carro-uber .capo {
-            position: absolute;
-            width: 22px;
-            height: 4px;
-            background: #3A3A3A;
-            top: 14px;
-            left: 10px;
-            z-index: 2;
-            border-radius: 2px;
-        }
-        
-        .carro-uber .farol-esq {
-            position: absolute;
-            width: 4px;
-            height: 3px;
-            background: #FFD700;
-            border-radius: 2px 0 0 2px;
-            top: 14px;
-            left: 3px;
-            box-shadow: 0 0 8px #FFD700;
-        }
-        
-        .carro-uber .farol-dir {
-            position: absolute;
-            width: 4px;
-            height: 3px;
-            background: #FFD700;
-            border-radius: 0 2px 2px 0;
-            top: 14px;
-            right: 3px;
-            box-shadow: 0 0 8px #FFD700;
-        }
-        
-        .carro-uber .lanterna-esq {
-            position: absolute;
-            width: 3px;
-            height: 3px;
-            background: #E53935;
-            border-radius: 1px;
-            bottom: 7px;
-            left: 4px;
-            box-shadow: 0 0 5px #E53935;
-        }
-        
-        .carro-uber .lanterna-dir {
-            position: absolute;
-            width: 3px;
-            height: 3px;
-            background: #E53935;
-            border-radius: 1px;
-            bottom: 7px;
-            right: 4px;
-            box-shadow: 0 0 5px #E53935;
-        }
-        
-        .carro-uber .roda {
-            position: absolute;
-            width: 7px;
-            height: 7px;
-            background: #222;
-            border-radius: 50%;
-            border: 2px solid #888;
-            bottom: 5px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
-        }
-        
-        .carro-uber .roda-traseira {
-            left: 6px;
-        }
-        
-        .carro-uber .roda-dianteira {
-            right: 6px;
-        }
-        
-        .carro-uber .sombra {
-            position: absolute;
-            width: 40px;
-            height: 10px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 50%;
-            bottom: -4px;
-            left: 1px;
-            filter: blur(4px);
-            z-index: -1;
-        }
-        
-        /* Versão para outros usuários */
-        .carro-uber.outro .carroceria {
-            background: #5A5A5A;
-        }
-        .carro-uber.outro .vidro-dianteiro,
-        .carro-uber.outro .vidro-traseiro {
-            background: #5A6B7A;
-            opacity: 0.8;
-        }
-        .carro-uber.outro .farol-esq,
-        .carro-uber.outro .farol-dir {
-            opacity: 0.5;
         }
         
         /* PAINEL DE ROTA */
@@ -830,11 +678,12 @@
             cursor: pointer;
         }
         
-        /* ÍCONES DE ALERTA NO MAPA */
+        /* ÍCONES DE ALERTA NO MAPA - REDUZIDOS */
         .alerta-mapa-marcador {
-            font-size: 24px;
+            font-size: 20px !important;
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
             cursor: pointer;
+            z-index: 500;
         }
         
         /* BOTÃO RECENTRALIZAR */
@@ -1024,7 +873,7 @@
     </div>
 </div>
 
-<!-- SISTEMA REPORTE COM CABEÇALHO E FECHAR -->
+<!-- SISTEMA REPORTE COM FECHAR NA BORDA -->
 <div class="reporte-container">
     <div class="reporte-toggle" onclick="toggleReporte()">
         <span class="led"></span>
@@ -1032,11 +881,8 @@
         <i class="fas fa-chevron-up"></i>
     </div>
     <div class="alertas-panel" id="alertasPanel">
-        <div class="alertas-header">
-            <span>ALERTAS RÁPIDOS</span>
-            <div class="btn-fechar-painel" onclick="toggleReporte()">✖</div>
-        </div>
         <div class="alertas-grid" id="alertasGrid"></div>
+        <div class="btn-fechar-painel" onclick="toggleReporte()">✖</div>
     </div>
 </div>
 
@@ -1253,27 +1099,16 @@ function criarIconesAlertas() {
     });
 }
 
-// ===== FUNÇÃO PARA CRIAR ÍCONE DO CARRO UBER =====
+// ===== FUNÇÃO PARA CRIAR ÍCONE DO CARRO (FONT AWESOME) =====
 function criarIconeCarro(ehMeu = true) {
-    const classeExtra = ehMeu ? '' : 'outro';
+    const cor = ehMeu ? '#000000' : '#666666';
+    const tamanho = ehMeu ? 28 : 24;
     
     return L.divIcon({
-        html: `<div class="carro-uber ${classeExtra}">
-            <div class="carroceria"></div>
-            <div class="vidro-dianteiro"></div>
-            <div class="vidro-traseiro"></div>
-            <div class="capo"></div>
-            <div class="farol-esq"></div>
-            <div class="farol-dir"></div>
-            <div class="lanterna-esq"></div>
-            <div class="lanterna-dir"></div>
-            <div class="roda roda-traseira"></div>
-            <div class="roda roda-dianteira"></div>
-            <div class="sombra"></div>
-        </div>`,
-        className: '',
-        iconSize: [42, 42],
-        iconAnchor: [21, 21]
+        html: `<i class="fas fa-car-side" style="color: ${cor}; font-size: ${tamanho}px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));"></i>`,
+        className: 'carro-marcador',
+        iconSize: [tamanho, tamanho],
+        iconAnchor: [tamanho/2, tamanho/2]
     });
 }
 
@@ -1437,9 +1272,9 @@ function carregarAlertasFixos() {
         
         const marcador = L.marker([alerta.lat, alerta.lng], {
             icon: L.divIcon({
-                html: `<div style="font-size:24px; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3));">${alerta.icone}</div>`,
+                html: `<div class="alerta-mapa-marcador" style="color:${alerta.cor};">${alerta.icone}</div>`,
                 className: '',
-                iconSize: [24, 24]
+                iconSize: [20, 20]
             })
         }).addTo(mapa);
         
@@ -1459,9 +1294,9 @@ function ativarAlerta(alerta) {
     
     const marcador = L.marker(minhaLocalizacao, {
         icon: L.divIcon({
-            html: `<div style="font-size:24px; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3));">${alerta.icone}</div>`,
+            html: `<div class="alerta-mapa-marcador" style="color:${alerta.cor};">${alerta.icone}</div>`,
             className: '',
-            iconSize: [24, 24]
+            iconSize: [20, 20]
         })
     }).addTo(mapa);
     
