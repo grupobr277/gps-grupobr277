@@ -14,145 +14,2004 @@
         html, body, #map { height: 100%; width: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
         
         /* MODAL DE BOAS-VINDAS */
-        .welcome-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 999999; display: flex; align-items: center; justify-content: center; }
-        .welcome-content { background: linear-gradient(135deg, #1a1a1a, #2d2d2d); padding: 40px; border-radius: 40px; text-align: center; max-width: 400px; width: 90%; box-shadow: 0 20px 40px rgba(0,0,0,0.5); border: 1px solid rgba(255,215,0,0.3); }
-        .welcome-content h2 { color: #ffd700; margin-bottom: 10px; font-size: 32px; }
-        .welcome-content input { width: 100%; padding: 15px; background: rgba(255,255,255,0.1); border: 2px solid #ffd700; border-radius: 30px; margin: 10px 0; font-size: 16px; outline: none; color: white; }
+        .welcome-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 999999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .welcome-content {
+            background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+            padding: 40px;
+            border-radius: 40px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,215,0,0.3);
+        }
+        
+        .welcome-content h2 {
+            color: #ffd700;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+        
+        .welcome-content input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid #ffd700;
+            border-radius: 30px;
+            margin: 10px 0;
+            font-size: 16px;
+            outline: none;
+            color: white;
+        }
         
         /* BOTÃO REPORTE */
-        .reporte-container { position: fixed; bottom: 90px; left: 10px; z-index: 9000; display: flex; flex-direction: column; align-items: flex-start; }
-        .reporte-toggle { background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); color: white; border: 2px solid #ffd700; border-radius: 40px; padding: 8px 20px; font-size: 13px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 10px; margin-bottom: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); transition: all 0.3s ease; position: relative; overflow: hidden; letter-spacing: 1px; text-transform: uppercase; }
-        .reporte-toggle .led { width: 8px; height: 8px; border-radius: 50%; background: #4caf50; box-shadow: 0 0 15px #4caf50; animation: pulse-led 2s infinite; }
+        .reporte-container {
+            position: fixed;
+            bottom: 90px;
+            left: 10px;
+            z-index: 9000;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .reporte-toggle {
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px);
+            color: white;
+            border: 2px solid #ffd700;
+            border-radius: 40px;
+            padding: 8px 20px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        
+        .reporte-toggle::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,215,0,0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .reporte-toggle:hover::before {
+            left: 100%;
+        }
+        
+        .reporte-toggle .led {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4caf50;
+            box-shadow: 0 0 15px #4caf50;
+            animation: pulse-led 2s infinite;
+        }
+        
+        .reporte-toggle.ativo .led {
+            background: #ffd700;
+            box-shadow: 0 0 20px #ffd700;
+        }
+        
+        @keyframes pulse-led {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.3); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        .reporte-toggle i {
+            color: #ffd700;
+            transition: transform 0.3s;
+            font-size: 12px;
+        }
+        
+        .reporte-toggle.ativo i {
+            transform: rotate(180deg);
+        }
         
         /* PAINEL DE ALERTAS */
-        .alertas-panel { background: rgba(0,0,0,0.6); backdrop-filter: blur(15px); border: 2px solid #ffd700; border-radius: 16px; padding: 10px; display: none; width: 240px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); animation: slideUp 0.3s ease; position: relative; }
-        .alertas-panel.visivel { display: block; }
-        .alertas-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-        .btn-fechar-painel { position: absolute; right: -20px; top: 240px; width: 40px; height: 40px; background: #e53935; border: 2px solid #ffd700; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 20px; font-weight: bold; z-index: 10; }
+        .alertas-panel {
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(15px);
+            border: 2px solid #ffd700;
+            border-radius: 16px;
+            padding: 10px;
+            display: none;
+            width: 240px;
+            max-height: none;
+            overflow: visible;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            animation: slideUp 0.3s ease;
+            position: relative;
+        }
         
-        /* CORES DOS ALERTAS (Simplificado para o exemplo) */
-        .alerta-item { width: 100%; aspect-ratio: 1/1; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; border: 2px solid rgba(255,255,255,0.3); background: #333; }
+        .alertas-panel.visivel {
+            display: block;
+        }
+        
+        .alertas-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+        
+        .btn-fechar-painel {
+            position: absolute;
+            right: -20px;
+            top: 240px;
+            width: 40px;
+            height: 40px;
+            background: #e53935;
+            border: 2px solid #ffd700;
+            border-radius: 50%;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: all 0.2s;
+            z-index: 10;
+        }
+        
+        .btn-fechar-painel:hover {
+            transform: scale(1.1);
+            background: #c62828;
+            border-color: white;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .alerta-item {
+            width: 100%;
+            aspect-ratio: 1/1;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid rgba(255,255,255,0.3);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.1) inset;
+            position: relative;
+            overflow: hidden;
+            padding: 8px;
+        }
+        
+        .alerta-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.4s;
+        }
+        
+        .alerta-item:hover::before {
+            left: 100%;
+        }
+        
+        .alerta-item:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+            border-color: #ffd700;
+        }
+        
+        .alerta-item:active {
+            transform: scale(0.95);
+        }
+        
+        .alerta-icone {
+            font-size: 28px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+        
+        .alerta-nome {
+            font-size: 10px;
+            font-weight: 700;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+        
+        /* CORES DOS ALERTAS */
         .alerta-acidente { background: linear-gradient(135deg, #e53935, #b71c1c); }
-
+        .alerta-obras { background: linear-gradient(135deg, #ff9800, #f57c00); }
+        .alerta-pane { background: linear-gradient(135deg, #795548, #5d4037); }
+        .alerta-animal { background: linear-gradient(135deg, #9c27b0, #7b1fa2); }
+        .alerta-radar { background: linear-gradient(135deg, #607d8b, #455a64); }
+        .alerta-barreira { background: linear-gradient(135deg, #8b4513, #5d3a1a); }
+        .alerta-neblina { background: linear-gradient(135deg, #00acc1, #0097a7); }
+        .alerta-congestionamento { background: linear-gradient(135deg, #f44336, #d32f2f); }
+        .alerta-alagamento { background: linear-gradient(135deg, #2196f3, #1976d2); }
+        .alerta-bloqueio { background: linear-gradient(135deg, #b71c1c, #8B0000); }
+        
         /* VELOCÍMETRO */
-        .velocimetro-container { position: fixed; bottom: 20px; left: 10px; z-index: 9000; }
-        .velocimetro-redondo { width: 70px; height: 70px; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); border: 3px solid #ffd700; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; }
-        .velocimetro-valor { font-size: 22px; color: #ffd700; font-weight: bold; }
-
-        /* LUPA E INTERFACE */
-        .lupa-container { position: fixed; top: 15px; left: 50%; transform: translateX(-50%); width: 250px; z-index: 10000; background: white; border-radius: 40px; border: 3px solid #ffd700; display: flex; height: 45px; overflow: hidden; }
-        .lupa-container input { flex: 1; padding: 10px; border: none; outline: none; }
-        .lupa-container button { background: #075e54; color: white; border: none; width: 45px; cursor: pointer; }
-
-        .botoes-direita { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 9000; }
-        .btn-padrao { width: 50px; height: 50px; border-radius: 50%; background: rgba(0,0,0,0.7); border: 2px solid #ffd700; color: #ffd700; display: flex; align-items: center; justify-content: center; font-size: 22px; cursor: pointer; }
-
-        #btn-px { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 70px; height: 70px; background: #333; border: 4px solid #ffd700; color: #ffd700; font-size: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 9001; }
-        #btn-px.ativo { background: #e53935; color: white; }
-
-        /* ESTILO DO CARRO (AQUI ESTÁ O SEGREDO) */
-        .carro-waze { filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5)); transition: all 0.2s ease-out; }
+        .velocimetro-container {
+            position: fixed;
+            bottom: 20px;
+            left: 10px;
+            z-index: 9000;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .velocimetro-redondo {
+            width: 70px;
+            height: 70px;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px);
+            border: 3px solid #ffd700;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+            color: white;
+            font-weight: bold;
+        }
+        
+        .velocimetro-valor {
+            font-size: 22px;
+            line-height: 1;
+            color: #ffd700;
+        }
+        
+        .velocimetro-unidade {
+            font-size: 9px;
+            color: #ccc;
+            margin-top: 2px;
+        }
+        
+        /* PAINEL DE ROTA */
+        .rota-info-panel {
+            position: fixed;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            display: none;
+            align-items: center;
+            gap: 25px;
+            border: 2px solid #ffd700;
+            z-index: 9500;
+            font-size: 14px;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.5);
+        }
+        
+        .rota-info-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .rota-info-item i {
+            color: #ffd700;
+        }
+        
+        .rota-tempo-principal {
+            font-weight: bold;
+            color: #ffd700;
+        }
+        
+        .rota-atraso {
+            color: #e53935;
+            font-weight: bold;
+        }
+        
+        /* HEADER SUPERIOR ESQUERDO */
+        .header-esquerdo {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .contador-usuarios {
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 30px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            border: 1px solid #ffd700;
+            width: fit-content;
+        }
+        
+        .contador-usuarios i {
+            color: #ffd700;
+        }
+        
+        .marca-grupo {
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(10px);
+            color: #ffd700;
+            padding: 3px 8px;
+            border-radius: 30px;
+            font-size: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            border: 1px solid #ffd700;
+            width: fit-content;
+        }
+        
+        .marca-grupo span {
+            font-weight: bold;
+            letter-spacing: 0.3px;
+        }
+        
+        .social-icons {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .social-icons a {
+            color: #ffd700;
+            font-size: 9px;
+            text-decoration: none;
+            transition: transform 0.2s;
+        }
+        
+        .social-icons a:hover {
+            transform: scale(1.1);
+        }
+        
+        /* BOTÕES PADRÃO */
+        .botoes-direita {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 9000;
+        }
+        
+        .btn-padrao {
+            width: 50px;
+            height: 50px;
+            border-radius: 25px;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px);
+            border: 2px solid #ffd700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 22px;
+            color: #ffd700;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        
+        .btn-padrao:hover {
+            transform: scale(1.05);
+            background: rgba(255,215,0,0.2);
+        }
+        
+        .btn-padrao.ativo {
+            background: rgba(255,215,0,0.3);
+        }
+        
+        .btn-padrao.mudo {
+            background: #e53935;
+            border-color: white;
+            color: white;
+        }
+        
+        /* BOTÃO INICIAR NAVEGAÇÃO */
+        .btn-iniciar-navegacao {
+            position: fixed;
+            top: 140px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ffd700;
+            color: #1a1a1a;
+            border: 2px solid white;
+            border-radius: 40px;
+            padding: 10px 25px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 9501;
+            font-size: 15px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        
+        .btn-iniciar-navegacao:hover {
+            transform: translateX(-50%) scale(1.05);
+            background: #b8860b;
+            color: white;
+        }
+        
+        .btn-iniciar-navegacao i {
+            font-size: 16px;
+        }
+        
+        /* BOTÃO ENCERRAR ROTA */
+        .btn-encerrar-rota {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            background: #e53935;
+            color: white;
+            border: 2px solid #ffd700;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 9501;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transition: all 0.2s;
+        }
+        
+        .btn-encerrar-rota:hover {
+            background: #c62828;
+            transform: scale(1.05);
+        }
+        
+        /* PAINEL DE INSTRUÇÕES */
+        .instrucoes-panel {
+            position: fixed;
+            bottom: 150px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            border: 2px solid #ffd700;
+            border-radius: 40px;
+            padding: 8px 20px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            z-index: 9600;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            max-width: 90%;
+            width: auto;
+        }
+        
+        .instrucao-icone {
+            width: 30px;
+            height: 30px;
+            background: #ffd700;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1a1a1a;
+            font-size: 16px;
+        }
+        
+        .instrucao-texto {
+            color: white;
+            font-size: 13px;
+            font-weight: bold;
+        }
+        
+        .instrucao-distancia {
+            color: #ffd700;
+            font-size: 12px;
+            margin-left: 5px;
+        }
+        
+        /* POP-UP DE CONFIRMAÇÃO */
+        .confirmacao-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.95);
+            backdrop-filter: blur(10px);
+            border: 2px solid #ffd700;
+            border-radius: 20px;
+            padding: 20px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            z-index: 10000;
+            color: white;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            min-width: 280px;
+            max-width: 90%;
+            text-align: center;
+        }
+        
+        .confirmacao-texto {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        
+        .confirmacao-subtexto {
+            font-size: 12px;
+            color: #ffd700;
+            margin-bottom: 10px;
+        }
+        
+        .confirmacao-botoes {
+            display: flex;
+            gap: 15px;
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .btn-confirmar {
+            background: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 40px;
+            padding: 12px 30px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            min-width: 120px;
+            transition: all 0.2s;
+        }
+        
+        .btn-confirmar:hover {
+            transform: scale(1.05);
+            background: #45a049;
+        }
+        
+        .btn-confirmar.confirmado {
+            background: #2e7d32;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        
+        .btn-negar {
+            background: #e53935;
+            color: white;
+            border: none;
+            border-radius: 40px;
+            padding: 12px 30px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            min-width: 120px;
+            transition: all 0.2s;
+        }
+        
+        .btn-negar:hover {
+            transform: scale(1.05);
+            background: #d32f2f;
+        }
+        
+        /* LUPA */
+        .lupa-container {
+            position: fixed;
+            top: 15px;
+            left: 180px;
+            width: 250px;
+            z-index: 10000;
+            background: white;
+            border-radius: 40px;
+            border: 3px solid #ffd700;
+            display: flex;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            height: 45px;
+        }
+        
+        .lupa-container input {
+            flex: 1;
+            padding: 10px 15px;
+            border: none;
+            font-size: 14px;
+            outline: none;
+            height: 100%;
+        }
+        
+        .lupa-container button {
+            background: #075e54;
+            color: white;
+            border: none;
+            width: 45px;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* BOTÃO RECENTRALIZAR */
+        .btn-recentrar {
+            position: fixed;
+            bottom: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.7);
+            color: #ffd700;
+            border-radius: 40px;
+            padding: 8px 20px;
+            cursor: pointer;
+            z-index: 9000;
+            display: none;
+            border: 1px solid #ffd700;
+            font-size: 12px;
+            font-weight: bold;
+            backdrop-filter: blur(5px);
+        }
+        
+        #btn-px { 
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 70px;
+            background: #333;
+            border: 4px solid #ffd700;
+            color: #ffd700;
+            font-size: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 9001;
+            transition: all 0.2s;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+        
+        #btn-px.ativo { 
+            background: #e53935; 
+            color: white; 
+            border-color: white;
+            animation: pulse-vermelho 1.5s infinite;
+        }
+        
+        @keyframes pulse-vermelho {
+            0% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(229, 57, 53, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0); }
+        }
+        
+        .mapa-noturno {
+            filter: invert(100%) hue-rotate(180deg) brightness(95%);
+        }
+        
+        .pulse-loc { 
+            width: 35px; 
+            height: 35px; 
+            border-radius: 50%; 
+            animation: pulse 1.5s infinite; 
+            background: rgba(255, 215, 0, 0.3); 
+            border: 3px solid #ffd700; 
+        }
+        
+        @keyframes pulse { 
+            0% { transform: scale(0.8); opacity: 1; } 
+            100% { transform: scale(2); opacity: 0; } 
+        }
+        
+        .gravando-indicator {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 50px;
+            z-index: 10000;
+            display: none;
+            border: 2px solid #ffd700;
+        }
+        
+        .audio-notification {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ffd700;
+            color: #1a1a1a;
+            padding: 10px 25px;
+            border-radius: 50px;
+            z-index: 10000;
+            display: none;
+            font-weight: bold;
+        }
+        
+        /* MENSAGEM DE CONGESTIONAMENTO */
+        .congestionamento-msg {
+            position: fixed;
+            top: 130px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 50px;
+            border: 2px solid #ffd700;
+            z-index: 9400;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 13px;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.5);
+            animation: slideDown 0.3s;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+        
+        /* CLUSTER PERSONALIZADO */
+        .cluster-marcador {
+            background: #ffd700;
+            color: #1a1a1a;
+            border: 3px solid white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        
+        /* ESTILO DO CARRO PROFISSIONAL */
+        .carro-profissional {
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+            transition: transform 0.2s ease-out;
+        }
     </style>
 </head>
 <body>
 
 <div id="map"></div>
 
+<!-- MODAL DE BOAS-VINDAS -->
 <div class="welcome-modal" id="welcomeModal">
     <div class="welcome-content">
         <h2>🚛 BR-277</h2>
+        <p style="color:#ffd700; margin-bottom:20px;">Bem-vindo ao sistema de trânsito</p>
+        
         <input type="text" id="nomeUsuario" placeholder="Seu nome" value="Motorista">
-        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin: 20px 0;">
-            <div onclick="selecionarVeiculo('carro')" style="cursor:pointer; background:#444; padding:10px; border-radius:10px;">🚗</div>
-            <div onclick="selecionarVeiculo('caminhao')" style="cursor:pointer; background:#444; padding:10px; border-radius:10px;">🚛</div>
-            <div onclick="selecionarVeiculo('moto')" style="cursor:pointer; background:#444; padding:10px; border-radius:10px;">🏍️</div>
+        <input type="text" id="telefoneUsuario" placeholder="WhatsApp (opcional)" value="">
+        
+        <div style="margin:20px 0; text-align:left; color:#ffd700;">Escolha seu veículo:</div>
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:20px;">
+            <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:15px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('carro', 'carro')" id="veiculo-carro">
+                <div style="font-size:30px;">🚗</div>
+                <div style="font-size:12px; color:white;">Carro</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:15px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('caminhao', 'caminhao')" id="veiculo-caminhao">
+                <div style="font-size:30px;">🚛</div>
+                <div style="font-size:12px; color:white;">Caminhão</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:15px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('moto', 'moto')" id="veiculo-moto">
+                <div style="font-size:30px;">🏍️</div>
+                <div style="font-size:12px; color:white;">Moto</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:15px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('onibus', 'onibus')" id="veiculo-onibus">
+                <div style="font-size:30px;">🚌</div>
+                <div style="font-size:12px; color:white;">Ônibus</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:15px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('van', 'van')" id="veiculo-van">
+                <div style="font-size:30px;">🚐</div>
+                <div style="font-size:12px; color:white;">Van</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:15px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('pickup', 'pickup')" id="veiculo-pickup">
+                <div style="font-size:30px;">🛻</div>
+                <div style="font-size:12px; color:white;">Pickup</div>
+            </div>
         </div>
-        <button onclick="salvarCadastro()" style="width:100%; padding:15px; background:#ffd700; border-radius:30px; font-weight:bold; border:none;">ENTRAR</button>
+        
+        <button onclick="salvarCadastro()" style="width:100%; padding:15px; background:#ffd700; border:none; border-radius:30px; font-size:18px; font-weight:bold; cursor:pointer; color:#1a1a1a;">ENTRAR</button>
     </div>
 </div>
 
+<!-- PAINEL DE ROTA -->
+<div class="rota-info-panel" id="rotaInfoPanel">
+    <div class="rota-info-item">
+        <i class="fas fa-clock"></i>
+        <span class="rota-tempo-principal" id="rotaTempo">--</span>
+    </div>
+    <div class="rota-info-item">
+        <i class="fas fa-road"></i>
+        <span id="rotaDistancia">--</span>
+    </div>
+    <div class="rota-info-item">
+        <i class="fas fa-exclamation-triangle" style="color:#e53935;"></i>
+        <span id="rotaAtraso" class="rota-atraso">--</span>
+    </div>
+</div>
+
+<!-- SISTEMA REPORTE -->
+<div class="reporte-container">
+    <div class="reporte-toggle" onclick="toggleReporte()">
+        <span class="led"></span>
+        REPORTE
+        <i class="fas fa-chevron-up"></i>
+    </div>
+    <div class="alertas-panel" id="alertasPanel">
+        <div class="alertas-grid" id="alertasGrid"></div>
+        <div class="btn-fechar-painel" onclick="toggleReporte()">✖</div>
+    </div>
+</div>
+
+<!-- VELOCÍMETRO -->
 <div class="velocimetro-container">
-    <div class="velocimetro-redondo">
+    <div class="velocimetro-redondo" id="velocimetroRedondo">
         <div class="velocimetro-valor" id="velocidadeRedonda">0</div>
-        <div style="font-size:9px;">km/h</div>
+        <div class="velocimetro-unidade">km/h</div>
     </div>
 </div>
 
+<!-- PAINEL DE INSTRUÇÕES -->
+<div class="instrucoes-panel" id="instrucoesPanel">
+    <div class="instrucao-icone" id="instrucaoIcone">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+    <div class="instrucao-texto" id="instrucaoTexto">Siga em frente</div>
+    <div class="instrucao-distancia" id="instrucaoDistancia">500 m</div>
+</div>
+
+<!-- POP-UP DE CONFIRMAÇÃO -->
+<div class="confirmacao-popup" id="confirmacaoPopup">
+    <div class="confirmacao-texto" id="confirmacaoTexto">Acidente a 300 metros?</div>
+    <div class="confirmacao-subtexto" id="confirmacaoSubtexto">Toque para confirmar (8s)</div>
+    <div class="confirmacao-botoes">
+        <button class="btn-confirmar" id="btnConfirmar" onclick="confirmarAlerta()">SIM</button>
+        <button class="btn-negar" onclick="negarAlerta()">NÃO</button>
+    </div>
+</div>
+
+<!-- HEADER SUPERIOR ESQUERDO -->
+<div class="header-esquerdo">
+    <div class="contador-usuarios" id="contadorUsuarios">
+        <i class="fas fa-users"></i>
+        <span id="numUsuarios">0</span> online
+    </div>
+    
+    <div class="marca-grupo">
+        <span>GRUPO BR 277</span>
+        <div class="social-icons">
+            <a href="https://instagram.com/grupobr277" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="#" target="_blank"><i class="fab fa-facebook"></i></a>
+            <a href="#" target="_blank"><i class="fab fa-whatsapp"></i></a>
+            <a href="#" target="_blank"><i class="fab fa-telegram"></i></a>
+        </div>
+    </div>
+</div>
+
+<!-- BOTÕES PADRÃO DIREITA -->
+<div class="botoes-direita">
+    <div class="btn-padrao" id="btn-chat" onclick="toggleChatGeral()">
+        <i class="fas fa-comment"></i>
+    </div>
+    <div class="btn-padrao" id="btn-luz" onclick="toggleModoNoturno()">
+        💡
+    </div>
+    <div class="btn-padrao" id="btnMudo" onclick="toggleMudo()">
+        <i class="fas fa-volume-up"></i>
+    </div>
+</div>
+
+<!-- BOTÃO INICIAR NAVEGAÇÃO -->
+<div class="btn-iniciar-navegacao" id="btnIniciarNavegacao" onclick="iniciarNavegacao()">
+    <i class="fas fa-play"></i> INICIAR NAVEGAÇÃO
+</div>
+
+<!-- BOTÃO ENCERRAR ROTA -->
+<div class="btn-encerrar-rota" id="btnEncerrarRota" onclick="encerrarRota()">✖</div>
+
+<!-- LUPA -->
 <div class="lupa-container">
-    <input type="text" id="buscaDestino" placeholder="Para onde vamos?">
-    <button><i class="fas fa-search"></i></button>
+    <input type="text" id="buscaDestino" placeholder="Digite seu destino..." value="Curitiba">
+    <button onclick="buscarRota()"><i class="fas fa-search"></i></button>
+</div>
+
+<!-- BOTÃO RECENTRALIZAR -->
+<div class="btn-recentrar" id="btnRecenter" onclick="recentralizar()">
+    <i class="fas fa-location-arrow"></i> RECENTRALIZAR
 </div>
 
 <div id="btn-px">🎤</div>
 
-<div class="botoes-direita">
-    <div class="btn-padrao" id="btn-chat"> <i class="fas fa-comment"></i> </div>
-    <div class="btn-padrao" onclick="toggleModoNoturno()"> 💡 </div>
+<!-- CHAT GERAL -->
+<div class="chat-container" id="chatGeral">
+    <div class="chat-header">
+        <div style="display:flex; align-items:center; gap:10px;">
+            <i class="fas fa-comments"></i>
+            <span>CHAT GERAL</span>
+            <span id="adminBadge" style="display:none; color:#ffd700;">👑 ADMIN</span>
+        </div>
+        <span onclick="fecharChatGeral()" style="cursor:pointer;">✖</span>
+    </div>
+    <div class="chat-mensagens" id="chatMensagens"></div>
+    <div class="chat-input">
+        <input type="text" id="chatInput" placeholder="Digite sua mensagem...">
+        <button onclick="enviarMsgGeral()"><i class="fas fa-paper-plane"></i></button>
+    </div>
+</div>
+
+<!-- INDICADORES -->
+<div class="gravando-indicator" id="gravandoIndicator">
+    <span>🎤 Gravando...</span>
+    <span class="gravando-timer" id="gravandoTimer">20s</span>
+</div>
+
+<div class="audio-notification" id="audioNotification">
+    <i class="fas fa-headphones"></i>
+    <span>Áudio recebido...</span>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-    // 1. INICIALIZAÇÃO DO MAPA
-    const map = L.map('map', { zoomControl: false }).setView([-25.4284, -49.2733], 15);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+// ===== FIREBASE =====
+const firebaseConfig = {
+    databaseURL: "https://gps-br277-default-rtdb.firebaseio.com"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
 
-    // 2. CONFIGURAÇÃO DO ÍCONE (O QUE VOCÊ PRECISA)
-    // Usando uma imagem que simula o estilo Waze/Uber de cima
-    const iconeCarro = L.icon({
-        iconUrl: 'https://i.ibb.co/9q7S8yG/car-top-view.png', 
-        iconSize: [50, 50],       // Tamanho visível
-        iconAnchor: [25, 25],     // CENTRALIZAÇÃO TOTAL (Metade do tamanho)
-        popupAnchor: [0, -20],
-        className: 'carro-waze'   // Classe para efeitos de sombra no CSS
+// ===== VARIÁVEIS =====
+let usuario = null;
+let telefone = '';
+let veiculoUsuario = 'carro';
+let admin = false;
+const ADMIN_PASSWORD = 'br277admin';
+const ADMIN_USER = 'Danilo Chulik';
+let minhaLocalizacao = null;
+let meuMarcador = null;
+let seguirLocalizacao = true;
+let rotaAtual = null;
+let mapa = null;
+let usuariosAtivos = {};
+let mudo = false;
+let mensagemRespondendo = null;
+let coresUsuarios = {};
+let ultimaAtualizacaoGPS = 0;
+const INTERVALO_GPS = 1000;
+let zoomAtual = 13;
+let ultimaMsgCongestionamento = 0;
+let modoNavegacao = false;
+let instrucoesAtualizadas = false;
+let clusterGroup = null;
+let alertasMapa = {};
+let alertasConfirmados = {};
+let destinoAtual = null;
+
+// ===== 10 ALERTAS =====
+const alertas = [
+    { tipo: 'acidente', nome: 'ACIDENTE', icone: '💥', cor: '#e53935' },
+    { tipo: 'obras', nome: 'OBRAS', icone: '🚧', cor: '#ff9800' },
+    { tipo: 'pane', nome: 'PANE', icone: '🔧', cor: '#795548' },
+    { tipo: 'animal', nome: 'ANIMAL', icone: '🐂', cor: '#9c27b0' },
+    { tipo: 'radar', nome: 'RADAR', icone: '📷', cor: '#607d8b' },
+    { tipo: 'barreira', nome: 'BARREIRA', icone: '⛰️', cor: '#8b4513' },
+    { tipo: 'neblina', nome: 'NEBLINA', icone: '🌫️', cor: '#00acc1' },
+    { tipo: 'congestionamento', nome: 'CONGEST.', icone: '🔴', cor: '#f44336' },
+    { tipo: 'alagamento', nome: 'ALAGAMENTO', icone: '💧', cor: '#2196f3' },
+    { tipo: 'bloqueio', nome: 'BLOQUEIO', icone: '⛔', cor: '#b71c1c' }
+];
+
+// ===== DICIONÁRIO DE TRADUÇÕES =====
+const traducoes = {
+    'Route calculation': 'Calculando rota',
+    'Recalculating route': 'Recalculando rota',
+    'Directions not found': 'Rota não encontrada',
+    'Destination reached': 'Destino chegou',
+    'Turn left': 'Vire à esquerda',
+    'Turn right': 'Vire à direita',
+    'Continue straight': 'Siga em frente',
+    'Keep left': 'Mantenha-se à esquerda',
+    'Keep right': 'Mantenha-se à direita',
+    'North': 'Norte',
+    'South': 'Sul',
+    'East': 'Leste',
+    'West': 'Oeste'
+};
+
+function traduzir(texto) {
+    return traducoes[texto] || texto;
+}
+
+// ===== ÍCONE PROFISSIONAL DO CARRO (PNG) =====
+// IMPORTANTE: Salve as imagens como:
+// - carro-preto.png (seu carro)
+// - carro-cinza.png (outros usuários)
+function criarIconeCarroProfissional(ehMeu = true) {
+    if (ehMeu) {
+        return L.icon({
+            iconUrl: 'carro-preto.png', // Substitua pelo caminho da sua imagem
+            iconSize: [40, 40],
+            iconAnchor: [20, 20],
+            popupAnchor: [0, -20],
+            className: 'carro-profissional'
+        });
+    } else {
+        return L.icon({
+            iconUrl: 'carro-cinza.png', // Substitua pelo caminho da sua imagem
+            iconSize: [32, 32],
+            iconAnchor: [16, 16],
+            popupAnchor: [0, -16],
+            className: 'carro-profissional'
+        });
+    }
+}
+
+// Fallback para caso as imagens não existam
+function criarIconeCarroFallback(ehMeu = true) {
+    const cor = ehMeu ? '#000000' : '#666666';
+    const tamanho = ehMeu ? 32 : 28;
+    
+    return L.divIcon({
+        html: `<i class="fas fa-car-side" style="color: ${cor}; font-size: ${tamanho}px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));"></i>`,
+        className: 'carro-profissional',
+        iconSize: [tamanho, tamanho],
+        iconAnchor: [tamanho/2, tamanho/2]
     });
+}
 
-    let meuMarker = null;
-    let modoNoturno = false;
+// Tenta usar o ícone PNG, se não existir usa o fallback
+function criarIconeCarro(ehMeu = true) {
+    try {
+        return criarIconeCarroProfissional(ehMeu);
+    } catch (e) {
+        console.log('Usando ícone de fallback (Font Awesome)');
+        return criarIconeCarroFallback(ehMeu);
+    }
+}
 
-    // 3. FUNÇÃO DE GPS (SEM MEXER NAS SUAS LÓGICAS)
+// ===== FUNÇÃO PARA ROTACIONAR CARRO =====
+function rotacionarCarro(marker, heading) {
+    const el = marker.getElement();
+    if (el) {
+        el.style.transform = `rotate(${heading}deg)`;
+    }
+}
+
+// ===== FUNÇÕES DO MODAL =====
+function selecionarVeiculo(tipo, icone) {
+    veiculoUsuario = tipo;
+    document.querySelectorAll('[id^="veiculo-"]').forEach(el => {
+        el.style.borderColor = 'transparent';
+    });
+    document.getElementById(`veiculo-${tipo}`).style.borderColor = '#ffd700';
+}
+
+// ===== VERIFICA USUÁRIO =====
+const userSalvo = localStorage.getItem('br277_usuario');
+if (userSalvo) {
+    usuario = userSalvo;
+    telefone = localStorage.getItem('br277_telefone') || '';
+    veiculoUsuario = localStorage.getItem('br277_veiculo') || 'carro';
+    
+    if (usuario === ADMIN_USER) {
+        admin = true;
+        document.getElementById('adminBadge').style.display = 'inline';
+    }
+    
+    document.getElementById('welcomeModal').style.display = 'none';
+    iniciarMapa();
+    iniciarGPS();
+    carregarUsuariosAtivos();
+    carregarAlertasFixos();
+    carregarChatGeral();
+    criarIconesAlertas();
+    iniciarCluster();
+}
+
+function salvarCadastro() {
+    const nome = document.getElementById('nomeUsuario').value.trim();
+    if (!nome) {
+        alert('Digite seu nome!');
+        return;
+    }
+    
+    usuario = nome;
+    telefone = document.getElementById('telefoneUsuario').value.trim();
+    
+    if (usuario === ADMIN_USER) {
+        admin = true;
+        document.getElementById('adminBadge').style.display = 'inline';
+    }
+    
+    localStorage.setItem('br277_usuario', nome);
+    localStorage.setItem('br277_telefone', telefone);
+    localStorage.setItem('br277_veiculo', veiculoUsuario);
+    
+    document.getElementById('welcomeModal').style.display = 'none';
+    
+    iniciarMapa();
+    iniciarGPS();
+    carregarUsuariosAtivos();
+    carregarAlertasFixos();
+    carregarChatGeral();
+    criarIconesAlertas();
+    iniciarCluster();
+}
+
+// ===== FUNÇÕES DE INTERFACE =====
+function toggleReporte() {
+    const panel = document.getElementById('alertasPanel');
+    const toggle = document.querySelector('.reporte-toggle');
+    panel.classList.toggle('visivel');
+    toggle.classList.toggle('ativo');
+}
+
+// ===== ICONES ALERTAS =====
+function criarIconesAlertas() {
+    const grid = document.getElementById('alertasGrid');
+    alertas.forEach(alerta => {
+        const div = document.createElement('div');
+        div.className = `alerta-item alerta-${alerta.tipo}`;
+        div.innerHTML = `
+            <div class="alerta-icone">${alerta.icone}</div>
+            <div class="alerta-nome">${alerta.nome}</div>
+        `;
+        div.onclick = () => ativarAlerta(alerta);
+        grid.appendChild(div);
+    });
+}
+
+// ===== INICIAR CLUSTER =====
+function iniciarCluster() {
+    clusterGroup = L.markerClusterGroup({
+        maxClusterRadius: 50,
+        iconCreateFunction: function(cluster) {
+            const count = cluster.getChildCount();
+            return L.divIcon({
+                html: `<div class="cluster-marcador">${count}</div>`,
+                className: '',
+                iconSize: [40, 40]
+            });
+        }
+    });
+    mapa.addLayer(clusterGroup);
+}
+
+// ===== FUNÇÃO PARA TOCAR BIP =====
+function tocarBip() {
+    try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(880, audioCtx.currentTime);
+        gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        
+        oscillator.start();
+        oscillator.stop(audioCtx.currentTime + 0.2);
+    } catch(e) {
+        console.log('Erro ao tocar bip:', e);
+    }
+}
+
+// ===== FUNÇÃO PARA TOCAR ÁUDIO DE BOAS-VINDAS =====
+function tocarAudioBoasVindas() {
+    if ('speechSynthesis' in window) {
+        const msg = new SpeechSynthesisUtterance();
+        msg.text = 'Você está no GPS Grupo BR 277. Siga as instruções e boa viagem.';
+        msg.lang = 'pt-BR';
+        msg.rate = 1.0;
+        msg.pitch = 1.0;
+        window.speechSynthesis.speak(msg);
+    }
+}
+
+// ===== MAPA =====
+function iniciarMapa() {
+    mapa = L.map('map', { zoomControl: false }).setView([-25.4284, -49.2733], 13);
+    L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(mapa);
+    
+    mapa.on('dragstart', () => {
+        seguirLocalizacao = false;
+        document.getElementById('btnRecenter').style.display = 'block';
+        if (modoNavegacao) {
+            document.getElementById('instrucoesPanel').style.display = 'flex';
+        }
+    });
+    
+    mapa.on('zoomend', () => {
+        zoomAtual = mapa.getZoom();
+        atualizarIconeCarro();
+    });
+}
+
+// ===== ATUALIZA VELOCÍMETRO =====
+function atualizarVelocimetroPessoal(velocidade) {
+    const velocidadeInt = Math.round(velocidade);
+    document.getElementById('velocidadeRedonda').textContent = velocidadeInt;
+}
+
+// ===== ATUALIZA ÍCONE DO CARRO =====
+function atualizarIconeCarro() {
+    if (!meuMarcador || !minhaLocalizacao) return;
+    
+    mapa.removeLayer(meuMarcador);
+    
+    if (zoomAtual >= 15) {
+        meuMarcador = L.marker(minhaLocalizacao, {
+            icon: criarIconeCarro(true),
+            zIndexOffset: 1000
+        }).addTo(mapa);
+        
+        rotacionarCarro(meuMarcador, ultimoHeading || 0);
+    } else {
+        meuMarcador = L.marker(minhaLocalizacao, {
+            icon: L.divIcon({
+                html: `<div style="position:relative;">
+                    <div class="pulse-loc" style="position:absolute; left:-17px; top:-17px; width:45px; height:45px;"></div>
+                </div>`,
+                iconSize: [1, 1]
+            })
+        }).addTo(mapa);
+    }
+}
+
+// ===== GPS =====
+let ultimoHeading = 0;
+
+function iniciarGPS() {
+    if (!navigator.geolocation) return;
+    
     navigator.geolocation.watchPosition(pos => {
-        const lat = pos.coords.latitude;
-        const lng = pos.coords.longitude;
-        const meuLatLng = L.latLng(lat, lng);
-        const velocidade = Math.round(pos.coords.speed * 3.6) || 0;
-
-        document.getElementById('velocidadeRedonda').innerText = velocidade;
-
-        if (!meuMarker) {
-            meuMarker = L.marker(meuLatLng, { icon: iconeCarro }).addTo(map);
-            map.setView(meuLatLng, 17);
-        } else {
-            meuMarker.setLatLng(meuLatLng);
+        const agora = Date.now();
+        if (agora - ultimaAtualizacaoGPS < INTERVALO_GPS) return;
+        ultimaAtualizacaoGPS = agora;
+        
+        minhaLocalizacao = L.latLng(pos.coords.latitude, pos.coords.longitude);
+        
+        if (pos.coords.heading !== null) {
+            ultimoHeading = pos.coords.heading;
         }
-    }, err => console.log(err), { enableHighAccuracy: true });
-
-    // 4. MANUTENÇÃO DAS SUAS FUNÇÕES ORIGINAIS
-    function salvarCadastro() {
-        document.getElementById('welcomeModal').style.display = 'none';
-        alert("Bem-vindo ao Sistema BR-277!");
-    }
-
-    function selecionarVeiculo(tipo) {
-        console.log("Veículo selecionado:", tipo);
-        // Aqui você pode mudar o iconUrl do iconeCarro se quiser imagens diferentes para caminhão
-    }
-
-    function toggleModoNoturno() {
-        modoNoturno = !modoNoturno;
-        const mapEl = document.getElementById('map');
-        if(modoNoturno) {
-            mapEl.style.filter = "invert(100%) hue-rotate(180deg) brightness(95%)";
+        
+        if (pos.coords.speed !== null) {
+            const velocidadeKmh = pos.coords.speed * 3.6;
+            atualizarVelocimetroPessoal(velocidadeKmh);
+        }
+        
+        if (!meuMarcador) {
+            if (zoomAtual >= 15) {
+                meuMarcador = L.marker(minhaLocalizacao, {
+                    icon: criarIconeCarro(true),
+                    zIndexOffset: 1000
+                }).addTo(mapa);
+                
+                rotacionarCarro(meuMarcador, ultimoHeading || 0);
+            } else {
+                meuMarcador = L.marker(minhaLocalizacao, {
+                    icon: L.divIcon({
+                        html: `<div style="position:relative;">
+                            <div class="pulse-loc" style="position:absolute; left:-17px; top:-17px; width:45px; height:45px;"></div>
+                        </div>`,
+                        iconSize: [1, 1]
+                    })
+                }).addTo(mapa);
+            }
+            
+            mapa.setView(minhaLocalizacao, 17);
+            
+            db.ref('usuarios_ativos/' + usuario).set({
+                lat: minhaLocalizacao.lat,
+                lng: minhaLocalizacao.lng,
+                veiculo: veiculoUsuario,
+                timestamp: Date.now()
+            });
+            
         } else {
-            mapEl.style.filter = "none";
+            meuMarcador.setLatLng(minhaLocalizacao);
+            
+            if (zoomAtual >= 15) {
+                rotacionarCarro(meuMarcador, ultimoHeading || 0);
+            }
+            
+            db.ref('usuarios_ativos/' + usuario).update({
+                lat: minhaLocalizacao.lat,
+                lng: minhaLocalizacao.lng,
+                timestamp: Date.now()
+            });
+        }
+        
+        if (seguirLocalizacao) mapa.panTo(minhaLocalizacao);
+        
+        verificarProximidadeAlertas();
+        
+    }, null, { enableHighAccuracy: true, maximumAge: 0, timeout: 5000 });
+    
+    window.addEventListener('beforeunload', () => {
+        db.ref('usuarios_ativos/' + usuario).remove();
+    });
+}
+
+// ===== USUÁRIOS ATIVOS =====
+function carregarUsuariosAtivos() {
+    db.ref('usuarios_ativos').on('value', snap => {
+        const usuarios = snap.val();
+        
+        Object.values(usuariosAtivos).forEach(m => m && mapa.removeLayer(m));
+        usuariosAtivos = {};
+        
+        if (!usuarios) {
+            document.getElementById('numUsuarios').textContent = '0';
+            return;
+        }
+        
+        const total = Object.keys(usuarios).length;
+        document.getElementById('numUsuarios').textContent = total;
+        
+        Object.entries(usuarios).forEach(([id, dados]) => {
+            if (id === usuario) return;
+            if (Date.now() - dados.timestamp > 10000) {
+                db.ref('usuarios_ativos/' + id).remove();
+                return;
+            }
+            
+            const marcador = L.marker([dados.lat, dados.lng], {
+                icon: criarIconeCarro(false)
+            }).addTo(mapa);
+            
+            usuariosAtivos[id] = marcador;
+        });
+    });
+}
+
+// ===== ALERTAS FIXOS =====
+function carregarAlertasFixos() {
+    db.ref('alertas_fixos').on('child_added', snap => {
+        const alerta = snap.val();
+        const id = snap.key;
+        
+        alertasMapa[id] = alerta;
+        
+        const marcador = L.marker([alerta.lat, alerta.lng], {
+            icon: L.divIcon({
+                html: `<div class="alerta-mapa-marcador" style="color:${alerta.cor};">${alerta.icone}</div>`,
+                className: '',
+                iconSize: [30, 30]
+            })
+        });
+        
+        marcador.on('click', () => {
+            abrirChatAlerta(alerta, L.latLng(alerta.lat, alerta.lng), id);
+        });
+        
+        clusterGroup.addLayer(marcador);
+    });
+    
+    setInterval(() => {
+        const agora = Date.now();
+        Object.keys(alertasMapa).forEach(id => {
+            if (agora - alertasMapa[id].timestamp > 1200000) {
+                delete alertasMapa[id];
+                db.ref('alertas_fixos/' + id).remove();
+            }
+        });
+    }, 60000);
+}
+
+function ativarAlerta(alerta) {
+    if (!minhaLocalizacao) return;
+    
+    const id = Date.now();
+    const alertaData = { ...alerta, lat: minhaLocalizacao.lat, lng: minhaLocalizacao.lng, timestamp: id, confirmacoes: 0 };
+    
+    alertasMapa[id] = alertaData;
+    
+    db.ref('alertas_fixos/' + id).set(alertaData);
+    
+    const marcador = L.marker(minhaLocalizacao, {
+        icon: L.divIcon({
+            html: `<div class="alerta-mapa-marcador" style="color:${alerta.cor};">${alerta.icone}</div>`,
+            className: '',
+            iconSize: [30, 30]
+        })
+    });
+    
+    marcador.on('click', () => abrirChatAlerta(alertaData, minhaLocalizacao, id));
+    clusterGroup.addLayer(marcador);
+    
+    setTimeout(() => abrirChatAlerta(alertaData, minhaLocalizacao, id), 200);
+}
+
+// ===== CHAT DO ALERTA =====
+function abrirChatAlerta(alerta, posicao, id) {
+    const conteudo = document.createElement('div');
+    conteudo.innerHTML = `
+        <div style="padding:10px; background:${alerta.cor}; color:white; font-weight:bold;">${alerta.icone} ${alerta.nome}</div>
+        <div style="padding:5px; background:#f0f0f0; text-align:center; font-size:11px;">
+            ✅ ${alerta.confirmacoes || 0} motoristas confirmaram
+        </div>
+        <div style="padding:10px; max-height:200px; overflow-y:auto;" id="chatAlerta-${id}">
+            <div style="text-align:center; color:#999;">Carregando...</div>
+        </div>
+        <div style="display:flex; padding:8px; gap:5px;">
+            <input type="text" id="inputAlerta-${id}" style="flex:1; padding:8px; border-radius:20px; border:1px solid #ccc;" placeholder="Digite sua mensagem..." onkeypress="if(event.key==='Enter') enviarMsgAlerta('${id}')">
+            <button onclick="enviarMsgAlerta('${id}')" style="width:35px; height:35px; border-radius:50%; border:none; background:${alerta.cor}; color:white; cursor:pointer;">➔</button>
+        </div>
+    `;
+    
+    L.popup({ maxWidth: 280 }).setLatLng(posicao).setContent(conteudo).openOn(mapa);
+    
+    db.ref(`chats/alerta_${id}`).orderByChild('timestamp').on('value', snap => {
+        const msgs = snap.val();
+        const chatDiv = document.getElementById(`chatAlerta-${id}`);
+        if (!chatDiv) return;
+        
+        if (!msgs) {
+            chatDiv.innerHTML = '<div style="text-align:center; color:#999;">Nenhuma mensagem</div>';
+            return;
+        }
+        
+        let html = '';
+        Object.values(msgs).forEach(msg => {
+            html += `
+                <div style="background:${msg.usuario === usuario ? '#dcf8c6' : 'white'}; padding:5px 8px; border-radius:10px; margin:3px 0;">
+                    <small><b>${msg.usuario}</b></small><br>${msg.texto}<br>
+                    <small style="font-size:9px;">${msg.hora}</small>
+                </div>
+            `;
+        });
+        
+        chatDiv.innerHTML = html;
+        chatDiv.scrollTop = chatDiv.scrollHeight;
+    });
+}
+
+function enviarMsgAlerta(id) {
+    const input = document.getElementById(`inputAlerta-${id}`);
+    const texto = input.value.trim();
+    if (!texto) return;
+    
+    db.ref(`chats/alerta_${id}`).push({
+        usuario: usuario,
+        texto: texto,
+        hora: new Date().toLocaleTimeString(),
+        timestamp: Date.now()
+    });
+    
+    input.value = '';
+}
+
+// ===== FORMATAR TEMPO =====
+function formatarTempo(minutos) {
+    if (minutos < 60) {
+        return `${minutos}min`;
+    } else {
+        const horas = Math.floor(minutos / 60);
+        const mins = minutos % 60;
+        return mins > 0 ? `${horas}h${mins}min` : `${horas}h`;
+    }
+}
+
+// ===== FUNÇÃO PARA TRADUZIR INSTRUÇÕES =====
+function traduzirInstrucao(instrucao) {
+    if (!instrucao) return 'Siga em frente';
+    
+    const texto = instrucao.toLowerCase();
+    
+    if (texto.includes('turn left')) return 'Vire à esquerda';
+    if (texto.includes('turn right')) return 'Vire à direita';
+    if (texto.includes('continue')) return 'Siga em frente';
+    if (texto.includes('destination')) return 'Destino chegou';
+    if (texto.includes('keep left')) return 'Mantenha-se à esquerda';
+    if (texto.includes('keep right')) return 'Mantenha-se à direita';
+    if (texto.includes('head')) return 'Siga em direção a';
+    
+    return instrucao;
+}
+
+// ===== FUNÇÃO PARA OBTER ÍCONE DA INSTRUÇÃO =====
+function getIconeInstrucao(instrucao) {
+    const texto = instrucao.toLowerCase();
+    
+    if (texto.includes('left')) return 'fa-arrow-left';
+    if (texto.includes('right')) return 'fa-arrow-right';
+    if (texto.includes('continue') || texto.includes('frente')) return 'fa-arrow-up';
+    if (texto.includes('destination')) return 'fa-flag-checkered';
+    
+    return 'fa-arrow-up';
+}
+
+// ===== ROTA =====
+function buscarRota() {
+    const destino = document.getElementById('buscaDestino').value;
+    if (!destino || !minhaLocalizacao) return;
+    
+    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(destino)}, Brasil&limit=1`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.length === 0) {
+                alert('Local não encontrado');
+                return;
+            }
+            
+            const dest = L.latLng(parseFloat(data[0].lat), parseFloat(data[0].lon));
+            destinoAtual = dest;
+            
+            if (rotaAtual) mapa.removeControl(rotaAtual);
+            
+            rotaAtual = L.Routing.control({
+                waypoints: [minhaLocalizacao, dest],
+                lineOptions: { 
+                    styles: [{ 
+                        color: '#2196F3', 
+                        weight: 6, 
+                        opacity: 0.5 
+                    }] 
+                },
+                createMarker: () => null,
+                show: false
+            }).addTo(mapa);
+            
+            rotaAtual.on('routesfound', function(e) {
+                const routes = e.routes;
+                if (routes && routes.length > 0) {
+                    const instructions = routes[0].instructions;
+                    if (instructions && instructions.length > 0) {
+                        const primeira = instructions[0];
+                        document.getElementById('instrucaoIcone').innerHTML = `<i class="fas ${getIconeInstrucao(primeira.instruction)}"></i>`;
+                        document.getElementById('instrucaoTexto').innerHTML = traduzirInstrucao(primeira.instruction);
+                        document.getElementById('instrucaoDistancia').innerHTML = (primeira.distance / 1000).toFixed(1) + ' km';
+                    }
+                }
+            });
+            
+            mapa.flyToBounds(L.latLngBounds([minhaLocalizacao, dest]), { padding: [50, 50] });
+            
+            document.getElementById('rotaInfoPanel').style.display = 'flex';
+            document.getElementById('btnIniciarNavegacao').style.display = 'flex';
+            document.getElementById('btnEncerrarRota').style.display = 'flex';
+            
+            const distancia = parseFloat(calcularDistancia(
+                minhaLocalizacao.lat, minhaLocalizacao.lng,
+                dest.lat, dest.lng
+            ));
+            
+            const tempoMin = Math.round(distancia * 1.2);
+            const atraso = Math.round(tempoMin * 0.2);
+            
+            document.getElementById('rotaTempo').textContent = formatarTempo(tempoMin);
+            document.getElementById('rotaDistancia').textContent = `${distancia} km`;
+            document.getElementById('rotaAtraso').textContent = `+${formatarTempo(atraso)}`;
+        });
+}
+
+// ===== INICIAR NAVEGAÇÃO =====
+function iniciarNavegacao() {
+    modoNavegacao = true;
+    seguirLocalizacao = true;
+    
+    document.getElementById('btnIniciarNavegacao').style.display = 'none';
+    document.getElementById('instrucoesPanel').style.display = 'flex';
+    document.getElementById('btnRecenter').style.display = 'none';
+    
+    if (minhaLocalizacao) {
+        mapa.flyTo(minhaLocalizacao, 17);
+    }
+    
+    tocarAudioBoasVindas();
+}
+
+// ===== ENCERRAR ROTA =====
+function encerrarRota() {
+    if (rotaAtual) {
+        mapa.removeControl(rotaAtual);
+        rotaAtual = null;
+    }
+    modoNavegacao = false;
+    destinoAtual = null;
+    document.getElementById('rotaInfoPanel').style.display = 'none';
+    document.getElementById('btnIniciarNavegacao').style.display = 'none';
+    document.getElementById('btnEncerrarRota').style.display = 'none';
+    document.getElementById('instrucoesPanel').style.display = 'none';
+}
+
+function calcularDistancia(lat1, lon1, lat2, lon2) {
+    const R = 6371;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return (R * c).toFixed(1);
+}
+
+// ===== VERIFICAR PROXIMIDADE COM ALERTAS =====
+let popupTimeout = null;
+let alertaAtualId = null;
+
+function verificarProximidadeAlertas() {
+    if (!minhaLocalizacao) return;
+    
+    Object.keys(alertasMapa).forEach(id => {
+        const alerta = alertasMapa[id];
+        if (!alerta) return;
+        
+        if (alertasConfirmados[id + '_' + usuario]) return;
+        
+        const distancia = calcularDistancia(
+            minhaLocalizacao.lat, minhaLocalizacao.lng,
+            alerta.lat, alerta.lng
+        );
+        
+        if (distancia < 0.3) {
+            tocarBip();
+            mostrarPopupConfirmacao(alerta, id);
+        }
+    });
+}
+
+function mostrarPopupConfirmacao(alerta, id) {
+    const popup = document.getElementById('confirmacaoPopup');
+    const texto = document.getElementById('confirmacaoTexto');
+    const subtexto = document.getElementById('confirmacaoSubtexto');
+    const btnConfirmar = document.getElementById('btnConfirmar');
+    
+    texto.innerHTML = `${alerta.nome} a 300 metros?`;
+    subtexto.innerHTML = 'Toque para confirmar (8s)';
+    btnConfirmar.classList.remove('confirmado');
+    btnConfirmar.disabled = false;
+    popup.style.display = 'flex';
+    
+    alertaAtualId = id;
+    
+    if (popupTimeout) clearTimeout(popupTimeout);
+    
+    popupTimeout = setTimeout(() => {
+        popup.style.display = 'none';
+        alertaAtualId = null;
+    }, 8000);
+}
+
+function confirmarAlerta() {
+    if (!alertaAtualId) return;
+    
+    const popup = document.getElementById('confirmacaoPopup');
+    const btnConfirmar = document.getElementById('btnConfirmar');
+    
+    alertasConfirmados[alertaAtualId + '_' + usuario] = true;
+    
+    const alerta = alertasMapa[alertaAtualId];
+    if (alerta) {
+        const confirmacoes = alerta.confirmacoes || 0;
+        db.ref('alertas_fixos/' + alertaAtualId).update({
+            confirmacoes: confirmacoes + 1
+        });
+    }
+    
+    btnConfirmar.classList.add('confirmado');
+    btnConfirmar.disabled = true;
+    
+    setTimeout(() => {
+        popup.style.display = 'none';
+        alertaAtualId = null;
+    }, 500);
+    
+    tocarBip();
+}
+
+function negarAlerta() {
+    document.getElementById('confirmacaoPopup').style.display = 'none';
+    if (popupTimeout) clearTimeout(popupTimeout);
+    alertaAtualId = null;
+}
+
+// ===== CHAT GERAL =====
+function gerarCorUsuario(nome) {
+    let hash = 0;
+    for (let i = 0; i < nome.length; i++) {
+        hash = nome.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const cor = `hsl(${hash % 360}, 70%, 40%)`;
+    return cor;
+}
+
+function processarMencao(texto) {
+    return texto.replace(/@(\S+)/g, '<span class="mention">@$1</span>');
+}
+
+function toggleChatGeral() {
+    const chat = document.getElementById('chatGeral');
+    chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
+}
+
+function fecharChatGeral() {
+    document.getElementById('chatGeral').style.display = 'none';
+}
+
+function carregarChatGeral() {
+    db.ref('chat_geral').orderByChild('timestamp').on('value', snap => {
+        const msgs = snap.val();
+        const chatDiv = document.getElementById('chatMensagens');
+        if (!msgs) return;
+        
+        let html = '';
+        let ultimaData = '';
+        
+        const msgsArray = Object.values(msgs).reverse();
+        
+        msgsArray.forEach(msg => {
+            const dataMsg = new Date(msg.timestamp).toLocaleDateString();
+            
+            if (dataMsg !== ultimaData) {
+                html += `<div class="data-divider"><span>${formatarData(dataMsg)}</span></div>`;
+                ultimaData = dataMsg;
+            }
+            
+            const isMinha = msg.usuario === usuario;
+            const corUsuario = gerarCorUsuario(msg.usuario);
+            
+            const textoFormatado = processarMencao(msg.texto);
+            
+            html += `
+                <div class="mensagem-wrapper">
+                    ${msg.resposta ? `
+                        <div class="resposta-preview">
+                            <strong style="color:${gerarCorUsuario(msg.resposta.usuario)}">${msg.resposta.usuario}:</strong> ${msg.resposta.texto}
+                        </div>
+                    ` : ''}
+                    <div class="mensagem ${isMinha ? 'minha' : 'outra'}" data-user="${msg.usuario}">
+                        <div class="mensagem-remetente" style="color:${corUsuario}">
+                            🚗 ${msg.usuario}
+                            ${msg.telefone ? `<span class="mensagem-telefone">📱${msg.telefone}</span>` : ''}
+                        </div>
+                        ${textoFormatado}
+                        <div class="mensagem-info">
+                            <span>${msg.hora}</span>
+                        </div>
+                    </div>
+                    <div class="mensagem-acoes">
+                        <span onclick="responderMsg('${msg.usuario}', '${msg.texto.replace(/'/g, "\\'")}')">↩️</span>
+                        <span onclick="mencionarUsuario('${msg.usuario}')">@</span>
+                        ${isMinha || admin ? `<span onclick="apagarMsg('${msg.timestamp}')">🗑️</span>` : ''}
+                    </div>
+                </div>
+            `;
+        });
+        
+        chatDiv.innerHTML = html;
+        chatDiv.scrollTop = 0;
+    });
+}
+
+function enviarMsgGeral() {
+    const input = document.getElementById('chatInput');
+    let texto = input.value.trim();
+    if (!texto) return;
+    
+    const mensagem = {
+        usuario: usuario,
+        telefone: telefone,
+        texto: texto,
+        hora: new Date().toLocaleTimeString(),
+        timestamp: Date.now()
+    };
+    
+    if (mensagemRespondendo) {
+        mensagem.resposta = {
+            usuario: mensagemRespondendo.usuario,
+            texto: mensagemRespondendo.texto
+        };
+        mensagemRespondendo = null;
+    }
+    
+    db.ref('chat_geral').push(mensagem);
+    input.value = '';
+}
+
+function responderMsg(user, txt) {
+    mensagemRespondendo = { usuario: user, texto: txt };
+    document.getElementById('chatInput').focus();
+    document.getElementById('chatInput').placeholder = `Respondendo ${user}...`;
+}
+
+function mencionarUsuario(user) {
+    const input = document.getElementById('chatInput');
+    const nomeMencao = user.replace(/\s+/g, '');
+    input.value += ` @${nomeMencao} `;
+    input.focus();
+}
+
+function apagarMsg(timestamp) {
+    if (confirm('Apagar mensagem?')) {
+        db.ref('chat_geral').orderByChild('timestamp').equalTo(parseInt(timestamp)).once('value', snap => {
+            snap.forEach(child => child.ref.remove());
+        });
+    }
+}
+
+function formatarData(data) {
+    const hoje = new Date().toLocaleDateString();
+    const ontem = new Date(Date.now() - 86400000).toLocaleDateString();
+    if (data === hoje) return 'Hoje';
+    if (data === ontem) return 'Ontem';
+    return data;
+}
+
+// ===== RÁDIO PX =====
+let gravador = null;
+let pedacosAudio = [];
+let streamAudio = null;
+let timerInterval = null;
+let tempoRestante = 20;
+const botaoPX = document.getElementById('btn-px');
+
+botaoPX.addEventListener('click', async function() {
+    if (gravador && gravador.state === 'recording') {
+        pararGravacao();
+    } else {
+        try {
+            streamAudio = await navigator.mediaDevices.getUserMedia({ audio: true });
+            gravador = new MediaRecorder(streamAudio);
+            pedacosAudio = [];
+            tempoRestante = 20;
+            
+            gravador.ondataavailable = e => e.data.size > 0 && pedacosAudio.push(e.data);
+            
+            gravador.onstop = () => {
+                if (pedacosAudio.length > 0) {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        db.ref('radio').push({
+                            audio: reader.result,
+                            usuario: usuario,
+                            timestamp: Date.now()
+                        });
+                        
+                        setTimeout(() => {
+                            db.ref('radio').orderByChild('timestamp').endAt(Date.now() - 20000).once('value', snap => {
+                                snap.forEach(child => child.ref.remove());
+                            });
+                        }, 20000);
+                    };
+                    reader.readAsDataURL(new Blob(pedacosAudio, { type: 'audio/webm' }));
+                }
+                
+                if (streamAudio) {
+                    streamAudio.getTracks().forEach(t => t.stop());
+                    streamAudio = null;
+                }
+                
+                document.getElementById('gravandoIndicator').style.display = 'none';
+                if (timerInterval) clearInterval(timerInterval);
+            };
+            
+            gravador.start();
+            botaoPX.classList.add('ativo');
+            
+            document.getElementById('gravandoIndicator').style.display = 'flex';
+            const timer = document.getElementById('gravandoTimer');
+            
+            timerInterval = setInterval(() => {
+                tempoRestante--;
+                timer.textContent = tempoRestante + 's';
+                if (tempoRestante <= 0) {
+                    pararGravacao();
+                }
+            }, 1000);
+            
+            setTimeout(() => gravador && gravador.state === 'recording' && pararGravacao(), 20000);
+            
+        } catch(e) {
+            alert('Permita acesso ao microfone');
         }
     }
+});
 
-    // Lógica do Botão PX (Simples)
-    const btnPx = document.getElementById('btn-px');
-    btnPx.addEventListener('touchstart', () => btnPx.classList.add('ativo'));
-    btnPx.addEventListener('touchend', () => btnPx.classList.remove('ativo'));
+function pararGravacao() {
+    if (gravador && gravador.state === 'recording') {
+        gravador.stop();
+        botaoPX.classList.remove('ativo');
+        if (timerInterval) clearInterval(timerInterval);
+        document.getElementById('gravandoIndicator').style.display = 'none';
+    }
+}
 
+db.ref('radio').orderByChild('timestamp').limitToLast(1).on('child_added', snap => {
+    const d = snap.val();
+    if (d && d.usuario !== usuario && !mudo && Date.now() - d.timestamp < 5000) {
+        new Audio(d.audio).play().catch(() => {});
+        document.getElementById('audioNotification').style.display = 'flex';
+        setTimeout(() => document.getElementById('audioNotification').style.display = 'none', 2000);
+    }
+});
+
+// ===== FUNÇÕES =====
+function toggleModoNoturno() {
+    document.getElementById('map').classList.toggle('mapa-noturno');
+}
+
+function toggleMudo() {
+    mudo = !mudo;
+    const btn = document.getElementById('btnMudo');
+    btn.innerHTML = mudo ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
+    btn.classList.toggle('mudo');
+}
+
+function recentralizar() {
+    seguirLocalizacao = true;
+    document.getElementById('btnRecenter').style.display = 'none';
+    if (minhaLocalizacao) mapa.flyTo(minhaLocalizacao, 17);
+}
+
+document.getElementById('buscaDestino').addEventListener('keypress', e => {
+    if (e.key === 'Enter') buscarRota();
+});
+
+document.getElementById('chatInput').addEventListener('keypress', e => {
+    if (e.key === 'Enter') enviarMsgGeral();
+});
 </script>
 </body>
 </html>
