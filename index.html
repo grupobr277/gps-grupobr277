@@ -56,7 +56,29 @@
             color: white;
         }
         
-        /* BOTÃO REPORTE */
+        /* ===== ÍCONE DO CARRO TRADICIONAL ===== */
+        .carro-marcador {
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+        
+        .carro-marcador-pulse {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+            background: rgba(33, 150, 243, 0.3);
+            border: 3px solid #2196F3;
+            position: absolute;
+            left: -17px;
+            top: -17px;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 1; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+        
+        /* ===== SISTEMA REPORTE - DIMENSÕES CORRIGIDAS ===== */
         .reporte-container {
             position: fixed;
             bottom: 90px;
@@ -65,6 +87,7 @@
             display: flex;
             flex-direction: column;
             align-items: flex-start;
+            max-width: 200px;
         }
         
         .reporte-toggle {
@@ -73,20 +96,21 @@
             color: white;
             border: 2px solid #ffd700;
             border-radius: 40px;
-            padding: 8px 20px;
-            font-size: 13px;
+            padding: 6px 16px;
+            font-size: 12px;
             font-weight: bold;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 8px;
+            gap: 6px;
+            margin-bottom: 6px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.4);
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
             text-transform: uppercase;
+            white-space: nowrap;
         }
         
         .reporte-toggle::before {
@@ -105,8 +129,8 @@
         }
         
         .reporte-toggle .led {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
             border-radius: 50%;
             background: #4caf50;
             box-shadow: 0 0 15px #4caf50;
@@ -134,17 +158,16 @@
             transform: rotate(180deg);
         }
         
-        /* PAINEL DE ALERTAS */
+        /* ===== PAINEL DE ALERTAS - REDIMENSIONADO ===== */
         .alertas-panel {
             background: rgba(0,0,0,0.6);
             backdrop-filter: blur(15px);
             border: 2px solid #ffd700;
             border-radius: 16px;
-            padding: 10px;
+            padding: 8px;
             display: none;
-            width: 240px;
-            max-height: none;
-            overflow: visible;
+            width: 180px;
+            max-width: 180px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.5);
             animation: slideUp 0.3s ease;
             position: relative;
@@ -157,57 +180,25 @@
         .alertas-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-        }
-        
-        .btn-fechar-painel {
-            position: absolute;
-            right: -20px;
-            top: 240px;
-            width: 40px;
-            height: 40px;
-            background: #e53935;
-            border: 2px solid #ffd700;
-            border-radius: 50%;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 20px;
-            font-weight: bold;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            transition: all 0.2s;
-            z-index: 10;
-        }
-        
-        .btn-fechar-painel:hover {
-            transform: scale(1.1);
-            background: #c62828;
-            border-color: white;
-        }
-        
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            gap: 6px;
         }
         
         .alerta-item {
             width: 100%;
             aspect-ratio: 1/1;
-            border-radius: 12px;
+            border-radius: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 4px;
+            gap: 2px;
             cursor: pointer;
             transition: all 0.2s ease;
             border: 2px solid rgba(255,255,255,0.3);
             box-shadow: 0 4px 10px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.1) inset;
             position: relative;
             overflow: hidden;
-            padding: 8px;
+            padding: 4px;
         }
         
         .alerta-item::before {
@@ -236,12 +227,12 @@
         }
         
         .alerta-icone {
-            font-size: 28px;
+            font-size: 22px;
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
         }
         
         .alerta-nome {
-            font-size: 10px;
+            font-size: 8px;
             font-weight: 700;
             color: white;
             text-transform: uppercase;
@@ -261,6 +252,39 @@
         .alerta-congestionamento { background: linear-gradient(135deg, #f44336, #d32f2f); }
         .alerta-alagamento { background: linear-gradient(135deg, #2196f3, #1976d2); }
         .alerta-bloqueio { background: linear-gradient(135deg, #b71c1c, #8B0000); }
+        
+        /* ===== BOTÃO X REPOSICIONADO - FORA DA BORDA AMARELA ===== */
+        .btn-fechar-painel {
+            position: absolute;
+            right: -15px;
+            top: -15px;
+            width: 30px;
+            height: 30px;
+            background: #e53935;
+            border: 2px solid #ffd700;
+            border-radius: 50%;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: all 0.2s;
+            z-index: 10;
+        }
+        
+        .btn-fechar-painel:hover {
+            transform: scale(1.1);
+            background: #c62828;
+            border-color: white;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
         
         /* VELOCÍMETRO */
         .velocimetro-container {
@@ -992,20 +1016,6 @@
             filter: invert(100%) hue-rotate(180deg) brightness(95%);
         }
         
-        .pulse-loc { 
-            width: 35px; 
-            height: 35px; 
-            border-radius: 50%; 
-            animation: pulse 1.5s infinite; 
-            background: rgba(255, 215, 0, 0.3); 
-            border: 3px solid #ffd700; 
-        }
-        
-        @keyframes pulse { 
-            0% { transform: scale(0.8); opacity: 1; } 
-            100% { transform: scale(2); opacity: 0; } 
-        }
-        
         .gravando-indicator {
             position: fixed;
             bottom: 100px;
@@ -1440,17 +1450,28 @@ function iniciarCluster() {
     mapa.addLayer(clusterGroup);
 }
 
-// ===== FUNÇÃO PARA CRIAR ÍCONE DO CARRO (FONT AWESOME) =====
+// ===== FUNÇÃO PARA CRIAR ÍCONE DO CARRO TRADICIONAL =====
 function criarIconeCarro(ehMeu = true, direcao = 0) {
-    const cor = ehMeu ? '#000000' : '#666666';
-    const tamanho = ehMeu ? 28 : 24;
-    
-    return L.divIcon({
-        html: `<i class="fas fa-car-side" style="color: ${cor}; font-size: ${tamanho}px; transform: rotate(${direcao}deg); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));"></i>`,
-        className: 'carro-marcador',
-        iconSize: [tamanho, tamanho],
-        iconAnchor: [tamanho/2, tamanho/2]
-    });
+    if (ehMeu) {
+        // Versão tradicional: carro azul com pulse
+        return L.divIcon({
+            html: `<div style="position:relative;">
+                <div class="carro-marcador-pulse"></div>
+                <i class="fas fa-car-side" style="color: #2196F3; font-size: 28px; transform: rotate(${direcao}deg); position: relative; z-index: 2; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));"></i>
+            </div>`,
+            className: 'carro-marcador',
+            iconSize: [35, 35],
+            iconAnchor: [17, 17]
+        });
+    } else {
+        // Outros usuários: cinza
+        return L.divIcon({
+            html: `<i class="fas fa-car-side" style="color: #666666; font-size: 24px; transform: rotate(${direcao}deg); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));"></i>`,
+            className: 'carro-marcador',
+            iconSize: [24, 24],
+            iconAnchor: [12, 12]
+        });
+    }
 }
 
 // ===== FUNÇÃO PARA TOCAR BIP (MAIS AGRADÁVEL) =====
@@ -1461,7 +1482,7 @@ function tocarBip() {
         const gainNode = audioCtx.createGain();
         
         oscillator.type = 'sine';
-        oscillator.frequency.setValueAtTime(880, audioCtx.currentTime); // 880 Hz
+        oscillator.frequency.setValueAtTime(880, audioCtx.currentTime);
         gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
         gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
         
@@ -1527,9 +1548,10 @@ function atualizarIconeCarro() {
         meuMarcador = L.marker(minhaLocalizacao, {
             icon: L.divIcon({
                 html: `<div style="position:relative;">
-                    <div class="pulse-loc" style="position:absolute; left:-17px; top:-17px; width:45px; height:45px;"></div>
+                    <div class="carro-marcador-pulse"></div>
                 </div>`,
-                iconSize: [1, 1]
+                iconSize: [35, 35],
+                iconAnchor: [17, 17]
             })
         }).addTo(mapa);
     }
@@ -1567,9 +1589,10 @@ function iniciarGPS() {
                 meuMarcador = L.marker(minhaLocalizacao, {
                     icon: L.divIcon({
                         html: `<div style="position:relative;">
-                            <div class="pulse-loc" style="position:absolute; left:-17px; top:-17px; width:45px; height:45px;"></div>
+                            <div class="carro-marcador-pulse"></div>
                         </div>`,
-                        iconSize: [1, 1]
+                        iconSize: [35, 35],
+                        iconAnchor: [17, 17]
                     })
                 }).addTo(mapa);
             }
@@ -1624,7 +1647,7 @@ function verificarProximidadeAlertas() {
             alerta.lat, alerta.lng
         );
         
-        if (distancia < 0.3) { // 300 metros
+        if (distancia < 0.3) {
             tocarBip();
             mostrarPopupConfirmacao(alerta);
         }
@@ -1641,10 +1664,8 @@ function mostrarPopupConfirmacao(alerta) {
     subtexto.innerHTML = 'Toque para confirmar (8s)';
     popup.style.display = 'flex';
     
-    // Limpa timeout anterior
     if (popupTimeout) clearTimeout(popupTimeout);
     
-    // Esconde após 8 segundos
     popupTimeout = setTimeout(() => {
         popup.style.display = 'none';
     }, 8000);
@@ -1718,11 +1739,10 @@ function carregarAlertasFixos() {
         clusterGroup.addLayer(marcador);
     });
     
-    // Expiração automática após 20 minutos
     setInterval(() => {
         const agora = Date.now();
         Object.keys(alertasMapa).forEach(id => {
-            if (agora - alertasMapa[id].timestamp > 1200000) { // 20 minutos
+            if (agora - alertasMapa[id].timestamp > 1200000) {
                 delete alertasMapa[id];
                 db.ref('alertas_fixos/' + id).remove();
             }
@@ -1874,8 +1894,8 @@ function buscarRota() {
                 lineOptions: { 
                     styles: [{ 
                         color: '#2196F3', 
-                        weight: 6, 
-                        opacity: 0.5 
+                        weight: 5, 
+                        opacity: 0.7
                     }] 
                 },
                 createMarker: () => null,
