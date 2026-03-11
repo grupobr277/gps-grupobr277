@@ -132,7 +132,7 @@
             transform: rotate(180deg);
         }
         
-        /* PAINEL DE ALERTAS - COM FECHAR NA BORDA */
+        /* PAINEL DE ALERTAS */
         .alertas-panel {
             background: rgba(0,0,0,0.6);
             backdrop-filter: blur(15px);
@@ -158,11 +158,10 @@
             gap: 8px;
         }
         
-        /* Botão FECHAR - VERMELHO PADRÃO */
         .btn-fechar-painel {
             position: absolute;
             right: -20px;
-            top: 240px; /* Alinhado com BARREIRA (5ª linha) */
+            top: 240px;
             width: 40px;
             height: 40px;
             background: #e53935;
@@ -448,6 +447,38 @@
             color: white;
         }
         
+        /* BOTÃO INICIAR NAVEGAÇÃO */
+        .btn-iniciar-navegacao {
+            position: fixed;
+            top: 70px;
+            right: 80px;
+            background: #ffd700;
+            color: #1a1a1a;
+            border: 2px solid white;
+            border-radius: 40px;
+            padding: 8px 20px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 9501;
+            font-size: 14px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transition: all 0.2s;
+        }
+        
+        .btn-iniciar-navegacao:hover {
+            transform: scale(1.05);
+            background: #b8860b;
+            color: white;
+        }
+        
+        .btn-iniciar-navegacao i {
+            font-size: 16px;
+        }
+        
+        /* BOTÃO ENCERRAR ROTA */
         .btn-encerrar-rota {
             position: fixed;
             top: 70px;
@@ -472,6 +503,97 @@
         .btn-encerrar-rota:hover {
             background: #c62828;
             transform: scale(1.05);
+        }
+        
+        /* PAINEL DE INSTRUÇÕES DE NAVEGAÇÃO */
+        .instrucoes-panel {
+            position: fixed;
+            bottom: 150px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(10px);
+            border: 2px solid #ffd700;
+            border-radius: 60px;
+            padding: 12px 25px;
+            display: none;
+            align-items: center;
+            gap: 20px;
+            z-index: 9600;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            min-width: 300px;
+            max-width: 400px;
+        }
+        
+        .instrucao-icone {
+            width: 40px;
+            height: 40px;
+            background: #ffd700;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1a1a1a;
+            font-size: 20px;
+        }
+        
+        .instrucao-texto {
+            flex: 1;
+            color: white;
+        }
+        
+        .instrucao-principal {
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .instrucao-distancia {
+            font-size: 11px;
+            color: #ffd700;
+            margin-top: 2px;
+        }
+        
+        /* PAINEL DE INSTRUÇÕES COMPLETO (LATERAL) */
+        .routing-panel {
+            position: fixed;
+            top: 70px;
+            right: 10px;
+            width: 260px;
+            max-height: 400px;
+            overflow-y: auto;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            border: 2px solid #ffd700;
+            border-radius: 16px;
+            padding: 10px;
+            z-index: 9500;
+            display: none;
+            color: white;
+        }
+        
+        .routing-panel.visivel {
+            display: block;
+        }
+        
+        .routing-step {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            border-bottom: 1px solid rgba(255,215,0,0.2);
+        }
+        
+        .routing-step:last-child {
+            border-bottom: none;
+        }
+        
+        .routing-step i {
+            width: 24px;
+            color: #ffd700;
+        }
+        
+        .routing-step span {
+            font-size: 12px;
         }
         
         /* LUPA */
@@ -677,7 +799,7 @@
             cursor: pointer;
         }
         
-        /* ÍCONES DE ALERTA NO MAPA - CLIQUE EM QUALQUER ZOOM */
+        /* ÍCONES DE ALERTA NO MAPA */
         .alerta-mapa-marcador {
             font-size: 20px !important;
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
@@ -885,7 +1007,7 @@
     </div>
 </div>
 
-<!-- SISTEMA REPORTE COM FECHAR NA BORDA -->
+<!-- SISTEMA REPORTE -->
 <div class="reporte-container">
     <div class="reporte-toggle" onclick="toggleReporte()">
         <span class="led"></span>
@@ -904,6 +1026,23 @@
         <div class="velocimetro-valor" id="velocidadeRedonda">0</div>
         <div class="velocimetro-unidade">km/h</div>
     </div>
+</div>
+
+<!-- PAINEL DE INSTRUÇÕES DE NAVEGAÇÃO (VISUAL SUPERIOR) -->
+<div class="instrucoes-panel" id="instrucoesPanel">
+    <div class="instrucao-icone" id="instrucaoIcone">⬆️</div>
+    <div class="instrucao-texto">
+        <div class="instrucao-principal" id="instrucaoTexto">Siga em frente</div>
+        <div class="instrucao-distancia" id="instrucaoDistancia">500 m</div>
+    </div>
+</div>
+
+<!-- PAINEL DE INSTRUÇÕES COMPLETO (LATERAL) -->
+<div class="routing-panel" id="routingPanel">
+    <div style="padding: 8px; font-weight: bold; border-bottom: 1px solid #ffd700; margin-bottom: 8px;">
+        📍 INSTRUÇÕES
+    </div>
+    <div id="routingSteps"></div>
 </div>
 
 <!-- HEADER SUPERIOR ESQUERDO -->
@@ -935,6 +1074,11 @@
     <div class="btn-padrao" id="btnMudo" onclick="toggleMudo()">
         <i class="fas fa-volume-up"></i>
     </div>
+</div>
+
+<!-- BOTÃO INICIAR NAVEGAÇÃO -->
+<div class="btn-iniciar-navegacao" id="btnIniciarNavegacao" onclick="iniciarNavegacao()">
+    <i class="fas fa-play"></i> INICIAR NAVEGAÇÃO
 </div>
 
 <!-- BOTÃO ENCERRAR ROTA -->
@@ -1014,6 +1158,8 @@ let ultimaAtualizacaoGPS = 0;
 const INTERVALO_GPS = 1000;
 let zoomAtual = 13;
 let ultimaMsgCongestionamento = 0;
+let modoNavegacao = false;
+let instrucoesAtualizadas = false;
 
 // ===== 10 ALERTAS =====
 const alertas = [
@@ -1111,7 +1257,7 @@ function criarIconesAlertas() {
     });
 }
 
-// ===== FUNÇÃO PARA CRIAR ÍCONE DO CARRO (FONT AWESOME) =====
+// ===== FUNÇÃO PARA CRIAR ÍCONE DO CARRO =====
 function criarIconeCarro(ehMeu = true) {
     const cor = ehMeu ? '#000000' : '#666666';
     const tamanho = ehMeu ? 28 : 24;
@@ -1132,6 +1278,10 @@ function iniciarMapa() {
     mapa.on('dragstart', () => {
         seguirLocalizacao = false;
         document.getElementById('btnRecenter').style.display = 'block';
+        if (modoNavegacao) {
+            // Se estiver em modo navegação e arrastou, mostra aviso
+            document.getElementById('instrucoesPanel').style.display = 'flex';
+        }
     });
     
     mapa.on('zoomend', () => {
@@ -1400,6 +1550,7 @@ function buscarRota() {
             
             if (rotaAtual) mapa.removeControl(rotaAtual);
             
+            // Cria rota com suporte a instruções
             rotaAtual = L.Routing.control({
                 waypoints: [minhaLocalizacao, dest],
                 lineOptions: { 
@@ -1410,12 +1561,26 @@ function buscarRota() {
                     }] 
                 },
                 createMarker: () => null,
-                show: false
+                show: false,
+                routeWhileDragging: true,
+                showAlternatives: false,
+                addWaypoints: false,
+                fitSelectedRoutes: false
             }).addTo(mapa);
+            
+            // Adiciona listener para quando a rota for calculada
+            rotaAtual.on('routesfound', function(e) {
+                const routes = e.routes;
+                if (routes && routes.length > 0) {
+                    const instructions = routes[0].instructions;
+                    atualizarInstrucoes(instructions);
+                }
+            });
             
             mapa.flyToBounds(L.latLngBounds([minhaLocalizacao, dest]), { padding: [50, 50] });
             
             document.getElementById('rotaInfoPanel').style.display = 'flex';
+            document.getElementById('btnIniciarNavegacao').style.display = 'flex';
             document.getElementById('btnEncerrarRota').style.display = 'flex';
             
             const distancia = parseFloat(calcularDistancia(
@@ -1432,14 +1597,82 @@ function buscarRota() {
         });
 }
 
+// ===== ATUALIZAR INSTRUÇÕES =====
+function atualizarInstrucoes(instructions) {
+    if (!instructions || instructions.length === 0) return;
+    
+    // Atualiza painel lateral
+    const stepsDiv = document.getElementById('routingSteps');
+    let stepsHtml = '';
+    
+    instructions.forEach((inst, index) => {
+        let icone = '⬆️';
+        if (inst.type === 'TurnLeft') icone = '⬅️';
+        else if (inst.type === 'TurnRight') icone = '➡️';
+        else if (inst.type === 'SharpLeft') icone = '↰';
+        else if (inst.type === 'SharpRight') icone = '↱';
+        else if (inst.type === 'SlightLeft') icone = '↖️';
+        else if (inst.type === 'SlightRight') icone = '↗️';
+        else if (inst.type === 'Continue') icone = '⬆️';
+        else if (inst.type === 'Roundabout') icone = '🔄';
+        
+        const distancia = (inst.distance / 1000).toFixed(1) + ' km';
+        
+        stepsHtml += `
+            <div class="routing-step">
+                <i class="fas fa-${inst.type === 'TurnLeft' ? 'arrow-left' : inst.type === 'TurnRight' ? 'arrow-right' : 'arrow-up'}"></i>
+                <span>${inst.text || inst.instruction}</span>
+                <span style="margin-left: auto; color: #ffd700; font-size: 11px;">${distancia}</span>
+            </div>
+        `;
+    });
+    
+    document.getElementById('routingSteps').innerHTML = stepsHtml;
+    
+    // Atualiza painel superior com primeira instrução
+    if (instructions.length > 0) {
+        const primeira = instructions[0];
+        let icone = '⬆️';
+        if (primeira.type === 'TurnLeft') icone = '⬅️';
+        else if (primeira.type === 'TurnRight') icone = '➡️';
+        
+        document.getElementById('instrucaoIcone').innerHTML = icone;
+        document.getElementById('instrucaoTexto').innerHTML = primeira.text || 'Siga em frente';
+        document.getElementById('instrucaoDistancia').innerHTML = (primeira.distance / 1000).toFixed(1) + ' km';
+    }
+}
+
+// ===== INICIAR NAVEGAÇÃO =====
+function iniciarNavegacao() {
+    modoNavegacao = true;
+    seguirLocalizacao = true;
+    
+    document.getElementById('btnIniciarNavegacao').style.display = 'none';
+    document.getElementById('instrucoesPanel').style.display = 'flex';
+    document.getElementById('routingPanel').classList.add('visivel');
+    document.getElementById('btnRecenter').style.display = 'none';
+    
+    // Se já tem instruções, mostra
+    if (rotaAtual && rotaAtual._routes && rotaAtual._routes.length > 0) {
+        const instructions = rotaAtual._routes[0].instructions;
+        if (instructions) {
+            atualizarInstrucoes(instructions);
+        }
+    }
+}
+
 // ===== ENCERRAR ROTA =====
 function encerrarRota() {
     if (rotaAtual) {
         mapa.removeControl(rotaAtual);
         rotaAtual = null;
     }
+    modoNavegacao = false;
     document.getElementById('rotaInfoPanel').style.display = 'none';
+    document.getElementById('btnIniciarNavegacao').style.display = 'none';
     document.getElementById('btnEncerrarRota').style.display = 'none';
+    document.getElementById('instrucoesPanel').style.display = 'none';
+    document.getElementById('routingPanel').classList.remove('visivel');
 }
 
 function calcularDistancia(lat1, lon1, lat2, lon2) {
