@@ -158,22 +158,22 @@
             gap: 8px;
         }
         
-        /* Botão FECHAR na borda direita, alinhado com BARREIRA */
+        /* Botão FECHAR - VERMELHO PADRÃO */
         .btn-fechar-painel {
             position: absolute;
             right: -20px;
-            top: 128px; /* Posiciona ao lado da BARREIRA (4ª linha: 3 linhas acima * 40px) */
-            width: 36px;
-            height: 36px;
-            background: #ffd700;
-            border: 2px solid white;
+            top: 240px; /* Alinhado com BARREIRA (5ª linha) */
+            width: 40px;
+            height: 40px;
+            background: #e53935;
+            border: 2px solid #ffd700;
             border-radius: 50%;
-            color: #1a1a1a;
+            color: white;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 18px;
+            font-size: 20px;
             font-weight: bold;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             transition: all 0.2s;
@@ -182,9 +182,8 @@
         
         .btn-fechar-painel:hover {
             transform: scale(1.1);
-            background: white;
-            border-color: #ffd700;
-            color: #ffd700;
+            background: #c62828;
+            border-color: white;
         }
         
         @keyframes slideUp {
@@ -678,12 +677,25 @@
             cursor: pointer;
         }
         
-        /* ÍCONES DE ALERTA NO MAPA - REDUZIDOS */
+        /* ÍCONES DE ALERTA NO MAPA - CLIQUE EM QUALQUER ZOOM */
         .alerta-mapa-marcador {
             font-size: 20px !important;
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
             cursor: pointer;
             z-index: 500;
+            pointer-events: auto !important;
+            min-width: 30px;
+            min-height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border-radius: 50%;
+        }
+        
+        .alerta-mapa-marcador:hover {
+            transform: scale(1.1);
+            filter: brightness(1.2);
         }
         
         /* BOTÃO RECENTRALIZAR */
@@ -1274,7 +1286,7 @@ function carregarAlertasFixos() {
             icon: L.divIcon({
                 html: `<div class="alerta-mapa-marcador" style="color:${alerta.cor};">${alerta.icone}</div>`,
                 className: '',
-                iconSize: [20, 20]
+                iconSize: [30, 30]
             })
         }).addTo(mapa);
         
@@ -1296,7 +1308,7 @@ function ativarAlerta(alerta) {
         icon: L.divIcon({
             html: `<div class="alerta-mapa-marcador" style="color:${alerta.cor};">${alerta.icone}</div>`,
             className: '',
-            iconSize: [20, 20]
+            iconSize: [30, 30]
         })
     }).addTo(mapa);
     
