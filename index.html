@@ -447,29 +447,31 @@
             color: white;
         }
         
-        /* BOTÃO INICIAR NAVEGAÇÃO */
+        /* BOTÃO INICIAR NAVEGAÇÃO - REPOSICIONADO */
         .btn-iniciar-navegacao {
             position: fixed;
-            top: 70px;
-            right: 80px;
+            top: 140px; /* Mais abaixo para não sobrepor a previsão */
+            left: 50%;
+            transform: translateX(-50%);
             background: #ffd700;
             color: #1a1a1a;
             border: 2px solid white;
             border-radius: 40px;
-            padding: 8px 20px;
+            padding: 10px 25px;
             font-weight: bold;
             cursor: pointer;
             z-index: 9501;
-            font-size: 14px;
+            font-size: 15px;
             display: none;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.3);
             transition: all 0.2s;
+            white-space: nowrap;
         }
         
         .btn-iniciar-navegacao:hover {
-            transform: scale(1.05);
+            transform: translateX(-50%) scale(1.05);
             background: #b8860b;
             color: white;
         }
@@ -505,10 +507,10 @@
             transform: scale(1.05);
         }
         
-        /* PAINEL DE INSTRUÇÕES DE NAVEGAÇÃO */
+        /* PAINEL DE INSTRUÇÕES DE NAVEGAÇÃO - REPOSICIONADO */
         .instrucoes-panel {
             position: fixed;
-            bottom: 150px;
+            bottom: 180px; /* Posicionado abaixo da previsão */
             left: 50%;
             transform: translateX(-50%);
             background: rgba(0,0,0,0.9);
@@ -518,11 +520,19 @@
             padding: 12px 25px;
             display: none;
             align-items: center;
-            gap: 20px;
+            gap: 15px;
             z-index: 9600;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             min-width: 300px;
             max-width: 400px;
+            animation: fadeInOut 5s ease-in-out forwards;
+        }
+        
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            10% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            90% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
         }
         
         .instrucao-icone {
@@ -544,11 +554,11 @@
         
         .instrucao-principal {
             font-weight: bold;
-            font-size: 14px;
+            font-size: 15px;
         }
         
         .instrucao-distancia {
-            font-size: 11px;
+            font-size: 12px;
             color: #ffd700;
             margin-top: 2px;
         }
@@ -557,8 +567,8 @@
         .routing-panel {
             position: fixed;
             top: 70px;
-            right: 10px;
-            width: 260px;
+            right: 70px;
+            width: 280px;
             max-height: 400px;
             overflow-y: auto;
             background: rgba(0,0,0,0.8);
@@ -1028,9 +1038,11 @@
     </div>
 </div>
 
-<!-- PAINEL DE INSTRUÇÕES DE NAVEGAÇÃO (VISUAL SUPERIOR) -->
+<!-- PAINEL DE INSTRUÇÕES DE NAVEGAÇÃO -->
 <div class="instrucoes-panel" id="instrucoesPanel">
-    <div class="instrucao-icone" id="instrucaoIcone">⬆️</div>
+    <div class="instrucao-icone" id="instrucaoIcone">
+        <i class="fas fa-arrow-up"></i>
+    </div>
     <div class="instrucao-texto">
         <div class="instrucao-principal" id="instrucaoTexto">Siga em frente</div>
         <div class="instrucao-distancia" id="instrucaoDistancia">500 m</div>
@@ -1268,6 +1280,18 @@ function criarIconeCarro(ehMeu = true) {
         iconSize: [tamanho, tamanho],
         iconAnchor: [tamanho/2, tamanho/2]
     });
+}
+
+// ===== FUNÇÃO PARA TOCAR ÁUDIO DE BOAS-VINDAS =====
+function tocarAudioBoasVindas() {
+    if ('speechSynthesis' in window) {
+        const msg = new SpeechSynthesisUtterance();
+        msg.text = 'Você está no GPS Grupo BR 277. Siga as instruções e boa viagem.';
+        msg.lang = 'pt-BR';
+        msg.rate = 1.0;
+        msg.pitch = 1.0;
+        window.speechSynthesis.speak(msg);
+    }
 }
 
 // ===== MAPA =====
@@ -1533,6 +1557,37 @@ function formatarTempo(minutos) {
     }
 }
 
+// ===== FUNÇÃO PARA TRADUZIR INSTRUÇÕES =====
+function traduzirInstrucao(instrucao) {
+    if (!instrucao) return 'Siga em frente';
+    
+    const texto = instrucao.toLowerCase();
+    
+    if (texto.includes('turn left')) return 'Vire à esquerda';
+    if (texto.includes('turn right')) return 'Vire à direita';
+    if (texto.includes('continue')) return 'Siga em frente';
+    if (texto.includes('destination')) return 'Destino chegou';
+    if (texto.includes('roundabout')) return 'Rotatória';
+    if (texto.includes('merge')) return 'Entre na via';
+    if (texto.includes('keep left')) return 'Mantenha-se à esquerda';
+    if (texto.includes('keep right')) return 'Mantenha-se à direita';
+    
+    return instrucao;
+}
+
+// ===== FUNÇÃO PARA OBTER ÍCONE DA INSTRUÇÃO =====
+function getIconeInstrucao(instrucao) {
+    const texto = instrucao.toLowerCase();
+    
+    if (texto.includes('left')) return 'fa-arrow-left';
+    if (texto.includes('right')) return 'fa-arrow-right';
+    if (texto.includes('continue') || texto.includes('frente')) return 'fa-arrow-up';
+    if (texto.includes('destination')) return 'fa-flag-checkered';
+    if (texto.includes('roundabout')) return 'fa-sync-alt';
+    
+    return 'fa-arrow-up';
+}
+
 // ===== ROTA =====
 function buscarRota() {
     const destino = document.getElementById('buscaDestino').value;
@@ -1606,22 +1661,14 @@ function atualizarInstrucoes(instructions) {
     let stepsHtml = '';
     
     instructions.forEach((inst, index) => {
-        let icone = '⬆️';
-        if (inst.type === 'TurnLeft') icone = '⬅️';
-        else if (inst.type === 'TurnRight') icone = '➡️';
-        else if (inst.type === 'SharpLeft') icone = '↰';
-        else if (inst.type === 'SharpRight') icone = '↱';
-        else if (inst.type === 'SlightLeft') icone = '↖️';
-        else if (inst.type === 'SlightRight') icone = '↗️';
-        else if (inst.type === 'Continue') icone = '⬆️';
-        else if (inst.type === 'Roundabout') icone = '🔄';
-        
+        const instrucaoTraduzida = traduzirInstrucao(inst.text || inst.instruction);
+        const icone = getIconeInstrucao(inst.text || inst.instruction);
         const distancia = (inst.distance / 1000).toFixed(1) + ' km';
         
         stepsHtml += `
             <div class="routing-step">
-                <i class="fas fa-${inst.type === 'TurnLeft' ? 'arrow-left' : inst.type === 'TurnRight' ? 'arrow-right' : 'arrow-up'}"></i>
-                <span>${inst.text || inst.instruction}</span>
+                <i class="fas ${icone}"></i>
+                <span>${instrucaoTraduzida}</span>
                 <span style="margin-left: auto; color: #ffd700; font-size: 11px;">${distancia}</span>
             </div>
         `;
@@ -1632,13 +1679,13 @@ function atualizarInstrucoes(instructions) {
     // Atualiza painel superior com primeira instrução
     if (instructions.length > 0) {
         const primeira = instructions[0];
-        let icone = '⬆️';
-        if (primeira.type === 'TurnLeft') icone = '⬅️';
-        else if (primeira.type === 'TurnRight') icone = '➡️';
+        const instrucaoTraduzida = traduzirInstrucao(primeira.text || primeira.instruction);
+        const icone = getIconeInstrucao(primeira.text || primeira.instruction);
+        const distancia = (primeira.distance / 1000).toFixed(1) + ' km';
         
-        document.getElementById('instrucaoIcone').innerHTML = icone;
-        document.getElementById('instrucaoTexto').innerHTML = primeira.text || 'Siga em frente';
-        document.getElementById('instrucaoDistancia').innerHTML = (primeira.distance / 1000).toFixed(1) + ' km';
+        document.getElementById('instrucaoIcone').innerHTML = `<i class="fas ${icone}"></i>`;
+        document.getElementById('instrucaoTexto').innerHTML = instrucaoTraduzida;
+        document.getElementById('instrucaoDistancia').innerHTML = distancia;
     }
 }
 
@@ -1652,6 +1699,9 @@ function iniciarNavegacao() {
     document.getElementById('routingPanel').classList.add('visivel');
     document.getElementById('btnRecenter').style.display = 'none';
     
+    // Toca áudio de boas-vindas
+    tocarAudioBoasVindas();
+    
     // Se já tem instruções, mostra
     if (rotaAtual && rotaAtual._routes && rotaAtual._routes.length > 0) {
         const instructions = rotaAtual._routes[0].instructions;
@@ -1659,6 +1709,12 @@ function iniciarNavegacao() {
             atualizarInstrucoes(instructions);
         }
     }
+    
+    // Remove a animação após 5 segundos
+    setTimeout(() => {
+        document.getElementById('instrucoesPanel').style.animation = 'none';
+        document.getElementById('instrucoesPanel').style.display = 'none';
+    }, 5000);
 }
 
 // ===== ENCERRAR ROTA =====
