@@ -509,156 +509,76 @@
             transform: scale(1.05);
         }
         
-        /* BOTÃO OCULTAR PAINEL */
-        .btn-ocultar-painel {
-            position: fixed;
-            bottom: 200px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #ffd700;
-            color: #1a1a1a;
-            border: 2px solid white;
-            border-radius: 30px;
-            padding: 6px 15px;
-            font-weight: bold;
-            cursor: pointer;
-            z-index: 9501;
-            font-size: 12px;
-            display: none;
-            align-items: center;
-            gap: 5px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-            transition: all 0.2s;
-        }
-        
-        .btn-ocultar-painel:hover {
-            background: #b8860b;
-            color: white;
-        }
-        
-        /* PAINEL DE INSTRUÇÕES (SETA DE DIREÇÃO) */
+        /* PAINEL DE INSTRUÇÕES (SETA DE DIREÇÃO) - MAIS DISCRETO */
         .instrucoes-panel {
             position: fixed;
-            bottom: 180px;
+            bottom: 100px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0,0,0,0.9);
+            background: rgba(0,0,0,0.8);
             backdrop-filter: blur(10px);
             border: 2px solid #ffd700;
-            border-radius: 60px;
-            padding: 12px 25px;
+            border-radius: 40px;
+            padding: 8px 20px;
             display: none;
             align-items: center;
-            gap: 15px;
+            gap: 10px;
             z-index: 9600;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            min-width: 300px;
-            max-width: 400px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            max-width: 90%;
+            width: auto;
         }
         
         .instrucao-icone {
-            width: 40px;
-            height: 40px;
+            width: 30px;
+            height: 30px;
             background: #ffd700;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: #1a1a1a;
-            font-size: 20px;
+            font-size: 16px;
         }
         
         .instrucao-texto {
-            flex: 1;
             color: white;
-        }
-        
-        .instrucao-principal {
+            font-size: 13px;
             font-weight: bold;
-            font-size: 15px;
         }
         
         .instrucao-distancia {
-            font-size: 12px;
             color: #ffd700;
-            margin-top: 2px;
-        }
-        
-        /* PAINEL DE INSTRUÇÕES COMPLETO - OCULTÁVEL */
-        .routing-panel {
-            position: fixed;
-            top: 70px;
-            right: 70px;
-            width: 280px;
-            max-height: 400px;
-            overflow-y: auto;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px);
-            border: 2px solid #ffd700;
-            border-radius: 16px;
-            padding: 10px;
-            z-index: 9500;
-            display: none;
-            color: white;
-            transition: all 0.3s ease;
-        }
-        
-        .routing-panel.visivel {
-            display: block;
-        }
-        
-        .routing-panel.oculto {
-            display: none;
-        }
-        
-        .routing-step {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px;
-            border-bottom: 1px solid rgba(255,215,0,0.2);
-        }
-        
-        .routing-step:last-child {
-            border-bottom: none;
-        }
-        
-        .routing-step i {
-            width: 24px;
-            color: #ffd700;
-        }
-        
-        .routing-step span {
             font-size: 12px;
+            margin-left: 5px;
         }
         
-        /* POP-UP DE CONFIRMAÇÃO - CORRIGIDO */
+        /* POP-UP DE CONFIRMAÇÃO - MELHORADO */
         .confirmacao-popup {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(0,0,0,0.9);
+            background: rgba(0,0,0,0.95);
             backdrop-filter: blur(10px);
             border: 2px solid #ffd700;
             border-radius: 20px;
-            padding: 15px 25px;
+            padding: 20px;
             display: none;
             flex-direction: column;
             align-items: center;
             gap: 15px;
             z-index: 10000;
             color: white;
-            font-size: 14px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-            min-width: 250px;
+            min-width: 280px;
             max-width: 90%;
             text-align: center;
         }
         
         .confirmacao-texto {
             font-weight: bold;
-            font-size: 16px;
+            font-size: 18px;
             margin-bottom: 5px;
         }
         
@@ -680,11 +600,11 @@
             color: white;
             border: none;
             border-radius: 40px;
-            padding: 10px 25px;
+            padding: 12px 30px;
             cursor: pointer;
             font-weight: bold;
-            font-size: 14px;
-            min-width: 100px;
+            font-size: 16px;
+            min-width: 120px;
             transition: all 0.2s;
         }
         
@@ -693,22 +613,33 @@
             background: #45a049;
         }
         
+        .btn-confirmar.confirmado {
+            background: #2e7d32;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        
         .btn-negar {
             background: #e53935;
             color: white;
             border: none;
             border-radius: 40px;
-            padding: 10px 25px;
+            padding: 12px 30px;
             cursor: pointer;
             font-weight: bold;
-            font-size: 14px;
-            min-width: 100px;
+            font-size: 16px;
+            min-width: 120px;
             transition: all 0.2s;
         }
         
         .btn-negar:hover {
             transform: scale(1.05);
             background: #d32f2f;
+        }
+        
+        /* PAINEL DE INSTRUÇÕES OCULTADO POR PADRÃO */
+        .routing-panel {
+            display: none !important;
         }
         
         /* LUPA */
@@ -1159,37 +1090,22 @@
     </div>
 </div>
 
-<!-- PAINEL DE INSTRUÇÕES (SETA DE DIREÇÃO) -->
+<!-- PAINEL DE INSTRUÇÕES (SETA DE DIREÇÃO) - DISCRETO -->
 <div class="instrucoes-panel" id="instrucoesPanel">
     <div class="instrucao-icone" id="instrucaoIcone">
         <i class="fas fa-arrow-up"></i>
     </div>
-    <div class="instrucao-texto">
-        <div class="instrucao-principal" id="instrucaoTexto">Siga em frente</div>
-        <div class="instrucao-distancia" id="instrucaoDistancia">500 m</div>
-    </div>
+    <div class="instrucao-texto" id="instrucaoTexto">Siga em frente</div>
+    <div class="instrucao-distancia" id="instrucaoDistancia">500 m</div>
 </div>
 
-<!-- BOTÃO OCULTAR PAINEL -->
-<div class="btn-ocultar-painel" id="btnOcultarPainel" onclick="ocultarPainel()">
-    <i class="fas fa-eye-slash"></i> Ocultar
-</div>
-
-<!-- PAINEL DE INSTRUÇÕES COMPLETO -->
-<div class="routing-panel" id="routingPanel">
-    <div style="padding: 8px; font-weight: bold; border-bottom: 1px solid #ffd700; margin-bottom: 8px;">
-        📍 INSTRUÇÕES
-    </div>
-    <div id="routingSteps"></div>
-</div>
-
-<!-- POP-UP DE CONFIRMAÇÃO - CORRIGIDO -->
+<!-- POP-UP DE CONFIRMAÇÃO -->
 <div class="confirmacao-popup" id="confirmacaoPopup">
     <div class="confirmacao-texto" id="confirmacaoTexto">Acidente a 300 metros?</div>
-    <div class="confirmacao-subtexto" id="confirmacaoSubtexto">Toque para confirmar</div>
+    <div class="confirmacao-subtexto" id="confirmacaoSubtexto">Toque para confirmar (8s)</div>
     <div class="confirmacao-botoes">
-        <button class="btn-confirmar" onclick="confirmarAlerta()">✅ SIM</button>
-        <button class="btn-negar" onclick="negarAlerta()">❌ NÃO</button>
+        <button class="btn-confirmar" id="btnConfirmar" onclick="confirmarAlerta()">SIM</button>
+        <button class="btn-negar" onclick="negarAlerta()">NÃO</button>
     </div>
 </div>
 
@@ -1311,7 +1227,7 @@ let modoNavegacao = false;
 let instrucoesAtualizadas = false;
 let clusterGroup = null;
 let alertasMapa = {};
-let alertasConfirmacoes = {};
+let alertasConfirmados = {}; // Para evitar repetição
 
 // ===== 10 ALERTAS =====
 const alertas = [
@@ -1396,19 +1312,6 @@ function toggleReporte() {
     toggle.classList.toggle('ativo');
 }
 
-function ocultarPainel() {
-    const routing = document.getElementById('routingPanel');
-    const btnOcultar = document.getElementById('btnOcultarPainel');
-    
-    routing.classList.toggle('oculto');
-    
-    if (routing.classList.contains('oculto')) {
-        btnOcultar.innerHTML = '<i class="fas fa-eye"></i> Mostrar';
-    } else {
-        btnOcultar.innerHTML = '<i class="fas fa-eye-slash"></i> Ocultar';
-    }
-}
-
 // ===== ICONES ALERTAS =====
 function criarIconesAlertas() {
     const grid = document.getElementById('alertasGrid');
@@ -1453,7 +1356,7 @@ function criarIconeCarro(ehMeu = true, direcao = 0) {
     });
 }
 
-// ===== FUNÇÃO PARA TOCAR BIP (MAIS AGRADÁVEL) =====
+// ===== FUNÇÃO PARA TOCAR BIP =====
 function tocarBip() {
     try {
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1461,7 +1364,7 @@ function tocarBip() {
         const gainNode = audioCtx.createGain();
         
         oscillator.type = 'sine';
-        oscillator.frequency.setValueAtTime(880, audioCtx.currentTime); // 880 Hz
+        oscillator.frequency.setValueAtTime(880, audioCtx.currentTime);
         gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
         gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
         
@@ -1611,6 +1514,7 @@ function iniciarGPS() {
 
 // ===== VERIFICAR PROXIMIDADE COM ALERTAS =====
 let popupTimeout = null;
+let alertaAtualId = null;
 
 function verificarProximidadeAlertas() {
     if (!minhaLocalizacao) return;
@@ -1619,6 +1523,9 @@ function verificarProximidadeAlertas() {
         const alerta = alertasMapa[id];
         if (!alerta) return;
         
+        // Se já foi confirmado por este usuário, não mostra de novo
+        if (alertasConfirmados[id + '_' + usuario]) return;
+        
         const distancia = calcularDistancia(
             minhaLocalizacao.lat, minhaLocalizacao.lng,
             alerta.lat, alerta.lng
@@ -1626,20 +1533,25 @@ function verificarProximidadeAlertas() {
         
         if (distancia < 0.3) { // 300 metros
             tocarBip();
-            mostrarPopupConfirmacao(alerta);
+            mostrarPopupConfirmacao(alerta, id);
         }
     });
 }
 
 // ===== MOSTRAR POP-UP DE CONFIRMAÇÃO =====
-function mostrarPopupConfirmacao(alerta) {
+function mostrarPopupConfirmacao(alerta, id) {
     const popup = document.getElementById('confirmacaoPopup');
     const texto = document.getElementById('confirmacaoTexto');
     const subtexto = document.getElementById('confirmacaoSubtexto');
+    const btnConfirmar = document.getElementById('btnConfirmar');
     
     texto.innerHTML = `${alerta.nome} a 300 metros?`;
     subtexto.innerHTML = 'Toque para confirmar (8s)';
+    btnConfirmar.classList.remove('confirmado');
+    btnConfirmar.disabled = false;
     popup.style.display = 'flex';
+    
+    alertaAtualId = id;
     
     // Limpa timeout anterior
     if (popupTimeout) clearTimeout(popupTimeout);
@@ -1647,13 +1559,47 @@ function mostrarPopupConfirmacao(alerta) {
     // Esconde após 8 segundos
     popupTimeout = setTimeout(() => {
         popup.style.display = 'none';
+        alertaAtualId = null;
     }, 8000);
 }
 
 // ===== CONFIRMAR ALERTA =====
 function confirmarAlerta() {
-    document.getElementById('confirmacaoPopup').style.display = 'none';
-    if (popupTimeout) clearTimeout(popupTimeout);
+    if (!alertaAtualId) return;
+    
+    const popup = document.getElementById('confirmacaoPopup');
+    const btnConfirmar = document.getElementById('btnConfirmar');
+    
+    // Marca como confirmado para este usuário
+    alertasConfirmados[alertaAtualId + '_' + usuario] = true;
+    
+    // Atualiza contador no Firebase
+    const alerta = alertasMapa[alertaAtualId];
+    if (alerta) {
+        const confirmacoes = alerta.confirmacoes || 0;
+        db.ref('alertas_fixos/' + alertaAtualId).update({
+            confirmacoes: confirmacoes + 1
+        });
+        
+        // Se tiver chat aberto, atualiza mensagem
+        const chatDiv = document.getElementById(`chatAlerta-${alertaAtualId}`);
+        if (chatDiv) {
+            const msgConfirmacao = document.createElement('div');
+            msgConfirmacao.style.cssText = 'background: #4caf50; color: white; padding: 5px 8px; border-radius: 10px; margin: 3px 0; text-align: center;';
+            msgConfirmacao.innerHTML = `✅ ${usuario} confirmou o alerta (${confirmacoes + 1} confirmações)`;
+            chatDiv.appendChild(msgConfirmacao);
+            chatDiv.scrollTop = chatDiv.scrollHeight;
+        }
+    }
+    
+    btnConfirmar.classList.add('confirmado');
+    btnConfirmar.disabled = true;
+    
+    setTimeout(() => {
+        popup.style.display = 'none';
+        alertaAtualId = null;
+    }, 500);
+    
     tocarBip();
 }
 
@@ -1661,6 +1607,7 @@ function confirmarAlerta() {
 function negarAlerta() {
     document.getElementById('confirmacaoPopup').style.display = 'none';
     if (popupTimeout) clearTimeout(popupTimeout);
+    alertaAtualId = null;
 }
 
 // ===== USUÁRIOS ATIVOS =====
@@ -1734,7 +1681,7 @@ function ativarAlerta(alerta) {
     if (!minhaLocalizacao) return;
     
     const id = Date.now();
-    const alertaData = { ...alerta, lat: minhaLocalizacao.lat, lng: minhaLocalizacao.lng, timestamp: id };
+    const alertaData = { ...alerta, lat: minhaLocalizacao.lat, lng: minhaLocalizacao.lng, timestamp: id, confirmacoes: 0 };
     
     alertasMapa[id] = alertaData;
     
@@ -1759,11 +1706,14 @@ function abrirChatAlerta(alerta, posicao, id) {
     const conteudo = document.createElement('div');
     conteudo.innerHTML = `
         <div style="padding:10px; background:${alerta.cor}; color:white; font-weight:bold;">${alerta.icone} ${alerta.nome}</div>
+        <div style="padding:5px; background:#f0f0f0; text-align:center; font-size:11px;">
+            ✅ ${alerta.confirmacoes || 0} motoristas confirmaram
+        </div>
         <div style="padding:10px; max-height:200px; overflow-y:auto;" id="chatAlerta-${id}">
             <div style="text-align:center; color:#999;">Carregando...</div>
         </div>
         <div style="display:flex; padding:8px; gap:5px;">
-            <input type="text" id="inputAlerta-${id}" style="flex:1; padding:8px; border-radius:20px; border:1px solid #ccc;" placeholder="Digite..." onkeypress="if(event.key==='Enter') enviarMsgAlerta('${id}')">
+            <input type="text" id="inputAlerta-${id}" style="flex:1; padding:8px; border-radius:20px; border:1px solid #ccc;" placeholder="Digite sua mensagem..." onkeypress="if(event.key==='Enter') enviarMsgAlerta('${id}')">
             <button onclick="enviarMsgAlerta('${id}')" style="width:35px; height:35px; border-radius:50%; border:none; background:${alerta.cor}; color:white; cursor:pointer;">➔</button>
         </div>
     `;
@@ -1899,7 +1849,6 @@ function buscarRota() {
             document.getElementById('rotaInfoPanel').style.display = 'flex';
             document.getElementById('btnIniciarNavegacao').style.display = 'flex';
             document.getElementById('btnEncerrarRota').style.display = 'flex';
-            document.getElementById('btnOcultarPainel').style.display = 'flex';
             
             const distancia = parseFloat(calcularDistancia(
                 minhaLocalizacao.lat, minhaLocalizacao.lng,
@@ -1918,25 +1867,6 @@ function buscarRota() {
 // ===== ATUALIZAR INSTRUÇÕES =====
 function atualizarInstrucoes(instructions) {
     if (!instructions || instructions.length === 0) return;
-    
-    const stepsDiv = document.getElementById('routingSteps');
-    let stepsHtml = '';
-    
-    instructions.forEach((inst, index) => {
-        const instrucaoTraduzida = traduzirInstrucao(inst.text || inst.instruction);
-        const icone = getIconeInstrucao(inst.text || inst.instruction);
-        const distancia = (inst.distance / 1000).toFixed(1) + ' km';
-        
-        stepsHtml += `
-            <div class="routing-step">
-                <i class="fas ${icone}"></i>
-                <span>${instrucaoTraduzida}</span>
-                <span style="margin-left: auto; color: #ffd700; font-size: 11px;">${distancia}</span>
-            </div>
-        `;
-    });
-    
-    document.getElementById('routingSteps').innerHTML = stepsHtml;
     
     if (instructions.length > 0) {
         const primeira = instructions[0];
@@ -1957,9 +1887,7 @@ function iniciarNavegacao() {
     
     document.getElementById('btnIniciarNavegacao').style.display = 'none';
     document.getElementById('instrucoesPanel').style.display = 'flex';
-    document.getElementById('routingPanel').classList.add('visivel');
     document.getElementById('btnRecenter').style.display = 'none';
-    document.getElementById('btnOcultarPainel').style.display = 'flex';
     
     if (minhaLocalizacao) {
         mapa.flyTo(minhaLocalizacao, 17);
@@ -1986,8 +1914,6 @@ function encerrarRota() {
     document.getElementById('btnIniciarNavegacao').style.display = 'none';
     document.getElementById('btnEncerrarRota').style.display = 'none';
     document.getElementById('instrucoesPanel').style.display = 'none';
-    document.getElementById('routingPanel').classList.remove('visivel');
-    document.getElementById('btnOcultarPainel').style.display = 'none';
 }
 
 function calcularDistancia(lat1, lon1, lat2, lon2) {
