@@ -56,7 +56,7 @@
             color: white;
         }
         
-        /* ===== ÍCONE DO CARRO TRADICIONAL VERMELHO - CORRIGIDO ===== */
+        /* ===== ÍCONE DO CARRO COM PULSANTE AZUL CLARO ===== */
         .carro-marcador {
             background: transparent !important;
             border: none !important;
@@ -67,22 +67,60 @@
             background: transparent !important;
         }
         
-        .carro-marcador-pulse {
+        .pulsante-azul {
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            animation: pulse 1.5s infinite;
-            background: rgba(255, 0, 0, 0.2);
-            border: 3px solid #ff0000;
+            animation: pulse-azul 1.5s infinite;
+            background: rgba(0, 191, 255, 0.3); /* Azul claro transparente */
+            border: 3px solid #00BFFF; /* Azul claro */
             position: absolute;
-            left: -20px;
-            top: -20px;
+            left: 0;
+            top: 0;
             pointer-events: none;
         }
         
-        @keyframes pulse {
+        @keyframes pulse-azul {
             0% { transform: scale(0.8); opacity: 1; }
             100% { transform: scale(2); opacity: 0; }
+        }
+        
+        /* Ponto simples para zoom afastado */
+        .ponto-azul {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #00BFFF;
+            border: 3px solid white;
+            box-shadow: 0 0 15px #00BFFF;
+            animation: pulse-ponto 1.5s infinite;
+        }
+        
+        @keyframes pulse-ponto {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        /* ===== PULSANTE VERMELHO PARA CONGESTIONAMENTO ===== */
+        .pulsante-vermelho {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            animation: pulse-vermelho 1s infinite;
+            background: rgba(255, 0, 0, 0.4);
+            border: 3px solid #ff0000;
+            position: absolute;
+            left: -15px;
+            top: -15px;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
+        @keyframes pulse-vermelho {
+            0% { transform: scale(0.8); opacity: 1; }
+            70% { transform: scale(1.8); opacity: 0.3; }
+            100% { transform: scale(0.8); opacity: 1; }
         }
         
         /* ===== SISTEMA REPORTE ===== */
@@ -259,7 +297,7 @@
         .alerta-alagamento { background: linear-gradient(135deg, #2196f3, #1976d2); }
         .alerta-bloqueio { background: linear-gradient(135deg, #b71c1c, #8B0000); }
         
-        /* ===== BOTÃO X DO REPORTE - CORRIGIDO ===== */
+        /* ===== BOTÃO X DO REPORTE ===== */
         .btn-fechar-painel {
             position: absolute;
             right: -18px;
@@ -872,10 +910,10 @@
             background: #e53935; 
             color: white; 
             border-color: white;
-            animation: pulse-vermelho 1.5s infinite;
+            animation: pulse-botao 1.5s infinite;
         }
         
-        @keyframes pulse-vermelho {
+        @keyframes pulse-botao {
             0% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.7); }
             70% { box-shadow: 0 0 0 20px rgba(229, 57, 53, 0); }
             100% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0); }
@@ -911,32 +949,6 @@
             z-index: 10000;
             display: none;
             font-weight: bold;
-        }
-        
-        /* MENSAGEM DE CONGESTIONAMENTO */
-        .congestionamento-msg {
-            position: fixed;
-            top: 130px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.9);
-            backdrop-filter: blur(10px);
-            color: white;
-            padding: 10px 25px;
-            border-radius: 50px;
-            border: 2px solid #ffd700;
-            z-index: 9400;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            font-size: 13px;
-            box-shadow: 0 5px 30px rgba(0,0,0,0.5);
-            animation: slideDown 0.3s;
-        }
-        
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
-            to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
         
         /* CLUSTER PERSONALIZADO */
@@ -1160,6 +1172,7 @@ let ultimaMsgCongestionamento = 0;
 let clusterGroup = null;
 let alertasMapa = {};
 let alertasConfirmados = {};
+let marcadoresCongestionamento = {}; // Para controlar os pulsantes vermelhos
 
 // ===== 10 ALERTAS =====
 const alertas = [
@@ -1275,13 +1288,13 @@ function iniciarCluster() {
     mapa.addLayer(clusterGroup);
 }
 
-// ===== FUNÇÃO PARA CRIAR ÍCONE DO CARRO VERMELHO - CORRIGIDO =====
+// ===== FUNÇÃO PARA CRIAR ÍCONE DO CARRO COM PULSANTE AZUL =====
 function criarIconeCarro(ehMeu = true, direcao = 0) {
     if (ehMeu) {
-        // Versão tradicional: carro vermelho com pulse
+        // Versão com carro e pulsante azul (zoom próximo)
         return L.divIcon({
             html: `<div style="position:relative; width: 40px; height: 40px; background: transparent;">
-                <div class="carro-marcador-pulse"></div>
+                <div class="pulsante-azul" style="left: 0; top: 0;"></div>
                 <div style="font-size: 32px; position: absolute; left: 4px; top: 4px; z-index: 2; transform: rotate(${direcao}deg);">🚗</div>
             </div>`,
             className: 'carro-marcador',
@@ -1297,6 +1310,21 @@ function criarIconeCarro(ehMeu = true, direcao = 0) {
             iconAnchor: [12, 12]
         });
     }
+}
+
+// ===== FUNÇÃO PARA CRIAR MARCADOR DE CONGESTIONAMENTO COM PULSANTE VERMELHO =====
+function criarMarcadorCongestionamento(lat, lng) {
+    return L.marker([lat, lng], {
+        icon: L.divIcon({
+            html: `<div style="position:relative; width: 30px; height: 30px;">
+                <div class="pulsante-vermelho"></div>
+            </div>`,
+            className: '',
+            iconSize: [30, 30],
+            iconAnchor: [15, 15]
+        }),
+        zIndexOffset: 2000
+    });
 }
 
 // ===== FUNÇÃO PARA TOCAR BIP =====
@@ -1350,20 +1378,21 @@ function atualizarIconeCarro() {
     mapa.removeLayer(meuMarcador);
     
     if (zoomAtual >= 15) {
+        // Zoom próximo: mostra carro com pulsante
         meuMarcador = L.marker(minhaLocalizacao, {
             icon: criarIconeCarro(true, ultimoHeading || 0),
             zIndexOffset: 1000
         }).addTo(mapa);
     } else {
+        // Zoom afastado: apenas ponto azul pulsante
         meuMarcador = L.marker(minhaLocalizacao, {
             icon: L.divIcon({
-                html: `<div style="position:relative; width: 40px; height: 40px;">
-                    <div class="carro-marcador-pulse"></div>
-                </div>`,
-                className: 'carro-marcador',
-                iconSize: [40, 40],
-                iconAnchor: [20, 20]
-            })
+                html: `<div class="ponto-azul"></div>`,
+                className: '',
+                iconSize: [20, 20],
+                iconAnchor: [10, 10]
+            }),
+            zIndexOffset: 1000
         }).addTo(mapa);
     }
 }
@@ -1399,13 +1428,12 @@ function iniciarGPS() {
             } else {
                 meuMarcador = L.marker(minhaLocalizacao, {
                     icon: L.divIcon({
-                        html: `<div style="position:relative; width: 40px; height: 40px;">
-                            <div class="carro-marcador-pulse"></div>
-                        </div>`,
-                        className: 'carro-marcador',
-                        iconSize: [40, 40],
-                        iconAnchor: [20, 20]
-                    })
+                        html: `<div class="ponto-azul"></div>`,
+                        className: '',
+                        iconSize: [20, 20],
+                        iconAnchor: [10, 10]
+                    }),
+                    zIndexOffset: 1000
                 }).addTo(mapa);
             }
             
@@ -1686,7 +1714,29 @@ function formatarTempo(minutos) {
     }
 }
 
-// ===== ROTA COM AZUL SUAVE =====
+// ===== SIMULAR PONTOS DE CONGESTIONAMENTO NA ROTA =====
+function adicionarPontosCongestionamento(rotaCoordenadas) {
+    // Limpa marcadores anteriores
+    Object.values(marcadoresCongestionamento).forEach(m => mapa.removeLayer(m));
+    marcadoresCongestionamento = {};
+    
+    if (!rotaCoordenadas || rotaCoordenadas.length === 0) return;
+    
+    // Simula 3 pontos de congestionamento ao longo da rota
+    const numPontos = Math.min(3, Math.floor(rotaCoordenadas.length / 10));
+    
+    for (let i = 0; i < numPontos; i++) {
+        const idx = Math.floor(rotaCoordenadas.length * (0.3 + i * 0.2)); // Distribui ao longo da rota
+        if (idx < rotaCoordenadas.length) {
+            const ponto = rotaCoordenadas[idx];
+            const marcador = criarMarcadorCongestionamento(ponto.lat, ponto.lng);
+            marcador.addTo(mapa);
+            marcadoresCongestionamento[`cong_${i}`] = marcador;
+        }
+    }
+}
+
+// ===== ROTA COM AZUL SUAVE E PONTOS VERMELHOS =====
 function buscarRota() {
     const destino = document.getElementById('buscaDestino').value;
     if (!destino || !minhaLocalizacao) return;
@@ -1707,9 +1757,9 @@ function buscarRota() {
                 waypoints: [minhaLocalizacao, dest],
                 lineOptions: { 
                     styles: [{ 
-                        color: '#4169E1', // Azul royal mais suave
+                        color: '#4169E1', // Azul royal suave
                         weight: 4, 
-                        opacity: 0.5 // Mais transparente para ver trânsito
+                        opacity: 0.5
                     }] 
                 },
                 createMarker: () => null,
@@ -1719,6 +1769,15 @@ function buscarRota() {
                 addWaypoints: false,
                 fitSelectedRoutes: false
             }).addTo(mapa);
+            
+            rotaAtual.on('routesfound', function(e) {
+                const routes = e.routes;
+                if (routes && routes.length > 0) {
+                    // Pega as coordenadas da rota
+                    const coordinates = routes[0].coordinates;
+                    adicionarPontosCongestionamento(coordinates);
+                }
+            });
             
             mapa.flyToBounds(L.latLngBounds([minhaLocalizacao, dest]), { padding: [50, 50] });
             
@@ -1745,6 +1804,11 @@ function encerrarRota() {
         mapa.removeControl(rotaAtual);
         rotaAtual = null;
     }
+    
+    // Remove marcadores de congestionamento
+    Object.values(marcadoresCongestionamento).forEach(m => mapa.removeLayer(m));
+    marcadoresCongestionamento = {};
+    
     document.getElementById('rotaInfoPanel').style.display = 'none';
     document.getElementById('btnEncerrarRota').style.display = 'none';
 }
