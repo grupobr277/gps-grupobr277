@@ -290,10 +290,10 @@
         .alerta-alagamento { background: linear-gradient(135deg, #2196f3, #1976d2); }
         .alerta-bloqueio { background: linear-gradient(135deg, #b71c1c, #8B0000); }
         
-        /* ===== BOTÃO X DO REPORTE - CORRIGIDO ===== */
+        /* ===== BOTÃO X DO REPORTE - TOTALMENTE FORA ===== */
         .btn-fechar-painel {
             position: absolute;
-            right: -25px; /* Aumentado para 1cm aproximado */
+            right: -35px; /* Aumentado para ficar totalmente fora */
             top: 50%;
             transform: translateY(-50%);
             width: 60px;
@@ -324,41 +324,43 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
-        /* ===== LEGENDA DE TRÂNSITO NO RODAPÉ ===== */
+        /* ===== LEGENDA DE TRÂNSITO - REPOSICIONADA ===== */
         .legenda-transito {
             position: fixed;
-            bottom: 20px;
+            top: 120px; /* Posicionado acima do microfone */
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(10px);
-            border: 2px solid #ffd700;
-            border-radius: 40px;
-            padding: 6px 16px;
+            background: rgba(0,0,0,0.5); /* Mais transparente */
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,215,0,0.3);
+            border-radius: 30px;
+            padding: 5px 12px;
             display: flex;
-            gap: 15px;
+            gap: 12px;
             z-index: 9002;
             color: white;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: bold;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            opacity: 0.8; /* Opacidade para não atrapalhar */
+            pointer-events: none; /* Clica através da legenda */
         }
         
         .legenda-item {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
         }
         
         .legenda-cor {
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
         }
         
-        .legenda-verde { background: #00ff00; box-shadow: 0 0 8px #00ff00; }
-        .legenda-amarelo { background: #ffff00; box-shadow: 0 0 8px #ffff00; }
-        .legenda-vermelho { background: #ff0000; box-shadow: 0 0 8px #ff0000; }
+        .legenda-verde { background: #00ff00; box-shadow: 0 0 5px #00ff00; }
+        .legenda-amarelo { background: #ffff00; box-shadow: 0 0 5px #ffff00; }
+        .legenda-vermelho { background: #ff0000; box-shadow: 0 0 5px #ff0000; }
         
         /* VELOCÍMETRO */
         .velocimetro-container {
@@ -1143,7 +1145,7 @@
     <span>Áudio recebido...</span>
 </div>
 
-<!-- LEGENDA DE TRÂNSITO -->
+<!-- LEGENDA DE TRÂNSITO - REPOSICIONADA -->
 <div class="legenda-transito">
     <div class="legenda-item">
         <div class="legenda-cor legenda-verde"></div>
@@ -1196,8 +1198,8 @@ let ultimaMsgCongestionamento = 0;
 let clusterGroup = null;
 let alertasMapa = {};
 let alertasConfirmados = {};
-let pulsantesAlertas = {}; // Para controlar os pulsantes no mapa
-let marcadorDestino = null; // Para o alfinete do destino
+let pulsantesAlertas = {};
+let marcadorDestino = null;
 
 // ===== 10 ALERTAS =====
 const alertas = [
@@ -1323,48 +1325,47 @@ function hexToRgb(hex) {
 
 // ===== FUNÇÃO PARA CRIAR PULSANTE BASEADO EM ALERTA REAL =====
 function criarPulsantePorAlerta(alerta, id) {
-    // Define cor e tamanho baseado no tipo de alerta
     let cor, tamanho;
     
     switch(alerta.tipo) {
         case 'congestionamento':
-            cor = '#ff0000'; // Vermelho
+            cor = '#ff0000';
             tamanho = 45;
             break;
         case 'acidente':
-            cor = '#ff4500'; // Vermelho alaranjado (mais grave)
+            cor = '#ff4500';
             tamanho = 50;
             break;
         case 'bloqueio':
-            cor = '#8b0000'; // Vermelho escuro
+            cor = '#8b0000';
             tamanho = 45;
             break;
         case 'obras':
-            cor = '#ffa500'; // Laranja
+            cor = '#ffa500';
             tamanho = 40;
             break;
         case 'alagamento':
-            cor = '#1e90ff'; // Azul
+            cor = '#1e90ff';
             tamanho = 40;
             break;
         case 'neblina':
-            cor = '#87ceeb'; // Azul claro
+            cor = '#87ceeb';
             tamanho = 35;
             break;
         case 'animal':
-            cor = '#9c27b0'; // Roxo
+            cor = '#9c27b0';
             tamanho = 35;
             break;
         case 'radar':
-            cor = '#607d8b'; // Cinza
+            cor = '#607d8b';
             tamanho = 30;
             break;
         case 'barreira':
-            cor = '#8b4513'; // Marrom
+            cor = '#8b4513';
             tamanho = 35;
             break;
         default:
-            cor = '#ffff00'; // Amarelo (outros alertas)
+            cor = '#ffff00';
             tamanho = 35;
     }
     
@@ -1381,7 +1382,6 @@ function criarPulsantePorAlerta(alerta, id) {
         zIndexOffset: 2000
     });
     
-    // Adiciona evento de clique para abrir o chat
     marcador.on('click', () => {
         abrirChatAlerta(alerta, L.latLng(alerta.lat, alerta.lng), id);
     });
@@ -1419,7 +1419,7 @@ function criarAlfineteDestino() {
         </div>`,
         className: '',
         iconSize: [40, 40],
-        iconAnchor: [20, 40] // Âncora na ponta do alfinete
+        iconAnchor: [20, 40]
     });
 }
 
@@ -1681,13 +1681,11 @@ function carregarAlertasFixos() {
         
         alertasMapa[id] = alerta;
         
-        // Cria o pulsante personalizado baseado no tipo de alerta
         const pulsante = criarPulsantePorAlerta(alerta, id);
         pulsante.addTo(mapa);
         pulsantesAlertas[id] = pulsante;
     });
     
-    // Remove do mapa quando o alerta expirar
     db.ref('alertas_fixos').on('child_removed', snap => {
         const id = snap.key;
         if (pulsantesAlertas[id]) {
@@ -1697,7 +1695,6 @@ function carregarAlertasFixos() {
         delete alertasMapa[id];
     });
     
-    // Expiração automática após 20 minutos
     setInterval(() => {
         const agora = Date.now();
         Object.keys(alertasMapa).forEach(id => {
@@ -1724,8 +1721,6 @@ function ativarAlerta(alerta) {
     alertasMapa[id] = alertaData;
     
     db.ref('alertas_fixos/' + id).set(alertaData);
-    
-    // O pulsante será criado automaticamente pelo evento child_added
 }
 
 // ===== CHAT DO ALERTA =====
@@ -1813,12 +1808,10 @@ function buscarRota() {
             
             const dest = L.latLng(parseFloat(data[0].lat), parseFloat(data[0].lon));
             
-            // Remove alfinete anterior se existir
             if (marcadorDestino) {
                 mapa.removeLayer(marcadorDestino);
             }
             
-            // Adiciona alfinete no destino
             marcadorDestino = L.marker(dest, {
                 icon: criarAlfineteDestino(),
                 zIndexOffset: 3000
@@ -1869,7 +1862,6 @@ function encerrarRota() {
         rotaAtual = null;
     }
     
-    // Remove alfinete do destino
     if (marcadorDestino) {
         mapa.removeLayer(marcadorDestino);
         marcadorDestino = null;
