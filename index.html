@@ -290,14 +290,14 @@
         .alerta-alagamento { background: linear-gradient(135deg, #2196f3, #1976d2); }
         .alerta-bloqueio { background: linear-gradient(135deg, #b71c1c, #8B0000); }
         
-        /* ===== BOTÃO X DO REPORTE ===== */
+        /* ===== BOTÃO X DO REPORTE - CORRIGIDO ===== */
         .btn-fechar-painel {
             position: absolute;
-            right: -18px;
+            right: -25px; /* Aumentado para 1cm aproximado */
             top: 50%;
             transform: translateY(-50%);
-            width: 70px;
-            height: 70px;
+            width: 60px;
+            height: 60px;
             background: #e53935;
             border: 4px solid #ffd700;
             border-radius: 50%;
@@ -306,7 +306,7 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 35px;
+            font-size: 30px;
             font-weight: bold;
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
             transition: all 0.2s;
@@ -323,6 +323,42 @@
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        
+        /* ===== LEGENDA DE TRÂNSITO NO RODAPÉ ===== */
+        .legenda-transito {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px);
+            border: 2px solid #ffd700;
+            border-radius: 40px;
+            padding: 6px 16px;
+            display: flex;
+            gap: 15px;
+            z-index: 9002;
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        
+        .legenda-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .legenda-cor {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .legenda-verde { background: #00ff00; box-shadow: 0 0 8px #00ff00; }
+        .legenda-amarelo { background: #ffff00; box-shadow: 0 0 8px #ffff00; }
+        .legenda-vermelho { background: #ff0000; box-shadow: 0 0 8px #ff0000; }
         
         /* VELOCÍMETRO */
         .velocimetro-container {
@@ -1107,6 +1143,22 @@
     <span>Áudio recebido...</span>
 </div>
 
+<!-- LEGENDA DE TRÂNSITO -->
+<div class="legenda-transito">
+    <div class="legenda-item">
+        <div class="legenda-cor legenda-verde"></div>
+        <span>Fluxo normal</span>
+    </div>
+    <div class="legenda-item">
+        <div class="legenda-cor legenda-amarelo"></div>
+        <span>Intenso</span>
+    </div>
+    <div class="legenda-item">
+        <div class="legenda-cor legenda-vermelho"></div>
+        <span>Lento / Parado</span>
+    </div>
+</div>
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
@@ -1145,6 +1197,7 @@ let clusterGroup = null;
 let alertasMapa = {};
 let alertasConfirmados = {};
 let pulsantesAlertas = {}; // Para controlar os pulsantes no mapa
+let marcadorDestino = null; // Para o alfinete do destino
 
 // ===== 10 ALERTAS =====
 const alertas = [
@@ -1356,6 +1409,18 @@ function criarIconeCarro(ehMeu = true, direcao = 0) {
             iconAnchor: [12, 12]
         });
     }
+}
+
+// ===== FUNÇÃO PARA CRIAR ALFINETE DO DESTINO =====
+function criarAlfineteDestino() {
+    return L.divIcon({
+        html: `<div style="position:relative; width: 40px; height: 40px;">
+            <i class="fas fa-map-pin" style="color: black; font-size: 40px; filter: drop-shadow(0 0 0 3px #ffd700); -webkit-text-stroke: 3px #ffd700;"></i>
+        </div>`,
+        className: '',
+        iconSize: [40, 40],
+        iconAnchor: [20, 40] // Âncora na ponta do alfinete
+    });
 }
 
 // ===== FUNÇÃO PARA TOCAR BIP =====
@@ -1733,7 +1798,7 @@ function formatarTempo(minutos) {
     }
 }
 
-// ===== ROTA COM AZUL SUAVE (SEM PULSANTES FALSOS) =====
+// ===== ROTA COM AZUL SUAVE E ALFINETE NO DESTINO =====
 function buscarRota() {
     const destino = document.getElementById('buscaDestino').value;
     if (!destino || !minhaLocalizacao) return;
@@ -1747,6 +1812,17 @@ function buscarRota() {
             }
             
             const dest = L.latLng(parseFloat(data[0].lat), parseFloat(data[0].lon));
+            
+            // Remove alfinete anterior se existir
+            if (marcadorDestino) {
+                mapa.removeLayer(marcadorDestino);
+            }
+            
+            // Adiciona alfinete no destino
+            marcadorDestino = L.marker(dest, {
+                icon: criarAlfineteDestino(),
+                zIndexOffset: 3000
+            }).addTo(mapa);
             
             if (rotaAtual) mapa.removeControl(rotaAtual);
             
@@ -1791,6 +1867,12 @@ function encerrarRota() {
     if (rotaAtual) {
         mapa.removeControl(rotaAtual);
         rotaAtual = null;
+    }
+    
+    // Remove alfinete do destino
+    if (marcadorDestino) {
+        mapa.removeLayer(marcadorDestino);
+        marcadorDestino = null;
     }
     
     document.getElementById('rotaInfoPanel').style.display = 'none';
