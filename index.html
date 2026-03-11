@@ -13,19 +13,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body, #map { height: 100%; width: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
         
-        /* Estilo do carro profissional */
-        .carro-profissional {
-            transform-origin: center center;
-            transition: transform 0.3s ease-out;
-            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
-        }
-        
-        /* Container do mapa para rotação */
-        #map {
-            transition: transform 0.5s ease-out;
-            transform-origin: center center;
-        }
-        
         /* MODAL DE BOAS-VINDAS */
         .welcome-modal {
             position: fixed;
@@ -655,22 +642,22 @@
             position: fixed;
             top: 15px;
             left: 180px;
-            width: 280px;
+            width: 250px;
             z-index: 10000;
             background: white;
-            border-radius: 50px;
+            border-radius: 40px;
             border: 3px solid #ffd700;
             display: flex;
             overflow: hidden;
             box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-            height: 50px;
+            height: 45px;
         }
         
         .lupa-container input {
             flex: 1;
-            padding: 12px 18px;
+            padding: 10px 15px;
             border: none;
-            font-size: 16px;
+            font-size: 14px;
             outline: none;
             height: 100%;
         }
@@ -679,21 +666,12 @@
             background: #075e54;
             color: white;
             border: none;
-            width: 55px;
+            width: 45px;
             cursor: pointer;
-            font-size: 18px;
+            font-size: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background 0.2s;
-        }
-        
-        .lupa-container button:hover {
-            background: #0a7a6b;
-        }
-        
-        .lupa-container button:active {
-            transform: scale(0.95);
         }
         
         /* BOTÃO RECENTRALIZAR */
@@ -835,6 +813,12 @@
             font-weight: bold;
             font-size: 14px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        
+        /* ESTILO DO CARRO PROFISSIONAL */
+        .carro-profissional {
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+            transition: transform 0.2s ease-out;
         }
     </style>
 </head>
@@ -1059,7 +1043,6 @@ let clusterGroup = null;
 let alertasMapa = {};
 let alertasConfirmados = {};
 let destinoAtual = null;
-let ultimaPosicaoRecalculo = null;
 
 // ===== 10 ALERTAS =====
 const alertas = [
@@ -1081,213 +1064,73 @@ const traducoes = {
     'Recalculating route': 'Recalculando rota',
     'Directions not found': 'Rota não encontrada',
     'Destination reached': 'Destino chegou',
-    'Loading tiles': 'Carregando mapa',
     'Turn left': 'Vire à esquerda',
     'Turn right': 'Vire à direita',
     'Continue straight': 'Siga em frente',
     'Keep left': 'Mantenha-se à esquerda',
     'Keep right': 'Mantenha-se à direita',
-    'Enter roundabout': 'Entre na rotatória',
-    'Exit roundabout': 'Saia da rotatória',
     'North': 'Norte',
     'South': 'Sul',
     'East': 'Leste',
-    'West': 'Oeste',
-    'Northeast': 'Nordeste',
-    'Northwest': 'Noroeste',
-    'Southeast': 'Sudeste',
-    'Southwest': 'Sudoeste',
-    'traffic heavy': 'Trânsito intenso',
-    'traffic moderate': 'Trânsito moderado',
-    'traffic light': 'Trânsito leve',
-    'accident reported': 'Acidente relatado',
-    'road closed': 'Via interditada',
-    'construction': 'Obras na via'
+    'West': 'Oeste'
 };
 
 function traduzir(texto) {
     return traducoes[texto] || texto;
 }
 
-// ===== ÍCONE PROFISSIONAL DO CARRO =====
-function criarIconeCarroProfissional(cor = '#000000', tamanho = 32) {
+// ===== ÍCONE PROFISSIONAL DO CARRO (PNG) =====
+// IMPORTANTE: Salve as imagens como:
+// - carro-preto.png (seu carro)
+// - carro-cinza.png (outros usuários)
+function criarIconeCarroProfissional(ehMeu = true) {
+    if (ehMeu) {
+        return L.icon({
+            iconUrl: 'carro-preto.png', // Substitua pelo caminho da sua imagem
+            iconSize: [40, 40],
+            iconAnchor: [20, 20],
+            popupAnchor: [0, -20],
+            className: 'carro-profissional'
+        });
+    } else {
+        return L.icon({
+            iconUrl: 'carro-cinza.png', // Substitua pelo caminho da sua imagem
+            iconSize: [32, 32],
+            iconAnchor: [16, 16],
+            popupAnchor: [0, -16],
+            className: 'carro-profissional'
+        });
+    }
+}
+
+// Fallback para caso as imagens não existam
+function criarIconeCarroFallback(ehMeu = true) {
+    const cor = ehMeu ? '#000000' : '#666666';
+    const tamanho = ehMeu ? 32 : 28;
+    
     return L.divIcon({
-        html: `
-        <div class="carro-profissional">
-            <svg width="${tamanho}" height="${tamanho}" viewBox="0 0 32 32">
-                <!-- Carroceria principal (vista superior) -->
-                <rect x="6" y="12" width="20" height="8" rx="2" fill="${cor}" stroke="#FFFFFF" stroke-width="1.5"/>
-                <!-- Capô dianteiro (frente do carro) -->
-                <polygon points="10,12 22,12 20,8 12,8" fill="${cor}" stroke="#FFFFFF" stroke-width="1.5"/>
-                <!-- Vidro dianteiro -->
-                <polygon points="12,8 20,8 18,5 14,5" fill="#2A2A2A" opacity="0.9"/>
-                <!-- Faróis dianteiros -->
-                <circle cx="12" cy="14" r="2" fill="#FFD700"/>
-                <circle cx="20" cy="14" r="2" fill="#FFD700"/>
-                <!-- Rodas (pontos laterais) -->
-                <circle cx="10" cy="18" r="2" fill="#333" stroke="#AAA" stroke-width="1"/>
-                <circle cx="22" cy="18" r="2" fill="#333" stroke="#AAA" stroke-width="1"/>
-                <!-- Seta de direção -->
-                <polygon points="16,4 14,7 18,7" fill="#FFD700"/>
-            </svg>
-        </div>
-        `,
-        className: '',
+        html: `<i class="fas fa-car-side" style="color: ${cor}; font-size: ${tamanho}px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));"></i>`,
+        className: 'carro-profissional',
         iconSize: [tamanho, tamanho],
         iconAnchor: [tamanho/2, tamanho/2]
     });
+}
+
+// Tenta usar o ícone PNG, se não existir usa o fallback
+function criarIconeCarro(ehMeu = true) {
+    try {
+        return criarIconeCarroProfissional(ehMeu);
+    } catch (e) {
+        console.log('Usando ícone de fallback (Font Awesome)');
+        return criarIconeCarroFallback(ehMeu);
+    }
 }
 
 // ===== FUNÇÃO PARA ROTACIONAR CARRO =====
 function rotacionarCarro(marker, heading) {
     const el = marker.getElement();
     if (el) {
-        const carroDiv = el.querySelector('.carro-profissional');
-        if (carroDiv) {
-            carroDiv.style.transform = `rotate(${heading}deg)`;
-        }
-    }
-}
-
-// ===== FUNÇÃO PARA RECALCULAR ROTA (OSRM GRÁTIS) =====
-async function recalcularRota(origem, destino) {
-    try {
-        const response = await fetch(
-            `https://router.project-osrm.org/route/v1/driving/` +
-            `${origem.lng},${origem.lat};${destino.lng},${destino.lat}` +
-            `?overview=full&geometries=geojson&steps=true`
-        );
-        
-        const data = await response.json();
-        
-        if (data.routes && data.routes.length > 0) {
-            const rota = data.routes[0];
-            const coordenadas = rota.geometry.coordinates.map(c => [c[1], c[0]]);
-            
-            // Atualiza linha da rota
-            if (rotaAtual) mapa.removeLayer(rotaAtual);
-            rotaAtual = L.polyline(coordenadas, {
-                color: '#2196F3',
-                weight: 6,
-                opacity: 0.6
-            }).addTo(mapa);
-            
-            // Atualiza informações da rota
-            const distancia = (rota.distance / 1000).toFixed(1);
-            const tempoMin = Math.round(rota.duration / 60);
-            const atraso = Math.round(tempoMin * 0.2);
-            
-            document.getElementById('rotaTempo').textContent = formatarTempo(tempoMin);
-            document.getElementById('rotaDistancia').textContent = `${distancia} km`;
-            document.getElementById('rotaAtraso').textContent = `+${formatarTempo(atraso)}`;
-            
-            return { distancia, tempo: tempoMin };
-        }
-    } catch (error) {
-        console.error('Erro ao recalcular rota:', error);
-    }
-}
-
-// ===== FUNÇÃO PARA MOVIMENTO SUAVE DO CARRO =====
-function moverCarroSuave(marker, novaLat, novaLng, novoHeading, duracao = 1000) {
-    const inicio = performance.now();
-    const posInicial = marker.getLatLng();
-    const latInicial = posInicial.lat;
-    const lngInicial = posInicial.lng;
-    const headingInicial = ultimoHeading;
-    
-    function animar(tempo) {
-        const progresso = Math.min((tempo - inicio) / duracao, 1);
-        
-        // Interpolação suave (easing)
-        const suavizado = 1 - Math.pow(1 - progresso, 3);
-        
-        const latAtual = latInicial + (novaLat - latInicial) * suavizado;
-        const lngAtual = lngInicial + (novaLng - lngInicial) * suavizado;
-        
-        marker.setLatLng([latAtual, lngAtual]);
-        
-        // Interpolação da rotação
-        if (novoHeading !== undefined && headingInicial !== undefined) {
-            // Calcula diferença mínima de ângulo
-            let diff = novoHeading - headingInicial;
-            while (diff < -180) diff += 360;
-            while (diff > 180) diff -= 360;
-            
-            const headingAtual = headingInicial + diff * suavizado;
-            rotacionarCarro(marker, headingAtual);
-        }
-        
-        // Centraliza o carro com offset para mostrar estrada à frente
-        if (modoNavegacao) {
-            const offset = 100; // pixels
-            const point = mapa.latLngToContainerPoint([latAtual, lngAtual]);
-            const novoPoint = L.point(point.x, point.y - offset);
-            const novoLatLng = mapa.containerPointToLatLng(novoPoint);
-            mapa.panTo(novoLatLng, { animate: false });
-        }
-        
-        // Ajusta zoom por velocidade
-        if (posicaoAtualSpeed) {
-            ajustarZoomPorVelocidade(posicaoAtualSpeed);
-        }
-        
-        if (progresso < 1) {
-            requestAnimationFrame(animar);
-        } else {
-            ultimoHeading = novoHeading;
-            
-            // Verifica se precisa recalcular rota (se saiu do caminho)
-            if (destinoAtual && modoNavegacao) {
-                verificarRecalculoRota([novaLat, novaLng]);
-            }
-        }
-    }
-    
-    requestAnimationFrame(animar);
-}
-
-// ===== FUNÇÃO PARA AJUSTAR ZOOM POR VELOCIDADE =====
-function ajustarZoomPorVelocidade(velocidade) {
-    if (velocidade < 20) {
-        mapa.setZoom(18, { animate: true });
-    } else if (velocidade < 40) {
-        mapa.setZoom(17, { animate: true });
-    } else if (velocidade < 60) {
-        mapa.setZoom(16, { animate: true });
-    } else if (velocidade < 80) {
-        mapa.setZoom(15, { animate: true });
-    } else {
-        mapa.setZoom(14, { animate: true });
-    }
-}
-
-// ===== FUNÇÃO PARA VERIFICAR RECALCULO DE ROTA =====
-function verificarRecalculoRota(posicaoAtual) {
-    if (!destinoAtual || !rotaAtual) return;
-    
-    // Verifica a cada 100 metros
-    if (ultimaPosicaoRecalculo) {
-        const distanciaPercorrida = calcularDistancia(
-            ultimaPosicaoRecalculo[0], ultimaPosicaoRecalculo[1],
-            posicaoAtual[0], posicaoAtual[1]
-        );
-        
-        if (distanciaPercorrida < 0.1) return; // Menos de 100m
-    }
-    
-    ultimaPosicaoRecalculo = posicaoAtual;
-    
-    // Simula verificação se saiu da rota
-    // Em produção, verificaria distância da polyline
-    const saiuDaRota = Math.random() > 0.95; // 5% de chance para teste
-    
-    if (saiuDaRota) {
-        console.log(traduzir('Recalculating route'));
-        recalcularRota(
-            { lat: posicaoAtual[0], lng: posicaoAtual[1] },
-            destinoAtual
-        );
+        el.style.transform = `rotate(${heading}deg)`;
     }
 }
 
@@ -1458,7 +1301,7 @@ function atualizarIconeCarro() {
     
     if (zoomAtual >= 15) {
         meuMarcador = L.marker(minhaLocalizacao, {
-            icon: criarIconeCarroProfissional('#000000', 32),
+            icon: criarIconeCarro(true),
             zIndexOffset: 1000
         }).addTo(mapa);
         
@@ -1477,7 +1320,6 @@ function atualizarIconeCarro() {
 
 // ===== GPS =====
 let ultimoHeading = 0;
-let posicaoAtualSpeed = 0;
 
 function iniciarGPS() {
     if (!navigator.geolocation) return;
@@ -1487,27 +1329,27 @@ function iniciarGPS() {
         if (agora - ultimaAtualizacaoGPS < INTERVALO_GPS) return;
         ultimaAtualizacaoGPS = agora;
         
-        const novaPos = L.latLng(pos.coords.latitude, pos.coords.longitude);
+        minhaLocalizacao = L.latLng(pos.coords.latitude, pos.coords.longitude);
         
         if (pos.coords.heading !== null) {
             ultimoHeading = pos.coords.heading;
         }
         
         if (pos.coords.speed !== null) {
-            posicaoAtualSpeed = pos.coords.speed * 3.6;
-            atualizarVelocimetroPessoal(posicaoAtualSpeed);
+            const velocidadeKmh = pos.coords.speed * 3.6;
+            atualizarVelocimetroPessoal(velocidadeKmh);
         }
         
         if (!meuMarcador) {
             if (zoomAtual >= 15) {
-                meuMarcador = L.marker(novaPos, {
-                    icon: criarIconeCarroProfissional('#000000', 32),
+                meuMarcador = L.marker(minhaLocalizacao, {
+                    icon: criarIconeCarro(true),
                     zIndexOffset: 1000
                 }).addTo(mapa);
                 
                 rotacionarCarro(meuMarcador, ultimoHeading || 0);
             } else {
-                meuMarcador = L.marker(novaPos, {
+                meuMarcador = L.marker(minhaLocalizacao, {
                     icon: L.divIcon({
                         html: `<div style="position:relative;">
                             <div class="pulse-loc" style="position:absolute; left:-17px; top:-17px; width:45px; height:45px;"></div>
@@ -1517,31 +1359,31 @@ function iniciarGPS() {
                 }).addTo(mapa);
             }
             
-            mapa.setView(novaPos, 17);
+            mapa.setView(minhaLocalizacao, 17);
             
             db.ref('usuarios_ativos/' + usuario).set({
-                lat: novaPos.lat,
-                lng: novaPos.lng,
+                lat: minhaLocalizacao.lat,
+                lng: minhaLocalizacao.lng,
                 veiculo: veiculoUsuario,
                 timestamp: Date.now()
             });
             
         } else {
-            // Movimento suave do carro
+            meuMarcador.setLatLng(minhaLocalizacao);
+            
             if (zoomAtual >= 15) {
-                moverCarroSuave(meuMarcador, novaPos.lat, novaPos.lng, ultimoHeading, 1000);
-            } else {
-                meuMarcador.setLatLng(novaPos);
+                rotacionarCarro(meuMarcador, ultimoHeading || 0);
             }
             
             db.ref('usuarios_ativos/' + usuario).update({
-                lat: novaPos.lat,
-                lng: novaPos.lng,
+                lat: minhaLocalizacao.lat,
+                lng: minhaLocalizacao.lng,
                 timestamp: Date.now()
             });
         }
         
-        // Verifica proximidade com alertas
+        if (seguirLocalizacao) mapa.panTo(minhaLocalizacao);
+        
         verificarProximidadeAlertas();
         
     }, null, { enableHighAccuracy: true, maximumAge: 0, timeout: 5000 });
@@ -1549,98 +1391,6 @@ function iniciarGPS() {
     window.addEventListener('beforeunload', () => {
         db.ref('usuarios_ativos/' + usuario).remove();
     });
-}
-
-// ===== VERIFICAR PROXIMIDADE COM ALERTAS =====
-let popupTimeout = null;
-let alertaAtualId = null;
-
-function verificarProximidadeAlertas() {
-    if (!minhaLocalizacao) return;
-    
-    Object.keys(alertasMapa).forEach(id => {
-        const alerta = alertasMapa[id];
-        if (!alerta) return;
-        
-        if (alertasConfirmados[id + '_' + usuario]) return;
-        
-        const distancia = calcularDistancia(
-            minhaLocalizacao.lat, minhaLocalizacao.lng,
-            alerta.lat, alerta.lng
-        );
-        
-        if (distancia < 0.3) {
-            tocarBip();
-            mostrarPopupConfirmacao(alerta, id);
-        }
-    });
-}
-
-// ===== MOSTRAR POP-UP DE CONFIRMAÇÃO =====
-function mostrarPopupConfirmacao(alerta, id) {
-    const popup = document.getElementById('confirmacaoPopup');
-    const texto = document.getElementById('confirmacaoTexto');
-    const subtexto = document.getElementById('confirmacaoSubtexto');
-    const btnConfirmar = document.getElementById('btnConfirmar');
-    
-    texto.innerHTML = `${alerta.nome} a 300 metros?`;
-    subtexto.innerHTML = 'Toque para confirmar (8s)';
-    btnConfirmar.classList.remove('confirmado');
-    btnConfirmar.disabled = false;
-    popup.style.display = 'flex';
-    
-    alertaAtualId = id;
-    
-    if (popupTimeout) clearTimeout(popupTimeout);
-    
-    popupTimeout = setTimeout(() => {
-        popup.style.display = 'none';
-        alertaAtualId = null;
-    }, 8000);
-}
-
-// ===== CONFIRMAR ALERTA =====
-function confirmarAlerta() {
-    if (!alertaAtualId) return;
-    
-    const popup = document.getElementById('confirmacaoPopup');
-    const btnConfirmar = document.getElementById('btnConfirmar');
-    
-    alertasConfirmados[alertaAtualId + '_' + usuario] = true;
-    
-    const alerta = alertasMapa[alertaAtualId];
-    if (alerta) {
-        const confirmacoes = alerta.confirmacoes || 0;
-        db.ref('alertas_fixos/' + alertaAtualId).update({
-            confirmacoes: confirmacoes + 1
-        });
-        
-        const chatDiv = document.getElementById(`chatAlerta-${alertaAtualId}`);
-        if (chatDiv) {
-            const msgConfirmacao = document.createElement('div');
-            msgConfirmacao.style.cssText = 'background: #4caf50; color: white; padding: 5px 8px; border-radius: 10px; margin: 3px 0; text-align: center;';
-            msgConfirmacao.innerHTML = `✅ ${usuario} confirmou o alerta (${confirmacoes + 1} confirmações)`;
-            chatDiv.appendChild(msgConfirmacao);
-            chatDiv.scrollTop = chatDiv.scrollHeight;
-        }
-    }
-    
-    btnConfirmar.classList.add('confirmado');
-    btnConfirmar.disabled = true;
-    
-    setTimeout(() => {
-        popup.style.display = 'none';
-        alertaAtualId = null;
-    }, 500);
-    
-    tocarBip();
-}
-
-// ===== NEGAR ALERTA =====
-function negarAlerta() {
-    document.getElementById('confirmacaoPopup').style.display = 'none';
-    if (popupTimeout) clearTimeout(popupTimeout);
-    alertaAtualId = null;
 }
 
 // ===== USUÁRIOS ATIVOS =====
@@ -1667,7 +1417,7 @@ function carregarUsuariosAtivos() {
             }
             
             const marcador = L.marker([dados.lat, dados.lng], {
-                icon: criarIconeCarroProfissional('#666666', 24)
+                icon: criarIconeCarro(false)
             }).addTo(mapa);
             
             usuariosAtivos[id] = marcador;
@@ -1813,16 +1563,9 @@ function traduzirInstrucao(instrucao) {
     if (texto.includes('turn right')) return 'Vire à direita';
     if (texto.includes('continue')) return 'Siga em frente';
     if (texto.includes('destination')) return 'Destino chegou';
-    if (texto.includes('roundabout')) return 'Rotatória';
-    if (texto.includes('merge')) return 'Entre na via';
     if (texto.includes('keep left')) return 'Mantenha-se à esquerda';
     if (texto.includes('keep right')) return 'Mantenha-se à direita';
     if (texto.includes('head')) return 'Siga em direção a';
-    if (texto.includes('northwest')) return 'noroeste';
-    if (texto.includes('north')) return 'norte';
-    if (texto.includes('south')) return 'sul';
-    if (texto.includes('east')) return 'leste';
-    if (texto.includes('west')) return 'oeste';
     
     return instrucao;
 }
@@ -1835,7 +1578,6 @@ function getIconeInstrucao(instrucao) {
     if (texto.includes('right')) return 'fa-arrow-right';
     if (texto.includes('continue') || texto.includes('frente')) return 'fa-arrow-up';
     if (texto.includes('destination')) return 'fa-flag-checkered';
-    if (texto.includes('roundabout')) return 'fa-sync-alt';
     
     return 'fa-arrow-up';
 }
@@ -1854,60 +1596,54 @@ function buscarRota() {
             }
             
             const dest = L.latLng(parseFloat(data[0].lat), parseFloat(data[0].lon));
-            destinoAtual = { lat: dest.lat, lng: dest.lng };
+            destinoAtual = dest;
             
-            // Usa OSRM para rota mais profissional
-            fetch(
-                `https://router.project-osrm.org/route/v1/driving/` +
-                `${minhaLocalizacao.lng},${minhaLocalizacao.lat};${dest.lng},${dest.lat}` +
-                `?overview=full&geometries=geojson&steps=true`
-            )
-            .then(res => res.json())
-            .then(data => {
-                if (data.routes && data.routes.length > 0) {
-                    const rota = data.routes[0];
-                    const coordenadas = rota.geometry.coordinates.map(c => [c[1], c[0]]);
-                    
-                    if (rotaAtual) mapa.removeControl(rotaAtual);
-                    
-                    rotaAtual = L.polyline(coordenadas, {
-                        color: '#2196F3',
-                        weight: 6,
-                        opacity: 0.6
-                    }).addTo(mapa);
-                    
-                    const distancia = (rota.distance / 1000).toFixed(1);
-                    const tempoMin = Math.round(rota.duration / 60);
-                    const atraso = Math.round(tempoMin * 0.2);
-                    
-                    document.getElementById('rotaTempo').textContent = formatarTempo(tempoMin);
-                    document.getElementById('rotaDistancia').textContent = `${distancia} km`;
-                    document.getElementById('rotaAtraso').textContent = `+${formatarTempo(atraso)}`;
-                    
-                    document.getElementById('rotaInfoPanel').style.display = 'flex';
-                    document.getElementById('btnIniciarNavegacao').style.display = 'flex';
-                    document.getElementById('btnEncerrarRota').style.display = 'flex';
-                    
-                    mapa.flyToBounds(L.latLngBounds([minhaLocalizacao, dest]), { padding: [50, 50] });
+            if (rotaAtual) mapa.removeControl(rotaAtual);
+            
+            rotaAtual = L.Routing.control({
+                waypoints: [minhaLocalizacao, dest],
+                lineOptions: { 
+                    styles: [{ 
+                        color: '#2196F3', 
+                        weight: 6, 
+                        opacity: 0.5 
+                    }] 
+                },
+                createMarker: () => null,
+                show: false
+            }).addTo(mapa);
+            
+            rotaAtual.on('routesfound', function(e) {
+                const routes = e.routes;
+                if (routes && routes.length > 0) {
+                    const instructions = routes[0].instructions;
+                    if (instructions && instructions.length > 0) {
+                        const primeira = instructions[0];
+                        document.getElementById('instrucaoIcone').innerHTML = `<i class="fas ${getIconeInstrucao(primeira.instruction)}"></i>`;
+                        document.getElementById('instrucaoTexto').innerHTML = traduzirInstrucao(primeira.instruction);
+                        document.getElementById('instrucaoDistancia').innerHTML = (primeira.distance / 1000).toFixed(1) + ' km';
+                    }
                 }
             });
+            
+            mapa.flyToBounds(L.latLngBounds([minhaLocalizacao, dest]), { padding: [50, 50] });
+            
+            document.getElementById('rotaInfoPanel').style.display = 'flex';
+            document.getElementById('btnIniciarNavegacao').style.display = 'flex';
+            document.getElementById('btnEncerrarRota').style.display = 'flex';
+            
+            const distancia = parseFloat(calcularDistancia(
+                minhaLocalizacao.lat, minhaLocalizacao.lng,
+                dest.lat, dest.lng
+            ));
+            
+            const tempoMin = Math.round(distancia * 1.2);
+            const atraso = Math.round(tempoMin * 0.2);
+            
+            document.getElementById('rotaTempo').textContent = formatarTempo(tempoMin);
+            document.getElementById('rotaDistancia').textContent = `${distancia} km`;
+            document.getElementById('rotaAtraso').textContent = `+${formatarTempo(atraso)}`;
         });
-}
-
-// ===== ATUALIZAR INSTRUÇÕES =====
-function atualizarInstrucoes(instructions) {
-    if (!instructions || instructions.length === 0) return;
-    
-    if (instructions.length > 0) {
-        const primeira = instructions[0];
-        const instrucaoTraduzida = traduzirInstrucao(primeira.text || primeira.instruction);
-        const icone = getIconeInstrucao(primeira.text || primeira.instruction);
-        const distancia = (primeira.distance / 1000).toFixed(1) + ' km';
-        
-        document.getElementById('instrucaoIcone').innerHTML = `<i class="fas ${icone}"></i>`;
-        document.getElementById('instrucaoTexto').innerHTML = instrucaoTraduzida;
-        document.getElementById('instrucaoDistancia').innerHTML = distancia;
-    }
 }
 
 // ===== INICIAR NAVEGAÇÃO =====
@@ -1929,12 +1665,11 @@ function iniciarNavegacao() {
 // ===== ENCERRAR ROTA =====
 function encerrarRota() {
     if (rotaAtual) {
-        mapa.removeLayer(rotaAtual);
+        mapa.removeControl(rotaAtual);
         rotaAtual = null;
     }
     modoNavegacao = false;
     destinoAtual = null;
-    ultimaPosicaoRecalculo = null;
     document.getElementById('rotaInfoPanel').style.display = 'none';
     document.getElementById('btnIniciarNavegacao').style.display = 'none';
     document.getElementById('btnEncerrarRota').style.display = 'none';
@@ -1950,6 +1685,86 @@ function calcularDistancia(lat1, lon1, lat2, lon2) {
             Math.sin(dLon/2) * Math.sin(dLon/2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     return (R * c).toFixed(1);
+}
+
+// ===== VERIFICAR PROXIMIDADE COM ALERTAS =====
+let popupTimeout = null;
+let alertaAtualId = null;
+
+function verificarProximidadeAlertas() {
+    if (!minhaLocalizacao) return;
+    
+    Object.keys(alertasMapa).forEach(id => {
+        const alerta = alertasMapa[id];
+        if (!alerta) return;
+        
+        if (alertasConfirmados[id + '_' + usuario]) return;
+        
+        const distancia = calcularDistancia(
+            minhaLocalizacao.lat, minhaLocalizacao.lng,
+            alerta.lat, alerta.lng
+        );
+        
+        if (distancia < 0.3) {
+            tocarBip();
+            mostrarPopupConfirmacao(alerta, id);
+        }
+    });
+}
+
+function mostrarPopupConfirmacao(alerta, id) {
+    const popup = document.getElementById('confirmacaoPopup');
+    const texto = document.getElementById('confirmacaoTexto');
+    const subtexto = document.getElementById('confirmacaoSubtexto');
+    const btnConfirmar = document.getElementById('btnConfirmar');
+    
+    texto.innerHTML = `${alerta.nome} a 300 metros?`;
+    subtexto.innerHTML = 'Toque para confirmar (8s)';
+    btnConfirmar.classList.remove('confirmado');
+    btnConfirmar.disabled = false;
+    popup.style.display = 'flex';
+    
+    alertaAtualId = id;
+    
+    if (popupTimeout) clearTimeout(popupTimeout);
+    
+    popupTimeout = setTimeout(() => {
+        popup.style.display = 'none';
+        alertaAtualId = null;
+    }, 8000);
+}
+
+function confirmarAlerta() {
+    if (!alertaAtualId) return;
+    
+    const popup = document.getElementById('confirmacaoPopup');
+    const btnConfirmar = document.getElementById('btnConfirmar');
+    
+    alertasConfirmados[alertaAtualId + '_' + usuario] = true;
+    
+    const alerta = alertasMapa[alertaAtualId];
+    if (alerta) {
+        const confirmacoes = alerta.confirmacoes || 0;
+        db.ref('alertas_fixos/' + alertaAtualId).update({
+            confirmacoes: confirmacoes + 1
+        });
+    }
+    
+    btnConfirmar.classList.add('confirmado');
+    btnConfirmar.disabled = true;
+    
+    setTimeout(() => {
+        popup.style.display = 'none';
+        alertaAtualId = null;
+    }, 500);
+    
+    tocarBip();
+}
+
+function negarAlerta() {
+    document.getElementById('confirmacaoPopup').style.display = 'none';
+    if (popupTimeout) clearTimeout(popupTimeout);
+    alertaAtualId = null;
 }
 
 // ===== CHAT GERAL =====
