@@ -6,9 +6,8 @@
     <title>BR-277 | TRÂNSITO</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body, #map { height: 100%; width: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
@@ -134,15 +133,15 @@
             transform: rotate(180deg);
         }
         
-        /* PAINEL DE ALERTAS */
+        /* PAINEL DE ALERTAS - ÍCONES MAIORES */
         .alertas-panel {
             background: rgba(0,0,0,0.6);
             backdrop-filter: blur(15px);
             border: 2px solid #ffd700;
             border-radius: 16px;
-            padding: 10px;
+            padding: 12px;
             display: none;
-            width: 240px;
+            width: 260px;
             max-height: none;
             overflow: visible;
             box-shadow: 0 10px 40px rgba(0,0,0,0.5);
@@ -157,7 +156,7 @@
         .alertas-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
+            gap: 10px;
         }
         
         .btn-fechar-painel {
@@ -236,12 +235,12 @@
         }
         
         .alerta-icone {
-            font-size: 28px;
+            font-size: 32px;
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
         }
         
         .alerta-nome {
-            font-size: 10px;
+            font-size: 11px;
             font-weight: 700;
             color: white;
             text-transform: uppercase;
@@ -301,7 +300,7 @@
             margin-top: 2px;
         }
         
-        /* PAINEL DE ROTA */
+        /* PAINEL DE ROTA - TRAÇADO AZUL PRESERVADO */
         .rota-info-panel {
             position: fixed;
             top: 70px;
@@ -509,7 +508,7 @@
             transform: scale(1.05);
         }
         
-        /* PAINEL DE INSTRUÇÕES */
+        /* PAINEL DE INSTRUÇÕES FLUTUANTE */
         .instrucoes-panel {
             position: fixed;
             bottom: 150px;
@@ -523,10 +522,17 @@
             display: none;
             align-items: center;
             gap: 10px;
-            z-index: 9600;
+            z-index: 10001;
             box-shadow: 0 5px 20px rgba(0,0,0,0.5);
             max-width: 90%;
             width: auto;
+            cursor: move;
+            user-select: none;
+        }
+        
+        .instrucoes-panel.dragging {
+            opacity: 0.9;
+            transform: scale(1.02);
         }
         
         .instrucao-icone {
@@ -551,6 +557,46 @@
             color: #ffd700;
             font-size: 12px;
             margin-left: 5px;
+        }
+        
+        /* PAINEL DE DIREÇÕES (CARDINAL) */
+        .direcoes-panel {
+            position: fixed;
+            top: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px);
+            border: 2px solid #ffd700;
+            border-radius: 50px;
+            padding: 8px 25px;
+            display: none;
+            align-items: center;
+            gap: 30px;
+            z-index: 9500;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            animation: fadeInOut 3s ease-in-out forwards;
+        }
+        
+        .direcao-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #ffd700;
+        }
+        
+        .direcao-item span {
+            color: white;
+        }
+        
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+            10% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            90% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            100% { opacity: 0; transform: translateX(-50%) translateY(10px); }
         }
         
         /* POP-UP DE CONFIRMAÇÃO */
@@ -799,25 +845,29 @@
             to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
         
-        /* CLUSTER PERSONALIZADO */
-        .cluster-marcador {
-            background: #ffd700;
-            color: #1a1a1a;
-            border: 3px solid white;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
+        /* ÍCONES DE ALERTA NO MAPA - MAIORES */
+        .alerta-mapa-marcador {
+            font-size: 24px !important;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+            cursor: pointer;
+            z-index: 500;
+            pointer-events: auto !important;
+            min-width: 40px;
+            min-height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
-            font-size: 14px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            background: transparent;
+            border-radius: 50%;
         }
         
-        /* ESTILO DO CARRO PROFISSIONAL */
-        .carro-profissional {
-            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+        .alerta-mapa-marcador:hover {
+            transform: scale(1.1);
+            filter: brightness(1.2);
+        }
+        
+        /* ÍCONE DO CARRO PADRÃO */
+        .carro-padrao {
             transition: transform 0.2s ease-out;
         }
     </style>
@@ -904,13 +954,21 @@
     </div>
 </div>
 
-<!-- PAINEL DE INSTRUÇÕES -->
+<!-- PAINEL DE INSTRUÇÕES FLUTUANTE -->
 <div class="instrucoes-panel" id="instrucoesPanel">
     <div class="instrucao-icone" id="instrucaoIcone">
         <i class="fas fa-arrow-up"></i>
     </div>
     <div class="instrucao-texto" id="instrucaoTexto">Siga em frente</div>
     <div class="instrucao-distancia" id="instrucaoDistancia">500 m</div>
+</div>
+
+<!-- PAINEL DE DIREÇÕES (CARDINAL) -->
+<div class="direcoes-panel" id="direcoesPanel">
+    <div class="direcao-item" id="direcaoNorte">↑ <span>--</span></div>
+    <div class="direcao-item" id="direcaoSul">↓ <span>--</span></div>
+    <div class="direcao-item" id="direcaoLeste">→ <span>--</span></div>
+    <div class="direcao-item" id="direcaoOeste">← <span>--</span></div>
 </div>
 
 <!-- POP-UP DE CONFIRMAÇÃO -->
@@ -1005,7 +1063,8 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
-<script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
@@ -1079,51 +1138,69 @@ function traduzir(texto) {
     return traducoes[texto] || texto;
 }
 
-// ===== ÍCONE PROFISSIONAL DO CARRO (PNG) =====
-// IMPORTANTE: Salve as imagens como:
-// - carro-preto.png (seu carro)
-// - carro-cinza.png (outros usuários)
-function criarIconeCarroProfissional(ehMeu = true) {
-    if (ehMeu) {
-        return L.icon({
-            iconUrl: 'carro-preto.png', // Substitua pelo caminho da sua imagem
-            iconSize: [40, 40],
-            iconAnchor: [20, 20],
-            popupAnchor: [0, -20],
-            className: 'carro-profissional'
-        });
-    } else {
-        return L.icon({
-            iconUrl: 'carro-cinza.png', // Substitua pelo caminho da sua imagem
-            iconSize: [32, 32],
-            iconAnchor: [16, 16],
-            popupAnchor: [0, -16],
-            className: 'carro-profissional'
-        });
-    }
+// ===== MAPA DE CIDADES DO PARANÁ =====
+const cidadesParana = {
+    norte: 'Apucarana',
+    sul: 'Curitiba',
+    leste: 'Paranaguá',
+    oeste: 'Foz do Iguaçu',
+    noroeste: 'Maringá',
+    nordeste: 'Londrina',
+    sudoeste: 'Pato Branco',
+    sudeste: 'Joinville'
+};
+
+// ===== FUNÇÃO PARA OBTER CIDADE POR DIREÇÃO =====
+function getCidadePorDirecao(angle) {
+    // Normaliza o ângulo (0-360)
+    angle = (angle + 360) % 360;
+    
+    if (angle >= 315 || angle < 45) return { nome: cidadesParana.norte, dir: '↑', pos: 'norte' };
+    if (angle >= 45 && angle < 135) return { nome: cidadesParana.leste, dir: '→', pos: 'leste' };
+    if (angle >= 135 && angle < 225) return { nome: cidadesParana.sul, dir: '↓', pos: 'sul' };
+    if (angle >= 225 && angle < 315) return { nome: cidadesParana.oeste, dir: '←', pos: 'oeste' };
 }
 
-// Fallback para caso as imagens não existam
-function criarIconeCarroFallback(ehMeu = true) {
+// ===== ATUALIZAR PAINEL DE DIREÇÕES =====
+function atualizarDirecoes() {
+    if (!mapa) return;
+    
+    const center = mapa.getCenter();
+    const lat = center.lat;
+    const lng = center.lng;
+    
+    // Calcula ângulo do centro para cada cidade
+    const cidades = {
+        norte: { lat: -23.5, lng: -51.0 }, // Aproximadamente norte
+        sul: { lat: -25.5, lng: -49.0 },   // Sul
+        leste: { lat: -25.0, lng: -48.0 }, // Leste
+        oeste: { lat: -24.5, lng: -53.0 }  // Oeste
+    };
+    
+    // Calcula direções
+    const dirNorte = Math.atan2(cidades.norte.lat - lat, cidades.norte.lng - lng) * 180 / Math.PI;
+    const dirSul = Math.atan2(cidades.sul.lat - lat, cidades.sul.lng - lng) * 180 / Math.PI;
+    const dirLeste = Math.atan2(cidades.leste.lat - lat, cidades.leste.lng - lng) * 180 / Math.PI;
+    const dirOeste = Math.atan2(cidades.oeste.lat - lat, cidades.oeste.lng - lng) * 180 / Math.PI;
+    
+    // Atualiza display
+    document.getElementById('direcaoNorte').innerHTML = `↑ <span>${cidadesParana.norte}</span>`;
+    document.getElementById('direcaoSul').innerHTML = `↓ <span>${cidadesParana.sul}</span>`;
+    document.getElementById('direcaoLeste').innerHTML = `→ <span>${cidadesParana.leste}</span>`;
+    document.getElementById('direcaoOeste').innerHTML = `← <span>${cidadesParana.oeste}</span>`;
+}
+
+// ===== ÍCONE DO CARRO PADRÃO (FONT AWESOME) =====
+function criarIconeCarro(ehMeu = true) {
     const cor = ehMeu ? '#000000' : '#666666';
-    const tamanho = ehMeu ? 32 : 28;
+    const tamanho = 32;
     
     return L.divIcon({
         html: `<i class="fas fa-car-side" style="color: ${cor}; font-size: ${tamanho}px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));"></i>`,
-        className: 'carro-profissional',
+        className: 'carro-padrao',
         iconSize: [tamanho, tamanho],
         iconAnchor: [tamanho/2, tamanho/2]
     });
-}
-
-// Tenta usar o ícone PNG, se não existir usa o fallback
-function criarIconeCarro(ehMeu = true) {
-    try {
-        return criarIconeCarroProfissional(ehMeu);
-    } catch (e) {
-        console.log('Usando ícone de fallback (Font Awesome)');
-        return criarIconeCarroFallback(ehMeu);
-    }
 }
 
 // ===== FUNÇÃO PARA ROTACIONAR CARRO =====
@@ -1162,7 +1239,6 @@ if (userSalvo) {
     carregarAlertasFixos();
     carregarChatGeral();
     criarIconesAlertas();
-    iniciarCluster();
 }
 
 function salvarCadastro() {
@@ -1192,7 +1268,6 @@ function salvarCadastro() {
     carregarAlertasFixos();
     carregarChatGeral();
     criarIconesAlertas();
-    iniciarCluster();
 }
 
 // ===== FUNÇÕES DE INTERFACE =====
@@ -1218,21 +1293,19 @@ function criarIconesAlertas() {
     });
 }
 
-// ===== INICIAR CLUSTER =====
-function iniciarCluster() {
-    clusterGroup = L.markerClusterGroup({
-        maxClusterRadius: 50,
-        iconCreateFunction: function(cluster) {
-            const count = cluster.getChildCount();
-            return L.divIcon({
-                html: `<div class="cluster-marcador">${count}</div>`,
-                className: '',
-                iconSize: [40, 40]
-            });
+// ===== TORNAR PAINEL DE INSTRUÇÕES ARRASTÁVEL =====
+$(function() {
+    $("#instrucoesPanel").draggable({
+        containment: "window",
+        handle: ".instrucao-icone",
+        start: function() {
+            $(this).addClass('dragging');
+        },
+        stop: function() {
+            $(this).removeClass('dragging');
         }
     });
-    mapa.addLayer(clusterGroup);
-}
+});
 
 // ===== FUNÇÃO PARA TOCAR BIP =====
 function tocarBip() {
@@ -1279,6 +1352,20 @@ function iniciarMapa() {
         if (modoNavegacao) {
             document.getElementById('instrucoesPanel').style.display = 'flex';
         }
+        
+        // Mostra painel de direções
+        const direcoesPanel = document.getElementById('direcoesPanel');
+        direcoesPanel.style.display = 'flex';
+        atualizarDirecoes();
+        
+        // Esconde após 3 segundos
+        setTimeout(() => {
+            direcoesPanel.style.display = 'none';
+        }, 3000);
+    });
+    
+    mapa.on('drag', () => {
+        atualizarDirecoes();
     });
     
     mapa.on('zoomend', () => {
@@ -1437,7 +1524,7 @@ function carregarAlertasFixos() {
             icon: L.divIcon({
                 html: `<div class="alerta-mapa-marcador" style="color:${alerta.cor};">${alerta.icone}</div>`,
                 className: '',
-                iconSize: [30, 30]
+                iconSize: [40, 40]
             })
         });
         
@@ -1445,7 +1532,7 @@ function carregarAlertasFixos() {
             abrirChatAlerta(alerta, L.latLng(alerta.lat, alerta.lng), id);
         });
         
-        clusterGroup.addLayer(marcador);
+        marcador.addTo(mapa);
     });
     
     setInterval(() => {
@@ -1473,12 +1560,11 @@ function ativarAlerta(alerta) {
         icon: L.divIcon({
             html: `<div class="alerta-mapa-marcador" style="color:${alerta.cor};">${alerta.icone}</div>`,
             className: '',
-            iconSize: [30, 30]
+            iconSize: [40, 40]
         })
-    });
+    }).addTo(mapa);
     
     marcador.on('click', () => abrirChatAlerta(alertaData, minhaLocalizacao, id));
-    clusterGroup.addLayer(marcador);
     
     setTimeout(() => abrirChatAlerta(alertaData, minhaLocalizacao, id), 200);
 }
@@ -1600,6 +1686,7 @@ function buscarRota() {
             
             if (rotaAtual) mapa.removeControl(rotaAtual);
             
+            // TRAÇADO AZUL COM OPACIDADE (FUNCIONANDO)
             rotaAtual = L.Routing.control({
                 waypoints: [minhaLocalizacao, dest],
                 lineOptions: { 
@@ -1748,6 +1835,15 @@ function confirmarAlerta() {
         db.ref('alertas_fixos/' + alertaAtualId).update({
             confirmacoes: confirmacoes + 1
         });
+        
+        const chatDiv = document.getElementById(`chatAlerta-${alertaAtualId}`);
+        if (chatDiv) {
+            const msgConfirmacao = document.createElement('div');
+            msgConfirmacao.style.cssText = 'background: #4caf50; color: white; padding: 5px 8px; border-radius: 10px; margin: 3px 0; text-align: center;';
+            msgConfirmacao.innerHTML = `✅ ${usuario} confirmou o alerta (${confirmacoes + 1} confirmações)`;
+            chatDiv.appendChild(msgConfirmacao);
+            chatDiv.scrollTop = chatDiv.scrollHeight;
+        }
     }
     
     btnConfirmar.classList.add('confirmado');
