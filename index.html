@@ -56,9 +56,15 @@
             color: white;
         }
         
-        /* ===== ÍCONE DO CARRO TRADICIONAL VERMELHO ===== */
+        /* ===== ÍCONE DO CARRO TRADICIONAL VERMELHO - CORRIGIDO ===== */
         .carro-marcador {
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+        
+        .carro-marcador div {
+            background: transparent !important;
         }
         
         .carro-marcador-pulse {
@@ -71,6 +77,7 @@
             position: absolute;
             left: -20px;
             top: -20px;
+            pointer-events: none;
         }
         
         @keyframes pulse {
@@ -78,7 +85,7 @@
             100% { transform: scale(2); opacity: 0; }
         }
         
-        /* ===== SISTEMA REPORTE - DIMENSÕES AJUSTADAS ===== */
+        /* ===== SISTEMA REPORTE ===== */
         .reporte-container {
             position: fixed;
             bottom: 90px;
@@ -157,7 +164,7 @@
             transform: rotate(180deg);
         }
         
-        /* ===== PAINEL DE ALERTAS - AUMENTADO ===== */
+        /* ===== PAINEL DE ALERTAS ===== */
         .alertas-panel {
             background: rgba(0,0,0,0.6);
             backdrop-filter: blur(15px);
@@ -252,31 +259,31 @@
         .alerta-alagamento { background: linear-gradient(135deg, #2196f3, #1976d2); }
         .alerta-bloqueio { background: linear-gradient(135deg, #b71c1c, #8B0000); }
         
-        /* ===== BOTÃO X REPOSICIONADO - MEIO DIREITO ===== */
+        /* ===== BOTÃO X DO REPORTE - CORRIGIDO ===== */
         .btn-fechar-painel {
             position: absolute;
-            right: -12px;
+            right: -18px;
             top: 50%;
             transform: translateY(-50%);
-            width: 28px;
-            height: 28px;
+            width: 70px;
+            height: 70px;
             background: #e53935;
-            border: 2px solid #ffd700;
+            border: 4px solid #ffd700;
             border-radius: 50%;
             color: white;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 35px;
             font-weight: bold;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
             transition: all 0.2s;
             z-index: 10;
         }
         
         .btn-fechar-painel:hover {
-            transform: translateY(-50%) scale(1.1);
+            transform: translateY(-50%) scale(1.05);
             background: #c62828;
             border-color: white;
         }
@@ -302,7 +309,7 @@
             height: 70px;
             background: rgba(0,0,0,0.7);
             backdrop-filter: blur(10px);
-            border: 3px solid #ffd700;
+            border: 4px solid #ffd700;
             border-radius: 50%;
             display: flex;
             flex-direction: column;
@@ -473,12 +480,12 @@
             color: white;
         }
         
-        /* BOTÃO INICIAR NAVEGAÇÃO - REMOVIDO POR ENQUANTO */
+        /* BOTÃO INICIAR NAVEGAÇÃO - REMOVIDO */
         .btn-iniciar-navegacao {
             display: none !important;
         }
         
-        /* PAINEL DE INSTRUÇÕES - REMOVIDO POR ENQUANTO */
+        /* PAINEL DE INSTRUÇÕES - REMOVIDO */
         .instrucoes-panel {
             display: none !important;
         }
@@ -518,7 +525,7 @@
             transform: scale(1.05);
         }
         
-        /* POP-UP DE CONFIRMAÇÃO - CORRIGIDO */
+        /* POP-UP DE CONFIRMAÇÃO */
         .confirmacao-popup {
             position: fixed;
             top: 50%;
@@ -1152,7 +1159,7 @@ let zoomAtual = 13;
 let ultimaMsgCongestionamento = 0;
 let clusterGroup = null;
 let alertasMapa = {};
-let alertasConfirmados = {}; // Para controle de confirmações por usuário
+let alertasConfirmados = {};
 
 // ===== 10 ALERTAS =====
 const alertas = [
@@ -1268,14 +1275,14 @@ function iniciarCluster() {
     mapa.addLayer(clusterGroup);
 }
 
-// ===== FUNÇÃO PARA CRIAR ÍCONE DO CARRO VERMELHO =====
+// ===== FUNÇÃO PARA CRIAR ÍCONE DO CARRO VERMELHO - CORRIGIDO =====
 function criarIconeCarro(ehMeu = true, direcao = 0) {
     if (ehMeu) {
         // Versão tradicional: carro vermelho com pulse
         return L.divIcon({
-            html: `<div style="position:relative;">
+            html: `<div style="position:relative; width: 40px; height: 40px; background: transparent;">
                 <div class="carro-marcador-pulse"></div>
-                <div style="font-size: 32px; position: relative; z-index: 2; transform: rotate(${direcao}deg);">🚗</div>
+                <div style="font-size: 32px; position: absolute; left: 4px; top: 4px; z-index: 2; transform: rotate(${direcao}deg);">🚗</div>
             </div>`,
             className: 'carro-marcador',
             iconSize: [40, 40],
@@ -1284,7 +1291,7 @@ function criarIconeCarro(ehMeu = true, direcao = 0) {
     } else {
         // Outros usuários: carro cinza
         return L.divIcon({
-            html: `<div style="font-size: 24px; transform: rotate(${direcao}deg); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">🚗</div>`,
+            html: `<div style="font-size: 24px; width: 24px; height: 24px; transform: rotate(${direcao}deg); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">🚗</div>`,
             className: 'carro-marcador',
             iconSize: [24, 24],
             iconAnchor: [12, 12]
@@ -1350,9 +1357,10 @@ function atualizarIconeCarro() {
     } else {
         meuMarcador = L.marker(minhaLocalizacao, {
             icon: L.divIcon({
-                html: `<div style="position:relative;">
+                html: `<div style="position:relative; width: 40px; height: 40px;">
                     <div class="carro-marcador-pulse"></div>
                 </div>`,
+                className: 'carro-marcador',
                 iconSize: [40, 40],
                 iconAnchor: [20, 20]
             })
@@ -1391,9 +1399,10 @@ function iniciarGPS() {
             } else {
                 meuMarcador = L.marker(minhaLocalizacao, {
                     icon: L.divIcon({
-                        html: `<div style="position:relative;">
+                        html: `<div style="position:relative; width: 40px; height: 40px;">
                             <div class="carro-marcador-pulse"></div>
                         </div>`,
+                        className: 'carro-marcador',
                         iconSize: [40, 40],
                         iconAnchor: [20, 20]
                     })
@@ -1425,7 +1434,6 @@ function iniciarGPS() {
         
         if (seguirLocalizacao) mapa.panTo(minhaLocalizacao);
         
-        // Verifica proximidade com alertas
         verificarProximidadeAlertas();
         
     }, null, { enableHighAccuracy: true, maximumAge: 0, timeout: 5000 });
@@ -1446,10 +1454,8 @@ function verificarProximidadeAlertas() {
         const alerta = alertasMapa[id];
         if (!alerta) return;
         
-        // Não mostra popup para quem criou o alerta
         if (alerta.criador === usuario) return;
         
-        // Verifica se já confirmou este alerta
         const chaveConfirmacao = `${usuario}_${id}`;
         if (alertasConfirmados[chaveConfirmacao]) return;
         
@@ -1458,7 +1464,7 @@ function verificarProximidadeAlertas() {
             alerta.lat, alerta.lng
         );
         
-        if (distancia < 0.3) { // 300 metros
+        if (distancia < 0.3) {
             tocarBip();
             alertaAtual = { id, ...alerta };
             mostrarPopupConfirmacao(alerta);
@@ -1468,7 +1474,6 @@ function verificarProximidadeAlertas() {
 
 // ===== MOSTRAR POP-UP DE CONFIRMAÇÃO =====
 function mostrarPopupConfirmacao(alerta) {
-    // Se já tem um popup aberto, não abre outro
     if (document.getElementById('confirmacaoPopup').style.display === 'flex') return;
     
     const popup = document.getElementById('confirmacaoPopup');
@@ -1491,11 +1496,9 @@ function mostrarPopupConfirmacao(alerta) {
 function confirmarAlerta() {
     if (!alertaAtual) return;
     
-    // Marca como confirmado para este usuário
     const chaveConfirmacao = `${usuario}_${alertaAtual.id}`;
     alertasConfirmados[chaveConfirmacao] = true;
     
-    // Atualiza contador de confirmações no Firebase
     db.ref('alertas_fixos/' + alertaAtual.id + '/confirmacoes').transaction(count => (count || 0) + 1);
     
     document.getElementById('confirmacaoPopup').style.display = 'none';
@@ -1508,7 +1511,6 @@ function confirmarAlerta() {
 function negarAlerta() {
     if (!alertaAtual) return;
     
-    // Marca como negado para este usuário
     const chaveConfirmacao = `${usuario}_${alertaAtual.id}`;
     alertasConfirmados[chaveConfirmacao] = true;
     
@@ -1575,7 +1577,7 @@ function carregarAlertasFixos() {
     setInterval(() => {
         const agora = Date.now();
         Object.keys(alertasMapa).forEach(id => {
-            if (agora - alertasMapa[id].timestamp > 1200000) { // 20 minutos
+            if (agora - alertasMapa[id].timestamp > 1200000) {
                 delete alertasMapa[id];
                 db.ref('alertas_fixos/' + id).remove();
             }
@@ -1684,7 +1686,7 @@ function formatarTempo(minutos) {
     }
 }
 
-// ===== ROTA =====
+// ===== ROTA COM AZUL SUAVE =====
 function buscarRota() {
     const destino = document.getElementById('buscaDestino').value;
     if (!destino || !minhaLocalizacao) return;
@@ -1705,9 +1707,9 @@ function buscarRota() {
                 waypoints: [minhaLocalizacao, dest],
                 lineOptions: { 
                     styles: [{ 
-                        color: '#0000FF', // Azul forte
-                        weight: 5, 
-                        opacity: 0.8 // Opacidade para ver trânsito
+                        color: '#4169E1', // Azul royal mais suave
+                        weight: 4, 
+                        opacity: 0.5 // Mais transparente para ver trânsito
                     }] 
                 },
                 createMarker: () => null,
