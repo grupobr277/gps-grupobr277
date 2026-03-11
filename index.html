@@ -56,21 +56,21 @@
             color: white;
         }
         
-        /* ===== ÍCONE DO CARRO TRADICIONAL ===== */
+        /* ===== ÍCONE DO CARRO TRADICIONAL VERMELHO ===== */
         .carro-marcador {
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
         }
         
         .carro-marcador-pulse {
-            width: 35px;
-            height: 35px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             animation: pulse 1.5s infinite;
-            background: rgba(33, 150, 243, 0.3);
-            border: 3px solid #2196F3;
+            background: rgba(255, 0, 0, 0.2);
+            border: 3px solid #ff0000;
             position: absolute;
-            left: -17px;
-            top: -17px;
+            left: -20px;
+            top: -20px;
         }
         
         @keyframes pulse {
@@ -78,7 +78,7 @@
             100% { transform: scale(2); opacity: 0; }
         }
         
-        /* ===== SISTEMA REPORTE - DIMENSÕES CORRIGIDAS ===== */
+        /* ===== SISTEMA REPORTE - DIMENSÕES AJUSTADAS ===== */
         .reporte-container {
             position: fixed;
             bottom: 90px;
@@ -87,7 +87,6 @@
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            max-width: 200px;
         }
         
         .reporte-toggle {
@@ -96,14 +95,14 @@
             color: white;
             border: 2px solid #ffd700;
             border-radius: 40px;
-            padding: 6px 16px;
-            font-size: 12px;
+            padding: 8px 18px;
+            font-size: 13px;
             font-weight: bold;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 6px;
-            margin-bottom: 6px;
+            gap: 8px;
+            margin-bottom: 8px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.4);
             transition: all 0.3s ease;
             position: relative;
@@ -129,8 +128,8 @@
         }
         
         .reporte-toggle .led {
-            width: 6px;
-            height: 6px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             background: #4caf50;
             box-shadow: 0 0 15px #4caf50;
@@ -158,16 +157,16 @@
             transform: rotate(180deg);
         }
         
-        /* ===== PAINEL DE ALERTAS - REDIMENSIONADO ===== */
+        /* ===== PAINEL DE ALERTAS - AUMENTADO ===== */
         .alertas-panel {
             background: rgba(0,0,0,0.6);
             backdrop-filter: blur(15px);
             border: 2px solid #ffd700;
-            border-radius: 16px;
-            padding: 8px;
+            border-radius: 20px;
+            padding: 12px;
             display: none;
-            width: 180px;
-            max-width: 180px;
+            width: 220px;
+            max-width: 220px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.5);
             animation: slideUp 0.3s ease;
             position: relative;
@@ -180,25 +179,25 @@
         .alertas-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 6px;
+            gap: 8px;
         }
         
         .alerta-item {
             width: 100%;
             aspect-ratio: 1/1;
-            border-radius: 10px;
+            border-radius: 12px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 2px;
+            gap: 4px;
             cursor: pointer;
             transition: all 0.2s ease;
             border: 2px solid rgba(255,255,255,0.3);
             box-shadow: 0 4px 10px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.1) inset;
             position: relative;
             overflow: hidden;
-            padding: 4px;
+            padding: 6px;
         }
         
         .alerta-item::before {
@@ -227,12 +226,12 @@
         }
         
         .alerta-icone {
-            font-size: 22px;
+            font-size: 26px;
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
         }
         
         .alerta-nome {
-            font-size: 8px;
+            font-size: 9px;
             font-weight: 700;
             color: white;
             text-transform: uppercase;
@@ -253,13 +252,14 @@
         .alerta-alagamento { background: linear-gradient(135deg, #2196f3, #1976d2); }
         .alerta-bloqueio { background: linear-gradient(135deg, #b71c1c, #8B0000); }
         
-        /* ===== BOTÃO X REPOSICIONADO - FORA DA BORDA AMARELA ===== */
+        /* ===== BOTÃO X REPOSICIONADO - MEIO DIREITO ===== */
         .btn-fechar-painel {
             position: absolute;
-            right: -15px;
-            top: -15px;
-            width: 30px;
-            height: 30px;
+            right: -12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 28px;
+            height: 28px;
             background: #e53935;
             border: 2px solid #ffd700;
             border-radius: 50%;
@@ -268,7 +268,7 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             transition: all 0.2s;
@@ -276,7 +276,7 @@
         }
         
         .btn-fechar-painel:hover {
-            transform: scale(1.1);
+            transform: translateY(-50%) scale(1.1);
             background: #c62828;
             border-color: white;
         }
@@ -473,37 +473,22 @@
             color: white;
         }
         
-        /* BOTÃO INICIAR NAVEGAÇÃO */
+        /* BOTÃO INICIAR NAVEGAÇÃO - REMOVIDO POR ENQUANTO */
         .btn-iniciar-navegacao {
-            position: fixed;
-            top: 140px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #ffd700;
-            color: #1a1a1a;
-            border: 2px solid white;
-            border-radius: 40px;
-            padding: 10px 25px;
-            font-weight: bold;
-            cursor: pointer;
-            z-index: 9501;
-            font-size: 15px;
-            display: none;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-            transition: all 0.2s;
-            white-space: nowrap;
+            display: none !important;
         }
         
-        .btn-iniciar-navegacao:hover {
-            transform: translateX(-50%) scale(1.05);
-            background: #b8860b;
-            color: white;
+        /* PAINEL DE INSTRUÇÕES - REMOVIDO POR ENQUANTO */
+        .instrucoes-panel {
+            display: none !important;
         }
         
-        .btn-iniciar-navegacao i {
-            font-size: 16px;
+        .routing-panel {
+            display: none !important;
+        }
+        
+        .btn-ocultar-painel {
+            display: none !important;
         }
         
         /* BOTÃO ENCERRAR ROTA */
@@ -531,129 +516,6 @@
         .btn-encerrar-rota:hover {
             background: #c62828;
             transform: scale(1.05);
-        }
-        
-        /* BOTÃO OCULTAR PAINEL */
-        .btn-ocultar-painel {
-            position: fixed;
-            bottom: 200px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #ffd700;
-            color: #1a1a1a;
-            border: 2px solid white;
-            border-radius: 30px;
-            padding: 6px 15px;
-            font-weight: bold;
-            cursor: pointer;
-            z-index: 9501;
-            font-size: 12px;
-            display: none;
-            align-items: center;
-            gap: 5px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-            transition: all 0.2s;
-        }
-        
-        .btn-ocultar-painel:hover {
-            background: #b8860b;
-            color: white;
-        }
-        
-        /* PAINEL DE INSTRUÇÕES (SETA DE DIREÇÃO) */
-        .instrucoes-panel {
-            position: fixed;
-            bottom: 180px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.9);
-            backdrop-filter: blur(10px);
-            border: 2px solid #ffd700;
-            border-radius: 60px;
-            padding: 12px 25px;
-            display: none;
-            align-items: center;
-            gap: 15px;
-            z-index: 9600;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            min-width: 300px;
-            max-width: 400px;
-        }
-        
-        .instrucao-icone {
-            width: 40px;
-            height: 40px;
-            background: #ffd700;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #1a1a1a;
-            font-size: 20px;
-        }
-        
-        .instrucao-texto {
-            flex: 1;
-            color: white;
-        }
-        
-        .instrucao-principal {
-            font-weight: bold;
-            font-size: 15px;
-        }
-        
-        .instrucao-distancia {
-            font-size: 12px;
-            color: #ffd700;
-            margin-top: 2px;
-        }
-        
-        /* PAINEL DE INSTRUÇÕES COMPLETO - OCULTÁVEL */
-        .routing-panel {
-            position: fixed;
-            top: 70px;
-            right: 70px;
-            width: 280px;
-            max-height: 400px;
-            overflow-y: auto;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px);
-            border: 2px solid #ffd700;
-            border-radius: 16px;
-            padding: 10px;
-            z-index: 9500;
-            display: none;
-            color: white;
-            transition: all 0.3s ease;
-        }
-        
-        .routing-panel.visivel {
-            display: block;
-        }
-        
-        .routing-panel.oculto {
-            display: none;
-        }
-        
-        .routing-step {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px;
-            border-bottom: 1px solid rgba(255,215,0,0.2);
-        }
-        
-        .routing-step:last-child {
-            border-bottom: none;
-        }
-        
-        .routing-step i {
-            width: 24px;
-            color: #ffd700;
-        }
-        
-        .routing-step span {
-            font-size: 12px;
         }
         
         /* POP-UP DE CONFIRMAÇÃO - CORRIGIDO */
@@ -1169,38 +1031,18 @@
     </div>
 </div>
 
-<!-- PAINEL DE INSTRUÇÕES (SETA DE DIREÇÃO) -->
-<div class="instrucoes-panel" id="instrucoesPanel">
-    <div class="instrucao-icone" id="instrucaoIcone">
-        <i class="fas fa-arrow-up"></i>
-    </div>
-    <div class="instrucao-texto">
-        <div class="instrucao-principal" id="instrucaoTexto">Siga em frente</div>
-        <div class="instrucao-distancia" id="instrucaoDistancia">500 m</div>
-    </div>
+<!-- BOTÃO ENCERRAR ROTA -->
+<div class="btn-encerrar-rota" id="btnEncerrarRota" onclick="encerrarRota()">✖</div>
+
+<!-- LUPA -->
+<div class="lupa-container">
+    <input type="text" id="buscaDestino" placeholder="Digite sua cidade de destino...">
+    <button onclick="buscarRota()"><i class="fas fa-search"></i></button>
 </div>
 
-<!-- BOTÃO OCULTAR PAINEL -->
-<div class="btn-ocultar-painel" id="btnOcultarPainel" onclick="ocultarPainel()">
-    <i class="fas fa-eye-slash"></i> Ocultar
-</div>
-
-<!-- PAINEL DE INSTRUÇÕES COMPLETO -->
-<div class="routing-panel" id="routingPanel">
-    <div style="padding: 8px; font-weight: bold; border-bottom: 1px solid #ffd700; margin-bottom: 8px;">
-        📍 INSTRUÇÕES
-    </div>
-    <div id="routingSteps"></div>
-</div>
-
-<!-- POP-UP DE CONFIRMAÇÃO - CORRIGIDO -->
-<div class="confirmacao-popup" id="confirmacaoPopup">
-    <div class="confirmacao-texto" id="confirmacaoTexto">Acidente a 300 metros?</div>
-    <div class="confirmacao-subtexto" id="confirmacaoSubtexto">Toque para confirmar</div>
-    <div class="confirmacao-botoes">
-        <button class="btn-confirmar" onclick="confirmarAlerta()">✅ SIM</button>
-        <button class="btn-negar" onclick="negarAlerta()">❌ NÃO</button>
-    </div>
+<!-- BOTÃO RECENTRALIZAR -->
+<div class="btn-recentrar" id="btnRecenter" onclick="recentralizar()">
+    <i class="fas fa-location-arrow"></i> RECENTRALIZAR
 </div>
 
 <!-- HEADER SUPERIOR ESQUERDO -->
@@ -1234,26 +1076,17 @@
     </div>
 </div>
 
-<!-- BOTÃO INICIAR NAVEGAÇÃO -->
-<div class="btn-iniciar-navegacao" id="btnIniciarNavegacao" onclick="iniciarNavegacao()">
-    <i class="fas fa-play"></i> INICIAR NAVEGAÇÃO
-</div>
-
-<!-- BOTÃO ENCERRAR ROTA -->
-<div class="btn-encerrar-rota" id="btnEncerrarRota" onclick="encerrarRota()">✖</div>
-
-<!-- LUPA -->
-<div class="lupa-container">
-    <input type="text" id="buscaDestino" placeholder="Digite seu destino...">
-    <button onclick="buscarRota()"><i class="fas fa-search"></i></button>
-</div>
-
-<!-- BOTÃO RECENTRALIZAR -->
-<div class="btn-recentrar" id="btnRecenter" onclick="recentralizar()">
-    <i class="fas fa-location-arrow"></i> RECENTRALIZAR
-</div>
-
 <div id="btn-px">🎤</div>
+
+<!-- POP-UP DE CONFIRMAÇÃO -->
+<div class="confirmacao-popup" id="confirmacaoPopup">
+    <div class="confirmacao-texto" id="confirmacaoTexto">Acidente a 300 metros?</div>
+    <div class="confirmacao-subtexto" id="confirmacaoSubtexto">Toque para confirmar</div>
+    <div class="confirmacao-botoes">
+        <button class="btn-confirmar" onclick="confirmarAlerta()">✅ SIM</button>
+        <button class="btn-negar" onclick="negarAlerta()">❌ NÃO</button>
+    </div>
+</div>
 
 <!-- CHAT GERAL -->
 <div class="chat-container" id="chatGeral">
@@ -1317,11 +1150,9 @@ let ultimaAtualizacaoGPS = 0;
 const INTERVALO_GPS = 1000;
 let zoomAtual = 13;
 let ultimaMsgCongestionamento = 0;
-let modoNavegacao = false;
-let instrucoesAtualizadas = false;
 let clusterGroup = null;
 let alertasMapa = {};
-let alertasConfirmacoes = {};
+let alertasConfirmados = {}; // Para controle de confirmações por usuário
 
 // ===== 10 ALERTAS =====
 const alertas = [
@@ -1406,19 +1237,6 @@ function toggleReporte() {
     toggle.classList.toggle('ativo');
 }
 
-function ocultarPainel() {
-    const routing = document.getElementById('routingPanel');
-    const btnOcultar = document.getElementById('btnOcultarPainel');
-    
-    routing.classList.toggle('oculto');
-    
-    if (routing.classList.contains('oculto')) {
-        btnOcultar.innerHTML = '<i class="fas fa-eye"></i> Mostrar';
-    } else {
-        btnOcultar.innerHTML = '<i class="fas fa-eye-slash"></i> Ocultar';
-    }
-}
-
 // ===== ICONES ALERTAS =====
 function criarIconesAlertas() {
     const grid = document.getElementById('alertasGrid');
@@ -1450,23 +1268,23 @@ function iniciarCluster() {
     mapa.addLayer(clusterGroup);
 }
 
-// ===== FUNÇÃO PARA CRIAR ÍCONE DO CARRO TRADICIONAL =====
+// ===== FUNÇÃO PARA CRIAR ÍCONE DO CARRO VERMELHO =====
 function criarIconeCarro(ehMeu = true, direcao = 0) {
     if (ehMeu) {
-        // Versão tradicional: carro azul com pulse
+        // Versão tradicional: carro vermelho com pulse
         return L.divIcon({
             html: `<div style="position:relative;">
                 <div class="carro-marcador-pulse"></div>
-                <i class="fas fa-car-side" style="color: #2196F3; font-size: 28px; transform: rotate(${direcao}deg); position: relative; z-index: 2; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));"></i>
+                <div style="font-size: 32px; position: relative; z-index: 2; transform: rotate(${direcao}deg);">🚗</div>
             </div>`,
             className: 'carro-marcador',
-            iconSize: [35, 35],
-            iconAnchor: [17, 17]
+            iconSize: [40, 40],
+            iconAnchor: [20, 20]
         });
     } else {
-        // Outros usuários: cinza
+        // Outros usuários: carro cinza
         return L.divIcon({
-            html: `<i class="fas fa-car-side" style="color: #666666; font-size: 24px; transform: rotate(${direcao}deg); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));"></i>`,
+            html: `<div style="font-size: 24px; transform: rotate(${direcao}deg); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">🚗</div>`,
             className: 'carro-marcador',
             iconSize: [24, 24],
             iconAnchor: [12, 12]
@@ -1474,7 +1292,7 @@ function criarIconeCarro(ehMeu = true, direcao = 0) {
     }
 }
 
-// ===== FUNÇÃO PARA TOCAR BIP (MAIS AGRADÁVEL) =====
+// ===== FUNÇÃO PARA TOCAR BIP =====
 function tocarBip() {
     try {
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1496,18 +1314,6 @@ function tocarBip() {
     }
 }
 
-// ===== FUNÇÃO PARA TOCAR ÁUDIO DE BOAS-VINDAS =====
-function tocarAudioBoasVindas() {
-    if ('speechSynthesis' in window) {
-        const msg = new SpeechSynthesisUtterance();
-        msg.text = 'Você está no GPS Grupo BR 277. Siga as instruções e boa viagem.';
-        msg.lang = 'pt-BR';
-        msg.rate = 1.0;
-        msg.pitch = 1.0;
-        window.speechSynthesis.speak(msg);
-    }
-}
-
 // ===== MAPA =====
 function iniciarMapa() {
     mapa = L.map('map', { zoomControl: false }).setView([-25.4284, -49.2733], 13);
@@ -1516,9 +1322,6 @@ function iniciarMapa() {
     mapa.on('dragstart', () => {
         seguirLocalizacao = false;
         document.getElementById('btnRecenter').style.display = 'block';
-        if (modoNavegacao) {
-            document.getElementById('instrucoesPanel').style.display = 'flex';
-        }
     });
     
     mapa.on('zoomend', () => {
@@ -1550,8 +1353,8 @@ function atualizarIconeCarro() {
                 html: `<div style="position:relative;">
                     <div class="carro-marcador-pulse"></div>
                 </div>`,
-                iconSize: [35, 35],
-                iconAnchor: [17, 17]
+                iconSize: [40, 40],
+                iconAnchor: [20, 20]
             })
         }).addTo(mapa);
     }
@@ -1591,8 +1394,8 @@ function iniciarGPS() {
                         html: `<div style="position:relative;">
                             <div class="carro-marcador-pulse"></div>
                         </div>`,
-                        iconSize: [35, 35],
-                        iconAnchor: [17, 17]
+                        iconSize: [40, 40],
+                        iconAnchor: [20, 20]
                     })
                 }).addTo(mapa);
             }
@@ -1634,6 +1437,7 @@ function iniciarGPS() {
 
 // ===== VERIFICAR PROXIMIDADE COM ALERTAS =====
 let popupTimeout = null;
+let alertaAtual = null;
 
 function verificarProximidadeAlertas() {
     if (!minhaLocalizacao) return;
@@ -1642,13 +1446,21 @@ function verificarProximidadeAlertas() {
         const alerta = alertasMapa[id];
         if (!alerta) return;
         
+        // Não mostra popup para quem criou o alerta
+        if (alerta.criador === usuario) return;
+        
+        // Verifica se já confirmou este alerta
+        const chaveConfirmacao = `${usuario}_${id}`;
+        if (alertasConfirmados[chaveConfirmacao]) return;
+        
         const distancia = calcularDistancia(
             minhaLocalizacao.lat, minhaLocalizacao.lng,
             alerta.lat, alerta.lng
         );
         
-        if (distancia < 0.3) {
+        if (distancia < 0.3) { // 300 metros
             tocarBip();
+            alertaAtual = { id, ...alerta };
             mostrarPopupConfirmacao(alerta);
         }
     });
@@ -1656,32 +1468,53 @@ function verificarProximidadeAlertas() {
 
 // ===== MOSTRAR POP-UP DE CONFIRMAÇÃO =====
 function mostrarPopupConfirmacao(alerta) {
+    // Se já tem um popup aberto, não abre outro
+    if (document.getElementById('confirmacaoPopup').style.display === 'flex') return;
+    
     const popup = document.getElementById('confirmacaoPopup');
     const texto = document.getElementById('confirmacaoTexto');
     const subtexto = document.getElementById('confirmacaoSubtexto');
     
     texto.innerHTML = `${alerta.nome} a 300 metros?`;
-    subtexto.innerHTML = 'Toque para confirmar (8s)';
+    subtexto.innerHTML = 'Confirme se o alerta ainda está ativo';
     popup.style.display = 'flex';
     
     if (popupTimeout) clearTimeout(popupTimeout);
     
     popupTimeout = setTimeout(() => {
         popup.style.display = 'none';
-    }, 8000);
+        alertaAtual = null;
+    }, 10000);
 }
 
 // ===== CONFIRMAR ALERTA =====
 function confirmarAlerta() {
+    if (!alertaAtual) return;
+    
+    // Marca como confirmado para este usuário
+    const chaveConfirmacao = `${usuario}_${alertaAtual.id}`;
+    alertasConfirmados[chaveConfirmacao] = true;
+    
+    // Atualiza contador de confirmações no Firebase
+    db.ref('alertas_fixos/' + alertaAtual.id + '/confirmacoes').transaction(count => (count || 0) + 1);
+    
     document.getElementById('confirmacaoPopup').style.display = 'none';
     if (popupTimeout) clearTimeout(popupTimeout);
+    alertaAtual = null;
     tocarBip();
 }
 
 // ===== NEGAR ALERTA =====
 function negarAlerta() {
+    if (!alertaAtual) return;
+    
+    // Marca como negado para este usuário
+    const chaveConfirmacao = `${usuario}_${alertaAtual.id}`;
+    alertasConfirmados[chaveConfirmacao] = true;
+    
     document.getElementById('confirmacaoPopup').style.display = 'none';
     if (popupTimeout) clearTimeout(popupTimeout);
+    alertaAtual = null;
 }
 
 // ===== USUÁRIOS ATIVOS =====
@@ -1742,7 +1575,7 @@ function carregarAlertasFixos() {
     setInterval(() => {
         const agora = Date.now();
         Object.keys(alertasMapa).forEach(id => {
-            if (agora - alertasMapa[id].timestamp > 1200000) {
+            if (agora - alertasMapa[id].timestamp > 1200000) { // 20 minutos
                 delete alertasMapa[id];
                 db.ref('alertas_fixos/' + id).remove();
             }
@@ -1754,7 +1587,14 @@ function ativarAlerta(alerta) {
     if (!minhaLocalizacao) return;
     
     const id = Date.now();
-    const alertaData = { ...alerta, lat: minhaLocalizacao.lat, lng: minhaLocalizacao.lng, timestamp: id };
+    const alertaData = { 
+        ...alerta, 
+        lat: minhaLocalizacao.lat, 
+        lng: minhaLocalizacao.lng, 
+        timestamp: id,
+        criador: usuario,
+        confirmacoes: 0
+    };
     
     alertasMapa[id] = alertaData;
     
@@ -1778,7 +1618,10 @@ function ativarAlerta(alerta) {
 function abrirChatAlerta(alerta, posicao, id) {
     const conteudo = document.createElement('div');
     conteudo.innerHTML = `
-        <div style="padding:10px; background:${alerta.cor}; color:white; font-weight:bold;">${alerta.icone} ${alerta.nome}</div>
+        <div style="padding:10px; background:${alerta.cor}; color:white; font-weight:bold; display:flex; justify-content:space-between;">
+            <span>${alerta.icone} ${alerta.nome}</span>
+            <span>✅ ${alerta.confirmacoes || 0}</span>
+        </div>
         <div style="padding:10px; max-height:200px; overflow-y:auto;" id="chatAlerta-${id}">
             <div style="text-align:center; color:#999;">Carregando...</div>
         </div>
@@ -1841,37 +1684,6 @@ function formatarTempo(minutos) {
     }
 }
 
-// ===== FUNÇÃO PARA TRADUZIR INSTRUÇÕES =====
-function traduzirInstrucao(instrucao) {
-    if (!instrucao) return 'Siga em frente';
-    
-    const texto = instrucao.toLowerCase();
-    
-    if (texto.includes('turn left')) return 'Vire à esquerda';
-    if (texto.includes('turn right')) return 'Vire à direita';
-    if (texto.includes('continue')) return 'Siga em frente';
-    if (texto.includes('destination')) return 'Destino chegou';
-    if (texto.includes('roundabout')) return 'Rotatória';
-    if (texto.includes('merge')) return 'Entre na via';
-    if (texto.includes('keep left')) return 'Mantenha-se à esquerda';
-    if (texto.includes('keep right')) return 'Mantenha-se à direita';
-    
-    return instrucao;
-}
-
-// ===== FUNÇÃO PARA OBTER ÍCONE DA INSTRUÇÃO =====
-function getIconeInstrucao(instrucao) {
-    const texto = instrucao.toLowerCase();
-    
-    if (texto.includes('left')) return 'fa-arrow-left';
-    if (texto.includes('right')) return 'fa-arrow-right';
-    if (texto.includes('continue') || texto.includes('frente')) return 'fa-arrow-up';
-    if (texto.includes('destination')) return 'fa-flag-checkered';
-    if (texto.includes('roundabout')) return 'fa-sync-alt';
-    
-    return 'fa-arrow-up';
-}
-
 // ===== ROTA =====
 function buscarRota() {
     const destino = document.getElementById('buscaDestino').value;
@@ -1881,7 +1693,7 @@ function buscarRota() {
         .then(res => res.json())
         .then(data => {
             if (data.length === 0) {
-                alert('Local não encontrado');
+                alert('Cidade não encontrada');
                 return;
             }
             
@@ -1893,9 +1705,9 @@ function buscarRota() {
                 waypoints: [minhaLocalizacao, dest],
                 lineOptions: { 
                     styles: [{ 
-                        color: '#2196F3', 
+                        color: '#0000FF', // Azul forte
                         weight: 5, 
-                        opacity: 0.7
+                        opacity: 0.8 // Opacidade para ver trânsito
                     }] 
                 },
                 createMarker: () => null,
@@ -1906,20 +1718,10 @@ function buscarRota() {
                 fitSelectedRoutes: false
             }).addTo(mapa);
             
-            rotaAtual.on('routesfound', function(e) {
-                const routes = e.routes;
-                if (routes && routes.length > 0) {
-                    const instructions = routes[0].instructions;
-                    atualizarInstrucoes(instructions);
-                }
-            });
-            
             mapa.flyToBounds(L.latLngBounds([minhaLocalizacao, dest]), { padding: [50, 50] });
             
             document.getElementById('rotaInfoPanel').style.display = 'flex';
-            document.getElementById('btnIniciarNavegacao').style.display = 'flex';
             document.getElementById('btnEncerrarRota').style.display = 'flex';
-            document.getElementById('btnOcultarPainel').style.display = 'flex';
             
             const distancia = parseFloat(calcularDistancia(
                 minhaLocalizacao.lat, minhaLocalizacao.lng,
@@ -1935,79 +1737,14 @@ function buscarRota() {
         });
 }
 
-// ===== ATUALIZAR INSTRUÇÕES =====
-function atualizarInstrucoes(instructions) {
-    if (!instructions || instructions.length === 0) return;
-    
-    const stepsDiv = document.getElementById('routingSteps');
-    let stepsHtml = '';
-    
-    instructions.forEach((inst, index) => {
-        const instrucaoTraduzida = traduzirInstrucao(inst.text || inst.instruction);
-        const icone = getIconeInstrucao(inst.text || inst.instruction);
-        const distancia = (inst.distance / 1000).toFixed(1) + ' km';
-        
-        stepsHtml += `
-            <div class="routing-step">
-                <i class="fas ${icone}"></i>
-                <span>${instrucaoTraduzida}</span>
-                <span style="margin-left: auto; color: #ffd700; font-size: 11px;">${distancia}</span>
-            </div>
-        `;
-    });
-    
-    document.getElementById('routingSteps').innerHTML = stepsHtml;
-    
-    if (instructions.length > 0) {
-        const primeira = instructions[0];
-        const instrucaoTraduzida = traduzirInstrucao(primeira.text || primeira.instruction);
-        const icone = getIconeInstrucao(primeira.text || primeira.instruction);
-        const distancia = (primeira.distance / 1000).toFixed(1) + ' km';
-        
-        document.getElementById('instrucaoIcone').innerHTML = `<i class="fas ${icone}"></i>`;
-        document.getElementById('instrucaoTexto').innerHTML = instrucaoTraduzida;
-        document.getElementById('instrucaoDistancia').innerHTML = distancia;
-    }
-}
-
-// ===== INICIAR NAVEGAÇÃO =====
-function iniciarNavegacao() {
-    modoNavegacao = true;
-    seguirLocalizacao = true;
-    
-    document.getElementById('btnIniciarNavegacao').style.display = 'none';
-    document.getElementById('instrucoesPanel').style.display = 'flex';
-    document.getElementById('routingPanel').classList.add('visivel');
-    document.getElementById('btnRecenter').style.display = 'none';
-    document.getElementById('btnOcultarPainel').style.display = 'flex';
-    
-    if (minhaLocalizacao) {
-        mapa.flyTo(minhaLocalizacao, 17);
-    }
-    
-    tocarAudioBoasVindas();
-    
-    if (rotaAtual && rotaAtual._routes && rotaAtual._routes.length > 0) {
-        const instructions = rotaAtual._routes[0].instructions;
-        if (instructions) {
-            atualizarInstrucoes(instructions);
-        }
-    }
-}
-
 // ===== ENCERRAR ROTA =====
 function encerrarRota() {
     if (rotaAtual) {
         mapa.removeControl(rotaAtual);
         rotaAtual = null;
     }
-    modoNavegacao = false;
     document.getElementById('rotaInfoPanel').style.display = 'none';
-    document.getElementById('btnIniciarNavegacao').style.display = 'none';
     document.getElementById('btnEncerrarRota').style.display = 'none';
-    document.getElementById('instrucoesPanel').style.display = 'none';
-    document.getElementById('routingPanel').classList.remove('visivel');
-    document.getElementById('btnOcultarPainel').style.display = 'none';
 }
 
 function calcularDistancia(lat1, lon1, lat2, lon2) {
