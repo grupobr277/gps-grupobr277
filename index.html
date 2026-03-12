@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BR-277 | TRÂNSITO</title>
+    <title>BR-277 | TRÂNSITO AO VIVO</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Video.js para streaming -->
+    <link href="https://vjs.zencdn.net/8.3.0/video-js.css" rel="stylesheet" />
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body, #map { height: 100%; width: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
@@ -393,243 +395,52 @@
             100% { transform: scale(1); opacity: 1; box-shadow: 0 0 15px #00ff00; }
         }
         
-        /* ===== TUTORIAL PROFISSIONAL DE PINÇA ===== */
-        .tutorial-pinca {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 999999;
-            display: none;
-            pointer-events: none;
+        /* ===== ESTILO PARA CÂMERAS AO VIVO ===== */
+        .camera-marcador {
+            font-size: 32px;
+            filter: drop-shadow(0 0 15px rgba(255,0,0,0.8));
+            cursor: pointer;
+            animation: pulse-camera 2s infinite;
         }
         
-        .tutorial-overlay {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.2);
-            backdrop-filter: blur(2px);
-            transition: all 0.5s;
+        @keyframes pulse-camera {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(255,0,0,0.8)); }
+            50% { transform: scale(1.1); filter: drop-shadow(0 0 20px rgba(255,0,0,1)); }
         }
         
-        .mao-container {
-            position: absolute;
-            bottom: 20%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 300px;
-            height: 400px;
+        .video-popup {
+            width: 360px;
+            max-width: 90vw;
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            border: 2px solid #ffd700;
+            border-radius: 15px;
+            padding: 15px;
         }
         
-        /* Antebraço */
-        .antebraco {
-            position: absolute;
-            width: 80px;
-            height: 150px;
-            background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 40px 40px 20px 20px;
-            bottom: -80px;
-            left: 110px;
-            transform: rotate(-5deg);
-            backdrop-filter: blur(5px);
-        }
-        
-        /* Mão principal */
-        .mao {
-            position: absolute;
-            width: 250px;
-            height: 250px;
-            bottom: 0;
-            left: 25px;
-        }
-        
-        /* Base da mão */
-        .mao::before {
-            content: '';
-            position: absolute;
-            width: 150px;
-            height: 120px;
-            background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
-            border: 2px solid rgba(255,255,255,0.4);
-            border-radius: 70px 70px 40px 40px;
-            bottom: 0;
-            left: 50px;
-            backdrop-filter: blur(5px);
-        }
-        
-        /* Dedos */
-        .dedo {
-            position: absolute;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            transform-origin: bottom center;
-        }
-        
-        .falange {
-            width: 30px;
-            height: 35px;
-            background: linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.1));
-            border: 2px solid rgba(255,255,255,0.5);
-            border-radius: 20px 20px 10px 10px;
-            margin: -2px 0;
-            backdrop-filter: blur(5px);
-            box-shadow: 0 0 15px rgba(255,255,255,0.2);
-        }
-        
-        .falange1 { height: 40px; }
-        .falange2 { height: 35px; }
-        .falange3 { height: 30px; }
-        
-        /* Posicionamento dos dedos */
-        .polegar {
-            bottom: 80px;
-            left: 20px;
-            transform: rotate(-30deg);
-            z-index: 3;
-        }
-        
-        .indicador {
-            bottom: 70px;
-            left: 70px;
-            transform: rotate(5deg);
-            z-index: 4;
-        }
-        
-        .medio {
-            bottom: 65px;
-            left: 110px;
-            transform: rotate(8deg);
-            z-index: 3;
-        }
-        
-        .anelar {
-            bottom: 70px;
-            left: 150px;
-            transform: rotate(3deg);
-            z-index: 2;
-        }
-        
-        .minimo {
-            bottom: 80px;
-            left: 190px;
-            transform: rotate(-5deg);
-            z-index: 1;
-        }
-        
-        /* Animações dos dedos */
-        @keyframes pinca-fechar {
-            0%, 100% {
-                transform: rotate(-30deg) translateX(0) translateY(0);
-            }
-            25% {
-                transform: rotate(-20deg) translateX(5px) translateY(-5px);
-            }
-            50% {
-                transform: rotate(-30deg) translateX(0) translateY(0);
-            }
-            75% {
-                transform: rotate(-40deg) translateX(-5px) translateY(5px);
-            }
-        }
-        
-        @keyframes pinca-abrir {
-            0%, 100% {
-                transform: rotate(5deg) translateX(0) translateY(0);
-            }
-            25% {
-                transform: rotate(15deg) translateX(-5px) translateY(-8px);
-            }
-            50% {
-                transform: rotate(5deg) translateX(0) translateY(0);
-            }
-            75% {
-                transform: rotate(-5deg) translateX(5px) translateY(5px);
-            }
-        }
-        
-        .polegar {
-            animation: pinca-fechar 3s ease-in-out infinite;
-        }
-        
-        .indicador {
-            animation: pinca-abrir 3s ease-in-out infinite;
-        }
-        
-        /* Efeito de brilho nos dedos */
-        .dedo::after {
-            content: '';
-            position: absolute;
-            top: 10%;
-            left: 10%;
-            width: 80%;
-            height: 30%;
-            background: linear-gradient(135deg, rgba(255,255,255,0.4), transparent);
-            border-radius: 10px;
-            opacity: 0;
-            animation: brilho-dedo 3s ease-in-out infinite;
-        }
-        
-        @keyframes brilho-dedo {
-            0%, 100% { opacity: 0; }
-            50% { opacity: 1; }
-        }
-        
-        /* Indicador de zoom */
-        .zoom-indicator {
-            position: absolute;
-            top: -20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 80px;
-            animation: flutua-zoom 3s ease-in-out infinite;
-        }
-        
-        @keyframes flutua-zoom {
-            0%, 100% { transform: translateX(-50%) translateY(0); }
-            50% { transform: translateX(-50%) translateY(-10px); }
-        }
-        
-        /* Mensagem do tutorial */
-        .tutorial-mensagem {
-            position: absolute;
-            bottom: 10%;
-            left: 50%;
-            transform: translateX(-50%);
-            text-align: center;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(10px);
-            padding: 15px 30px;
-            border-radius: 60px;
-            border: 2px solid rgba(255,215,0,0.5);
-            box-shadow: 0 0 30px rgba(255,215,0,0.3);
-            animation: pulse-mensagem 2s ease-in-out infinite;
-            z-index: 1000000;
-        }
-        
-        .mensagem-principal {
-            display: block;
+        .video-popup h3 {
             color: #ffd700;
-            font-size: 20px;
-            font-weight: bold;
-            letter-spacing: 1px;
-            margin-bottom: 5px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
         
-        .mensagem-secundaria {
-            display: block;
-            color: white;
-            font-size: 14px;
-            opacity: 0.8;
+        .video-popup h3 i {
+            color: #ff0000;
+            animation: pulse-red 1.5s infinite;
         }
         
-        @keyframes pulse-mensagem {
-            0%, 100% { transform: translateX(-50%) scale(1); }
-            50% { transform: translateX(-50%) scale(1.02); }
+        @keyframes pulse-red {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .video-js {
+            width: 100%;
+            height: 200px;
+            border-radius: 10px;
+            overflow: hidden;
         }
         
         /* VELOCÍMETRO */
@@ -1431,77 +1242,14 @@
     </div>
 </div>
 
-<!-- TUTORIAL PROFISSIONAL DE PINÇA -->
-<div class="tutorial-pinca" id="tutorialPinca">
-    <div class="tutorial-overlay"></div>
-    <div class="mao-container">
-        <!-- Antebraço -->
-        <div class="antebraco"></div>
-        
-        <!-- Mão principal -->
-        <div class="mao">
-            <!-- Polegar -->
-            <div class="dedo polegar" id="polegar">
-                <div class="falange falange1"></div>
-                <div class="falange falange2"></div>
-                <div class="falange falange3"></div>
-            </div>
-            
-            <!-- Indicador -->
-            <div class="dedo indicador" id="indicador">
-                <div class="falange falange1"></div>
-                <div class="falange falange2"></div>
-                <div class="falange falange3"></div>
-            </div>
-            
-            <!-- Dedo médio (parado) -->
-            <div class="dedo medio" id="medio">
-                <div class="falange falange1"></div>
-                <div class="falange falange2"></div>
-                <div class="falange falange3"></div>
-            </div>
-            
-            <!-- Dedo anelar (parado) -->
-            <div class="dedo anelar" id="anelar">
-                <div class="falange falange1"></div>
-                <div class="falange falange2"></div>
-                <div class="falange falange3"></div>
-            </div>
-            
-            <!-- Dedo mínimo (parado) -->
-            <div class="dedo minimo" id="minimo">
-                <div class="falange falange1"></div>
-                <div class="falange falange2"></div>
-                <div class="falange falange3"></div>
-            </div>
-        </div>
-        
-        <!-- Indicador de zoom -->
-        <div class="zoom-indicator">
-            <svg width="60" height="60" viewBox="0 0 60 60">
-                <circle cx="30" cy="30" r="28" fill="none" stroke="#ffd700" stroke-width="2" stroke-dasharray="6 6">
-                    <animate attributeName="r" values="28;32;28" dur="3s" repeatCount="indefinite" />
-                    <animate attributeName="stroke-dashoffset" values="0;50;0" dur="3s" repeatCount="indefinite" />
-                </circle>
-                <text x="30" y="35" text-anchor="middle" fill="#ffd700" font-size="20" font-weight="bold">+</text>
-                <text x="30" y="35" text-anchor="middle" fill="#ffd700" font-size="20" font-weight="bold" opacity="0">
-                    <animate attributeName="opacity" values="0;1;0" dur="3s" repeatCount="indefinite" />
-                </text>
-            </svg>
-        </div>
-    </div>
-    
-    <div class="tutorial-mensagem">
-        <span class="mensagem-principal">👆 Use dois dedos</span>
-        <span class="mensagem-secundaria">Aproxime e afaste para dar zoom</span>
-    </div>
-</div>
-
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<!-- Video.js e plugin Flash -->
+<script src="https://vjs.zencdn.net/8.3.0/video.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-flash/2.2.0/videojs-flash.min.js"></script>
 
 <script>
 // ===== FIREBASE =====
@@ -1537,8 +1285,7 @@ let alertasConfirmados = {};
 let pulsantesAlertas = {};
 let marcadorDestino = null;
 let wakeLock = null;
-let tutorialAtivo = false;
-let intervaloZoomTutorial = null;
+let playersVideo = {}; // Para controlar players de vídeo
 
 // ===== 10 ALERTAS =====
 const alertas = [
@@ -1553,6 +1300,117 @@ const alertas = [
     { tipo: 'alagamento', nome: 'ALAGAMENTO', icone: '💧', cor: '#2196f3' },
     { tipo: 'bloqueio', nome: 'BLOQUEIO', icone: '⛔', cor: '#b71c1c' }
 ];
+
+// ===== CÂMERAS AO VIVO =====
+const cameras = [
+    {
+        id: 'cam1',
+        titulo: 'BR-277 - Km 30 (Sentido Litoral)',
+        descricao: 'Câmera ao vivo - Pedágio São José',
+        lat: -25.4567,
+        lng: -49.2345,
+        rtmp: 'rtmp://connect-735.servicestream.io:1936/stream/ef92c235d45c'
+    },
+    {
+        id: 'cam2',
+        titulo: 'BR-277 - Km 45 (Curitiba)',
+        descricao: 'Trânsito em tempo real',
+        lat: -25.5123,
+        lng: -49.2987,
+        rtmp: 'rtmp://connect-735.servicestream.io:1936/stream/ef92c235d45c' // Mesmo link para teste
+    }
+];
+
+// ===== FUNÇÃO PARA CRIAR MARCADOR DE CÂMERA =====
+function criarMarcadorCamera(camera) {
+    // Ícone personalizado para câmera
+    const iconeCamera = L.divIcon({
+        html: `<div class="camera-marcador">📹</div>`,
+        className: '',
+        iconSize: [40, 40],
+        iconAnchor: [20, 20]
+    });
+    
+    const marcador = L.marker([camera.lat, camera.lng], {
+        icon: iconeCamera,
+        zIndexOffset: 2000
+    }).addTo(mapa);
+    
+    // Criar ID único para o player
+    const playerId = 'player-' + camera.id;
+    
+    // Conteúdo do popup
+    const popupContent = document.createElement('div');
+    popupContent.className = 'video-popup';
+    popupContent.innerHTML = `
+        <h3>
+            <i class="fas fa-circle" style="color: #ff0000; font-size: 10px;"></i>
+            ${camera.titulo}
+        </h3>
+        <p style="color: #ccc; font-size: 12px; margin-bottom: 10px;">${camera.descricao}</p>
+        <video id="${playerId}" class="video-js vjs-default-skin" controls preload="auto" width="320" height="200">
+            <source src="${camera.rtmp}" type="rtmp/mp4">
+        </video>
+        <p style="color: #4caf50; font-size: 11px; margin-top: 8px; text-align: center;">
+            🔴 AO VIVO • Atualizado em tempo real
+        </p>
+    `;
+    
+    // Quando o popup for aberto, inicializar o player
+    marcador.on('click', () => {
+        marcador.bindPopup(popupContent, {
+            maxWidth: 360,
+            className: 'custom-popup'
+        }).openPopup();
+        
+        // Pequeno delay para garantir que o DOM foi criado
+        setTimeout(() => {
+            const videoElement = document.getElementById(playerId);
+            if (videoElement && !playersVideo[camera.id]) {
+                try {
+                    // Inicializar video.js com suporte a Flash
+                    const player = videojs(videoElement, {
+                        techOrder: ['flash', 'html5'],
+                        flash: {
+                            swf: 'https://vjs.zencdn.net/swf/5.4.2/video-js.swf'
+                        },
+                        autoplay: false,
+                        controls: true,
+                        preload: 'auto'
+                    });
+                    
+                    playersVideo[camera.id] = player;
+                    
+                    // Tentar reproduzir quando estiver pronto
+                    player.ready(() => {
+                        console.log('✅ Player pronto para:', camera.titulo);
+                    });
+                    
+                } catch (e) {
+                    console.error('❌ Erro ao iniciar player:', e);
+                    // Fallback: mostrar mensagem
+                    const errorMsg = document.createElement('div');
+                    errorMsg.innerHTML = `
+                        <div style="background: #e53935; color: white; padding: 10px; border-radius: 5px;">
+                            <strong>📹 Link da câmera:</strong><br>
+                            ${camera.rtmp}<br>
+                            <small style="color: #ffd700;">Copie e cole no VLC Media Player</small>
+                        </div>
+                    `;
+                    videoElement.parentNode.replaceChild(errorMsg, videoElement);
+                }
+            }
+        }, 300);
+    });
+    
+    // Quando o popup for fechado, destruir o player para economizar recursos
+    marcador.on('popupclose', () => {
+        if (playersVideo[camera.id]) {
+            playersVideo[camera.id].dispose();
+            delete playersVideo[camera.id];
+        }
+    });
+}
 
 // ===== FUNÇÃO PARA MANTER TELA ATIVA (WAKE LOCK) =====
 async function ativarWakeLock() {
@@ -1581,116 +1439,6 @@ document.addEventListener('visibilitychange', async () => {
         await ativarWakeLock();
     }
 });
-
-// ===== FUNÇÕES DO TUTORIAL PROFISSIONAL =====
-function iniciarTutorialProfissional() {
-    const tutorial = document.getElementById('tutorialPinca');
-    const overlay = document.querySelector('.tutorial-overlay');
-    
-    tutorial.style.display = 'block';
-    tutorialAtivo = true;
-    
-    // Escurece overlay suavemente
-    setTimeout(() => {
-        if (tutorialAtivo) {
-            overlay.style.background = 'rgba(0,0,0,0.3)';
-        }
-    }, 200);
-    
-    // Sequência de zoom no mapa (suave e natural)
-    let zoomNiveis = [13, 13.5, 14, 14.5, 15, 14.5, 14, 13.5, 13, 12.5, 12, 11.5, 11, 11.5, 12, 12.5, 13];
-    let index = 0;
-    
-    intervaloZoomTutorial = setInterval(() => {
-        if (!tutorialAtivo || !mapa) {
-            clearInterval(intervaloZoomTutorial);
-            return;
-        }
-        
-        mapa.setZoom(zoomNiveis[index]);
-        index = (index + 1) % zoomNiveis.length;
-    }, 400); // Muda a cada 0.4 segundos para movimento suave
-    
-    // Fecha após 14 segundos (tempo para ver ciclo completo)
-    setTimeout(() => {
-        if (tutorialAtivo) {
-            fecharTutorialProfissional();
-        }
-    }, 14000);
-}
-
-function fecharTutorialProfissional() {
-    const tutorial = document.getElementById('tutorialPinca');
-    const overlay = document.querySelector('.tutorial-overlay');
-    const maoContainer = document.querySelector('.mao-container');
-    const mensagem = document.querySelector('.tutorial-mensagem');
-    
-    if (!tutorialAtivo) return;
-    
-    tutorialAtivo = false;
-    
-    // Animação de fade out
-    overlay.style.transition = 'opacity 0.5s';
-    maoContainer.style.transition = 'opacity 0.5s';
-    mensagem.style.transition = 'opacity 0.5s';
-    
-    overlay.style.opacity = '0';
-    maoContainer.style.opacity = '0';
-    mensagem.style.opacity = '0';
-    
-    // Limpa intervalo de zoom
-    if (intervaloZoomTutorial) {
-        clearInterval(intervaloZoomTutorial);
-        intervaloZoomTutorial = null;
-    }
-    
-    // Remove tutorial após animação
-    setTimeout(() => {
-        tutorial.style.display = 'none';
-        // Restaura opacidades
-        overlay.style.opacity = '1';
-        maoContainer.style.opacity = '1';
-        mensagem.style.opacity = '1';
-        
-        // Remove transições
-        overlay.style.transition = '';
-        maoContainer.style.transition = '';
-        mensagem.style.transition = '';
-    }, 500);
-}
-
-function fecharTutorialAoInteragir() {
-    if (tutorialAtivo) {
-        fecharTutorialProfissional();
-    }
-}
-
-function mostrarTutorialSeNecessario() {
-    const tutorialVisto = localStorage.getItem('br277_tutorial_visto');
-    const ultimaVisita = localStorage.getItem('br277_ultima_visita');
-    const agora = Date.now();
-    
-    // Mostra se nunca viu
-    if (!tutorialVisto) {
-        setTimeout(() => {
-            // Só mostra se o mapa já carregou e a localização do usuário apareceu
-            if (mapa && minhaLocalizacao) {
-                iniciarTutorialProfissional();
-            }
-        }, 3000);
-        localStorage.setItem('br277_tutorial_visto', 'true');
-        localStorage.setItem('br277_ultima_visita', agora.toString());
-    } 
-    // Mostra se passou mais de 30 dias
-    else if (ultimaVisita && (agora - parseInt(ultimaVisita)) > 2592000000) {
-        setTimeout(() => {
-            if (mapa && minhaLocalizacao) {
-                iniciarTutorialProfissional();
-            }
-        }, 3000);
-        localStorage.setItem('br277_ultima_visita', agora.toString());
-    }
-}
 
 // ===== FUNÇÕES DO MODAL =====
 function selecionarVeiculo(tipo, icone) {
@@ -1721,6 +1469,7 @@ if (userSalvo) {
     carregarChatGeral();
     criarIconesAlertas();
     iniciarCluster();
+    carregarCameras(); // Adicionar câmeras
 }
 
 function salvarCadastro() {
@@ -1751,6 +1500,18 @@ function salvarCadastro() {
     carregarChatGeral();
     criarIconesAlertas();
     iniciarCluster();
+    carregarCameras(); // Adicionar câmeras
+}
+
+// ===== CARREGAR CÂMERAS =====
+function carregarCameras() {
+    // Pequeno delay para garantir que o mapa está pronto
+    setTimeout(() => {
+        cameras.forEach(camera => {
+            criarMarcadorCamera(camera);
+        });
+        console.log('📹 Câmeras carregadas:', cameras.length);
+    }, 2000);
 }
 
 // ===== FUNÇÕES DE INTERFACE =====
@@ -1931,15 +1692,6 @@ function iniciarMapa() {
     mapa.on('dragstart', () => {
         seguirLocalizacao = false;
         document.getElementById('btnRecenter').style.display = 'block';
-        fecharTutorialAoInteragir();
-    });
-    
-    mapa.on('zoomstart', () => {
-        fecharTutorialAoInteragir();
-    });
-    
-    mapa.on('click', () => {
-        fecharTutorialAoInteragir();
     });
     
     mapa.on('zoomend', () => {
@@ -2026,9 +1778,6 @@ function iniciarGPS() {
                 veiculo: veiculoUsuario,
                 timestamp: Date.now()
             });
-            
-            // Tenta mostrar tutorial após localização carregar
-            mostrarTutorialSeNecessario();
             
         } else {
             meuMarcador.setLatLng(minhaLocalizacao);
