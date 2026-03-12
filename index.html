@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- Video.js para streaming -->
     <link href="https://vjs.zencdn.net/8.3.0/video-js.css" rel="stylesheet" />
+    <!-- HLS.js para fallback -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body, #map { height: 100%; width: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
@@ -27,6 +29,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow-y: auto;
+            padding: 20px;
         }
         
         .welcome-content {
@@ -34,10 +38,12 @@
             padding: 40px;
             border-radius: 40px;
             text-align: center;
-            max-width: 400px;
-            width: 90%;
+            max-width: 500px;
+            width: 100%;
             box-shadow: 0 20px 40px rgba(0,0,0,0.5);
             border: 1px solid rgba(255,215,0,0.3);
+            max-height: 90vh;
+            overflow-y: auto;
         }
         
         .welcome-content h2 {
@@ -56,6 +62,95 @@
             font-size: 16px;
             outline: none;
             color: white;
+        }
+        
+        /* PERMISSÕES */
+        .permissoes-container {
+            background: rgba(255,215,0,0.1);
+            border-radius: 20px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: left;
+            border: 1px solid #ffd700;
+        }
+        
+        .permissao-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+        
+        .permissao-item i {
+            color: #ffd700;
+            width: 20px;
+        }
+        
+        .permissao-status {
+            margin-left: auto;
+            font-size: 12px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .permissao-status.checked {
+            color: #4caf50;
+        }
+        
+        .permissao-status.unchecked {
+            color: #e53935;
+        }
+        
+        /* POLÍTICA DE PRIVACIDADE */
+        .politica-privacidade {
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: left;
+            border: 1px solid #ffd700;
+        }
+        
+        .politica-privacidade h3 {
+            color: #ffd700;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .politica-privacidade p {
+            color: #ccc;
+            font-size: 12px;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+        
+        .politica-privacidade ul {
+            color: #ccc;
+            font-size: 12px;
+            padding-left: 20px;
+            margin: 10px 0;
+        }
+        
+        .politica-privacidade li {
+            margin: 5px 0;
+        }
+        
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            font-size: 12px;
+            margin: 15px 0;
+            cursor: pointer;
+        }
+        
+        .checkbox-container input {
+            width: auto;
+            margin: 0;
         }
         
         /* ===== ÍCONE DO CARRO COM PULSANTE AZUL CLARO ===== */
@@ -409,7 +504,7 @@
         }
         
         .video-popup {
-            width: 360px;
+            width: 400px;
             max-width: 90vw;
             background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
             border: 2px solid #ffd700;
@@ -438,7 +533,7 @@
         
         .video-js {
             width: 100%;
-            height: 200px;
+            height: 225px;
             border-radius: 10px;
             overflow: hidden;
         }
@@ -563,6 +658,13 @@
             gap: 5px;
             border: 1px solid #ffd700;
             width: fit-content;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .marca-grupo:hover {
+            background: rgba(255,215,0,0.2);
+            transform: scale(1.02);
         }
         
         .marca-grupo span {
@@ -630,22 +732,40 @@
             color: white;
         }
         
-        /* BOTÃO INICIAR NAVEGAÇÃO - REMOVIDO */
-        .btn-iniciar-navegacao {
-            display: none !important;
+        /* PAINEL ADMIN */
+        .admin-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.95);
+            backdrop-filter: blur(10px);
+            border: 2px solid #ffd700;
+            border-radius: 20px;
+            padding: 20px;
+            z-index: 20001;
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+            min-width: 300px;
         }
         
-        /* PAINEL DE INSTRUÇÕES - REMOVIDO */
-        .instrucoes-panel {
-            display: none !important;
+        .admin-panel input {
+            padding: 10px;
+            border-radius: 30px;
+            border: 2px solid #ffd700;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            outline: none;
         }
         
-        .routing-panel {
-            display: none !important;
-        }
-        
-        .btn-ocultar-painel {
-            display: none !important;
+        .admin-panel button {
+            padding: 10px;
+            border-radius: 30px;
+            border: none;
+            background: #ffd700;
+            font-weight: bold;
+            cursor: pointer;
         }
         
         /* BOTÃO ENCERRAR ROTA */
@@ -1100,8 +1220,69 @@
             </div>
         </div>
         
-        <button onclick="salvarCadastro()" style="width:100%; padding:15px; background:#ffd700; border:none; border-radius:30px; font-size:18px; font-weight:bold; cursor:pointer; color:#1a1a1a;">ENTRAR</button>
+        <!-- SEÇÃO DE PERMISSÕES -->
+        <div class="permissoes-container" id="permissoesContainer">
+            <h3 style="color:#ffd700; margin-bottom:10px;">🔐 Permissões Necessárias</h3>
+            
+            <div class="permissao-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>Localização</span>
+                <span class="permissao-status unchecked" id="statusLocalizacao">⏳ Aguardando</span>
+            </div>
+            
+            <div class="permissao-item">
+                <i class="fas fa-microphone"></i>
+                <span>Microfone</span>
+                <span class="permissao-status unchecked" id="statusMicrofone">⏳ Aguardando</span>
+            </div>
+            
+            <div class="permissao-item">
+                <i class="fas fa-volume-up"></i>
+                <span>Auto-falantes</span>
+                <span class="permissao-status checked" id="statusAudio">✅ Disponível</span>
+            </div>
+            
+            <p style="color:#ccc; font-size:11px; margin-top:10px;">
+                <i class="fas fa-info-circle"></i> As permissões são necessárias para o funcionamento completo do mapa, incluindo rádio PX, chat e alertas em tempo real.
+            </p>
+        </div>
+        
+        <!-- POLÍTICA DE PRIVACIDADE -->
+        <div class="politica-privacidade">
+            <h3>📋 Política de Privacidade</h3>
+            <p>Ao utilizar o sistema BR-277, você concorda com:</p>
+            <ul>
+                <li>Compartilhamento de sua localização em tempo real com outros usuários</li>
+                <li>Recebimento de alertas de trânsito na sua região</li>
+                <li>Participação no chat geral com outros motoristas</li>
+                <li>Gravação e transmissão de áudio no rádio PX</li>
+                <li>Armazenamento do seu nome e telefone para identificação</li>
+            </ul>
+            <p style="font-size:11px; color:#ffd700;">Seus dados não são compartilhados com terceiros e podem ser removidos a qualquer momento.</p>
+        </div>
+        
+        <!-- CHECKBOX DE ACEITE -->
+        <label class="checkbox-container">
+            <input type="checkbox" id="aceitePrivacidade">
+            <span>Li e aceito a Política de Privacidade</span>
+        </label>
+        
+        <button onclick="solicitarPermissoes()" style="width:100%; padding:15px; background:#ffd700; border:none; border-radius:30px; font-size:18px; font-weight:bold; cursor:pointer; color:#1a1a1a; margin-bottom:10px;">
+            SOLICITAR PERMISSÕES
+        </button>
+        
+        <button onclick="salvarCadastro()" id="btnEntrar" disabled style="width:100%; padding:15px; background:#666; border:none; border-radius:30px; font-size:18px; font-weight:bold; cursor:not-allowed; color:#ccc;">
+            AGUARDANDO PERMISSÕES
+        </button>
     </div>
+</div>
+
+<!-- PAINEL ADMIN -->
+<div class="admin-panel" id="adminPanel">
+    <h3 style="color:#ffd700;">🔐 Verificação Admin</h3>
+    <input type="password" id="adminSenha" placeholder="Digite a senha">
+    <button onclick="verificarAdmin()">Confirmar</button>
+    <button onclick="fecharAdminPanel()" style="background:#e53935; color:white;">Cancelar</button>
 </div>
 
 <!-- PAINEL DE ROTA -->
@@ -1156,7 +1337,7 @@
 </div>
 
 <!-- HEADER SUPERIOR ESQUERDO -->
-<div class="header-esquerdo">
+<div class="header-esquerdo" onclick="window.open('https://instagram.com/grupobr277', '_blank')">
     <div class="contador-usuarios" id="contadorUsuarios">
         <i class="fas fa-users"></i>
         <span id="numUsuarios">0</span> online
@@ -1164,11 +1345,11 @@
     
     <div class="marca-grupo">
         <span>GRUPO BR 277</span>
-        <div class="social-icons">
+        <div class="social-icons" onclick="event.stopPropagation()">
             <a href="https://instagram.com/grupobr277" target="_blank"><i class="fab fa-instagram"></i></a>
-            <a href="#" target="_blank"><i class="fab fa-facebook"></i></a>
-            <a href="#" target="_blank"><i class="fab fa-whatsapp"></i></a>
-            <a href="#" target="_blank"><i class="fab fa-telegram"></i></a>
+            <a href="https://facebook.com/grupobr277" target="_blank"><i class="fab fa-facebook"></i></a>
+            <a href="https://wa.me/554199999999" target="_blank"><i class="fab fa-whatsapp"></i></a>
+            <a href="https://t.me/grupobr277" target="_blank"><i class="fab fa-telegram"></i></a>
         </div>
     </div>
 </div>
@@ -1247,7 +1428,7 @@
 <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-<!-- Video.js e plugin Flash -->
+<!-- Video.js para streaming -->
 <script src="https://vjs.zencdn.net/8.3.0/video.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-flash/2.2.0/videojs-flash.min.js"></script>
 
@@ -1259,12 +1440,72 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
+// ===== REGRAS DE SEGURANÇA DO FIREBASE =====
+/*
+REGRAS RECOMENDADAS PARA APLICAR NO CONSOLE DO FIREBASE:
+
+{
+  "rules": {
+    "usuarios_ativos": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+      "$usuario": {
+        ".validate": "newData.hasChildren(['lat', 'lng', 'veiculo', 'timestamp'])",
+        "lat": { ".validate": "newData.isNumber() && newData.val() >= -90 && newData.val() <= 90" },
+        "lng": { ".validate": "newData.isNumber() && newData.val() >= -180 && newData.val() <= 180" },
+        "veiculo": { ".validate": "newData.isString()" },
+        "timestamp": { ".validate": "newData.isNumber() && newData.val() <= now" }
+      }
+    },
+    "alertas_fixos": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+      "$alerta": {
+        ".validate": "newData.hasChildren(['tipo', 'nome', 'icone', 'cor', 'lat', 'lng', 'criador', 'confirmacoes', 'timestamp'])",
+        "lat": { ".validate": "newData.isNumber()" },
+        "lng": { ".validate": "newData.isNumber()" },
+        "criador": { ".validate": "newData.isString()" },
+        "confirmacoes": { ".validate": "newData.isNumber()" },
+        "timestamp": { ".validate": "newData.isNumber() && newData.val() <= now" }
+      }
+    },
+    "chat_geral": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+      "$mensagem": {
+        ".validate": "newData.hasChildren(['usuario', 'texto', 'hora', 'timestamp'])",
+        "usuario": { ".validate": "newData.isString()" },
+        "texto": { ".validate": "newData.isString() && newData.val().length <= 500" },
+        "hora": { ".validate": "newData.isString()" },
+        "timestamp": { ".validate": "newData.isNumber() && newData.val() <= now" },
+        "telefone": { ".validate": "newData.isString()" },
+        "resposta": { ".validate": "newData.hasChildren(['usuario', 'texto'])" }
+      }
+    },
+    "radio": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+      "$audio": {
+        ".validate": "newData.hasChildren(['audio', 'usuario', 'timestamp'])",
+        "audio": { ".validate": "newData.isString()" },
+        "usuario": { ".validate": "newData.isString()" },
+        "timestamp": { ".validate": "newData.isNumber() && newData.val() <= now" }
+      }
+    },
+    "chats": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    }
+  }
+}
+*/
+
 // ===== VARIÁVEIS =====
 let usuario = null;
 let telefone = '';
 let veiculoUsuario = 'carro';
 let admin = false;
-const ADMIN_PASSWORD = 'br277admin';
+const ADMIN_PASSWORD = 'br277admin2024'; // Senha do admin
 const ADMIN_USER = 'Danilo Chulik';
 let minhaLocalizacao = null;
 let meuMarcador = null;
@@ -1285,7 +1526,12 @@ let alertasConfirmados = {};
 let pulsantesAlertas = {};
 let marcadorDestino = null;
 let wakeLock = null;
-let playersVideo = {}; // Para controlar players de vídeo
+let playersVideo = {};
+let permissoes = {
+    localizacao: false,
+    microfone: false,
+    audio: true
+};
 
 // ===== 10 ALERTAS =====
 const alertas = [
@@ -1309,7 +1555,9 @@ const cameras = [
         descricao: 'Câmera ao vivo - Pedágio São José',
         lat: -25.4567,
         lng: -49.2345,
-        rtmp: 'rtmp://connect-735.servicestream.io:1936/stream/ef92c235d45c'
+        rtsp: 'rtsp://grupobr277:Grupobr277@200.195.141.246:654/00000001-0000-babe-0000-0002d1b3afb2/live',
+        rtmp: 'rtmp://connect-735.servicestream.io:1936/stream/ef92c235d45c',
+        hls: 'https://connect-735.servicestream.io/live/ef92c235d45c.m3u8'
     },
     {
         id: 'cam2',
@@ -1317,13 +1565,71 @@ const cameras = [
         descricao: 'Trânsito em tempo real',
         lat: -25.5123,
         lng: -49.2987,
-        rtmp: 'rtmp://connect-735.servicestream.io:1936/stream/ef92c235d45c' // Mesmo link para teste
+        rtsp: 'rtsp://grupobr277:Grupobr277@200.195.141.246:654/00000001-0000-babe-0000-0002d1b3afb0/live',
+        rtmp: 'rtmp://connect-735.servicestream.io:1936/stream/75133459b2d6',
+        hls: 'https://connect-735.servicestream.io/live/75133459b2d6.m3u8'
     }
 ];
 
+// ===== FUNÇÃO PARA SOLICITAR PERMISSÕES =====
+async function solicitarPermissoes() {
+    // Solicitar localização
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            () => {
+                permissoes.localizacao = true;
+                document.getElementById('statusLocalizacao').textContent = '✅ Concedida';
+                document.getElementById('statusLocalizacao').className = 'permissao-status checked';
+                verificarPermissoesCompletas();
+            },
+            () => {
+                alert('Permissão de localização negada! Algumas funções podem não funcionar.');
+            }
+        );
+    }
+    
+    // Solicitar microfone
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        permissoes.microfone = true;
+        document.getElementById('statusMicrofone').textContent = '✅ Concedida';
+        document.getElementById('statusMicrofone').className = 'permissao-status checked';
+        stream.getTracks().forEach(track => track.stop());
+        verificarPermissoesCompletas();
+    } catch(e) {
+        alert('Permissão de microfone negada! O rádio PX não funcionará.');
+        document.getElementById('statusMicrofone').textContent = '❌ Negada';
+        document.getElementById('statusMicrofone').className = 'permissao-status unchecked';
+    }
+    
+    // Testar auto-falantes
+    const audio = new Audio();
+    audio.volume = 0.1;
+    permissoes.audio = true;
+}
+
+function verificarPermissoesCompletas() {
+    const btnEntrar = document.getElementById('btnEntrar');
+    const aceite = document.getElementById('aceitePrivacidade').checked;
+    
+    if (permissoes.localizacao && permissoes.microfone && aceite) {
+        btnEntrar.disabled = false;
+        btnEntrar.style.background = '#ffd700';
+        btnEntrar.style.color = '#1a1a1a';
+        btnEntrar.style.cursor = 'pointer';
+        btnEntrar.textContent = 'ENTRAR NO MAPA';
+    } else {
+        btnEntrar.disabled = true;
+        btnEntrar.style.background = '#666';
+        btnEntrar.style.color = '#ccc';
+        btnEntrar.style.cursor = 'not-allowed';
+    }
+}
+
+document.getElementById('aceitePrivacidade').addEventListener('change', verificarPermissoesCompletas);
+
 // ===== FUNÇÃO PARA CRIAR MARCADOR DE CÂMERA =====
 function criarMarcadorCamera(camera) {
-    // Ícone personalizado para câmera
     const iconeCamera = L.divIcon({
         html: `<div class="camera-marcador">📹</div>`,
         className: '',
@@ -1336,10 +1642,13 @@ function criarMarcadorCamera(camera) {
         zIndexOffset: 2000
     }).addTo(mapa);
     
-    // Criar ID único para o player
+    // Adicionar ao cluster
+    if (clusterGroup) {
+        clusterGroup.addLayer(marcador);
+    }
+    
     const playerId = 'player-' + camera.id;
     
-    // Conteúdo do popup
     const popupContent = document.createElement('div');
     popupContent.className = 'video-popup';
     popupContent.innerHTML = `
@@ -1348,62 +1657,69 @@ function criarMarcadorCamera(camera) {
             ${camera.titulo}
         </h3>
         <p style="color: #ccc; font-size: 12px; margin-bottom: 10px;">${camera.descricao}</p>
-        <video id="${playerId}" class="video-js vjs-default-skin" controls preload="auto" width="320" height="200">
-            <source src="${camera.rtmp}" type="rtmp/mp4">
-        </video>
-        <p style="color: #4caf50; font-size: 11px; margin-top: 8px; text-align: center;">
-            🔴 AO VIVO • Atualizado em tempo real
-        </p>
+        <div id="player-container-${camera.id}">
+            <video id="${playerId}" class="video-js vjs-default-skin" controls preload="auto" width="320" height="200">
+                <source src="${camera.rtmp}" type="rtmp/mp4">
+                <source src="${camera.hls}" type="application/x-mpegURL">
+            </video>
+        </div>
+        <div style="display:flex; gap:5px; margin-top:8px; justify-content:center;">
+            <span style="color:#4caf50; font-size:11px;">🔴 AO VIVO</span>
+            <span style="color:#ffd700; font-size:11px;">🔄 Testando RTSP/RTMP/HLS</span>
+        </div>
     `;
     
-    // Quando o popup for aberto, inicializar o player
     marcador.on('click', () => {
         marcador.bindPopup(popupContent, {
-            maxWidth: 360,
+            maxWidth: 420,
             className: 'custom-popup'
         }).openPopup();
         
-        // Pequeno delay para garantir que o DOM foi criado
         setTimeout(() => {
             const videoElement = document.getElementById(playerId);
             if (videoElement && !playersVideo[camera.id]) {
                 try {
-                    // Inicializar video.js com suporte a Flash
-                    const player = videojs(videoElement, {
-                        techOrder: ['flash', 'html5'],
-                        flash: {
-                            swf: 'https://vjs.zencdn.net/swf/5.4.2/video-js.swf'
-                        },
-                        autoplay: false,
-                        controls: true,
-                        preload: 'auto'
-                    });
-                    
-                    playersVideo[camera.id] = player;
-                    
-                    // Tentar reproduzir quando estiver pronto
-                    player.ready(() => {
-                        console.log('✅ Player pronto para:', camera.titulo);
-                    });
-                    
+                    // Tentar HLS primeiro
+                    if (Hls.isSupported() && camera.hls) {
+                        const hls = new Hls();
+                        hls.loadSource(camera.hls);
+                        hls.attachMedia(videoElement);
+                        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                            videoElement.play().catch(() => {});
+                        });
+                        console.log('📹 HLS carregado para:', camera.titulo);
+                    } else {
+                        // Fallback para video.js
+                        const player = videojs(videoElement, {
+                            techOrder: ['html5', 'flash'],
+                            flash: { swf: 'https://vjs.zencdn.net/swf/5.4.2/video-js.swf' },
+                            autoplay: false,
+                            controls: true
+                        });
+                        
+                        playersVideo[camera.id] = player;
+                        
+                        // Tentar RTMP se disponível
+                        if (camera.rtmp) {
+                            player.src({ src: camera.rtmp, type: 'rtmp/mp4' });
+                        }
+                    }
                 } catch (e) {
                     console.error('❌ Erro ao iniciar player:', e);
-                    // Fallback: mostrar mensagem
-                    const errorMsg = document.createElement('div');
-                    errorMsg.innerHTML = `
-                        <div style="background: #e53935; color: white; padding: 10px; border-radius: 5px;">
-                            <strong>📹 Link da câmera:</strong><br>
-                            ${camera.rtmp}<br>
-                            <small style="color: #ffd700;">Copie e cole no VLC Media Player</small>
-                        </div>
-                    `;
-                    videoElement.parentNode.replaceChild(errorMsg, videoElement);
+                    const container = document.getElementById(`player-container-${camera.id}`);
+                    if (container) {
+                        container.innerHTML = `
+                            <div style="background: #e53935; color: white; padding: 15px; border-radius: 10px; text-align: center;">
+                                <strong>📹 Link da câmera:</strong><br>
+                                <a href="${camera.rtsp}" style="color: #ffd700; word-break: break-all;" target="_blank">Abrir no VLC</a>
+                            </div>
+                        `;
+                    }
                 }
             }
-        }, 300);
+        }, 500);
     });
     
-    // Quando o popup for fechado, destruir o player para economizar recursos
     marcador.on('popupclose', () => {
         if (playersVideo[camera.id]) {
             playersVideo[camera.id].dispose();
@@ -1417,20 +1733,16 @@ async function ativarWakeLock() {
     if ('wakeLock' in navigator) {
         try {
             wakeLock = await navigator.wakeLock.request('screen');
-            console.log('✅ Wake Lock ativado - tela não vai hibernar');
+            console.log('✅ Wake Lock ativado');
             
             wakeLock.addEventListener('release', () => {
-                console.log('⚠️ Wake Lock liberado, tentando reativar...');
                 if (document.visibilityState === 'visible') {
                     ativarWakeLock();
                 }
             });
-            
         } catch (err) {
             console.log('❌ Erro ao ativar Wake Lock:', err);
         }
-    } else {
-        console.log('⚠️ Wake Lock não suportado neste navegador');
     }
 }
 
@@ -1457,8 +1769,10 @@ if (userSalvo) {
     veiculoUsuario = localStorage.getItem('br277_veiculo') || 'carro';
     
     if (usuario === ADMIN_USER) {
-        admin = true;
         document.getElementById('adminBadge').style.display = 'inline';
+        setTimeout(() => {
+            document.getElementById('adminPanel').style.display = 'flex';
+        }, 1000);
     }
     
     document.getElementById('welcomeModal').style.display = 'none';
@@ -1469,7 +1783,7 @@ if (userSalvo) {
     carregarChatGeral();
     criarIconesAlertas();
     iniciarCluster();
-    carregarCameras(); // Adicionar câmeras
+    carregarCameras();
 }
 
 function salvarCadastro() {
@@ -1481,11 +1795,6 @@ function salvarCadastro() {
     
     usuario = nome;
     telefone = document.getElementById('telefoneUsuario').value.trim();
-    
-    if (usuario === ADMIN_USER) {
-        admin = true;
-        document.getElementById('adminBadge').style.display = 'inline';
-    }
     
     localStorage.setItem('br277_usuario', nome);
     localStorage.setItem('br277_telefone', telefone);
@@ -1500,12 +1809,28 @@ function salvarCadastro() {
     carregarChatGeral();
     criarIconesAlertas();
     iniciarCluster();
-    carregarCameras(); // Adicionar câmeras
+    carregarCameras();
+}
+
+// ===== PAINEL ADMIN =====
+function verificarAdmin() {
+    const senha = document.getElementById('adminSenha').value;
+    if (senha === ADMIN_PASSWORD) {
+        admin = true;
+        document.getElementById('adminBadge').style.display = 'inline';
+        document.getElementById('adminPanel').style.display = 'none';
+        alert('✅ Modo admin ativado!');
+    } else {
+        alert('❌ Senha incorreta!');
+    }
+}
+
+function fecharAdminPanel() {
+    document.getElementById('adminPanel').style.display = 'none';
 }
 
 // ===== CARREGAR CÂMERAS =====
 function carregarCameras() {
-    // Pequeno delay para garantir que o mapa está pronto
     setTimeout(() => {
         cameras.forEach(camera => {
             criarMarcadorCamera(camera);
@@ -1540,7 +1865,7 @@ function criarIconesAlertas() {
 // ===== INICIAR CLUSTER =====
 function iniciarCluster() {
     clusterGroup = L.markerClusterGroup({
-        maxClusterRadius: 50,
+        maxClusterRadius: 60,
         iconCreateFunction: function(cluster) {
             const count = cluster.getChildCount();
             return L.divIcon({
@@ -1548,9 +1873,23 @@ function iniciarCluster() {
                 className: '',
                 iconSize: [40, 40]
             });
-        }
+        },
+        spiderfyOnMaxZoom: true,
+        showCoverageOnHover: false,
+        zoomToBoundsOnClick: true
     });
     mapa.addLayer(clusterGroup);
+    
+    // Adicionar usuários ao cluster
+    setInterval(() => {
+        if (clusterGroup && Object.keys(usuariosAtivos).length > 0) {
+            Object.values(usuariosAtivos).forEach(marcador => {
+                if (!clusterGroup.hasLayer(marcador)) {
+                    clusterGroup.addLayer(marcador);
+                }
+            });
+        }
+    }, 5000);
 }
 
 // ===== FUNÇÃO AUXILIAR HEX PARA RGB =====
@@ -1623,6 +1962,11 @@ function criarPulsantePorAlerta(alerta, id) {
     marcador.on('click', () => {
         abrirChatAlerta(alerta, L.latLng(alerta.lat, alerta.lng), id);
     });
+    
+    // Adicionar ao cluster
+    if (clusterGroup) {
+        clusterGroup.addLayer(marcador);
+    }
     
     return marcador;
 }
@@ -1887,7 +2231,12 @@ function carregarUsuariosAtivos() {
     db.ref('usuarios_ativos').on('value', snap => {
         const usuarios = snap.val();
         
-        Object.values(usuariosAtivos).forEach(m => m && mapa.removeLayer(m));
+        // Remover marcadores antigos
+        Object.values(usuariosAtivos).forEach(m => {
+            if (m && mapa && !clusterGroup?.hasLayer(m)) {
+                mapa.removeLayer(m);
+            }
+        });
         usuariosAtivos = {};
         
         if (!usuarios) {
@@ -1907,7 +2256,14 @@ function carregarUsuariosAtivos() {
             
             const marcador = L.marker([dados.lat, dados.lng], {
                 icon: criarIconeCarro(false, 0)
-            }).addTo(mapa);
+            });
+            
+            // Adicionar ao cluster em vez do mapa diretamente
+            if (clusterGroup) {
+                clusterGroup.addLayer(marcador);
+            } else {
+                marcador.addTo(mapa);
+            }
             
             usuariosAtivos[id] = marcador;
         });
@@ -1923,14 +2279,22 @@ function carregarAlertasFixos() {
         alertasMapa[id] = alerta;
         
         const pulsante = criarPulsantePorAlerta(alerta, id);
-        pulsante.addTo(mapa);
+        if (clusterGroup) {
+            clusterGroup.addLayer(pulsante);
+        } else {
+            pulsante.addTo(mapa);
+        }
         pulsantesAlertas[id] = pulsante;
     });
     
     db.ref('alertas_fixos').on('child_removed', snap => {
         const id = snap.key;
         if (pulsantesAlertas[id]) {
-            mapa.removeLayer(pulsantesAlertas[id]);
+            if (clusterGroup) {
+                clusterGroup.removeLayer(pulsantesAlertas[id]);
+            } else {
+                mapa.removeLayer(pulsantesAlertas[id]);
+            }
             delete pulsantesAlertas[id];
         }
         delete alertasMapa[id];
@@ -2255,17 +2619,18 @@ function formatarData(data) {
     return data;
 }
 
-// ===== RÁDIO PX =====
+// ===== RÁDIO PX - VERSÃO MELHORADA =====
 let gravador = null;
 let pedacosAudio = [];
 let streamAudio = null;
 let timerInterval = null;
 let tempoRestante = 20;
+let timeoutAutoEnvio = null;
 const botaoPX = document.getElementById('btn-px');
 
 botaoPX.addEventListener('click', async function() {
     if (gravador && gravador.state === 'recording') {
-        pararGravacao();
+        pararGravacao(true); // true = envio manual
     } else {
         try {
             streamAudio = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -2285,6 +2650,7 @@ botaoPX.addEventListener('click', async function() {
                             timestamp: Date.now()
                         });
                         
+                        // Auto-delete após 20 segundos
                         setTimeout(() => {
                             db.ref('radio').orderByChild('timestamp').endAt(Date.now() - 20000).once('value', snap => {
                                 snap.forEach(child => child.ref.remove());
@@ -2301,6 +2667,7 @@ botaoPX.addEventListener('click', async function() {
                 
                 document.getElementById('gravandoIndicator').style.display = 'none';
                 if (timerInterval) clearInterval(timerInterval);
+                if (timeoutAutoEnvio) clearTimeout(timeoutAutoEnvio);
             };
             
             gravador.start();
@@ -2312,25 +2679,41 @@ botaoPX.addEventListener('click', async function() {
             timerInterval = setInterval(() => {
                 tempoRestante--;
                 timer.textContent = tempoRestante + 's';
-                if (tempoRestante <= 0) {
-                    pararGravacao();
+                
+                // Quando chegar a 1 segundo, já preparar para enviar automaticamente
+                if (tempoRestante <= 1) {
+                    pararGravacao(false); // false = envio automático
                 }
             }, 1000);
             
-            setTimeout(() => gravador && gravador.state === 'recording' && pararGravacao(), 20000);
+            // Timeout de segurança
+            timeoutAutoEnvio = setTimeout(() => {
+                if (gravador && gravador.state === 'recording') {
+                    pararGravacao(false);
+                }
+            }, 19500); // 19.5 segundos para garantir
             
         } catch(e) {
-            alert('Permita acesso ao microfone');
+            alert('Permita acesso ao microfone para usar o rádio PX');
         }
     }
 });
 
-function pararGravacao() {
+function pararGravacao(manual = false) {
     if (gravador && gravador.state === 'recording') {
         gravador.stop();
         botaoPX.classList.remove('ativo');
         if (timerInterval) clearInterval(timerInterval);
+        if (timeoutAutoEnvio) clearTimeout(timeoutAutoEnvio);
         document.getElementById('gravandoIndicator').style.display = 'none';
+        
+        // Feedback visual
+        if (!manual) {
+            const notification = document.getElementById('audioNotification');
+            notification.innerHTML = '<i class="fas fa-check-circle"></i> Áudio enviado automaticamente';
+            notification.style.display = 'flex';
+            setTimeout(() => notification.style.display = 'none', 2000);
+        }
     }
 }
 
