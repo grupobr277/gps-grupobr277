@@ -3,14 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BR-277 | TRÂNSITO AO VIVO</title>
+    <title>BR-277 | TRÂNSITO</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- Video.js para streaming -->
-    <link href="https://vjs.zencdn.net/8.3.0/video-js.css" rel="stylesheet" />
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body, #map { height: 100%; width: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
@@ -58,64 +56,401 @@
             color: white;
         }
         
-        /* ===== ÍCONE DO CARRO COM PULSANTE AZUL CLARO ===== */
-        .carro-marcador {
-            background: transparent !important;
-            border: none !important;
-            box-shadow: none !important;
+        /* ===== ÍCONE DO CARRO REALISTA (VISTA SUPERIOR) ===== */
+        .carro-realista {
+            position: relative;
+            width: 60px;
+            height: 60px;
+            transform-origin: center;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
         }
         
-        .carro-marcador div {
-            background: transparent !important;
-        }
-        
-        .pulsante-azul {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            animation: pulse-azul 1.5s infinite;
-            background: rgba(0, 191, 255, 0.3);
-            border: 3px solid #00BFFF;
+        /* Carro principal (carroceria) */
+        .carro-corpo {
             position: absolute;
-            left: 0;
-            top: 0;
-            pointer-events: none;
+            width: 50px;
+            height: 32px;
+            background: linear-gradient(135deg, #2196F3, #0D47A1);
+            border: 2px solid #0D47A1;
+            border-radius: 14px 14px 10px 10px;
+            top: 14px;
+            left: 5px;
+            box-shadow: inset 0 -2px 5px rgba(0,0,0,0.2);
+            z-index: 2;
         }
         
-        @keyframes pulse-azul {
-            0% { transform: scale(0.8); opacity: 1; }
-            100% { transform: scale(2); opacity: 0; }
+        /* Capô dianteiro (parte da frente) */
+        .carro-capo {
+            position: absolute;
+            width: 44px;
+            height: 12px;
+            background: linear-gradient(135deg, #42A5F5, #1976D2);
+            border: 2px solid #0D47A1;
+            border-radius: 10px 10px 4px 4px;
+            top: 8px;
+            left: 8px;
+            z-index: 3;
+            box-shadow: inset 0 -1px 3px rgba(0,0,0,0.2);
         }
         
-        /* Ponto simples para zoom afastado */
-        .ponto-azul {
-            width: 20px;
-            height: 20px;
+        /* Teto do carro (parte superior) */
+        .carro-teto {
+            position: absolute;
+            width: 34px;
+            height: 10px;
+            background: linear-gradient(135deg, #1565C0, #0D47A1);
+            border: 2px solid #0D47A1;
+            border-radius: 8px 8px 2px 2px;
+            top: 18px;
+            left: 13px;
+            z-index: 4;
+            box-shadow: inset 0 -1px 3px rgba(0,0,0,0.3);
+        }
+        
+        /* Para-brisa dianteiro */
+        .carro-parabrisa-frente {
+            position: absolute;
+            width: 30px;
+            height: 8px;
+            background: linear-gradient(135deg, #E1F5FE, #B3E5FC);
+            border: 1px solid #0D47A1;
+            border-radius: 6px 6px 2px 2px;
+            top: 12px;
+            left: 15px;
+            z-index: 5;
+            opacity: 0.9;
+        }
+        
+        /* Vidro traseiro */
+        .carro-vidro-traseiro {
+            position: absolute;
+            width: 26px;
+            height: 8px;
+            background: linear-gradient(135deg, #E1F5FE, #B3E5FC);
+            border: 1px solid #0D47A1;
+            border-radius: 2px 2px 6px 6px;
+            top: 36px;
+            left: 17px;
+            z-index: 5;
+            opacity: 0.9;
+        }
+        
+        /* Vidro lateral esquerdo */
+        .carro-vidro-esquerdo {
+            position: absolute;
+            width: 14px;
+            height: 18px;
+            background: linear-gradient(135deg, #E1F5FE, #B3E5FC);
+            border: 1px solid #0D47A1;
+            border-radius: 8px 2px 2px 8px;
+            top: 18px;
+            left: 8px;
+            z-index: 5;
+            opacity: 0.9;
+            transform: skewY(-2deg);
+        }
+        
+        /* Vidro lateral direito */
+        .carro-vidro-direito {
+            position: absolute;
+            width: 14px;
+            height: 18px;
+            background: linear-gradient(135deg, #E1F5FE, #B3E5FC);
+            border: 1px solid #0D47A1;
+            border-radius: 2px 8px 8px 2px;
+            top: 18px;
+            right: 8px;
+            z-index: 5;
+            opacity: 0.9;
+            transform: skewY(2deg);
+        }
+        
+        /* Retrovisor esquerdo */
+        .carro-retrovisor-esquerdo {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #0D47A1;
+            border: 1px solid #0D47A1;
+            border-radius: 2px 4px 4px 2px;
+            top: 24px;
+            left: 3px;
+            z-index: 6;
+            box-shadow: 0 2px 3px rgba(0,0,0,0.2);
+        }
+        
+        /* Retrovisor direito */
+        .carro-retrovisor-direito {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #0D47A1;
+            border: 1px solid #0D47A1;
+            border-radius: 4px 2px 2px 4px;
+            top: 24px;
+            right: 3px;
+            z-index: 6;
+            box-shadow: 0 2px 3px rgba(0,0,0,0.2);
+        }
+        
+        /* Farol dianteiro esquerdo */
+        .carro-farol-esquerdo {
+            position: absolute;
+            width: 6px;
+            height: 4px;
+            background: #FFD700;
+            border: 1px solid #B8860B;
+            border-radius: 4px 2px 2px 4px;
+            top: 10px;
+            left: 8px;
+            z-index: 6;
+            box-shadow: 0 0 8px #FFD700;
+        }
+        
+        /* Farol dianteiro direito */
+        .carro-farol-direito {
+            position: absolute;
+            width: 6px;
+            height: 4px;
+            background: #FFD700;
+            border: 1px solid #B8860B;
+            border-radius: 2px 4px 4px 2px;
+            top: 10px;
+            right: 8px;
+            z-index: 6;
+            box-shadow: 0 0 8px #FFD700;
+        }
+        
+        /* Lanterna traseira esquerda */
+        .carro-lanterna-esquerda {
+            position: absolute;
+            width: 6px;
+            height: 4px;
+            background: #FF4444;
+            border: 1px solid #8B0000;
+            border-radius: 2px 4px 4px 2px;
+            bottom: 8px;
+            left: 8px;
+            z-index: 6;
+            box-shadow: 0 0 5px #FF4444;
+        }
+        
+        /* Lanterna traseira direita */
+        .carro-lanterna-direita {
+            position: absolute;
+            width: 6px;
+            height: 4px;
+            background: #FF4444;
+            border: 1px solid #8B0000;
+            border-radius: 4px 2px 2px 4px;
+            bottom: 8px;
+            right: 8px;
+            z-index: 6;
+            box-shadow: 0 0 5px #FF4444;
+        }
+        
+        /* Roda dianteira esquerda */
+        .carro-roda-de-esquerda {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #333;
+            border: 2px solid #111;
             border-radius: 50%;
-            background: #00BFFF;
-            border: 3px solid white;
-            box-shadow: 0 0 15px #00BFFF;
-            animation: pulse-ponto 1.5s infinite;
+            top: 22px;
+            left: 6px;
+            z-index: 7;
+            box-shadow: inset 0 0 3px #666;
         }
         
-        @keyframes pulse-ponto {
-            0% { transform: scale(1); opacity: 1; }
+        /* Roda dianteira direita */
+        .carro-roda-de-direita {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #333;
+            border: 2px solid #111;
+            border-radius: 50%;
+            top: 22px;
+            right: 6px;
+            z-index: 7;
+            box-shadow: inset 0 0 3px #666;
+        }
+        
+        /* Roda traseira esquerda */
+        .carro-roda-te-esquerda {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #333;
+            border: 2px solid #111;
+            border-radius: 50%;
+            bottom: 6px;
+            left: 6px;
+            z-index: 7;
+            box-shadow: inset 0 0 3px #666;
+        }
+        
+        /* Roda traseira direita */
+        .carro-roda-te-direita {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #333;
+            border: 2px solid #111;
+            border-radius: 50%;
+            bottom: 6px;
+            right: 6px;
+            z-index: 7;
+            box-shadow: inset 0 0 3px #666;
+        }
+        
+        /* Ponto central (GPS) */
+        .carro-ponto-central {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #FFD700;
+            border: 2px solid #FFFFFF;
+            border-radius: 50%;
+            top: 27px;
+            left: 27px;
+            z-index: 10;
+            box-shadow: 0 0 15px #FFD700;
+            animation: pulse-central 1.5s infinite;
+        }
+        
+        @keyframes pulse-central {
+            0%, 100% { transform: scale(1); opacity: 1; }
             50% { transform: scale(1.2); opacity: 0.8; }
-            100% { transform: scale(1); opacity: 1; }
         }
         
-        /* ===== PULSANTES PARA ALERTAS ===== */
-        .pulsante-alerta {
-            border-radius: 50%;
-            position: absolute;
-            animation: pulse-alerta 1.2s infinite;
+        /* ===== TUTORIAL DE SETAS NO MAPA ===== */
+        .tutorial-setas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 999999;
+            display: none;
             pointer-events: none;
         }
         
-        @keyframes pulse-alerta {
-            0% { transform: scale(0.8); opacity: 1; }
-            70% { transform: scale(1.5); opacity: 0.4; }
-            100% { transform: scale(0.8); opacity: 1; }
+        .tutorial-overlay {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.2);
+            backdrop-filter: blur(2px);
+            transition: all 0.5s;
+        }
+        
+        .seta-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .seta {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border: 4px solid #FFD700;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 0 30px rgba(255,215,0,0.5);
+            animation: pulse-seta 2s ease-in-out infinite;
+        }
+        
+        .seta i {
+            font-size: 40px;
+            color: #FFD700;
+            filter: drop-shadow(0 0 10px #FFD700);
+        }
+        
+        .seta-esquerda {
+            left: 30%;
+            top: 50%;
+            transform: translateY(-50%);
+            animation: move-esquerda 2s ease-in-out infinite;
+        }
+        
+        .seta-direita {
+            right: 30%;
+            top: 50%;
+            transform: translateY(-50%);
+            animation: move-direita 2s ease-in-out infinite;
+        }
+        
+        .seta-cima {
+            top: 30%;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: move-cima 2s ease-in-out infinite;
+        }
+        
+        .seta-baixo {
+            bottom: 30%;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: move-baixo 2s ease-in-out infinite;
+        }
+        
+        @keyframes move-esquerda {
+            0%, 100% { transform: translateY(-50%) translateX(0); }
+            50% { transform: translateY(-50%) translateX(-20px); }
+        }
+        
+        @keyframes move-direita {
+            0%, 100% { transform: translateY(-50%) translateX(0); }
+            50% { transform: translateY(-50%) translateX(20px); }
+        }
+        
+        @keyframes move-cima {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-20px); }
+        }
+        
+        @keyframes move-baixo {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(20px); }
+        }
+        
+        @keyframes pulse-seta {
+            0%, 100% { box-shadow: 0 0 30px rgba(255,215,0,0.5); transform: scale(1); }
+            50% { box-shadow: 0 0 50px rgba(255,215,0,0.8); transform: scale(1.1); }
+        }
+        
+        .tutorial-mensagem {
+            position: absolute;
+            bottom: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            border: 2px solid #FFD700;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+            animation: pulse-texto 2s ease-in-out infinite;
+            white-space: nowrap;
+        }
+        
+        @keyframes pulse-texto {
+            0%, 100% { opacity: 0.9; transform: translateX(-50%) scale(1); }
+            50% { opacity: 1; transform: translateX(-50%) scale(1.05); }
         }
         
         /* ===== SISTEMA REPORTE ===== */
@@ -395,54 +730,6 @@
             100% { transform: scale(1); opacity: 1; box-shadow: 0 0 15px #00ff00; }
         }
         
-        /* ===== ESTILO PARA CÂMERAS AO VIVO ===== */
-        .camera-marcador {
-            font-size: 32px;
-            filter: drop-shadow(0 0 15px rgba(255,0,0,0.8));
-            cursor: pointer;
-            animation: pulse-camera 2s infinite;
-        }
-        
-        @keyframes pulse-camera {
-            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(255,0,0,0.8)); }
-            50% { transform: scale(1.1); filter: drop-shadow(0 0 20px rgba(255,0,0,1)); }
-        }
-        
-        .video-popup {
-            width: 360px;
-            max-width: 90vw;
-            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
-            border: 2px solid #ffd700;
-            border-radius: 15px;
-            padding: 15px;
-        }
-        
-        .video-popup h3 {
-            color: #ffd700;
-            font-size: 16px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .video-popup h3 i {
-            color: #ff0000;
-            animation: pulse-red 1.5s infinite;
-        }
-        
-        @keyframes pulse-red {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        
-        .video-js {
-            width: 100%;
-            height: 200px;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        
         /* VELOCÍMETRO */
         .velocimetro-container {
             position: fixed;
@@ -628,24 +915,6 @@
             background: #e53935;
             border-color: white;
             color: white;
-        }
-        
-        /* BOTÃO INICIAR NAVEGAÇÃO - REMOVIDO */
-        .btn-iniciar-navegacao {
-            display: none !important;
-        }
-        
-        /* PAINEL DE INSTRUÇÕES - REMOVIDO */
-        .instrucoes-panel {
-            display: none !important;
-        }
-        
-        .routing-panel {
-            display: none !important;
-        }
-        
-        .btn-ocultar-painel {
-            display: none !important;
         }
         
         /* BOTÃO ENCERRAR ROTA */
@@ -1242,14 +1511,33 @@
     </div>
 </div>
 
+<!-- TUTORIAL DE SETAS NO MAPA -->
+<div class="tutorial-setas" id="tutorialSetas">
+    <div class="tutorial-overlay"></div>
+    <div class="seta-container">
+        <div class="seta seta-esquerda">
+            <i class="fas fa-arrow-left"></i>
+        </div>
+        <div class="seta seta-direita">
+            <i class="fas fa-arrow-right"></i>
+        </div>
+        <div class="seta seta-cima">
+            <i class="fas fa-arrow-up"></i>
+        </div>
+        <div class="seta seta-baixo">
+            <i class="fas fa-arrow-down"></i>
+        </div>
+    </div>
+    <div class="tutorial-mensagem">
+        👆 Arraste o mapa com um dedo para mover
+    </div>
+</div>
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-<!-- Video.js e plugin Flash -->
-<script src="https://vjs.zencdn.net/8.3.0/video.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-flash/2.2.0/videojs-flash.min.js"></script>
 
 <script>
 // ===== FIREBASE =====
@@ -1285,7 +1573,7 @@ let alertasConfirmados = {};
 let pulsantesAlertas = {};
 let marcadorDestino = null;
 let wakeLock = null;
-let playersVideo = {}; // Para controlar players de vídeo
+let tutorialAtivo = false;
 
 // ===== 10 ALERTAS =====
 const alertas = [
@@ -1301,264 +1589,57 @@ const alertas = [
     { tipo: 'bloqueio', nome: 'BLOQUEIO', icone: '⛔', cor: '#b71c1c' }
 ];
 
-// ===== CÂMERAS AO VIVO =====
-const cameras = [
-    {
-        id: 'cam1',
-        titulo: 'BR-277 - Km 30 (Sentido Litoral)',
-        descricao: 'Câmera ao vivo - Pedágio São José',
-        lat: -25.4567,
-        lng: -49.2345,
-        rtmp: 'rtmp://connect-735.servicestream.io:1936/stream/ef92c235d45c'
-    },
-    {
-        id: 'cam2',
-        titulo: 'BR-277 - Km 45 (Curitiba)',
-        descricao: 'Trânsito em tempo real',
-        lat: -25.5123,
-        lng: -49.2987,
-        rtmp: 'rtmp://connect-735.servicestream.io:1936/stream/ef92c235d45c' // Mesmo link para teste
-    }
-];
-
-// ===== FUNÇÃO PARA CRIAR MARCADOR DE CÂMERA =====
-function criarMarcadorCamera(camera) {
-    // Ícone personalizado para câmera
-    const iconeCamera = L.divIcon({
-        html: `<div class="camera-marcador">📹</div>`,
+// ===== FUNÇÃO PARA CRIAR ÍCONE DO CARRO REALISTA =====
+function criarIconeCarroRealista(direcao = 0) {
+    return L.divIcon({
+        html: `<div class="carro-realista" style="transform: rotate(${direcao}deg);">
+            <div class="carro-corpo"></div>
+            <div class="carro-capo"></div>
+            <div class="carro-teto"></div>
+            <div class="carro-parabrisa-frente"></div>
+            <div class="carro-vidro-traseiro"></div>
+            <div class="carro-vidro-esquerdo"></div>
+            <div class="carro-vidro-direito"></div>
+            <div class="carro-retrovisor-esquerdo"></div>
+            <div class="carro-retrovisor-direito"></div>
+            <div class="carro-farol-esquerdo"></div>
+            <div class="carro-farol-direito"></div>
+            <div class="carro-lanterna-esquerda"></div>
+            <div class="carro-lanterna-direita"></div>
+            <div class="carro-roda-de-esquerda"></div>
+            <div class="carro-roda-de-direita"></div>
+            <div class="carro-roda-te-esquerda"></div>
+            <div class="carro-roda-te-direita"></div>
+            <div class="carro-ponto-central"></div>
+        </div>`,
         className: '',
-        iconSize: [40, 40],
-        iconAnchor: [20, 20]
-    });
-    
-    const marcador = L.marker([camera.lat, camera.lng], {
-        icon: iconeCamera,
-        zIndexOffset: 2000
-    }).addTo(mapa);
-    
-    // Criar ID único para o player
-    const playerId = 'player-' + camera.id;
-    
-    // Conteúdo do popup
-    const popupContent = document.createElement('div');
-    popupContent.className = 'video-popup';
-    popupContent.innerHTML = `
-        <h3>
-            <i class="fas fa-circle" style="color: #ff0000; font-size: 10px;"></i>
-            ${camera.titulo}
-        </h3>
-        <p style="color: #ccc; font-size: 12px; margin-bottom: 10px;">${camera.descricao}</p>
-        <video id="${playerId}" class="video-js vjs-default-skin" controls preload="auto" width="320" height="200">
-            <source src="${camera.rtmp}" type="rtmp/mp4">
-        </video>
-        <p style="color: #4caf50; font-size: 11px; margin-top: 8px; text-align: center;">
-            🔴 AO VIVO • Atualizado em tempo real
-        </p>
-    `;
-    
-    // Quando o popup for aberto, inicializar o player
-    marcador.on('click', () => {
-        marcador.bindPopup(popupContent, {
-            maxWidth: 360,
-            className: 'custom-popup'
-        }).openPopup();
-        
-        // Pequeno delay para garantir que o DOM foi criado
-        setTimeout(() => {
-            const videoElement = document.getElementById(playerId);
-            if (videoElement && !playersVideo[camera.id]) {
-                try {
-                    // Inicializar video.js com suporte a Flash
-                    const player = videojs(videoElement, {
-                        techOrder: ['flash', 'html5'],
-                        flash: {
-                            swf: 'https://vjs.zencdn.net/swf/5.4.2/video-js.swf'
-                        },
-                        autoplay: false,
-                        controls: true,
-                        preload: 'auto'
-                    });
-                    
-                    playersVideo[camera.id] = player;
-                    
-                    // Tentar reproduzir quando estiver pronto
-                    player.ready(() => {
-                        console.log('✅ Player pronto para:', camera.titulo);
-                    });
-                    
-                } catch (e) {
-                    console.error('❌ Erro ao iniciar player:', e);
-                    // Fallback: mostrar mensagem
-                    const errorMsg = document.createElement('div');
-                    errorMsg.innerHTML = `
-                        <div style="background: #e53935; color: white; padding: 10px; border-radius: 5px;">
-                            <strong>📹 Link da câmera:</strong><br>
-                            ${camera.rtmp}<br>
-                            <small style="color: #ffd700;">Copie e cole no VLC Media Player</small>
-                        </div>
-                    `;
-                    videoElement.parentNode.replaceChild(errorMsg, videoElement);
-                }
-            }
-        }, 300);
-    });
-    
-    // Quando o popup for fechado, destruir o player para economizar recursos
-    marcador.on('popupclose', () => {
-        if (playersVideo[camera.id]) {
-            playersVideo[camera.id].dispose();
-            delete playersVideo[camera.id];
-        }
+        iconSize: [60, 60],
+        iconAnchor: [30, 30]
     });
 }
 
-// ===== FUNÇÃO PARA MANTER TELA ATIVA (WAKE LOCK) =====
-async function ativarWakeLock() {
-    if ('wakeLock' in navigator) {
-        try {
-            wakeLock = await navigator.wakeLock.request('screen');
-            console.log('✅ Wake Lock ativado - tela não vai hibernar');
-            
-            wakeLock.addEventListener('release', () => {
-                console.log('⚠️ Wake Lock liberado, tentando reativar...');
-                if (document.visibilityState === 'visible') {
-                    ativarWakeLock();
-                }
-            });
-            
-        } catch (err) {
-            console.log('❌ Erro ao ativar Wake Lock:', err);
-        }
-    } else {
-        console.log('⚠️ Wake Lock não suportado neste navegador');
-    }
-}
-
-document.addEventListener('visibilitychange', async () => {
-    if (document.visibilityState === 'visible' && !wakeLock) {
-        await ativarWakeLock();
-    }
-});
-
-// ===== FUNÇÕES DO MODAL =====
-function selecionarVeiculo(tipo, icone) {
-    veiculoUsuario = tipo;
-    document.querySelectorAll('[id^="veiculo-"]').forEach(el => {
-        el.style.borderColor = 'transparent';
+// ===== FUNÇÃO PARA CRIAR ÍCONE DO CARRO PARA OUTROS USUÁRIOS (CINZA) =====
+function criarIconeCarroOutros(direcao = 0) {
+    return L.divIcon({
+        html: `<div class="carro-realista" style="transform: rotate(${direcao}deg); filter: grayscale(0.8) brightness(0.7);">
+            <div class="carro-corpo"></div>
+            <div class="carro-capo"></div>
+            <div class="carro-teto"></div>
+            <div class="carro-parabrisa-frente"></div>
+            <div class="carro-vidro-traseiro"></div>
+            <div class="carro-vidro-esquerdo"></div>
+            <div class="carro-vidro-direito"></div>
+            <div class="carro-retrovisor-esquerdo"></div>
+            <div class="carro-retrovisor-direito"></div>
+            <div class="carro-roda-de-esquerda"></div>
+            <div class="carro-roda-de-direita"></div>
+            <div class="carro-roda-te-esquerda"></div>
+            <div class="carro-roda-te-direita"></div>
+        </div>`,
+        className: '',
+        iconSize: [50, 50],
+        iconAnchor: [25, 25]
     });
-    document.getElementById(`veiculo-${tipo}`).style.borderColor = '#ffd700';
-}
-
-// ===== VERIFICA USUÁRIO =====
-const userSalvo = localStorage.getItem('br277_usuario');
-if (userSalvo) {
-    usuario = userSalvo;
-    telefone = localStorage.getItem('br277_telefone') || '';
-    veiculoUsuario = localStorage.getItem('br277_veiculo') || 'carro';
-    
-    if (usuario === ADMIN_USER) {
-        admin = true;
-        document.getElementById('adminBadge').style.display = 'inline';
-    }
-    
-    document.getElementById('welcomeModal').style.display = 'none';
-    iniciarMapa();
-    iniciarGPS();
-    carregarUsuariosAtivos();
-    carregarAlertasFixos();
-    carregarChatGeral();
-    criarIconesAlertas();
-    iniciarCluster();
-    carregarCameras(); // Adicionar câmeras
-}
-
-function salvarCadastro() {
-    const nome = document.getElementById('nomeUsuario').value.trim();
-    if (!nome) {
-        alert('Digite seu nome!');
-        return;
-    }
-    
-    usuario = nome;
-    telefone = document.getElementById('telefoneUsuario').value.trim();
-    
-    if (usuario === ADMIN_USER) {
-        admin = true;
-        document.getElementById('adminBadge').style.display = 'inline';
-    }
-    
-    localStorage.setItem('br277_usuario', nome);
-    localStorage.setItem('br277_telefone', telefone);
-    localStorage.setItem('br277_veiculo', veiculoUsuario);
-    
-    document.getElementById('welcomeModal').style.display = 'none';
-    
-    iniciarMapa();
-    iniciarGPS();
-    carregarUsuariosAtivos();
-    carregarAlertasFixos();
-    carregarChatGeral();
-    criarIconesAlertas();
-    iniciarCluster();
-    carregarCameras(); // Adicionar câmeras
-}
-
-// ===== CARREGAR CÂMERAS =====
-function carregarCameras() {
-    // Pequeno delay para garantir que o mapa está pronto
-    setTimeout(() => {
-        cameras.forEach(camera => {
-            criarMarcadorCamera(camera);
-        });
-        console.log('📹 Câmeras carregadas:', cameras.length);
-    }, 2000);
-}
-
-// ===== FUNÇÕES DE INTERFACE =====
-function toggleReporte() {
-    const panel = document.getElementById('alertasPanel');
-    const toggle = document.querySelector('.reporte-toggle');
-    panel.classList.toggle('visivel');
-    toggle.classList.toggle('ativo');
-}
-
-// ===== ICONES ALERTAS =====
-function criarIconesAlertas() {
-    const grid = document.getElementById('alertasGrid');
-    alertas.forEach(alerta => {
-        const div = document.createElement('div');
-        div.className = `alerta-item alerta-${alerta.tipo}`;
-        div.innerHTML = `
-            <div class="alerta-icone">${alerta.icone}</div>
-            <div class="alerta-nome">${alerta.nome}</div>
-        `;
-        div.onclick = () => ativarAlerta(alerta);
-        grid.appendChild(div);
-    });
-}
-
-// ===== INICIAR CLUSTER =====
-function iniciarCluster() {
-    clusterGroup = L.markerClusterGroup({
-        maxClusterRadius: 50,
-        iconCreateFunction: function(cluster) {
-            const count = cluster.getChildCount();
-            return L.divIcon({
-                html: `<div class="cluster-marcador">${count}</div>`,
-                className: '',
-                iconSize: [40, 40]
-            });
-        }
-    });
-    mapa.addLayer(clusterGroup);
-}
-
-// ===== FUNÇÃO AUXILIAR HEX PARA RGB =====
-function hexToRgb(hex) {
-    const r = parseInt(hex.slice(1,3), 16);
-    const g = parseInt(hex.slice(3,5), 16);
-    const b = parseInt(hex.slice(5,7), 16);
-    return `${r}, ${g}, ${b}`;
 }
 
 // ===== FUNÇÃO PARA CRIAR PULSANTE BASEADO EM ALERTA REAL =====
@@ -1627,26 +1708,12 @@ function criarPulsantePorAlerta(alerta, id) {
     return marcador;
 }
 
-// ===== FUNÇÃO PARA CRIAR ÍCONE DO CARRO COM PULSANTE AZUL =====
-function criarIconeCarro(ehMeu = true, direcao = 0) {
-    if (ehMeu) {
-        return L.divIcon({
-            html: `<div style="position:relative; width: 40px; height: 40px; background: transparent;">
-                <div class="pulsante-azul" style="left: 0; top: 0;"></div>
-                <div style="font-size: 32px; position: absolute; left: 4px; top: 4px; z-index: 2; transform: rotate(${direcao}deg);">🚗</div>
-            </div>`,
-            className: 'carro-marcador',
-            iconSize: [40, 40],
-            iconAnchor: [20, 20]
-        });
-    } else {
-        return L.divIcon({
-            html: `<div style="font-size: 24px; width: 24px; height: 24px; transform: rotate(${direcao}deg); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">🚗</div>`,
-            className: 'carro-marcador',
-            iconSize: [24, 24],
-            iconAnchor: [12, 12]
-        });
-    }
+// ===== FUNÇÃO AUXILIAR HEX PARA RGB =====
+function hexToRgb(hex) {
+    const r = parseInt(hex.slice(1,3), 16);
+    const g = parseInt(hex.slice(3,5), 16);
+    const b = parseInt(hex.slice(5,7), 16);
+    return `${r}, ${g}, ${b}`;
 }
 
 // ===== FUNÇÃO PARA CRIAR ALFINETE TECNOLÓGICO PRETO E VERDE =====
@@ -1684,6 +1751,223 @@ function tocarBip() {
     }
 }
 
+// ===== FUNÇÃO PARA MANTER TELA ATIVA (WAKE LOCK) =====
+async function ativarWakeLock() {
+    if ('wakeLock' in navigator) {
+        try {
+            wakeLock = await navigator.wakeLock.request('screen');
+            console.log('✅ Wake Lock ativado - tela não vai hibernar');
+            
+            wakeLock.addEventListener('release', () => {
+                console.log('⚠️ Wake Lock liberado, tentando reativar...');
+                if (document.visibilityState === 'visible') {
+                    ativarWakeLock();
+                }
+            });
+            
+        } catch (err) {
+            console.log('❌ Erro ao ativar Wake Lock:', err);
+        }
+    } else {
+        console.log('⚠️ Wake Lock não suportado neste navegador');
+    }
+}
+
+document.addEventListener('visibilitychange', async () => {
+    if (document.visibilityState === 'visible' && !wakeLock) {
+        await ativarWakeLock();
+    }
+});
+
+// ===== FUNÇÕES DO TUTORIAL DE SETAS =====
+function mostrarTutorialSetas() {
+    const tutorial = document.getElementById('tutorialSetas');
+    const overlay = document.querySelector('.tutorial-overlay');
+    
+    tutorial.style.display = 'block';
+    tutorialAtivo = true;
+    
+    // Escurece o overlay suavemente
+    setTimeout(() => {
+        if (tutorialAtivo) {
+            overlay.style.background = 'rgba(0,0,0,0.3)';
+        }
+    }, 300);
+    
+    // Fecha após 8 segundos
+    setTimeout(() => {
+        if (tutorialAtivo) {
+            fecharTutorialSetas();
+        }
+    }, 8000);
+}
+
+function fecharTutorialSetas() {
+    const tutorial = document.getElementById('tutorialSetas');
+    const overlay = document.querySelector('.tutorial-overlay');
+    const setas = document.querySelector('.seta-container');
+    const mensagem = document.querySelector('.tutorial-mensagem');
+    
+    if (!tutorialAtivo) return;
+    
+    tutorialAtivo = false;
+    
+    // Animação de fade out
+    overlay.style.transition = 'opacity 0.5s';
+    setas.style.transition = 'opacity 0.5s';
+    mensagem.style.transition = 'opacity 0.5s';
+    
+    overlay.style.opacity = '0';
+    setas.style.opacity = '0';
+    mensagem.style.opacity = '0';
+    
+    // Remove tutorial após animação
+    setTimeout(() => {
+        tutorial.style.display = 'none';
+        // Restaura opacidades
+        overlay.style.opacity = '1';
+        setas.style.opacity = '1';
+        mensagem.style.opacity = '1';
+        
+        // Remove transições
+        overlay.style.transition = '';
+        setas.style.transition = '';
+        mensagem.style.transition = '';
+    }, 500);
+}
+
+function fecharTutorialAoInteragir() {
+    if (tutorialAtivo) {
+        fecharTutorialSetas();
+    }
+}
+
+function mostrarTutorialSeNecessario() {
+    const tutorialVisto = localStorage.getItem('br277_tutorial_visto');
+    const ultimaVisita = localStorage.getItem('br277_ultima_visita');
+    const agora = Date.now();
+    
+    // Mostra se nunca viu
+    if (!tutorialVisto) {
+        setTimeout(() => {
+            if (mapa && minhaLocalizacao) {
+                mostrarTutorialSetas();
+            }
+        }, 3000);
+        localStorage.setItem('br277_tutorial_visto', 'true');
+        localStorage.setItem('br277_ultima_visita', agora.toString());
+    } 
+    // Mostra se passou mais de 30 dias
+    else if (ultimaVisita && (agora - parseInt(ultimaVisita)) > 2592000000) {
+        setTimeout(() => {
+            if (mapa && minhaLocalizacao) {
+                mostrarTutorialSetas();
+            }
+        }, 3000);
+        localStorage.setItem('br277_ultima_visita', agora.toString());
+    }
+}
+
+// ===== FUNÇÕES DO MODAL =====
+function selecionarVeiculo(tipo, icone) {
+    veiculoUsuario = tipo;
+    document.querySelectorAll('[id^="veiculo-"]').forEach(el => {
+        el.style.borderColor = 'transparent';
+    });
+    document.getElementById(`veiculo-${tipo}`).style.borderColor = '#ffd700';
+}
+
+// ===== VERIFICA USUÁRIO =====
+const userSalvo = localStorage.getItem('br277_usuario');
+if (userSalvo) {
+    usuario = userSalvo;
+    telefone = localStorage.getItem('br277_telefone') || '';
+    veiculoUsuario = localStorage.getItem('br277_veiculo') || 'carro';
+    
+    if (usuario === ADMIN_USER) {
+        admin = true;
+        document.getElementById('adminBadge').style.display = 'inline';
+    }
+    
+    document.getElementById('welcomeModal').style.display = 'none';
+    iniciarMapa();
+    iniciarGPS();
+    carregarUsuariosAtivos();
+    carregarAlertasFixos();
+    carregarChatGeral();
+    criarIconesAlertas();
+    iniciarCluster();
+}
+
+function salvarCadastro() {
+    const nome = document.getElementById('nomeUsuario').value.trim();
+    if (!nome) {
+        alert('Digite seu nome!');
+        return;
+    }
+    
+    usuario = nome;
+    telefone = document.getElementById('telefoneUsuario').value.trim();
+    
+    if (usuario === ADMIN_USER) {
+        admin = true;
+        document.getElementById('adminBadge').style.display = 'inline';
+    }
+    
+    localStorage.setItem('br277_usuario', nome);
+    localStorage.setItem('br277_telefone', telefone);
+    localStorage.setItem('br277_veiculo', veiculoUsuario);
+    
+    document.getElementById('welcomeModal').style.display = 'none';
+    
+    iniciarMapa();
+    iniciarGPS();
+    carregarUsuariosAtivos();
+    carregarAlertasFixos();
+    carregarChatGeral();
+    criarIconesAlertas();
+    iniciarCluster();
+}
+
+// ===== FUNÇÕES DE INTERFACE =====
+function toggleReporte() {
+    const panel = document.getElementById('alertasPanel');
+    const toggle = document.querySelector('.reporte-toggle');
+    panel.classList.toggle('visivel');
+    toggle.classList.toggle('ativo');
+}
+
+// ===== ICONES ALERTAS =====
+function criarIconesAlertas() {
+    const grid = document.getElementById('alertasGrid');
+    alertas.forEach(alerta => {
+        const div = document.createElement('div');
+        div.className = `alerta-item alerta-${alerta.tipo}`;
+        div.innerHTML = `
+            <div class="alerta-icone">${alerta.icone}</div>
+            <div class="alerta-nome">${alerta.nome}</div>
+        `;
+        div.onclick = () => ativarAlerta(alerta);
+        grid.appendChild(div);
+    });
+}
+
+// ===== INICIAR CLUSTER =====
+function iniciarCluster() {
+    clusterGroup = L.markerClusterGroup({
+        maxClusterRadius: 50,
+        iconCreateFunction: function(cluster) {
+            const count = cluster.getChildCount();
+            return L.divIcon({
+                html: `<div class="cluster-marcador">${count}</div>`,
+                className: '',
+                iconSize: [40, 40]
+            });
+        }
+    });
+    mapa.addLayer(clusterGroup);
+}
+
 // ===== MAPA =====
 function iniciarMapa() {
     mapa = L.map('map', { zoomControl: false }).setView([-25.4284, -49.2733], 13);
@@ -1692,11 +1976,15 @@ function iniciarMapa() {
     mapa.on('dragstart', () => {
         seguirLocalizacao = false;
         document.getElementById('btnRecenter').style.display = 'block';
+        fecharTutorialAoInteragir();
+    });
+    
+    mapa.on('click', () => {
+        fecharTutorialAoInteragir();
     });
     
     mapa.on('zoomend', () => {
         zoomAtual = mapa.getZoom();
-        atualizarIconeCarro();
     });
 }
 
@@ -1704,30 +1992,6 @@ function iniciarMapa() {
 function atualizarVelocimetroPessoal(velocidade) {
     const velocidadeInt = Math.round(velocidade);
     document.getElementById('velocidadeRedonda').textContent = velocidadeInt;
-}
-
-// ===== ATUALIZA ÍCONE DO CARRO =====
-function atualizarIconeCarro() {
-    if (!meuMarcador || !minhaLocalizacao) return;
-    
-    mapa.removeLayer(meuMarcador);
-    
-    if (zoomAtual >= 15) {
-        meuMarcador = L.marker(minhaLocalizacao, {
-            icon: criarIconeCarro(true, ultimoHeading || 0),
-            zIndexOffset: 1000
-        }).addTo(mapa);
-    } else {
-        meuMarcador = L.marker(minhaLocalizacao, {
-            icon: L.divIcon({
-                html: `<div class="ponto-azul"></div>`,
-                className: '',
-                iconSize: [20, 20],
-                iconAnchor: [10, 10]
-            }),
-            zIndexOffset: 1000
-        }).addTo(mapa);
-    }
 }
 
 // ===== GPS =====
@@ -1753,22 +2017,10 @@ function iniciarGPS() {
         }
         
         if (!meuMarcador) {
-            if (zoomAtual >= 15) {
-                meuMarcador = L.marker(minhaLocalizacao, {
-                    icon: criarIconeCarro(true, ultimoHeading || 0),
-                    zIndexOffset: 1000
-                }).addTo(mapa);
-            } else {
-                meuMarcador = L.marker(minhaLocalizacao, {
-                    icon: L.divIcon({
-                        html: `<div class="ponto-azul"></div>`,
-                        className: '',
-                        iconSize: [20, 20],
-                        iconAnchor: [10, 10]
-                    }),
-                    zIndexOffset: 1000
-                }).addTo(mapa);
-            }
+            meuMarcador = L.marker(minhaLocalizacao, {
+                icon: criarIconeCarroRealista(ultimoHeading || 0),
+                zIndexOffset: 1000
+            }).addTo(mapa);
             
             mapa.setView(minhaLocalizacao, 17);
             
@@ -1779,12 +2031,12 @@ function iniciarGPS() {
                 timestamp: Date.now()
             });
             
+            // Tenta mostrar tutorial após localização carregar
+            mostrarTutorialSeNecessario();
+            
         } else {
             meuMarcador.setLatLng(minhaLocalizacao);
-            
-            if (zoomAtual >= 15) {
-                meuMarcador.setIcon(criarIconeCarro(true, ultimoHeading || 0));
-            }
+            meuMarcador.setIcon(criarIconeCarroRealista(ultimoHeading || 0));
             
             db.ref('usuarios_ativos/' + usuario).update({
                 lat: minhaLocalizacao.lat,
@@ -1906,7 +2158,8 @@ function carregarUsuariosAtivos() {
             }
             
             const marcador = L.marker([dados.lat, dados.lng], {
-                icon: criarIconeCarro(false, 0)
+                icon: criarIconeCarroOutros(0),
+                zIndexOffset: 500
             }).addTo(mapa);
             
             usuariosAtivos[id] = marcador;
