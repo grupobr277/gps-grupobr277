@@ -56,370 +56,46 @@
             color: white;
         }
         
-        /* ===== SEDÃ REALISTA VISTO DE CIMA ===== */
-        .sedan-container {
-            position: relative;
-            width: 90px;
-            height: 60px;
-            filter: drop-shadow(0 6px 8px rgba(0,0,0,0.4));
-            transform-origin: center;
+        /* ===== ÍCONE DO CARRO TRADICIONAL (EMOJI) ===== */
+        .carro-emoji {
+            font-size: 32px;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+            text-shadow: 0 0 10px rgba(255,215,0,0.5);
         }
         
-        /* Carroceria principal (formato de sedã) */
-        .sedan-body {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(145deg, #2196F3, #1565C0);
-            border: 3px solid #0D47A1;
-            border-radius: 45% 45% 35% 35% / 55% 55% 35% 35%;
-            box-shadow: inset 0 -3px 8px rgba(0,0,0,0.3);
-            z-index: 1;
+        .carro-emoji-outros {
+            font-size: 28px;
+            filter: grayscale(0.8) brightness(0.7) drop-shadow(0 2px 4px rgba(0,0,0,0.3));
         }
         
-        /* Capô GRANDE dianteiro */
-        .sedan-capo {
-            position: absolute;
-            width: 80px;
-            height: 18px;
-            background: linear-gradient(180deg, #42A5F5, #1976D2);
-            top: -4px;
-            left: 5px;
-            border-radius: 40px 40px 10px 10px;
-            border: 3px solid #0D47A1;
-            border-bottom: none;
-            z-index: 2;
-            box-shadow: 0 -4px 6px rgba(0,0,0,0.2);
-        }
-        
-        /* Para-brisa */
-        .sedan-parabrisa {
-            position: absolute;
-            width: 60px;
-            height: 10px;
-            background: linear-gradient(180deg, #E1F5FE, #B3E5FC);
-            top: 12px;
-            left: 15px;
-            border-radius: 20px 20px 5px 5px;
-            border: 2px solid #0D47A1;
-            border-top: 3px solid #0D47A1;
-            z-index: 3;
-            box-shadow: inset 0 2px 5px white;
-        }
-        
-        /* Teto central */
-        .sedan-teto {
-            position: absolute;
-            width: 50px;
+        /* Ponto de localização quando zoom afastado */
+        .ponto-localizacao {
+            width: 20px;
             height: 20px;
-            background: linear-gradient(180deg, #1565C0, #0D47A1);
-            top: 20px;
-            left: 20px;
-            border-radius: 8px;
-            border: 3px solid #0D47A1;
-            z-index: 3;
-            box-shadow: inset 0 2px 5px rgba(255,255,255,0.2);
-        }
-        
-        /* Coluna lateral esquerda (do seu desenho) */
-        .sedan-coluna-esq {
-            position: absolute;
-            width: 5px;
-            height: 16px;
-            background: #0D47A1;
-            top: 22px;
-            left: 22px;
-            border-radius: 3px;
-            z-index: 4;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-        
-        /* Coluna lateral direita (do seu desenho) */
-        .sedan-coluna-dir {
-            position: absolute;
-            width: 5px;
-            height: 16px;
-            background: #0D47A1;
-            top: 22px;
-            right: 22px;
-            border-radius: 3px;
-            z-index: 4;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-        
-        /* Linha divisória do teto (do seu desenho) */
-        .sedan-linha-divisoria {
-            position: absolute;
-            width: 44px;
-            height: 3px;
-            background: #0D47A1;
-            top: 32px;
-            left: 23px;
-            border-radius: 2px;
-            z-index: 4;
-        }
-        
-        /* Vidro traseiro */
-        .sedan-vidro-traseiro {
-            position: absolute;
-            width: 55px;
-            height: 10px;
-            background: linear-gradient(180deg, #B3E5FC, #81D4FA);
-            bottom: 16px;
-            left: 17px;
-            border-radius: 5px 5px 20px 20px;
-            border: 2px solid #0D47A1;
-            border-bottom: 3px solid #0D47A1;
-            z-index: 3;
-            box-shadow: inset 0 -2px 5px white;
-        }
-        
-        /* Traseira GRANDE */
-        .sedan-traseira {
-            position: absolute;
-            width: 70px;
-            height: 16px;
-            background: linear-gradient(180deg, #1976D2, #1565C0);
-            bottom: -4px;
-            left: 10px;
-            border-radius: 10px 10px 30px 30px;
-            border: 3px solid #0D47A1;
-            border-top: none;
-            z-index: 2;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-        }
-        
-        /* Farol dianteiro esquerdo */
-        .sedan-farol-esq {
-            position: absolute;
-            width: 8px;
-            height: 5px;
-            background: #FFD700;
-            top: 2px;
-            left: 15px;
-            border-radius: 5px 2px 2px 5px;
-            border: 1px solid #B8860B;
-            z-index: 4;
-            box-shadow: 0 0 12px #FFD700;
-            animation: farol-pisca 1.5s infinite;
-        }
-        
-        /* Farol dianteiro direito */
-        .sedan-farol-dir {
-            position: absolute;
-            width: 8px;
-            height: 5px;
-            background: #FFD700;
-            top: 2px;
-            right: 15px;
-            border-radius: 2px 5px 5px 2px;
-            border: 1px solid #B8860B;
-            z-index: 4;
-            box-shadow: 0 0 12px #FFD700;
-            animation: farol-pisca 1.5s infinite;
-            animation-delay: 0.2s;
-        }
-        
-        /* Lanterna traseira esquerda */
-        .sedan-lanterna-esq {
-            position: absolute;
-            width: 8px;
-            height: 5px;
-            background: #FF4444;
-            bottom: 2px;
-            left: 15px;
-            border-radius: 2px 5px 5px 2px;
-            border: 1px solid #8B0000;
-            z-index: 4;
-            box-shadow: 0 0 12px #FF4444;
-            animation: lanterna-pisca 1.5s infinite;
-        }
-        
-        /* Lanterna traseira direita */
-        .sedan-lanterna-dir {
-            position: absolute;
-            width: 8px;
-            height: 5px;
-            background: #FF4444;
-            bottom: 2px;
-            right: 15px;
-            border-radius: 5px 2px 2px 5px;
-            border: 1px solid #8B0000;
-            z-index: 4;
-            box-shadow: 0 0 12px #FF4444;
-            animation: lanterna-pisca 1.5s infinite;
-            animation-delay: 0.2s;
-        }
-        
-        /* Ponto central dourado (GPS) */
-        .sedan-ponto-central {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background: #FFD700;
+            background: #2196F3;
             border: 3px solid white;
             border-radius: 50%;
-            top: 25px;
-            left: 40px;
-            z-index: 10;
-            box-shadow: 0 0 25px #FFD700;
-            animation: pulse-central 1.5s infinite;
+            box-shadow: 0 0 20px #2196F3;
+            animation: pulse-ponto 1.5s infinite;
         }
         
-        /* Sombra do carro */
-        .sedan-sombra {
-            position: absolute;
-            width: 100px;
-            height: 20px;
-            background: rgba(0,0,0,0.2);
-            border-radius: 50%;
-            bottom: -10px;
-            left: -5px;
-            filter: blur(6px);
-            z-index: -1;
-        }
-        
-        @keyframes farol-pisca {
-            0%, 100% { opacity: 1; box-shadow: 0 0 12px #FFD700; }
-            50% { opacity: 0.7; box-shadow: 0 0 20px #FFD700; }
-        }
-        
-        @keyframes lanterna-pisca {
-            0%, 100% { opacity: 1; box-shadow: 0 0 12px #FF4444; }
-            50% { opacity: 0.7; box-shadow: 0 0 18px #FF4444; }
-        }
-        
-        @keyframes pulse-central {
+        @keyframes pulse-ponto {
             0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.3); opacity: 0.8; }
+            50% { transform: scale(1.2); opacity: 0.8; }
         }
         
-        /* ===== TUTORIAL DE SETAS NO MAPA ===== */
-        .tutorial-setas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 999999;
-            display: none;
+        /* ===== PULSANTES PARA ALERTAS ===== */
+        .pulsante-alerta {
+            border-radius: 50%;
+            position: absolute;
+            animation: pulse-alerta 1.2s infinite;
             pointer-events: none;
         }
         
-        .tutorial-overlay {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.2);
-            backdrop-filter: blur(2px);
-            transition: all 0.5s;
-        }
-        
-        .seta-container {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .seta {
-            position: absolute;
-            width: 70px;
-            height: 70px;
-            border: 3px solid #FFD700;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(0,0,0,0.4);
-            backdrop-filter: blur(5px);
-            box-shadow: 0 0 30px rgba(255,215,0,0.5);
-            animation: pulse-seta 2s ease-in-out infinite;
-        }
-        
-        .seta i {
-            font-size: 35px;
-            color: #FFD700;
-            filter: drop-shadow(0 0 10px #FFD700);
-        }
-        
-        .seta-esquerda {
-            left: 25%;
-            top: 50%;
-            transform: translateY(-50%);
-            animation: move-esquerda 2s ease-in-out infinite;
-        }
-        
-        .seta-direita {
-            right: 25%;
-            top: 50%;
-            transform: translateY(-50%);
-            animation: move-direita 2s ease-in-out infinite;
-        }
-        
-        .seta-cima {
-            top: 25%;
-            left: 50%;
-            transform: translateX(-50%);
-            animation: move-cima 2s ease-in-out infinite;
-        }
-        
-        .seta-baixo {
-            bottom: 25%;
-            left: 50%;
-            transform: translateX(-50%);
-            animation: move-baixo 2s ease-in-out infinite;
-        }
-        
-        @keyframes move-esquerda {
-            0%, 100% { transform: translateY(-50%) translateX(0); }
-            50% { transform: translateY(-50%) translateX(-20px); }
-        }
-        
-        @keyframes move-direita {
-            0%, 100% { transform: translateY(-50%) translateX(0); }
-            50% { transform: translateY(-50%) translateX(20px); }
-        }
-        
-        @keyframes move-cima {
-            0%, 100% { transform: translateX(-50%) translateY(0); }
-            50% { transform: translateX(-50%) translateY(-20px); }
-        }
-        
-        @keyframes move-baixo {
-            0%, 100% { transform: translateX(-50%) translateY(0); }
-            50% { transform: translateX(-50%) translateY(20px); }
-        }
-        
-        @keyframes pulse-seta {
-            0%, 100% { box-shadow: 0 0 30px rgba(255,215,0,0.5); transform: scale(1); }
-            50% { box-shadow: 0 0 50px rgba(255,215,0,0.8); transform: scale(1.1); }
-        }
-        
-        .tutorial-mensagem {
-            position: absolute;
-            bottom: 20%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(10px);
-            color: white;
-            padding: 15px 30px;
-            border-radius: 50px;
-            border: 2px solid #FFD700;
-            font-size: 16px;
-            font-weight: bold;
-            text-align: center;
-            box-shadow: 0 0 30px rgba(0,0,0,0.5);
-            animation: pulse-texto 2s ease-in-out infinite;
-            white-space: nowrap;
-        }
-        
-        @keyframes pulse-texto {
-            0%, 100% { opacity: 0.9; transform: translateX(-50%) scale(1); }
-            50% { opacity: 1; transform: translateX(-50%) scale(1.05); }
+        @keyframes pulse-alerta {
+            0% { transform: scale(0.8); opacity: 1; }
+            70% { transform: scale(1.5); opacity: 0.4; }
+            100% { transform: scale(0.8); opacity: 1; }
         }
         
         /* ===== SISTEMA REPORTE ===== */
@@ -1480,28 +1156,6 @@
     </div>
 </div>
 
-<!-- TUTORIAL DE SETAS NO MAPA -->
-<div class="tutorial-setas" id="tutorialSetas">
-    <div class="tutorial-overlay"></div>
-    <div class="seta-container">
-        <div class="seta seta-esquerda">
-            <i class="fas fa-arrow-left"></i>
-        </div>
-        <div class="seta seta-direita">
-            <i class="fas fa-arrow-right"></i>
-        </div>
-        <div class="seta seta-cima">
-            <i class="fas fa-arrow-up"></i>
-        </div>
-        <div class="seta seta-baixo">
-            <i class="fas fa-arrow-down"></i>
-        </div>
-    </div>
-    <div class="tutorial-mensagem">
-        👆 Arraste o mapa com um dedo para mover
-    </div>
-</div>
-
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
@@ -1542,7 +1196,6 @@ let alertasConfirmados = {};
 let pulsantesAlertas = {};
 let marcadorDestino = null;
 let wakeLock = null;
-let tutorialAtivo = false;
 
 // ===== 10 ALERTAS =====
 const alertas = [
@@ -1558,50 +1211,23 @@ const alertas = [
     { tipo: 'bloqueio', nome: 'BLOQUEIO', icone: '⛔', cor: '#b71c1c' }
 ];
 
-// ===== FUNÇÃO PARA CRIAR ÍCONE DO SEDÃ REALISTA =====
-function criarIconeSedan(direcao = 0) {
-    return L.divIcon({
-        html: `<div class="sedan-container" style="transform: rotate(${direcao}deg);">
-            <div class="sedan-body"></div>
-            <div class="sedan-capo"></div>
-            <div class="sedan-parabrisa"></div>
-            <div class="sedan-teto"></div>
-            <div class="sedan-coluna-esq"></div>
-            <div class="sedan-coluna-dir"></div>
-            <div class="sedan-linha-divisoria"></div>
-            <div class="sedan-vidro-traseiro"></div>
-            <div class="sedan-traseira"></div>
-            <div class="sedan-farol-esq"></div>
-            <div class="sedan-farol-dir"></div>
-            <div class="sedan-lanterna-esq"></div>
-            <div class="sedan-lanterna-dir"></div>
-            <div class="sedan-ponto-central"></div>
-            <div class="sedan-sombra"></div>
-        </div>`,
-        className: '',
-        iconSize: [90, 60],
-        iconAnchor: [45, 30]
-    });
-}
-
-// ===== FUNÇÃO PARA CRIAR ÍCONE DO SEDÃ PARA OUTROS USUÁRIOS =====
-function criarIconeSedanOutros(direcao = 0) {
-    return L.divIcon({
-        html: `<div class="sedan-container" style="transform: rotate(${direcao}deg); filter: grayscale(0.8) brightness(0.7);">
-            <div class="sedan-body"></div>
-            <div class="sedan-capo"></div>
-            <div class="sedan-parabrisa"></div>
-            <div class="sedan-teto"></div>
-            <div class="sedan-coluna-esq"></div>
-            <div class="sedan-coluna-dir"></div>
-            <div class="sedan-linha-divisoria"></div>
-            <div class="sedan-vidro-traseiro"></div>
-            <div class="sedan-traseira"></div>
-        </div>`,
-        className: '',
-        iconSize: [80, 50],
-        iconAnchor: [40, 25]
-    });
+// ===== FUNÇÃO PARA CRIAR ÍCONE DO CARRO TRADICIONAL =====
+function criarIconeCarro(ehMeu = true) {
+    if (ehMeu) {
+        return L.divIcon({
+            html: `<div class="carro-emoji">🚗</div>`,
+            className: '',
+            iconSize: [32, 32],
+            iconAnchor: [16, 16]
+        });
+    } else {
+        return L.divIcon({
+            html: `<div class="carro-emoji-outros">🚗</div>`,
+            className: '',
+            iconSize: [28, 28],
+            iconAnchor: [14, 14]
+        });
+    }
 }
 
 // ===== FUNÇÃO PARA CRIAR PULSANTE BASEADO EM ALERTA REAL =====
@@ -1740,87 +1366,6 @@ document.addEventListener('visibilitychange', async () => {
     }
 });
 
-// ===== FUNÇÕES DO TUTORIAL DE SETAS =====
-function mostrarTutorialSetas() {
-    const tutorial = document.getElementById('tutorialSetas');
-    const overlay = document.querySelector('.tutorial-overlay');
-    
-    tutorial.style.display = 'block';
-    tutorialAtivo = true;
-    
-    setTimeout(() => {
-        if (tutorialAtivo) {
-            overlay.style.background = 'rgba(0,0,0,0.3)';
-        }
-    }, 300);
-    
-    setTimeout(() => {
-        if (tutorialAtivo) {
-            fecharTutorialSetas();
-        }
-    }, 8000);
-}
-
-function fecharTutorialSetas() {
-    const tutorial = document.getElementById('tutorialSetas');
-    const overlay = document.querySelector('.tutorial-overlay');
-    const setas = document.querySelector('.seta-container');
-    const mensagem = document.querySelector('.tutorial-mensagem');
-    
-    if (!tutorialAtivo) return;
-    
-    tutorialAtivo = false;
-    
-    overlay.style.transition = 'opacity 0.5s';
-    setas.style.transition = 'opacity 0.5s';
-    mensagem.style.transition = 'opacity 0.5s';
-    
-    overlay.style.opacity = '0';
-    setas.style.opacity = '0';
-    mensagem.style.opacity = '0';
-    
-    setTimeout(() => {
-        tutorial.style.display = 'none';
-        overlay.style.opacity = '1';
-        setas.style.opacity = '1';
-        mensagem.style.opacity = '1';
-        
-        overlay.style.transition = '';
-        setas.style.transition = '';
-        mensagem.style.transition = '';
-    }, 500);
-}
-
-function fecharTutorialAoInteragir() {
-    if (tutorialAtivo) {
-        fecharTutorialSetas();
-    }
-}
-
-function mostrarTutorialSeNecessario() {
-    const tutorialVisto = localStorage.getItem('br277_tutorial_visto');
-    const ultimaVisita = localStorage.getItem('br277_ultima_visita');
-    const agora = Date.now();
-    
-    if (!tutorialVisto) {
-        setTimeout(() => {
-            if (mapa && minhaLocalizacao) {
-                mostrarTutorialSetas();
-            }
-        }, 3000);
-        localStorage.setItem('br277_tutorial_visto', 'true');
-        localStorage.setItem('br277_ultima_visita', agora.toString());
-    } 
-    else if (ultimaVisita && (agora - parseInt(ultimaVisita)) > 2592000000) {
-        setTimeout(() => {
-            if (mapa && minhaLocalizacao) {
-                mostrarTutorialSetas();
-            }
-        }, 3000);
-        localStorage.setItem('br277_ultima_visita', agora.toString());
-    }
-}
-
 // ===== FUNÇÕES DO MODAL =====
 function selecionarVeiculo(tipo, icone) {
     veiculoUsuario = tipo;
@@ -1929,15 +1474,11 @@ function iniciarMapa() {
     mapa.on('dragstart', () => {
         seguirLocalizacao = false;
         document.getElementById('btnRecenter').style.display = 'block';
-        fecharTutorialAoInteragir();
-    });
-    
-    mapa.on('click', () => {
-        fecharTutorialAoInteragir();
     });
     
     mapa.on('zoomend', () => {
         zoomAtual = mapa.getZoom();
+        atualizarIconeCarro();
     });
 }
 
@@ -1947,9 +1488,31 @@ function atualizarVelocimetroPessoal(velocidade) {
     document.getElementById('velocidadeRedonda').textContent = velocidadeInt;
 }
 
-// ===== GPS =====
-let ultimoHeading = 0;
+// ===== ATUALIZA ÍCONE DO CARRO (sem rotação) =====
+function atualizarIconeCarro() {
+    if (!meuMarcador || !minhaLocalizacao) return;
+    
+    mapa.removeLayer(meuMarcador);
+    
+    if (zoomAtual >= 15) {
+        meuMarcador = L.marker(minhaLocalizacao, {
+            icon: criarIconeCarro(true),
+            zIndexOffset: 1000
+        }).addTo(mapa);
+    } else {
+        meuMarcador = L.marker(minhaLocalizacao, {
+            icon: L.divIcon({
+                html: `<div class="ponto-localizacao"></div>`,
+                className: '',
+                iconSize: [20, 20],
+                iconAnchor: [10, 10]
+            }),
+            zIndexOffset: 1000
+        }).addTo(mapa);
+    }
+}
 
+// ===== GPS =====
 function iniciarGPS() {
     if (!navigator.geolocation) return;
     
@@ -1960,20 +1523,28 @@ function iniciarGPS() {
         
         minhaLocalizacao = L.latLng(pos.coords.latitude, pos.coords.longitude);
         
-        if (pos.coords.heading !== null) {
-            ultimoHeading = pos.coords.heading;
-        }
-        
         if (pos.coords.speed !== null) {
             const velocidadeKmh = pos.coords.speed * 3.6;
             atualizarVelocimetroPessoal(velocidadeKmh);
         }
         
         if (!meuMarcador) {
-            meuMarcador = L.marker(minhaLocalizacao, {
-                icon: criarIconeSedan(ultimoHeading || 0),
-                zIndexOffset: 1000
-            }).addTo(mapa);
+            if (zoomAtual >= 15) {
+                meuMarcador = L.marker(minhaLocalizacao, {
+                    icon: criarIconeCarro(true),
+                    zIndexOffset: 1000
+                }).addTo(mapa);
+            } else {
+                meuMarcador = L.marker(minhaLocalizacao, {
+                    icon: L.divIcon({
+                        html: `<div class="ponto-localizacao"></div>`,
+                        className: '',
+                        iconSize: [20, 20],
+                        iconAnchor: [10, 10]
+                    }),
+                    zIndexOffset: 1000
+                }).addTo(mapa);
+            }
             
             mapa.setView(minhaLocalizacao, 17);
             
@@ -1984,11 +1555,12 @@ function iniciarGPS() {
                 timestamp: Date.now()
             });
             
-            mostrarTutorialSeNecessario();
-            
         } else {
             meuMarcador.setLatLng(minhaLocalizacao);
-            meuMarcador.setIcon(criarIconeSedan(ultimoHeading || 0));
+            
+            if (zoomAtual >= 15) {
+                meuMarcador.setIcon(criarIconeCarro(true));
+            }
             
             db.ref('usuarios_ativos/' + usuario).update({
                 lat: minhaLocalizacao.lat,
@@ -2110,7 +1682,7 @@ function carregarUsuariosAtivos() {
             }
             
             const marcador = L.marker([dados.lat, dados.lng], {
-                icon: criarIconeSedanOutros(0),
+                icon: criarIconeCarro(false),
                 zIndexOffset: 500
             }).addTo(mapa);
             
