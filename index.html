@@ -56,12 +56,12 @@
             color: white;
         }
         
-        /* ===== ÍCONE DO SEDÃ VISTO DE CIMA ===== */
+        /* ===== SEDÃ REALISTA VISTO DE CIMA ===== */
         .sedan-container {
             position: relative;
-            width: 70px;
-            height: 45px;
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+            width: 90px;
+            height: 60px;
+            filter: drop-shadow(0 6px 8px rgba(0,0,0,0.4));
             transform-origin: center;
         }
         
@@ -70,222 +70,228 @@
             position: absolute;
             width: 100%;
             height: 100%;
-            background: linear-gradient(145deg, #2196F3, #1976D2);
+            background: linear-gradient(145deg, #2196F3, #1565C0);
             border: 3px solid #0D47A1;
-            border-radius: 45% 45% 35% 35% / 60% 60% 40% 40%;
-            box-shadow: inset 0 -3px 5px rgba(0,0,0,0.2);
+            border-radius: 45% 45% 35% 35% / 55% 55% 35% 35%;
+            box-shadow: inset 0 -3px 8px rgba(0,0,0,0.3);
             z-index: 1;
         }
         
-        /* Capô dianteiro */
+        /* Capô GRANDE dianteiro */
         .sedan-capo {
             position: absolute;
-            width: 58px;
-            height: 12px;
+            width: 80px;
+            height: 18px;
             background: linear-gradient(180deg, #42A5F5, #1976D2);
-            top: -3px;
-            left: 6px;
-            border-radius: 30px 30px 5px 5px;
-            border: 2px solid #0D47A1;
+            top: -4px;
+            left: 5px;
+            border-radius: 40px 40px 10px 10px;
+            border: 3px solid #0D47A1;
             border-bottom: none;
             z-index: 2;
-            box-shadow: 0 -2px 4px rgba(0,0,0,0.2);
+            box-shadow: 0 -4px 6px rgba(0,0,0,0.2);
         }
         
         /* Para-brisa */
         .sedan-parabrisa {
             position: absolute;
-            width: 50px;
-            height: 8px;
+            width: 60px;
+            height: 10px;
             background: linear-gradient(180deg, #E1F5FE, #B3E5FC);
-            top: 7px;
-            left: 10px;
-            border-radius: 15px 15px 3px 3px;
-            border: 2px solid #0D47A1;
-            transform: perspective(20px) rotateX(1deg);
-            z-index: 3;
-            box-shadow: inset 0 2px 3px white;
-        }
-        
-        /* Teto */
-        .sedan-teto {
-            position: absolute;
-            width: 40px;
-            height: 14px;
-            background: linear-gradient(180deg, #1565C0, #0D47A1);
             top: 12px;
             left: 15px;
-            border-radius: 6px;
+            border-radius: 20px 20px 5px 5px;
             border: 2px solid #0D47A1;
-            z-index: 2;
-            box-shadow: inset 0 2px 4px rgba(255,255,255,0.2);
+            border-top: 3px solid #0D47A1;
+            z-index: 3;
+            box-shadow: inset 0 2px 5px white;
+        }
+        
+        /* Teto central */
+        .sedan-teto {
+            position: absolute;
+            width: 50px;
+            height: 20px;
+            background: linear-gradient(180deg, #1565C0, #0D47A1);
+            top: 20px;
+            left: 20px;
+            border-radius: 8px;
+            border: 3px solid #0D47A1;
+            z-index: 3;
+            box-shadow: inset 0 2px 5px rgba(255,255,255,0.2);
+        }
+        
+        /* Coluna lateral esquerda (do seu desenho) */
+        .sedan-coluna-esq {
+            position: absolute;
+            width: 5px;
+            height: 16px;
+            background: #0D47A1;
+            top: 22px;
+            left: 22px;
+            border-radius: 3px;
+            z-index: 4;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        /* Coluna lateral direita (do seu desenho) */
+        .sedan-coluna-dir {
+            position: absolute;
+            width: 5px;
+            height: 16px;
+            background: #0D47A1;
+            top: 22px;
+            right: 22px;
+            border-radius: 3px;
+            z-index: 4;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        /* Linha divisória do teto (do seu desenho) */
+        .sedan-linha-divisoria {
+            position: absolute;
+            width: 44px;
+            height: 3px;
+            background: #0D47A1;
+            top: 32px;
+            left: 23px;
+            border-radius: 2px;
+            z-index: 4;
         }
         
         /* Vidro traseiro */
         .sedan-vidro-traseiro {
             position: absolute;
-            width: 38px;
-            height: 8px;
+            width: 55px;
+            height: 10px;
             background: linear-gradient(180deg, #B3E5FC, #81D4FA);
-            bottom: 7px;
-            left: 16px;
-            border-radius: 3px 3px 15px 15px;
+            bottom: 16px;
+            left: 17px;
+            border-radius: 5px 5px 20px 20px;
             border: 2px solid #0D47A1;
-            transform: perspective(20px) rotateX(-1deg);
+            border-bottom: 3px solid #0D47A1;
             z-index: 3;
-            box-shadow: inset 0 -2px 3px white;
+            box-shadow: inset 0 -2px 5px white;
         }
         
-        /* Traseira */
+        /* Traseira GRANDE */
         .sedan-traseira {
             position: absolute;
-            width: 54px;
-            height: 10px;
+            width: 70px;
+            height: 16px;
             background: linear-gradient(180deg, #1976D2, #1565C0);
-            bottom: -3px;
-            left: 8px;
-            border-radius: 5px 5px 25px 25px;
-            border: 2px solid #0D47A1;
+            bottom: -4px;
+            left: 10px;
+            border-radius: 10px 10px 30px 30px;
+            border: 3px solid #0D47A1;
             border-top: none;
             z-index: 2;
-            box-shadow: 0 3px 4px rgba(0,0,0,0.2);
-        }
-        
-        /* Vidro lateral esquerdo */
-        .sedan-vidro-esquerdo {
-            position: absolute;
-            width: 10px;
-            height: 20px;
-            background: linear-gradient(90deg, #E1F5FE, #B3E5FC);
-            left: 5px;
-            top: 10px;
-            border-radius: 8px 3px 3px 8px;
-            border: 2px solid #0D47A1;
-            z-index: 3;
-            opacity: 0.9;
-            transform: skewY(-2deg);
-            box-shadow: inset 2px 0 3px white;
-        }
-        
-        /* Vidro lateral direito */
-        .sedan-vidro-direito {
-            position: absolute;
-            width: 10px;
-            height: 20px;
-            background: linear-gradient(270deg, #E1F5FE, #B3E5FC);
-            right: 5px;
-            top: 10px;
-            border-radius: 3px 8px 8px 3px;
-            border: 2px solid #0D47A1;
-            z-index: 3;
-            opacity: 0.9;
-            transform: skewY(2deg);
-            box-shadow: inset -2px 0 3px white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
         }
         
         /* Farol dianteiro esquerdo */
-        .sedan-farol-esquerdo {
+        .sedan-farol-esq {
             position: absolute;
-            width: 6px;
-            height: 4px;
+            width: 8px;
+            height: 5px;
             background: #FFD700;
             top: 2px;
-            left: 12px;
-            border-radius: 4px 2px 2px 4px;
+            left: 15px;
+            border-radius: 5px 2px 2px 5px;
             border: 1px solid #B8860B;
             z-index: 4;
-            box-shadow: 0 0 8px #FFD700;
+            box-shadow: 0 0 12px #FFD700;
             animation: farol-pisca 1.5s infinite;
         }
         
         /* Farol dianteiro direito */
-        .sedan-farol-direito {
+        .sedan-farol-dir {
             position: absolute;
-            width: 6px;
-            height: 4px;
+            width: 8px;
+            height: 5px;
             background: #FFD700;
             top: 2px;
-            right: 12px;
-            border-radius: 2px 4px 4px 2px;
+            right: 15px;
+            border-radius: 2px 5px 5px 2px;
             border: 1px solid #B8860B;
             z-index: 4;
-            box-shadow: 0 0 8px #FFD700;
+            box-shadow: 0 0 12px #FFD700;
             animation: farol-pisca 1.5s infinite;
             animation-delay: 0.2s;
         }
         
         /* Lanterna traseira esquerda */
-        .sedan-lanterna-esquerda {
+        .sedan-lanterna-esq {
             position: absolute;
-            width: 6px;
-            height: 4px;
+            width: 8px;
+            height: 5px;
             background: #FF4444;
             bottom: 2px;
-            left: 12px;
-            border-radius: 2px 4px 4px 2px;
+            left: 15px;
+            border-radius: 2px 5px 5px 2px;
             border: 1px solid #8B0000;
             z-index: 4;
-            box-shadow: 0 0 8px #FF4444;
+            box-shadow: 0 0 12px #FF4444;
             animation: lanterna-pisca 1.5s infinite;
         }
         
         /* Lanterna traseira direita */
-        .sedan-lanterna-direita {
+        .sedan-lanterna-dir {
             position: absolute;
-            width: 6px;
-            height: 4px;
+            width: 8px;
+            height: 5px;
             background: #FF4444;
             bottom: 2px;
-            right: 12px;
-            border-radius: 4px 2px 2px 4px;
+            right: 15px;
+            border-radius: 5px 2px 2px 5px;
             border: 1px solid #8B0000;
             z-index: 4;
-            box-shadow: 0 0 8px #FF4444;
+            box-shadow: 0 0 12px #FF4444;
             animation: lanterna-pisca 1.5s infinite;
             animation-delay: 0.2s;
         }
         
-        @keyframes farol-pisca {
-            0%, 100% { opacity: 1; box-shadow: 0 0 8px #FFD700; }
-            50% { opacity: 0.7; box-shadow: 0 0 15px #FFD700; }
-        }
-        
-        @keyframes lanterna-pisca {
-            0%, 100% { opacity: 1; box-shadow: 0 0 8px #FF4444; }
-            50% { opacity: 0.7; box-shadow: 0 0 12px #FF4444; }
-        }
-        
-        /* Ponto central (GPS) */
+        /* Ponto central dourado (GPS) */
         .sedan-ponto-central {
             position: absolute;
-            width: 8px;
-            height: 8px;
+            width: 10px;
+            height: 10px;
             background: #FFD700;
-            border: 2px solid white;
+            border: 3px solid white;
             border-radius: 50%;
-            top: 18px;
-            left: 31px;
+            top: 25px;
+            left: 40px;
             z-index: 10;
-            box-shadow: 0 0 20px #FFD700;
+            box-shadow: 0 0 25px #FFD700;
             animation: pulse-central 1.5s infinite;
-        }
-        
-        @keyframes pulse-central {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.3); opacity: 0.8; }
         }
         
         /* Sombra do carro */
         .sedan-sombra {
             position: absolute;
-            width: 80px;
-            height: 15px;
+            width: 100px;
+            height: 20px;
             background: rgba(0,0,0,0.2);
             border-radius: 50%;
-            bottom: -8px;
+            bottom: -10px;
             left: -5px;
-            filter: blur(4px);
+            filter: blur(6px);
             z-index: -1;
+        }
+        
+        @keyframes farol-pisca {
+            0%, 100% { opacity: 1; box-shadow: 0 0 12px #FFD700; }
+            50% { opacity: 0.7; box-shadow: 0 0 20px #FFD700; }
+        }
+        
+        @keyframes lanterna-pisca {
+            0%, 100% { opacity: 1; box-shadow: 0 0 12px #FF4444; }
+            50% { opacity: 0.7; box-shadow: 0 0 18px #FF4444; }
+        }
+        
+        @keyframes pulse-central {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.8; }
         }
         
         /* ===== TUTORIAL DE SETAS NO MAPA ===== */
@@ -1552,7 +1558,7 @@ const alertas = [
     { tipo: 'bloqueio', nome: 'BLOQUEIO', icone: '⛔', cor: '#b71c1c' }
 ];
 
-// ===== FUNÇÃO PARA CRIAR ÍCONE DO SEDÃ (PRÓPRIO USUÁRIO) =====
+// ===== FUNÇÃO PARA CRIAR ÍCONE DO SEDÃ REALISTA =====
 function criarIconeSedan(direcao = 0) {
     return L.divIcon({
         html: `<div class="sedan-container" style="transform: rotate(${direcao}deg);">
@@ -1560,24 +1566,25 @@ function criarIconeSedan(direcao = 0) {
             <div class="sedan-capo"></div>
             <div class="sedan-parabrisa"></div>
             <div class="sedan-teto"></div>
+            <div class="sedan-coluna-esq"></div>
+            <div class="sedan-coluna-dir"></div>
+            <div class="sedan-linha-divisoria"></div>
             <div class="sedan-vidro-traseiro"></div>
             <div class="sedan-traseira"></div>
-            <div class="sedan-vidro-esquerdo"></div>
-            <div class="sedan-vidro-direito"></div>
-            <div class="sedan-farol-esquerdo"></div>
-            <div class="sedan-farol-direito"></div>
-            <div class="sedan-lanterna-esquerda"></div>
-            <div class="sedan-lanterna-direita"></div>
+            <div class="sedan-farol-esq"></div>
+            <div class="sedan-farol-dir"></div>
+            <div class="sedan-lanterna-esq"></div>
+            <div class="sedan-lanterna-dir"></div>
             <div class="sedan-ponto-central"></div>
             <div class="sedan-sombra"></div>
         </div>`,
         className: '',
-        iconSize: [70, 45],
-        iconAnchor: [35, 22]
+        iconSize: [90, 60],
+        iconAnchor: [45, 30]
     });
 }
 
-// ===== FUNÇÃO PARA CRIAR ÍCONE DO SEDÃ PARA OUTROS USUÁRIOS (CINZA) =====
+// ===== FUNÇÃO PARA CRIAR ÍCONE DO SEDÃ PARA OUTROS USUÁRIOS =====
 function criarIconeSedanOutros(direcao = 0) {
     return L.divIcon({
         html: `<div class="sedan-container" style="transform: rotate(${direcao}deg); filter: grayscale(0.8) brightness(0.7);">
@@ -1585,14 +1592,15 @@ function criarIconeSedanOutros(direcao = 0) {
             <div class="sedan-capo"></div>
             <div class="sedan-parabrisa"></div>
             <div class="sedan-teto"></div>
+            <div class="sedan-coluna-esq"></div>
+            <div class="sedan-coluna-dir"></div>
+            <div class="sedan-linha-divisoria"></div>
             <div class="sedan-vidro-traseiro"></div>
             <div class="sedan-traseira"></div>
-            <div class="sedan-vidro-esquerdo"></div>
-            <div class="sedan-vidro-direito"></div>
         </div>`,
         className: '',
-        iconSize: [60, 38],
-        iconAnchor: [30, 19]
+        iconSize: [80, 50],
+        iconAnchor: [40, 25]
     });
 }
 
