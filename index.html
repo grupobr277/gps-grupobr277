@@ -504,7 +504,7 @@
         }
         
         .video-popup {
-            width: 400px;
+            width: 450px;
             max-width: 90vw;
             background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
             border: 2px solid #ffd700;
@@ -533,7 +533,7 @@
         
         .video-js {
             width: 100%;
-            height: 225px;
+            height: 250px;
             border-radius: 10px;
             overflow: hidden;
         }
@@ -730,42 +730,6 @@
             background: #e53935;
             border-color: white;
             color: white;
-        }
-        
-        /* PAINEL ADMIN */
-        .admin-panel {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0,0,0,0.95);
-            backdrop-filter: blur(10px);
-            border: 2px solid #ffd700;
-            border-radius: 20px;
-            padding: 20px;
-            z-index: 20001;
-            display: none;
-            flex-direction: column;
-            gap: 15px;
-            min-width: 300px;
-        }
-        
-        .admin-panel input {
-            padding: 10px;
-            border-radius: 30px;
-            border: 2px solid #ffd700;
-            background: rgba(255,255,255,0.1);
-            color: white;
-            outline: none;
-        }
-        
-        .admin-panel button {
-            padding: 10px;
-            border-radius: 30px;
-            border: none;
-            background: #ffd700;
-            font-weight: bold;
-            cursor: pointer;
         }
         
         /* BOTÃO ENCERRAR ROTA */
@@ -1277,14 +1241,6 @@
     </div>
 </div>
 
-<!-- PAINEL ADMIN -->
-<div class="admin-panel" id="adminPanel">
-    <h3 style="color:#ffd700;">🔐 Verificação Admin</h3>
-    <input type="password" id="adminSenha" placeholder="Digite a senha">
-    <button onclick="verificarAdmin()">Confirmar</button>
-    <button onclick="fecharAdminPanel()" style="background:#e53935; color:white;">Cancelar</button>
-</div>
-
 <!-- PAINEL DE ROTA -->
 <div class="rota-info-panel" id="rotaInfoPanel">
     <div class="rota-info-item">
@@ -1385,7 +1341,6 @@
         <div style="display:flex; align-items:center; gap:10px;">
             <i class="fas fa-comments"></i>
             <span>CHAT GERAL</span>
-            <span id="adminBadge" style="display:none; color:#ffd700;">👑 ADMIN</span>
         </div>
         <span onclick="fecharChatGeral()" style="cursor:pointer;">✖</span>
     </div>
@@ -1440,73 +1395,10 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// ===== REGRAS DE SEGURANÇA DO FIREBASE =====
-/*
-REGRAS RECOMENDADAS PARA APLICAR NO CONSOLE DO FIREBASE:
-
-{
-  "rules": {
-    "usuarios_ativos": {
-      ".read": "auth != null",
-      ".write": "auth != null",
-      "$usuario": {
-        ".validate": "newData.hasChildren(['lat', 'lng', 'veiculo', 'timestamp'])",
-        "lat": { ".validate": "newData.isNumber() && newData.val() >= -90 && newData.val() <= 90" },
-        "lng": { ".validate": "newData.isNumber() && newData.val() >= -180 && newData.val() <= 180" },
-        "veiculo": { ".validate": "newData.isString()" },
-        "timestamp": { ".validate": "newData.isNumber() && newData.val() <= now" }
-      }
-    },
-    "alertas_fixos": {
-      ".read": "auth != null",
-      ".write": "auth != null",
-      "$alerta": {
-        ".validate": "newData.hasChildren(['tipo', 'nome', 'icone', 'cor', 'lat', 'lng', 'criador', 'confirmacoes', 'timestamp'])",
-        "lat": { ".validate": "newData.isNumber()" },
-        "lng": { ".validate": "newData.isNumber()" },
-        "criador": { ".validate": "newData.isString()" },
-        "confirmacoes": { ".validate": "newData.isNumber()" },
-        "timestamp": { ".validate": "newData.isNumber() && newData.val() <= now" }
-      }
-    },
-    "chat_geral": {
-      ".read": "auth != null",
-      ".write": "auth != null",
-      "$mensagem": {
-        ".validate": "newData.hasChildren(['usuario', 'texto', 'hora', 'timestamp'])",
-        "usuario": { ".validate": "newData.isString()" },
-        "texto": { ".validate": "newData.isString() && newData.val().length <= 500" },
-        "hora": { ".validate": "newData.isString()" },
-        "timestamp": { ".validate": "newData.isNumber() && newData.val() <= now" },
-        "telefone": { ".validate": "newData.isString()" },
-        "resposta": { ".validate": "newData.hasChildren(['usuario', 'texto'])" }
-      }
-    },
-    "radio": {
-      ".read": "auth != null",
-      ".write": "auth != null",
-      "$audio": {
-        ".validate": "newData.hasChildren(['audio', 'usuario', 'timestamp'])",
-        "audio": { ".validate": "newData.isString()" },
-        "usuario": { ".validate": "newData.isString()" },
-        "timestamp": { ".validate": "newData.isNumber() && newData.val() <= now" }
-      }
-    },
-    "chats": {
-      ".read": "auth != null",
-      ".write": "auth != null"
-    }
-  }
-}
-*/
-
 // ===== VARIÁVEIS =====
 let usuario = null;
 let telefone = '';
 let veiculoUsuario = 'carro';
-let admin = false;
-const ADMIN_PASSWORD = 'br277admin2024'; // Senha do admin
-const ADMIN_USER = 'Danilo Chulik';
 let minhaLocalizacao = null;
 let meuMarcador = null;
 let seguirLocalizacao = true;
@@ -1519,7 +1411,6 @@ let coresUsuarios = {};
 let ultimaAtualizacaoGPS = 0;
 const INTERVALO_GPS = 1000;
 let zoomAtual = 13;
-let ultimaMsgCongestionamento = 0;
 let clusterGroup = null;
 let alertasMapa = {};
 let alertasConfirmados = {};
@@ -1547,27 +1438,51 @@ const alertas = [
     { tipo: 'bloqueio', nome: 'BLOQUEIO', icone: '⛔', cor: '#b71c1c' }
 ];
 
-// ===== CÂMERAS AO VIVO =====
+// ===== CÂMERAS AO VIVO - 4 CÂMERAS CONFIGURADAS =====
 const cameras = [
     {
         id: 'cam1',
         titulo: 'BR-277 - Km 30 (Sentido Litoral)',
-        descricao: 'Câmera ao vivo - Pedágio São José',
+        descricao: 'Câmera 1 - Pedágio São José',
         lat: -25.4567,
         lng: -49.2345,
         rtsp: 'rtsp://grupobr277:Grupobr277@200.195.141.246:654/00000001-0000-babe-0000-0002d1b3afb2/live',
         rtmp: 'rtmp://connect-735.servicestream.io:1936/stream/ef92c235d45c',
-        hls: 'https://connect-735.servicestream.io/live/ef92c235d45c.m3u8'
+        hls: 'https://connect-735.servicestream.io/live/ef92c235d45c.m3u8',
+        proxy: 'https://cors-anywhere.herokuapp.com/rtsp://grupobr277:Grupobr277@200.195.141.246:654/00000001-0000-babe-0000-0002d1b3afb2/live'
     },
     {
         id: 'cam2',
         titulo: 'BR-277 - Km 45 (Curitiba)',
-        descricao: 'Trânsito em tempo real',
+        descricao: 'Câmera 2 - Trânsito em tempo real',
         lat: -25.5123,
         lng: -49.2987,
         rtsp: 'rtsp://grupobr277:Grupobr277@200.195.141.246:654/00000001-0000-babe-0000-0002d1b3afb0/live',
         rtmp: 'rtmp://connect-735.servicestream.io:1936/stream/75133459b2d6',
-        hls: 'https://connect-735.servicestream.io/live/75133459b2d6.m3u8'
+        hls: 'https://connect-735.servicestream.io/live/75133459b2d6.m3u8',
+        proxy: 'https://cors-anywhere.herokuapp.com/rtsp://grupobr277:Grupobr277@200.195.141.246:654/00000001-0000-babe-0000-0002d1b3afb0/live'
+    },
+    {
+        id: 'cam3',
+        titulo: 'BR-277 - Km 60 (São José dos Pinhais)',
+        descricao: 'Câmera 3 - Região industrial',
+        lat: -25.5678,
+        lng: -49.3456,
+        rtsp: 'rtsp://grupobr277:Grupobr277@200.195.141.246:654/00000001-0000-babe-0000-0002d1b3afb2/live',
+        rtmp: 'rtmp://connect-735.servicestream.io:1936/stream/ef92c235d45c',
+        hls: 'https://connect-735.servicestream.io/live/ef92c235d45c.m3u8',
+        proxy: 'https://cors-anywhere.herokuapp.com/rtsp://grupobr277:Grupobr277@200.195.141.246:654/00000001-0000-babe-0000-0002d1b3afb2/live'
+    },
+    {
+        id: 'cam4',
+        titulo: 'BR-277 - Km 75 (Araucária)',
+        descricao: 'Câmera 4 - Acesso às refinarias',
+        lat: -25.6123,
+        lng: -49.4123,
+        rtsp: 'rtsp://grupobr277:Grupobr277@200.195.141.246:654/00000001-0000-babe-0000-0002d1b3afb0/live',
+        rtmp: 'rtmp://connect-735.servicestream.io:1936/stream/75133459b2d6',
+        hls: 'https://connect-735.servicestream.io/live/75133459b2d6.m3u8',
+        proxy: 'https://cors-anywhere.herokuapp.com/rtsp://grupobr277:Grupobr277@200.195.141.246:654/00000001-0000-babe-0000-0002d1b3afb0/live'
     }
 ];
 
@@ -1658,65 +1573,32 @@ function criarMarcadorCamera(camera) {
         </h3>
         <p style="color: #ccc; font-size: 12px; margin-bottom: 10px;">${camera.descricao}</p>
         <div id="player-container-${camera.id}">
-            <video id="${playerId}" class="video-js vjs-default-skin" controls preload="auto" width="320" height="200">
+            <video id="${playerId}" class="video-js vjs-default-skin" controls preload="auto" width="400" height="250">
                 <source src="${camera.rtmp}" type="rtmp/mp4">
                 <source src="${camera.hls}" type="application/x-mpegURL">
             </video>
         </div>
-        <div style="display:flex; gap:5px; margin-top:8px; justify-content:center;">
-            <span style="color:#4caf50; font-size:11px;">🔴 AO VIVO</span>
-            <span style="color:#ffd700; font-size:11px;">🔄 Testando RTSP/RTMP/HLS</span>
+        <div style="margin-top: 10px; text-align: center;">
+            <button onclick="tentarReproduzir('${camera.id}', '${camera.rtmp}', '${camera.hls}', '${camera.proxy}')" style="background: #4caf50; color: white; border: none; padding: 5px 15px; border-radius: 20px; cursor: pointer; margin-right: 5px;">
+                🔄 Tentar Novamente
+            </button>
+            <a href="${camera.rtsp}" target="_blank" style="background: #ffd700; color: #1a1a1a; text-decoration: none; padding: 5px 15px; border-radius: 20px; display: inline-block;">
+                📹 Abrir no VLC
+            </a>
         </div>
+        <p style="color: #4caf50; font-size: 11px; margin-top: 8px; text-align: center;">
+            🔴 AO VIVO • Clique no botão para tentar reproduzir
+        </p>
     `;
     
     marcador.on('click', () => {
         marcador.bindPopup(popupContent, {
-            maxWidth: 420,
+            maxWidth: 450,
             className: 'custom-popup'
         }).openPopup();
         
         setTimeout(() => {
-            const videoElement = document.getElementById(playerId);
-            if (videoElement && !playersVideo[camera.id]) {
-                try {
-                    // Tentar HLS primeiro
-                    if (Hls.isSupported() && camera.hls) {
-                        const hls = new Hls();
-                        hls.loadSource(camera.hls);
-                        hls.attachMedia(videoElement);
-                        hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                            videoElement.play().catch(() => {});
-                        });
-                        console.log('📹 HLS carregado para:', camera.titulo);
-                    } else {
-                        // Fallback para video.js
-                        const player = videojs(videoElement, {
-                            techOrder: ['html5', 'flash'],
-                            flash: { swf: 'https://vjs.zencdn.net/swf/5.4.2/video-js.swf' },
-                            autoplay: false,
-                            controls: true
-                        });
-                        
-                        playersVideo[camera.id] = player;
-                        
-                        // Tentar RTMP se disponível
-                        if (camera.rtmp) {
-                            player.src({ src: camera.rtmp, type: 'rtmp/mp4' });
-                        }
-                    }
-                } catch (e) {
-                    console.error('❌ Erro ao iniciar player:', e);
-                    const container = document.getElementById(`player-container-${camera.id}`);
-                    if (container) {
-                        container.innerHTML = `
-                            <div style="background: #e53935; color: white; padding: 15px; border-radius: 10px; text-align: center;">
-                                <strong>📹 Link da câmera:</strong><br>
-                                <a href="${camera.rtsp}" style="color: #ffd700; word-break: break-all;" target="_blank">Abrir no VLC</a>
-                            </div>
-                        `;
-                    }
-                }
-            }
+            tentarReproduzir(camera.id, camera.rtmp, camera.hls, camera.proxy);
         }, 500);
     });
     
@@ -1726,6 +1608,95 @@ function criarMarcadorCamera(camera) {
             delete playersVideo[camera.id];
         }
     });
+}
+
+// ===== FUNÇÃO PARA TENTAR REPRODUZIR VÍDEO =====
+function tentarReproduzir(cameraId, rtmpUrl, hlsUrl, proxyUrl) {
+    const videoElement = document.getElementById('player-' + cameraId);
+    if (!videoElement) return;
+    
+    try {
+        // Tentar HLS primeiro
+        if (Hls.isSupported() && hlsUrl) {
+            if (playersVideo[cameraId]) {
+                playersVideo[cameraId].dispose();
+            }
+            
+            const hls = new Hls({
+                enableWorker: true,
+                lowLatencyMode: true,
+                backBufferLength: 90
+            });
+            
+            hls.loadSource(hlsUrl);
+            hls.attachMedia(videoElement);
+            
+            hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                videoElement.play().catch(e => console.log('Auto-play bloqueado:', e));
+            });
+            
+            hls.on(Hls.Events.ERROR, (event, data) => {
+                console.log('HLS Error:', data);
+                // Se HLS falhar, tentar RTMP
+                tentarRTMP(cameraId, rtmpUrl);
+            });
+            
+            playersVideo[cameraId] = hls;
+        } else {
+            // Fallback para RTMP
+            tentarRTMP(cameraId, rtmpUrl);
+        }
+    } catch (e) {
+        console.error('Erro ao tentar reproduzir:', e);
+        tentarRTMP(cameraId, rtmpUrl);
+    }
+}
+
+// ===== FUNÇÃO PARA TENTAR RTMP =====
+function tentarRTMP(cameraId, rtmpUrl) {
+    const videoElement = document.getElementById('player-' + cameraId);
+    if (!videoElement) return;
+    
+    try {
+        if (playersVideo[cameraId] && playersVideo[cameraId].dispose) {
+            playersVideo[cameraId].dispose();
+        }
+        
+        const player = videojs(videoElement, {
+            techOrder: ['html5', 'flash'],
+            flash: { swf: 'https://vjs.zencdn.net/swf/5.4.2/video-js.swf' },
+            autoplay: false,
+            controls: true,
+            sources: [{
+                src: rtmpUrl,
+                type: 'rtmp/mp4'
+            }]
+        });
+        
+        playersVideo[cameraId] = player;
+        
+        player.ready(() => {
+            player.play().catch(() => {
+                console.log('Auto-play bloqueado para RTMP');
+            });
+        });
+        
+    } catch (e) {
+        console.error('Erro no RTMP:', e);
+        // Mostrar mensagem de fallback
+        const container = document.getElementById(`player-container-${cameraId}`);
+        if (container) {
+            container.innerHTML = `
+                <div style="background: #e53935; color: white; padding: 20px; border-radius: 10px; text-align: center;">
+                    <strong>⚠️ Não foi possível reproduzir</strong><br>
+                    <small style="color: #ffd700;">Use o link abaixo no VLC Media Player</small>
+                    <div style="background: #1a1a1a; padding: 10px; border-radius: 5px; margin-top: 10px; word-break: break-all;">
+                        rtsp://grupobr277:Grupobr277@200.195.141.246:654/...
+                    </div>
+                </div>
+            `;
+        }
+    }
 }
 
 // ===== FUNÇÃO PARA MANTER TELA ATIVA (WAKE LOCK) =====
@@ -1768,13 +1739,6 @@ if (userSalvo) {
     telefone = localStorage.getItem('br277_telefone') || '';
     veiculoUsuario = localStorage.getItem('br277_veiculo') || 'carro';
     
-    if (usuario === ADMIN_USER) {
-        document.getElementById('adminBadge').style.display = 'inline';
-        setTimeout(() => {
-            document.getElementById('adminPanel').style.display = 'flex';
-        }, 1000);
-    }
-    
     document.getElementById('welcomeModal').style.display = 'none';
     iniciarMapa();
     iniciarGPS();
@@ -1812,30 +1776,13 @@ function salvarCadastro() {
     carregarCameras();
 }
 
-// ===== PAINEL ADMIN =====
-function verificarAdmin() {
-    const senha = document.getElementById('adminSenha').value;
-    if (senha === ADMIN_PASSWORD) {
-        admin = true;
-        document.getElementById('adminBadge').style.display = 'inline';
-        document.getElementById('adminPanel').style.display = 'none';
-        alert('✅ Modo admin ativado!');
-    } else {
-        alert('❌ Senha incorreta!');
-    }
-}
-
-function fecharAdminPanel() {
-    document.getElementById('adminPanel').style.display = 'none';
-}
-
 // ===== CARREGAR CÂMERAS =====
 function carregarCameras() {
     setTimeout(() => {
         cameras.forEach(camera => {
             criarMarcadorCamera(camera);
         });
-        console.log('📹 Câmeras carregadas:', cameras.length);
+        console.log('📹 4 câmeras carregadas');
     }, 2000);
 }
 
@@ -1879,17 +1826,6 @@ function iniciarCluster() {
         zoomToBoundsOnClick: true
     });
     mapa.addLayer(clusterGroup);
-    
-    // Adicionar usuários ao cluster
-    setInterval(() => {
-        if (clusterGroup && Object.keys(usuariosAtivos).length > 0) {
-            Object.values(usuariosAtivos).forEach(marcador => {
-                if (!clusterGroup.hasLayer(marcador)) {
-                    clusterGroup.addLayer(marcador);
-                }
-            });
-        }
-    }, 5000);
 }
 
 // ===== FUNÇÃO AUXILIAR HEX PARA RGB =====
@@ -2226,15 +2162,19 @@ function negarAlerta() {
     alertaAtual = null;
 }
 
-// ===== USUÁRIOS ATIVOS =====
+// ===== USUÁRIOS ATIVOS - CORRIGIDO =====
 function carregarUsuariosAtivos() {
     db.ref('usuarios_ativos').on('value', snap => {
         const usuarios = snap.val();
         
-        // Remover marcadores antigos
+        // Limpar marcadores antigos
         Object.values(usuariosAtivos).forEach(m => {
-            if (m && mapa && !clusterGroup?.hasLayer(m)) {
-                mapa.removeLayer(m);
+            if (m && mapa) {
+                if (clusterGroup) {
+                    clusterGroup.removeLayer(m);
+                } else {
+                    mapa.removeLayer(m);
+                }
             }
         });
         usuariosAtivos = {};
@@ -2244,21 +2184,22 @@ function carregarUsuariosAtivos() {
             return;
         }
         
-        const total = Object.keys(usuarios).length;
+        // Filtrar apenas usuários ativos nos últimos 10 segundos
+        const agora = Date.now();
+        const usuariosValidos = Object.entries(usuarios).filter(([id, dados]) => {
+            return dados && dados.timestamp && (agora - dados.timestamp < 10000);
+        });
+        
+        const total = usuariosValidos.length;
         document.getElementById('numUsuarios').textContent = total;
         
-        Object.entries(usuarios).forEach(([id, dados]) => {
+        usuariosValidos.forEach(([id, dados]) => {
             if (id === usuario) return;
-            if (Date.now() - dados.timestamp > 10000) {
-                db.ref('usuarios_ativos/' + id).remove();
-                return;
-            }
             
             const marcador = L.marker([dados.lat, dados.lng], {
                 icon: criarIconeCarro(false, 0)
             });
             
-            // Adicionar ao cluster em vez do mapa diretamente
             if (clusterGroup) {
                 clusterGroup.addLayer(marcador);
             } else {
@@ -2266,6 +2207,13 @@ function carregarUsuariosAtivos() {
             }
             
             usuariosAtivos[id] = marcador;
+        });
+        
+        // Remover usuários inativos do Firebase
+        Object.entries(usuarios).forEach(([id, dados]) => {
+            if (dados && dados.timestamp && (agora - dados.timestamp > 10000)) {
+                db.ref('usuarios_ativos/' + id).remove();
+            }
         });
     });
 }
@@ -2303,7 +2251,7 @@ function carregarAlertasFixos() {
     setInterval(() => {
         const agora = Date.now();
         Object.keys(alertasMapa).forEach(id => {
-            if (agora - alertasMapa[id].timestamp > 1200000) {
+            if (agora - alertasMapa[id].timestamp > 1200000) { // 20 minutos
                 db.ref('alertas_fixos/' + id).remove();
             }
         });
@@ -2554,7 +2502,6 @@ function carregarChatGeral() {
                     <div class="mensagem-acoes">
                         <span onclick="responderMsg('${msg.usuario}', '${msg.texto.replace(/'/g, "\\'")}')">↩️</span>
                         <span onclick="mencionarUsuario('${msg.usuario}')">@</span>
-                        ${isMinha || admin ? `<span onclick="apagarMsg('${msg.timestamp}')">🗑️</span>` : ''}
                     </div>
                 </div>
             `;
@@ -2601,14 +2548,6 @@ function mencionarUsuario(user) {
     const nomeMencao = user.replace(/\s+/g, '');
     input.value += ` @${nomeMencao} `;
     input.focus();
-}
-
-function apagarMsg(timestamp) {
-    if (confirm('Apagar mensagem?')) {
-        db.ref('chat_geral').orderByChild('timestamp').equalTo(parseInt(timestamp)).once('value', snap => {
-            snap.forEach(child => child.ref.remove());
-        });
-    }
 }
 
 function formatarData(data) {
@@ -2686,12 +2625,12 @@ botaoPX.addEventListener('click', async function() {
                 }
             }, 1000);
             
-            // Timeout de segurança
+            // Timeout de segurança (19.5 segundos)
             timeoutAutoEnvio = setTimeout(() => {
                 if (gravador && gravador.state === 'recording') {
                     pararGravacao(false);
                 }
-            }, 19500); // 19.5 segundos para garantir
+            }, 19500);
             
         } catch(e) {
             alert('Permita acesso ao microfone para usar o rádio PX');
