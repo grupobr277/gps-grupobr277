@@ -393,6 +393,297 @@
             100% { transform: scale(1); opacity: 1; box-shadow: 0 0 15px #00ff00; }
         }
         
+        /* ===== TUTORIAL DE GESTOS COM PINÇA ===== */
+        .tutorial-gestos {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 999999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .tutorial-overlay {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+        }
+        
+        .tutorial-content {
+            position: relative;
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            border: 3px solid #ffd700;
+            border-radius: 50px;
+            padding: 40px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            animation: pulse-glow 2s infinite;
+            z-index: 1000000;
+        }
+        
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 0 rgba(255,215,0,0.3); }
+            70% { box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 30px 10px rgba(255,215,0,0.3); }
+            100% { box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 0 rgba(255,215,0,0.3); }
+        }
+        
+        .tutorial-animacao {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            position: relative;
+            min-height: 180px;
+        }
+        
+        .mao-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto;
+        }
+        
+        .mao-base {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: rgba(255,215,0,0.2);
+            border: 3px solid #ffd700;
+            border-radius: 50% 50% 40% 40%;
+            bottom: 20px;
+            left: 35px;
+            z-index: 2;
+        }
+        
+        .mao-base i {
+            position: absolute;
+            font-size: 40px;
+            color: #ffd700;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .dedos {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+        
+        .dedo {
+            position: absolute;
+            width: 25px;
+            height: 50px;
+            background: rgba(255,215,0,0.3);
+            border: 2px solid #ffd700;
+            border-radius: 40% 40% 30% 30%;
+            top: 20px;
+            transition: all 0.5s ease;
+        }
+        
+        .dedo1 {
+            left: 30px;
+            transform-origin: bottom center;
+            animation: pinça-in 2s infinite;
+        }
+        
+        .dedo2 {
+            right: 30px;
+            transform-origin: bottom center;
+            animation: pinça-in 2s infinite;
+            animation-delay: 0.1s;
+        }
+        
+        .dedo3 {
+            left: 45px;
+            width: 20px;
+            height: 45px;
+            top: 25px;
+            transform-origin: bottom center;
+            animation: pinça-in 2s infinite;
+            animation-delay: 0.05s;
+        }
+        
+        .dedo4 {
+            right: 45px;
+            width: 20px;
+            height: 45px;
+            top: 25px;
+            transform-origin: bottom center;
+            animation: pinça-in 2s infinite;
+            animation-delay: 0.15s;
+        }
+        
+        @keyframes pinça-in {
+            0% {
+                transform: rotate(0deg) translateY(0);
+                background: rgba(255,215,0,0.3);
+            }
+            25% {
+                transform: rotate(-15deg) translateY(-5px);
+                background: rgba(255,215,0,0.8);
+            }
+            50% {
+                transform: rotate(0deg) translateY(0);
+                background: rgba(255,215,0,0.3);
+            }
+            75% {
+                transform: rotate(15deg) translateY(-5px);
+                background: rgba(255,215,0,0.8);
+            }
+            100% {
+                transform: rotate(0deg) translateY(0);
+                background: rgba(255,215,0,0.3);
+            }
+        }
+        
+        .dedos-out .dedo {
+            animation: pinça-out 2s infinite;
+        }
+        
+        @keyframes pinça-out {
+            0% {
+                transform: rotate(0deg) translateY(0);
+                background: rgba(255,215,0,0.3);
+            }
+            25% {
+                transform: rotate(15deg) translateY(-5px);
+                background: rgba(255,215,0,0.8);
+            }
+            50% {
+                transform: rotate(0deg) translateY(0);
+                background: rgba(255,215,0,0.3);
+            }
+            75% {
+                transform: rotate(-15deg) translateY(-5px);
+                background: rgba(255,215,0,0.8);
+            }
+            100% {
+                transform: rotate(0deg) translateY(0);
+                background: rgba(255,215,0,0.3);
+            }
+        }
+        
+        .seta-movimento {
+            position: absolute;
+            font-size: 24px;
+            color: #ffd700;
+            opacity: 0;
+            animation: seta-pisca 2s infinite;
+            text-shadow: 0 0 10px rgba(255,215,0,0.8);
+        }
+        
+        .seta-fora1 {
+            top: 10px;
+            left: 20px;
+            animation: seta-fora 2s infinite;
+        }
+        
+        .seta-fora2 {
+            top: 10px;
+            right: 20px;
+            animation: seta-fora 2s infinite;
+            animation-delay: 0.2s;
+        }
+        
+        .seta-dentro1 {
+            bottom: 40px;
+            left: 40px;
+            animation: seta-dentro 2s infinite;
+            animation-delay: 0.1s;
+        }
+        
+        .seta-dentro2 {
+            bottom: 40px;
+            right: 40px;
+            animation: seta-dentro 2s infinite;
+            animation-delay: 0.3s;
+        }
+        
+        @keyframes seta-fora {
+            0% { opacity: 0; transform: translate(0, 0); }
+            25% { opacity: 1; transform: translate(-5px, -5px); }
+            50% { opacity: 0; transform: translate(-10px, -10px); }
+            100% { opacity: 0; transform: translate(0, 0); }
+        }
+        
+        @keyframes seta-dentro {
+            0% { opacity: 0; transform: translate(0, 0); }
+            25% { opacity: 1; transform: translate(5px, 5px); }
+            50% { opacity: 0; transform: translate(10px, 10px); }
+            100% { opacity: 0; transform: translate(0, 0); }
+        }
+        
+        .tutorial-texto {
+            margin: 20px 0;
+        }
+        
+        .tutorial-texto h3 {
+            color: #ffd700;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+        
+        .tutorial-texto p {
+            color: white;
+            font-size: 16px;
+            margin: 10px 0;
+            padding: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 30px;
+        }
+        
+        .tutorial-btn {
+            margin-top: 25px;
+            background: #ffd700;
+            color: #1a1a1a;
+            border: none;
+            border-radius: 40px;
+            padding: 12px 35px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid white;
+        }
+        
+        .tutorial-btn:hover {
+            transform: scale(1.05);
+            background: #b8860b;
+            color: white;
+        }
+        
+        .sequencia-indicador {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .sequencia-bolinha {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transition: all 0.3s;
+        }
+        
+        .sequencia-bolinha.ativo {
+            background: #ffd700;
+            box-shadow: 0 0 10px #ffd700;
+            transform: scale(1.2);
+        }
+        
         /* VELOCÍMETRO */
         .velocimetro-container {
             position: fixed;
@@ -1192,6 +1483,44 @@
     </div>
 </div>
 
+<!-- TUTORIAL DE GESTOS COM PINÇA -->
+<div class="tutorial-gestos" id="tutorialGestos">
+    <div class="tutorial-overlay"></div>
+    <div class="tutorial-content">
+        <div class="tutorial-animacao">
+            <div class="mao-container">
+                <div class="mao-base">
+                    <i class="fas fa-hand-paper"></i>
+                </div>
+                
+                <div class="dedos" id="dedosAnimacao">
+                    <div class="dedo dedo1"></div>
+                    <div class="dedo dedo2"></div>
+                    <div class="dedo dedo3"></div>
+                    <div class="dedo dedo4"></div>
+                </div>
+                
+                <div class="seta-movimento seta-fora1">↖️</div>
+                <div class="seta-movimento seta-fora2">↗️</div>
+                <div class="seta-movimento seta-dentro1">↙️</div>
+                <div class="seta-movimento seta-dentro2">↘️</div>
+            </div>
+            
+            <div class="sequencia-indicador">
+                <div class="sequencia-bolinha ativo" id="seq1"></div>
+                <div class="sequencia-bolinha" id="seq2"></div>
+            </div>
+        </div>
+        
+        <div class="tutorial-texto">
+            <h3>Navegue pelo mapa</h3>
+            <p id="tutorialTexto">👉 Junte os dedos para <strong>aproximar</strong></p>
+        </div>
+        
+        <button class="tutorial-btn" onclick="fecharTutorial()">ENTENDI</button>
+    </div>
+</div>
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
@@ -1231,7 +1560,10 @@ let alertasMapa = {};
 let alertasConfirmados = {};
 let pulsantesAlertas = {};
 let marcadorDestino = null;
-let wakeLock = null; // Para manter tela ativa
+let wakeLock = null;
+let tutorialAtivo = false;
+let sequenciaTutorial = 1;
+let intervaloAnimacao = null;
 
 // ===== 10 ALERTAS =====
 const alertas = [
@@ -1269,12 +1601,81 @@ async function ativarWakeLock() {
     }
 }
 
-// Reativa quando a página voltar a ficar visível
 document.addEventListener('visibilitychange', async () => {
     if (document.visibilityState === 'visible' && !wakeLock) {
         await ativarWakeLock();
     }
 });
+
+// ===== FUNÇÕES DO TUTORIAL =====
+function alternarSequenciaPinça() {
+    const dedos = document.getElementById('dedosAnimacao');
+    const texto = document.getElementById('tutorialTexto');
+    const seq1 = document.getElementById('seq1');
+    const seq2 = document.getElementById('seq2');
+    
+    if (intervaloAnimacao) clearInterval(intervaloAnimacao);
+    
+    intervaloAnimacao = setInterval(() => {
+        if (tutorialAtivo) {
+            if (sequenciaTutorial === 1) {
+                dedos.classList.remove('dedos-out');
+                texto.innerHTML = '👉 Junte os dedos para <strong>aproximar</strong>';
+                seq1.classList.add('ativo');
+                seq2.classList.remove('ativo');
+                sequenciaTutorial = 2;
+            } else {
+                dedos.classList.add('dedos-out');
+                texto.innerHTML = '👐 Afaste os dedos para <strong>afastar</strong>';
+                seq2.classList.add('ativo');
+                seq1.classList.remove('ativo');
+                sequenciaTutorial = 1;
+            }
+        }
+    }, 4000);
+}
+
+function mostrarTutorialGestos() {
+    const tutorial = document.getElementById('tutorialGestos');
+    
+    const tutorialVisto = localStorage.getItem('br277_tutorial_visto');
+    const ultimaVisita = localStorage.getItem('br277_ultima_visita');
+    const agora = Date.now();
+    
+    if (!tutorialVisto || (ultimaVisita && (agora - parseInt(ultimaVisita)) > 2592000000)) {
+        tutorial.style.display = 'flex';
+        tutorialAtivo = true;
+        sequenciaTutorial = 1;
+        
+        alternarSequenciaPinça();
+        
+        setTimeout(() => {
+            if (tutorialAtivo) {
+                fecharTutorial();
+            }
+        }, 12000);
+        
+        localStorage.setItem('br277_tutorial_visto', 'true');
+    }
+    
+    localStorage.setItem('br277_ultima_visita', agora.toString());
+}
+
+function fecharTutorial() {
+    const tutorial = document.getElementById('tutorialGestos');
+    tutorial.style.display = 'none';
+    tutorialAtivo = false;
+    if (intervaloAnimacao) {
+        clearInterval(intervaloAnimacao);
+        intervaloAnimacao = null;
+    }
+}
+
+function fecharTutorialAoInteragir() {
+    if (tutorialAtivo) {
+        fecharTutorial();
+    }
+}
 
 // ===== FUNÇÕES DO MODAL =====
 function selecionarVeiculo(tipo, icone) {
@@ -1515,12 +1916,25 @@ function iniciarMapa() {
     mapa.on('dragstart', () => {
         seguirLocalizacao = false;
         document.getElementById('btnRecenter').style.display = 'block';
+        fecharTutorialAoInteragir();
+    });
+    
+    mapa.on('zoomstart', () => {
+        fecharTutorialAoInteragir();
+    });
+    
+    mapa.on('click', () => {
+        fecharTutorialAoInteragir();
     });
     
     mapa.on('zoomend', () => {
         zoomAtual = mapa.getZoom();
         atualizarIconeCarro();
     });
+    
+    setTimeout(() => {
+        mostrarTutorialGestos();
+    }, 1500);
 }
 
 // ===== ATUALIZA VELOCÍMETRO =====
@@ -1626,7 +2040,6 @@ function iniciarGPS() {
         db.ref('usuarios_ativos/' + usuario).remove();
     });
     
-    // Ativar Wake Lock após 3 segundos (quando GPS já estiver funcionando)
     setTimeout(() => ativarWakeLock(), 3000);
 }
 
