@@ -393,8 +393,8 @@
             100% { transform: scale(1); opacity: 1; box-shadow: 0 0 15px #00ff00; }
         }
         
-        /* ===== TUTORIAL DE MÃOS FANTASMAS TRANSPARENTES ===== */
-        .tutorial-gestos {
+        /* ===== TUTORIAL PROFISSIONAL DE PINÇA ===== */
+        .tutorial-pinca {
             position: fixed;
             top: 0;
             left: 0;
@@ -411,218 +411,225 @@
             height: 100%;
             background: rgba(0,0,0,0.2);
             backdrop-filter: blur(2px);
-            transition: all 0.5s ease;
+            transition: all 0.5s;
         }
         
-        .maos-fantasma {
+        .mao-container {
             position: absolute;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 60px;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-            z-index: 1000000;
+            bottom: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 400px;
         }
         
+        /* Antebraço */
+        .antebraco {
+            position: absolute;
+            width: 80px;
+            height: 150px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 40px 40px 20px 20px;
+            bottom: -80px;
+            left: 110px;
+            transform: rotate(-5deg);
+            backdrop-filter: blur(5px);
+        }
+        
+        /* Mão principal */
         .mao {
-            position: relative;
-            width: 140px;
-            height: 200px;
-            opacity: 0.35;
-            filter: drop-shadow(0 0 30px rgba(255,255,255,0.8));
-            animation: flutuar 4s ease-in-out infinite;
+            position: absolute;
+            width: 250px;
+            height: 250px;
+            bottom: 0;
+            left: 25px;
         }
         
+        /* Base da mão */
         .mao::before {
             content: '';
             position: absolute;
-            width: 100%;
-            height: 100%;
-            background: rgba(255,255,255,0.15);
-            border: 3px solid rgba(255,255,255,0.5);
-            border-radius: 70px 70px 50px 50px;
-            backdrop-filter: blur(4px);
-            box-shadow: 0 0 40px rgba(255,255,255,0.3);
-        }
-        
-        .mao::after {
-            content: '';
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 50%;
-            bottom: 20px;
+            width: 150px;
+            height: 120px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
+            border: 2px solid rgba(255,255,255,0.4);
+            border-radius: 70px 70px 40px 40px;
+            bottom: 0;
             left: 50px;
-            border: 3px solid rgba(255,255,255,0.6);
-            box-shadow: 0 0 20px rgba(255,255,255,0.4);
+            backdrop-filter: blur(5px);
         }
         
-        .dedos {
+        /* Dedos */
+        .dedo {
             position: absolute;
-            width: 100%;
-            height: 90px;
-            top: 15px;
             display: flex;
-            justify-content: center;
-            gap: 12px;
-        }
-        
-        .dedos::before,
-        .dedos::after,
-        .dedos span {
-            content: '';
-            width: 25px;
-            height: 70px;
-            background: rgba(255,255,255,0.15);
-            border: 3px solid rgba(255,255,255,0.5);
-            border-radius: 25px 25px 15px 15px;
+            flex-direction: column;
+            align-items: center;
             transform-origin: bottom center;
-            box-shadow: 0 0 20px rgba(255,255,255,0.3);
-            backdrop-filter: blur(2px);
         }
         
-        .dedos span {
-            display: block;
+        .falange {
+            width: 30px;
+            height: 35px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.1));
+            border: 2px solid rgba(255,255,255,0.5);
+            border-radius: 20px 20px 10px 10px;
+            margin: -2px 0;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 0 15px rgba(255,255,255,0.2);
         }
         
-        /* Polegar */
-        .mao::before {
+        .falange1 { height: 40px; }
+        .falange2 { height: 35px; }
+        .falange3 { height: 30px; }
+        
+        /* Posicionamento dos dedos */
+        .polegar {
+            bottom: 80px;
+            left: 20px;
+            transform: rotate(-30deg);
+            z-index: 3;
+        }
+        
+        .indicador {
+            bottom: 70px;
+            left: 70px;
+            transform: rotate(5deg);
+            z-index: 4;
+        }
+        
+        .medio {
+            bottom: 65px;
+            left: 110px;
+            transform: rotate(8deg);
+            z-index: 3;
+        }
+        
+        .anelar {
+            bottom: 70px;
+            left: 150px;
+            transform: rotate(3deg);
+            z-index: 2;
+        }
+        
+        .minimo {
+            bottom: 80px;
+            left: 190px;
+            transform: rotate(-5deg);
+            z-index: 1;
+        }
+        
+        /* Animações dos dedos */
+        @keyframes pinca-fechar {
+            0%, 100% {
+                transform: rotate(-30deg) translateX(0) translateY(0);
+            }
+            25% {
+                transform: rotate(-20deg) translateX(5px) translateY(-5px);
+            }
+            50% {
+                transform: rotate(-30deg) translateX(0) translateY(0);
+            }
+            75% {
+                transform: rotate(-40deg) translateX(-5px) translateY(5px);
+            }
+        }
+        
+        @keyframes pinca-abrir {
+            0%, 100% {
+                transform: rotate(5deg) translateX(0) translateY(0);
+            }
+            25% {
+                transform: rotate(15deg) translateX(-5px) translateY(-8px);
+            }
+            50% {
+                transform: rotate(5deg) translateX(0) translateY(0);
+            }
+            75% {
+                transform: rotate(-5deg) translateX(5px) translateY(5px);
+            }
+        }
+        
+        .polegar {
+            animation: pinca-fechar 3s ease-in-out infinite;
+        }
+        
+        .indicador {
+            animation: pinca-abrir 3s ease-in-out infinite;
+        }
+        
+        /* Efeito de brilho nos dedos */
+        .dedo::after {
             content: '';
             position: absolute;
-            width: 35px;
-            height: 60px;
-            background: rgba(255,255,255,0.15);
-            border: 3px solid rgba(255,255,255,0.5);
-            border-radius: 30px 30px 20px 20px;
-            left: -10px;
-            top: 30px;
-            transform: rotate(-15deg);
-            box-shadow: 0 0 20px rgba(255,255,255,0.3);
+            top: 10%;
+            left: 10%;
+            width: 80%;
+            height: 30%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.4), transparent);
+            border-radius: 10px;
+            opacity: 0;
+            animation: brilho-dedo 3s ease-in-out infinite;
         }
         
-        /* Animação da mão esquerda */
-        .mao-esquerda {
-            transform-origin: center;
-            animation: flutuar-esquerda 4s ease-in-out infinite;
+        @keyframes brilho-dedo {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
         }
         
-        .mao-esquerda .dedos::before {
-            animation: dedo-mexe-esq-1 3s ease-in-out infinite;
-        }
-        .mao-esquerda .dedos::after {
-            animation: dedo-mexe-esq-2 3.2s ease-in-out infinite;
-        }
-        .mao-esquerda .dedos span {
-            animation: dedo-mexe-esq-3 2.8s ease-in-out infinite;
-        }
-        
-        /* Animação da mão direita */
-        .mao-direita {
-            transform-origin: center;
-            animation: flutuar-direita 4s ease-in-out infinite;
+        /* Indicador de zoom */
+        .zoom-indicator {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 80px;
+            animation: flutua-zoom 3s ease-in-out infinite;
         }
         
-        .mao-direita .dedos::before {
-            animation: dedo-mexe-dir-1 3.1s ease-in-out infinite;
-        }
-        .mao-direita .dedos::after {
-            animation: dedo-mexe-dir-2 2.9s ease-in-out infinite;
-        }
-        .mao-direita .dedos span {
-            animation: dedo-mexe-dir-3 3.3s ease-in-out infinite;
-        }
-        
-        @keyframes dedo-mexe-esq-1 {
-            0%, 100% { transform: rotate(0deg) translateY(0); }
-            25% { transform: rotate(-8deg) translateY(-8px); }
-            75% { transform: rotate(6deg) translateY(-5px); }
-        }
-        
-        @keyframes dedo-mexe-esq-2 {
-            0%, 100% { transform: rotate(0deg) translateY(0); }
-            30% { transform: rotate(-12deg) translateY(-12px); }
-            70% { transform: rotate(5deg) translateY(-7px); }
-        }
-        
-        @keyframes dedo-mexe-esq-3 {
-            0%, 100% { transform: rotate(0deg) translateY(0); }
-            35% { transform: rotate(-15deg) translateY(-15px); }
-            65% { transform: rotate(4deg) translateY(-10px); }
-        }
-        
-        @keyframes dedo-mexe-dir-1 {
-            0%, 100% { transform: rotate(0deg) translateY(0); }
-            25% { transform: rotate(8deg) translateY(-8px); }
-            75% { transform: rotate(-6deg) translateY(-5px); }
-        }
-        
-        @keyframes dedo-mexe-dir-2 {
-            0%, 100% { transform: rotate(0deg) translateY(0); }
-            30% { transform: rotate(12deg) translateY(-12px); }
-            70% { transform: rotate(-5deg) translateY(-7px); }
-        }
-        
-        @keyframes dedo-mexe-dir-3 {
-            0%, 100% { transform: rotate(0deg) translateY(0); }
-            35% { transform: rotate(15deg) translateY(-15px); }
-            65% { transform: rotate(-4deg) translateY(-10px); }
-        }
-        
-        @keyframes flutuar-esquerda {
-            0%, 100% { transform: translateX(0) translateY(0) rotate(-8deg); }
-            50% { transform: translateX(-30px) translateY(-15px) rotate(-5deg); }
-        }
-        
-        @keyframes flutuar-direita {
-            0%, 100% { transform: translateX(0) translateY(0) rotate(8deg); }
-            50% { transform: translateX(30px) translateY(-15px) rotate(5deg); }
-        }
-        
-        @keyframes flutuar {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
+        @keyframes flutua-zoom {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-10px); }
         }
         
         /* Mensagem do tutorial */
         .tutorial-mensagem {
             position: absolute;
-            bottom: 25%;
+            bottom: 10%;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0,0,0,0.6);
+            text-align: center;
+            background: rgba(0,0,0,0.7);
             backdrop-filter: blur(10px);
-            color: white;
-            padding: 15px 35px;
+            padding: 15px 30px;
             border-radius: 60px;
-            border: 2px solid rgba(255,255,255,0.5);
-            font-size: 18px;
+            border: 2px solid rgba(255,215,0,0.5);
+            box-shadow: 0 0 30px rgba(255,215,0,0.3);
+            animation: pulse-mensagem 2s ease-in-out infinite;
+            z-index: 1000000;
+        }
+        
+        .mensagem-principal {
+            display: block;
+            color: #ffd700;
+            font-size: 20px;
             font-weight: bold;
             letter-spacing: 1px;
-            animation: pulse-mensagem 2s ease-in-out infinite;
-            white-space: nowrap;
-            pointer-events: none;
-            z-index: 1000001;
-            box-shadow: 0 0 30px rgba(0,0,0,0.3);
+            margin-bottom: 5px;
+        }
+        
+        .mensagem-secundaria {
+            display: block;
+            color: white;
+            font-size: 14px;
+            opacity: 0.8;
         }
         
         @keyframes pulse-mensagem {
-            0%, 100% { opacity: 0.9; transform: translateX(-50%) scale(1); }
-            50% { opacity: 1; transform: translateX(-50%) scale(1.05); }
-        }
-        
-        /* Efeito de brilho nas bordas */
-        .mao::before, .mao::after, .dedos::before, .dedos::after, .dedos span {
-            animation: brilho 3s ease-in-out infinite;
-        }
-        
-        @keyframes brilho {
-            0%, 100% { border-color: rgba(255,255,255,0.5); }
-            50% { border-color: rgba(255,255,255,0.9); }
+            0%, 100% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.02); }
         }
         
         /* VELOCÍMETRO */
@@ -1424,23 +1431,69 @@
     </div>
 </div>
 
-<!-- TUTORIAL DE MÃOS FANTASMAS TRANSPARENTES -->
-<div class="tutorial-gestos" id="tutorialGestos">
+<!-- TUTORIAL PROFISSIONAL DE PINÇA -->
+<div class="tutorial-pinca" id="tutorialPinca">
     <div class="tutorial-overlay"></div>
-    <div class="maos-fantasma">
-        <div class="mao mao-esquerda" id="maoEsquerda">
-            <div class="dedos">
-                <span></span>
+    <div class="mao-container">
+        <!-- Antebraço -->
+        <div class="antebraco"></div>
+        
+        <!-- Mão principal -->
+        <div class="mao">
+            <!-- Polegar -->
+            <div class="dedo polegar" id="polegar">
+                <div class="falange falange1"></div>
+                <div class="falange falange2"></div>
+                <div class="falange falange3"></div>
+            </div>
+            
+            <!-- Indicador -->
+            <div class="dedo indicador" id="indicador">
+                <div class="falange falange1"></div>
+                <div class="falange falange2"></div>
+                <div class="falange falange3"></div>
+            </div>
+            
+            <!-- Dedo médio (parado) -->
+            <div class="dedo medio" id="medio">
+                <div class="falange falange1"></div>
+                <div class="falange falange2"></div>
+                <div class="falange falange3"></div>
+            </div>
+            
+            <!-- Dedo anelar (parado) -->
+            <div class="dedo anelar" id="anelar">
+                <div class="falange falange1"></div>
+                <div class="falange falange2"></div>
+                <div class="falange falange3"></div>
+            </div>
+            
+            <!-- Dedo mínimo (parado) -->
+            <div class="dedo minimo" id="minimo">
+                <div class="falange falange1"></div>
+                <div class="falange falange2"></div>
+                <div class="falange falange3"></div>
             </div>
         </div>
-        <div class="mao mao-direita" id="maoDireita">
-            <div class="dedos">
-                <span></span>
-            </div>
+        
+        <!-- Indicador de zoom -->
+        <div class="zoom-indicator">
+            <svg width="60" height="60" viewBox="0 0 60 60">
+                <circle cx="30" cy="30" r="28" fill="none" stroke="#ffd700" stroke-width="2" stroke-dasharray="6 6">
+                    <animate attributeName="r" values="28;32;28" dur="3s" repeatCount="indefinite" />
+                    <animate attributeName="stroke-dashoffset" values="0;50;0" dur="3s" repeatCount="indefinite" />
+                </circle>
+                <text x="30" y="35" text-anchor="middle" fill="#ffd700" font-size="20" font-weight="bold">+</text>
+                <text x="30" y="35" text-anchor="middle" fill="#ffd700" font-size="20" font-weight="bold" opacity="0">
+                    <animate attributeName="opacity" values="0;1;0" dur="3s" repeatCount="indefinite" />
+                </text>
+            </svg>
         </div>
     </div>
-    <div class="tutorial-mensagem" id="tutorialMensagem">
-        Use dois dedos para navegar
+    
+    <div class="tutorial-mensagem">
+        <span class="mensagem-principal">👆 Use dois dedos</span>
+        <span class="mensagem-secundaria">Aproxime e afaste para dar zoom</span>
     </div>
 </div>
 
@@ -1529,81 +1582,87 @@ document.addEventListener('visibilitychange', async () => {
     }
 });
 
-// ===== FUNÇÕES DO TUTORIAL DE MÃOS FANTASMAS =====
-function iniciarTutorialInterativo() {
-    const tutorial = document.getElementById('tutorialGestos');
+// ===== FUNÇÕES DO TUTORIAL PROFISSIONAL =====
+function iniciarTutorialProfissional() {
+    const tutorial = document.getElementById('tutorialPinca');
     const overlay = document.querySelector('.tutorial-overlay');
     
     tutorial.style.display = 'block';
     tutorialAtivo = true;
     
-    // Escurece o overlay gradualmente
+    // Escurece overlay suavemente
     setTimeout(() => {
         if (tutorialAtivo) {
             overlay.style.background = 'rgba(0,0,0,0.3)';
-            overlay.style.backdropFilter = 'blur(3px)';
         }
-    }, 300);
+    }, 200);
     
-    // Animação de zoom no mapa
-    let zoomTutorial = 13;
-    let direcao = 1;
+    // Sequência de zoom no mapa (suave e natural)
+    let zoomNiveis = [13, 13.5, 14, 14.5, 15, 14.5, 14, 13.5, 13, 12.5, 12, 11.5, 11, 11.5, 12, 12.5, 13];
+    let index = 0;
     
     intervaloZoomTutorial = setInterval(() => {
-        if (!tutorialAtivo) {
+        if (!tutorialAtivo || !mapa) {
             clearInterval(intervaloZoomTutorial);
             return;
         }
         
-        // Movimento suave de zoom in e zoom out
-        if (direcao === 1) {
-            zoomTutorial += 0.08;
-            if (zoomTutorial >= 15) direcao = -1;
-        } else {
-            zoomTutorial -= 0.08;
-            if (zoomTutorial <= 11) direcao = 1;
-        }
-        
-        if (mapa) {
-            mapa.setZoom(zoomTutorial);
-        }
-    }, 50);
+        mapa.setZoom(zoomNiveis[index]);
+        index = (index + 1) % zoomNiveis.length;
+    }, 400); // Muda a cada 0.4 segundos para movimento suave
     
-    // Auto-fechar após 12 segundos
+    // Fecha após 14 segundos (tempo para ver ciclo completo)
     setTimeout(() => {
         if (tutorialAtivo) {
-            fecharTutorial();
+            fecharTutorialProfissional();
         }
-    }, 12000);
+    }, 14000);
 }
 
-function fecharTutorial() {
-    const tutorial = document.getElementById('tutorialGestos');
+function fecharTutorialProfissional() {
+    const tutorial = document.getElementById('tutorialPinca');
     const overlay = document.querySelector('.tutorial-overlay');
+    const maoContainer = document.querySelector('.mao-container');
+    const mensagem = document.querySelector('.tutorial-mensagem');
     
     if (!tutorialAtivo) return;
     
     tutorialAtivo = false;
     
     // Animação de fade out
-    overlay.style.opacity = '0';
-    document.querySelector('.maos-fantasma').style.opacity = '0';
-    document.querySelector('.tutorial-mensagem').style.opacity = '0';
+    overlay.style.transition = 'opacity 0.5s';
+    maoContainer.style.transition = 'opacity 0.5s';
+    mensagem.style.transition = 'opacity 0.5s';
     
-    // Limpa o intervalo de zoom
+    overlay.style.opacity = '0';
+    maoContainer.style.opacity = '0';
+    mensagem.style.opacity = '0';
+    
+    // Limpa intervalo de zoom
     if (intervaloZoomTutorial) {
         clearInterval(intervaloZoomTutorial);
         intervaloZoomTutorial = null;
     }
     
-    // Remove o tutorial após a animação
+    // Remove tutorial após animação
     setTimeout(() => {
         tutorial.style.display = 'none';
-        // Restaura opacidade para próxima vez
+        // Restaura opacidades
         overlay.style.opacity = '1';
-        document.querySelector('.maos-fantasma').style.opacity = '0.35';
-        document.querySelector('.tutorial-mensagem').style.opacity = '1';
+        maoContainer.style.opacity = '1';
+        mensagem.style.opacity = '1';
+        
+        // Remove transições
+        overlay.style.transition = '';
+        maoContainer.style.transition = '';
+        mensagem.style.transition = '';
     }, 500);
+}
+
+function fecharTutorialAoInteragir() {
+    if (tutorialAtivo) {
+        fecharTutorialProfissional();
+    }
 }
 
 function mostrarTutorialSeNecessario() {
@@ -1611,21 +1670,25 @@ function mostrarTutorialSeNecessario() {
     const ultimaVisita = localStorage.getItem('br277_ultima_visita');
     const agora = Date.now();
     
-    // Mostra se nunca viu ou se passou mais de 30 dias
-    if (!tutorialVisto || (ultimaVisita && (agora - parseInt(ultimaVisita)) > 2592000000)) {
+    // Mostra se nunca viu
+    if (!tutorialVisto) {
         setTimeout(() => {
-            iniciarTutorialInterativo();
-        }, 2000);
-        
+            // Só mostra se o mapa já carregou e a localização do usuário apareceu
+            if (mapa && minhaLocalizacao) {
+                iniciarTutorialProfissional();
+            }
+        }, 3000);
         localStorage.setItem('br277_tutorial_visto', 'true');
-    }
-    
-    localStorage.setItem('br277_ultima_visita', agora.toString());
-}
-
-function fecharTutorialAoInteragir() {
-    if (tutorialAtivo) {
-        fecharTutorial();
+        localStorage.setItem('br277_ultima_visita', agora.toString());
+    } 
+    // Mostra se passou mais de 30 dias
+    else if (ultimaVisita && (agora - parseInt(ultimaVisita)) > 2592000000) {
+        setTimeout(() => {
+            if (mapa && minhaLocalizacao) {
+                iniciarTutorialProfissional();
+            }
+        }, 3000);
+        localStorage.setItem('br277_ultima_visita', agora.toString());
     }
 }
 
@@ -1883,8 +1946,6 @@ function iniciarMapa() {
         zoomAtual = mapa.getZoom();
         atualizarIconeCarro();
     });
-    
-    mostrarTutorialSeNecessario();
 }
 
 // ===== ATUALIZA VELOCÍMETRO =====
@@ -1965,6 +2026,9 @@ function iniciarGPS() {
                 veiculo: veiculoUsuario,
                 timestamp: Date.now()
             });
+            
+            // Tenta mostrar tutorial após localização carregar
+            mostrarTutorialSeNecessario();
             
         } else {
             meuMarcador.setLatLng(minhaLocalizacao);
