@@ -290,7 +290,7 @@
         .alerta-alagamento { background: linear-gradient(135deg, #2196f3, #1976d2); }
         .alerta-bloqueio { background: linear-gradient(135deg, #b71c1c, #8B0000); }
         
-        /* ===== BOTÃO X DO REPORTE - DEFINITIVAMENTE FORA ===== */
+        /* ===== BOTÃO X DO REPORTE ===== */
         .btn-fechar-painel {
             position: absolute;
             right: -50px;
@@ -324,7 +324,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
-        /* ===== LEGENDA DE TRÂNSITO - REPOSICIONADA ===== */
+        /* ===== LEGENDA DE TRÂNSITO ===== */
         .legenda-transito {
             position: fixed;
             top: 140px;
@@ -361,6 +361,37 @@
         .legenda-verde { background: #00ff00; box-shadow: 0 0 5px #00ff00; }
         .legenda-amarelo { background: #ffff00; box-shadow: 0 0 5px #ffff00; }
         .legenda-vermelho { background: #ff0000; box-shadow: 0 0 5px #ff0000; }
+        
+        /* ===== ALFINETE TECNOLÓGICO PRETO E VERDE COM LED ===== */
+        .alfinete-tecnologico {
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
+            animation: float 2s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .led-verde {
+            width: 12px;
+            height: 12px;
+            background: #00ff00;
+            border-radius: 50%;
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            box-shadow: 0 0 15px #00ff00;
+            animation: pulse-led-verde 1s infinite;
+            border: 2px solid white;
+        }
+        
+        @keyframes pulse-led-verde {
+            0% { transform: scale(1); opacity: 1; box-shadow: 0 0 15px #00ff00; }
+            50% { transform: scale(1.3); opacity: 0.8; box-shadow: 0 0 25px #00ff00; }
+            100% { transform: scale(1); opacity: 1; box-shadow: 0 0 15px #00ff00; }
+        }
         
         /* VELOCÍMETRO */
         .velocimetro-container {
@@ -1145,7 +1176,7 @@
     <span>Áudio recebido...</span>
 </div>
 
-<!-- LEGENDA DE TRÂNSITO - COM NOMES CURTOS -->
+<!-- LEGENDA DE TRÂNSITO -->
 <div class="legenda-transito">
     <div class="legenda-item">
         <div class="legenda-cor legenda-verde"></div>
@@ -1200,6 +1231,7 @@ let alertasMapa = {};
 let alertasConfirmados = {};
 let pulsantesAlertas = {};
 let marcadorDestino = null;
+let wakeLock = null; // Para manter tela ativa
 
 // ===== 10 ALERTAS =====
 const alertas = [
@@ -1214,6 +1246,35 @@ const alertas = [
     { tipo: 'alagamento', nome: 'ALAGAMENTO', icone: '💧', cor: '#2196f3' },
     { tipo: 'bloqueio', nome: 'BLOQUEIO', icone: '⛔', cor: '#b71c1c' }
 ];
+
+// ===== FUNÇÃO PARA MANTER TELA ATIVA (WAKE LOCK) =====
+async function ativarWakeLock() {
+    if ('wakeLock' in navigator) {
+        try {
+            wakeLock = await navigator.wakeLock.request('screen');
+            console.log('✅ Wake Lock ativado - tela não vai hibernar');
+            
+            wakeLock.addEventListener('release', () => {
+                console.log('⚠️ Wake Lock liberado, tentando reativar...');
+                if (document.visibilityState === 'visible') {
+                    ativarWakeLock();
+                }
+            });
+            
+        } catch (err) {
+            console.log('❌ Erro ao ativar Wake Lock:', err);
+        }
+    } else {
+        console.log('⚠️ Wake Lock não suportado neste navegador');
+    }
+}
+
+// Reativa quando a página voltar a ficar visível
+document.addEventListener('visibilitychange', async () => {
+    if (document.visibilityState === 'visible' && !wakeLock) {
+        await ativarWakeLock();
+    }
+});
 
 // ===== FUNÇÕES DO MODAL =====
 function selecionarVeiculo(tipo, icone) {
@@ -1411,11 +1472,12 @@ function criarIconeCarro(ehMeu = true, direcao = 0) {
     }
 }
 
-// ===== FUNÇÃO PARA CRIAR ALFINETE DO DESTINO =====
-function criarAlfineteDestino() {
+// ===== FUNÇÃO PARA CRIAR ALFINETE TECNOLÓGICO PRETO E VERDE =====
+function criarAlfineteTecnologico() {
     return L.divIcon({
-        html: `<div style="position:relative; width: 40px; height: 40px;">
-            <i class="fas fa-map-pin" style="color: black; font-size: 40px; filter: drop-shadow(0 0 0 3px #ffd700); -webkit-text-stroke: 3px #ffd700;"></i>
+        html: `<div class="alfinete-tecnologico" style="position:relative; width: 40px; height: 40px;">
+            <i class="fas fa-map-pin" style="color: #000000; font-size: 40px; filter: drop-shadow(0 0 0 3px #00ff00); -webkit-text-stroke: 2px #00ff00;"></i>
+            <div class="led-verde"></div>
         </div>`,
         className: '',
         iconSize: [40, 40],
@@ -1563,6 +1625,9 @@ function iniciarGPS() {
     window.addEventListener('beforeunload', () => {
         db.ref('usuarios_ativos/' + usuario).remove();
     });
+    
+    // Ativar Wake Lock após 3 segundos (quando GPS já estiver funcionando)
+    setTimeout(() => ativarWakeLock(), 3000);
 }
 
 // ===== VERIFICAR PROXIMIDADE COM ALERTAS =====
@@ -1793,7 +1858,7 @@ function formatarTempo(minutos) {
     }
 }
 
-// ===== ROTA COM AZUL SUAVE E ALFINETE NO DESTINO =====
+// ===== ROTA COM AZUL SUAVE E ALFINETE TECNOLÓGICO =====
 function buscarRota() {
     const destino = document.getElementById('buscaDestino').value;
     if (!destino || !minhaLocalizacao) return;
@@ -1813,7 +1878,7 @@ function buscarRota() {
             }
             
             marcadorDestino = L.marker(dest, {
-                icon: criarAlfineteDestino(),
+                icon: criarAlfineteTecnologico(),
                 zIndexOffset: 3000
             }).addTo(mapa);
             
