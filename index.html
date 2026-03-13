@@ -887,11 +887,11 @@
             max-width: 80%;
         }
         
-        .mensagem.minha {
+        .mensagem-wrapper.minha {
             align-self: flex-end;
         }
         
-        .mensagem.outra {
+        .mensagem-wrapper.outra {
             align-self: flex-start;
         }
         
@@ -900,21 +900,16 @@
             border-radius: 15px;
             font-size: 14px;
             word-wrap: break-word;
-            position: relative;
         }
         
-        .mensagem.minha .mensagem-conteudo {
+        .mensagem.minha {
             background: #dcf8c6;
             border-radius: 15px 15px 2px 15px;
         }
         
-        .mensagem.outra .mensagem-conteudo {
+        .mensagem.outra {
             background: white;
             border-radius: 15px 15px 15px 2px;
-        }
-        
-        .mensagem-conteudo {
-            padding: 8px 12px;
         }
         
         .mensagem-remetente {
@@ -1471,6 +1466,11 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
+<!-- LEAFET -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
+
 <script>
 // ===== CONFIGURAÇÕES =====
 const SCALABLE_CONFIG = {
@@ -1858,7 +1858,7 @@ function comprimirImagemParaBase64(blob, maxWidth) {
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, width, height);
             
-            // Converter para Base64 com qualidade 0.6 (economiza espaço)
+            // Converter para Base64 com qualidade 0.6
             const base64 = canvas.toDataURL('image/jpeg', 0.6);
             URL.revokeObjectURL(url);
             resolve(base64);
@@ -1951,12 +1951,31 @@ function abrirPopupAlerta(alerta, id) {
     `;
     conteudo.appendChild(header);
     
-    // Carregar mensagens do chat
+    // Se tiver imagem, mostra no topo do popup
+    if (alerta.imagem && alerta.imagem.thumbnail) {
+        const imgContainer = document.createElement('div');
+        imgContainer.style.cssText = `
+            padding: 10px;
+            text-align: center;
+            background: #1a1a1a;
+            border-bottom: 1px solid #333;
+        `;
+        imgContainer.innerHTML = `
+            <img src="${alerta.imagem.thumbnail}" 
+                 style="max-width: 100%; max-height: 150px; border-radius: 10px; border: 2px solid #ffd700; cursor: pointer;"
+                 onclick="window.open('${alerta.imagem.thumbnail}', '_blank')">
+            <div style="font-size: 11px; color: #ffd700; margin-top: 5px;">
+                📷 Clique para ampliar
+            </div>
+        `;
+        conteudo.appendChild(imgContainer);
+    }
+    
     const chatDiv = document.createElement('div');
     chatDiv.id = `chatAlerta-${id}`;
     chatDiv.style.cssText = `
         padding: 10px;
-        max-height: 300px;
+        max-height: 250px;
         overflow-y: auto;
         background: #f5f5f5;
     `;
@@ -2005,10 +2024,10 @@ function carregarMensagensAlerta(id) {
                 // Mensagem de imagem
                 html += `
                     <div style="display:flex; flex-direction:column; align-items:${isMinha ? 'flex-end' : 'flex-start'}; margin:10px 0;">
-                        <div style="max-width:80%; background:${isMinha ? '#dcf8c6' : 'white'}; border-radius:10px; padding:5px;">
-                            <small style="color:#666; display:block; margin-bottom:3px;"><b>${msg.usuario}</b></small>
-                            <img src="${msg.imagem}" style="max-width:200px; max-height:200px; border-radius:8px; cursor:pointer;" onclick="window.open('${msg.imagem}', '_blank')">
-                            <div style="display:flex; justify-content:${isMinha ? 'flex-end' : 'flex-start'}; margin-top:3px;">
+                        <div style="max-width:90%; background:${isMinha ? '#dcf8c6' : 'white'}; border-radius:10px; padding:8px;">
+                            <small style="color:#666; display:block; margin-bottom:5px;"><b>${msg.usuario}</b></small>
+                            <img src="${msg.imagem}" style="max-width:100%; max-height:150px; border-radius:8px; cursor:pointer;" onclick="window.open('${msg.imagem}', '_blank')">
+                            <div style="display:flex; justify-content:flex-end; margin-top:5px;">
                                 <small style="color:#999;">${msg.hora}</small>
                             </div>
                         </div>
@@ -2018,10 +2037,10 @@ function carregarMensagensAlerta(id) {
                 // Mensagem de texto
                 html += `
                     <div style="display:flex; flex-direction:column; align-items:${isMinha ? 'flex-end' : 'flex-start'}; margin:5px 0;">
-                        <div style="max-width:80%; background:${isMinha ? '#dcf8c6' : 'white'}; border-radius:10px; padding:8px;">
+                        <div style="max-width:90%; background:${isMinha ? '#dcf8c6' : 'white'}; border-radius:10px; padding:8px;">
                             <small style="color:#666; display:block; margin-bottom:3px;"><b>${msg.usuario}</b></small>
                             <div>${msg.texto}</div>
-                            <div style="display:flex; justify-content:${isMinha ? 'flex-end' : 'flex-start'}; margin-top:3px;">
+                            <div style="display:flex; justify-content:flex-end; margin-top:3px;">
                                 <small style="color:#999;">${msg.hora}</small>
                             </div>
                         </div>
@@ -2062,16 +2081,16 @@ async function ativarAlertaComFoto(alerta) {
         const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
         
         const overlay = document.createElement('div');
-        overlay.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:100000; display:flex; flex-direction:column; align-items:center; justify-content:center;';
+        overlay.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:100000; display:flex; flex-direction:column; align-items:center; justify-content:center;';
         
         const video = document.createElement('video');
-        video.style.cssText = 'width:100%; max-width:400px; height:auto; border-radius:20px; border:3px solid #ffd700;';
+        video.style.cssText = 'width:100%; max-width:400px; border-radius:20px; border:3px solid #ffd700;';
         video.autoplay = true;
         video.playsInline = true;
         video.srcObject = stream;
         
         const btnContainer = document.createElement('div');
-        btnContainer.style.cssText = 'display:flex; gap:10px; margin-top:20px;';
+        btnContainer.style.cssText = 'display:flex; gap:15px; margin-top:20px;';
         
         const btnFoto = document.createElement('button');
         btnFoto.style.cssText = 'padding:15px 30px; background:#ffd700; border:none; border-radius:40px; font-size:18px; font-weight:bold; cursor:pointer;';
@@ -2097,9 +2116,8 @@ async function ativarAlertaComFoto(alerta) {
                 stream.getTracks().forEach(t => t.stop());
                 document.body.removeChild(overlay);
                 
-                // Comprimir imagem para Base64
                 mostrarNotificacaoDiscreta('📤 Processando imagem...', '#ffd700');
-                const thumbnailBase64 = await comprimirImagemParaBase64(blob, 300);
+                const thumbnailBase64 = await comprimirImagemParaBase64(blob, 400);
                 
                 if (thumbnailBase64) {
                     // Salvar alerta com imagem
@@ -2129,7 +2147,7 @@ async function ativarAlertaComFoto(alerta) {
                     
                     mostrarNotificacaoDiscreta('✅ Alerta com foto criado!', '#4caf50');
                 }
-            }, 'image/jpeg', 0.7);
+            }, 'image/jpeg', 0.6);
         };
         
         btnPular.onclick = () => {
@@ -2338,7 +2356,10 @@ function carregarChatGeral() {
     db.ref('chat_geral').orderByChild('timestamp').on('value', snap => {
         const msgs = snap.val();
         const chatDiv = document.getElementById('chatMensagens');
-        if (!msgs) return;
+        if (!msgs) {
+            chatDiv.innerHTML = '';
+            return;
+        }
         
         let html = '';
         let ultimaData = '';
@@ -2358,19 +2379,17 @@ function carregarChatGeral() {
             
             html += `
                 <div class="mensagem-wrapper ${isMinha ? 'minha' : 'outra'}">
-                    <div class="mensagem">
-                        <div class="mensagem-conteudo">
-                            <div class="mensagem-remetente" style="color:${corUsuario}">
-                                🚗 ${msg.usuario}
-                                ${msg.telefone ? `<span class="mensagem-telefone">📱${msg.telefone}</span>` : ''}
-                            </div>
-                            ${msg.tipo === 'imagem' 
-                                ? `<img src="${msg.imagem}" class="mensagem-imagem" onclick="window.open('${msg.imagem}', '_blank')">` 
-                                : `<div class="mensagem-texto">${msg.texto}</div>`
-                            }
-                            <div class="mensagem-info">
-                                <span>${msg.hora}</span>
-                            </div>
+                    <div class="mensagem ${isMinha ? 'minha' : 'outra'}">
+                        <div class="mensagem-remetente" style="color:${corUsuario}">
+                            🚗 ${msg.usuario}
+                            ${msg.telefone ? `<span class="mensagem-telefone">📱${msg.telefone}</span>` : ''}
+                        </div>
+                        ${msg.tipo === 'imagem' 
+                            ? `<img src="${msg.imagem}" class="mensagem-imagem" onclick="window.open('${msg.imagem}', '_blank')">` 
+                            : `<div class="mensagem-texto">${msg.texto}</div>`
+                        }
+                        <div class="mensagem-info">
+                            <span>${msg.hora}</span>
                         </div>
                     </div>
                 </div>
