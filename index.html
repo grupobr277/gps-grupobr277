@@ -417,122 +417,101 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
-        /* ===== LEGENDA DE TRÂNSITO EM ÍCONE ===== */
+        /* ===== LEGENDA DE TRÂNSITO SIMPLES COM X DISCRETO ===== */
         .legenda-transito {
             position: fixed;
             top: 140px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0,0,0,0.85);
+            background: rgba(0,0,0,0.7);
             backdrop-filter: blur(10px);
             border: 2px solid #ffd700;
-            border-radius: 20px;
-            padding: 12px 20px;
+            border-radius: 40px;
+            padding: 8px 16px;
             z-index: 9002;
             color: white;
             font-size: 12px;
             font-weight: bold;
             box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-            min-width: 220px;
+            min-width: auto;
             transition: all 0.3s ease;
         }
         
         .legenda-header {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid rgba(255,215,0,0.3);
+            gap: 15px;
         }
         
-        .legenda-titulo {
-            color: #ffd700;
-            font-size: 14px;
-            letter-spacing: 1px;
-        }
-        
-        .legenda-fechar {
-            width: 24px;
-            height: 24px;
-            background: rgba(229,57,53,0.8);
-            border-radius: 50%;
+        .legenda-itens {
             display: flex;
             align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 14px;
-            color: white;
-            transition: all 0.2s;
-            border: 1px solid #ffd700;
-        }
-        
-        .legenda-fechar:hover {
-            background: #e53935;
-            transform: scale(1.1);
-        }
-        
-        .legenda-conteudo {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+            gap: 15px;
         }
         
         .legenda-item {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 4px 8px;
-            border-radius: 30px;
-            background: rgba(255,255,255,0.05);
+            gap: 5px;
         }
         
         .legenda-cor {
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
         }
         
-        .legenda-verde { background: #00ff00; box-shadow: 0 0 10px #00ff00; }
-        .legenda-amarelo { background: #ffff00; box-shadow: 0 0 10px #ffff00; }
-        .legenda-vermelho { background: #ff0000; box-shadow: 0 0 10px #ff0000; }
-        .legenda-roxo { background: #800080; box-shadow: 0 0 10px #800080; }
+        .legenda-verde { background: #00ff00; box-shadow: 0 0 8px #00ff00; }
+        .legenda-amarelo { background: #ffff00; box-shadow: 0 0 8px #ffff00; }
+        .legenda-vermelho { background: #ff0000; box-shadow: 0 0 8px #ff0000; }
         
-        /* ===== ÍCONE DA LEGENDA (QUANDO FECHADA) ===== */
+        /* X discreto */
+        .legenda-fechar {
+            width: 18px;
+            height: 18px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+            color: #ffd700;
+            transition: all 0.2s;
+            border: 1px solid rgba(255,215,0,0.3);
+        }
+        
+        .legenda-fechar:hover {
+            background: rgba(255,215,0,0.3);
+            transform: scale(1.1);
+        }
+        
+        /* Ícone da legenda (quando fechada) */
         .legenda-icone {
             position: fixed;
             top: 140px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.7);
             backdrop-filter: blur(10px);
             border: 2px solid #ffd700;
-            border-radius: 40px;
-            padding: 8px 16px;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
             z-index: 9002;
             color: #ffd700;
-            font-size: 14px;
-            font-weight: bold;
+            font-size: 18px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.5);
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
             transition: all 0.3s ease;
         }
         
         .legenda-icone:hover {
             background: rgba(255,215,0,0.2);
-            transform: translateX(-50%) scale(1.05);
-        }
-        
-        .legenda-icone i {
-            font-size: 18px;
-        }
-        
-        .legenda-icone-texto {
-            font-size: 12px;
-            letter-spacing: 0.5px;
+            transform: translateX(-50%) scale(1.1);
         }
         
         /* ===== ALFINETE TECNOLÓGICO PRETO E VERDE COM LED ===== */
@@ -1170,11 +1149,11 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
 
-        /* ===== BOTÃO SETA PARA OCULTAR INTERFACE ===== */
+        /* ===== BOTÃO SETA PARA OCULTAR INTERFACE (REPOSICIONADO) ===== */
         .toggle-interface {
             position: fixed;
-            bottom: 90px;
-            left: 75px;
+            bottom: 20px;
+            left: 90px;
             transform: translateY(0);
             z-index: 20001;
             display: flex;
@@ -1236,11 +1215,6 @@
         .interface-oculta .legenda-icone,
         .interface-oculta #btn-px {
             display: none !important;
-        }
-        
-        /* Botão PX normalmente visível */
-        #btn-px {
-            z-index: 20002;
         }
         
         /* Transição suave */
@@ -1451,36 +1425,30 @@
     </div>
 </div>
 
-<!-- LEGENDA DE TRÂNSITO -->
+<!-- LEGENDA DE TRÂNSITO SIMPLES -->
 <div class="legenda-transito" id="legendaTransito">
     <div class="legenda-header">
-        <span class="legenda-titulo">🚦 TRÂNSITO</span>
+        <div class="legenda-itens">
+            <div class="legenda-item">
+                <div class="legenda-cor legenda-verde"></div>
+                <span>Normal</span>
+            </div>
+            <div class="legenda-item">
+                <div class="legenda-cor legenda-amarelo"></div>
+                <span>Intenso</span>
+            </div>
+            <div class="legenda-item">
+                <div class="legenda-cor legenda-vermelho"></div>
+                <span>Lento</span>
+            </div>
+        </div>
         <span class="legenda-fechar" onclick="fecharLegenda()">✕</span>
-    </div>
-    <div class="legenda-conteudo">
-        <div class="legenda-item">
-            <div class="legenda-cor legenda-verde"></div>
-            <span>Normal</span>
-        </div>
-        <div class="legenda-item">
-            <div class="legenda-cor legenda-amarelo"></div>
-            <span>Intenso</span>
-        </div>
-        <div class="legenda-item">
-            <div class="legenda-cor legenda-vermelho"></div>
-            <span>Lento</span>
-        </div>
-        <div class="legenda-item">
-            <div class="legenda-cor legenda-roxo"></div>
-            <span>Parado</span>
-        </div>
     </div>
 </div>
 
 <!-- ÍCONE DA LEGENDA (QUANDO FECHADA) -->
 <div class="legenda-icone" id="legendaIcone" onclick="abrirLegenda()" style="display: none;">
     <i class="fas fa-traffic-light"></i>
-    <span class="legenda-icone-texto">TRÂNSITO</span>
 </div>
 
 <!-- POP-UP DE CONFIRMAÇÃO -->
@@ -2511,7 +2479,7 @@ function fecharLegenda() {
 }
 
 function abrirLegenda() {
-    document.getElementById('legendaTransito').style.display = 'block';
+    document.getElementById('legendaTransito').style.display = 'flex';
     document.getElementById('legendaIcone').style.display = 'none';
     localStorage.setItem('legenda_fechada', 'false');
 }
