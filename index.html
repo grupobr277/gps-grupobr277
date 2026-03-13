@@ -383,32 +383,33 @@
         .alerta-alagamento { background: linear-gradient(135deg, #2196f3, #1976d2); }
         .alerta-bloqueio { background: linear-gradient(135deg, #b71c1c, #8B0000); }
         
-        /* ===== BOTÃO X DO REPORTE ===== */
+        /* ===== BOTÃO X DO REPORTE - AJUSTADO ===== */
         .btn-fechar-painel {
             position: absolute;
-            right: -50px;
+            right: -45px;
             top: 50%;
             transform: translateY(-50%);
-            width: 60px;
-            height: 60px;
-            background: #e53935;
-            border: 4px solid #ffd700;
+            width: 36px;
+            height: 36px;
+            background: rgba(229,57,53,0.9);
+            border: 2px solid #ffd700;
             border-radius: 50%;
             color: white;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 30px;
-            font-weight: bold;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            font-size: 20px;
+            font-weight: normal;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
             transition: all 0.2s;
             z-index: 10;
+            backdrop-filter: blur(5px);
         }
         
         .btn-fechar-painel:hover {
-            transform: translateY(-50%) scale(1.05);
-            background: #c62828;
+            transform: translateY(-50%) scale(1.1);
+            background: #e53935;
             border-color: white;
         }
         
@@ -417,7 +418,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
-        /* ===== LEGENDA DE TRÂNSITO SIMPLES COM X DISCRETO ===== */
+        /* ===== LEGENDA DE TRÂNSITO SIMPLES ===== */
         .legenda-transito {
             position: fixed;
             top: 140px;
@@ -433,11 +434,6 @@
             font-size: 12px;
             font-weight: bold;
             box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-            min-width: auto;
-            transition: all 0.3s ease;
-        }
-        
-        .legenda-header {
             display: flex;
             align-items: center;
             gap: 15px;
@@ -465,17 +461,17 @@
         .legenda-amarelo { background: #ffff00; box-shadow: 0 0 8px #ffff00; }
         .legenda-vermelho { background: #ff0000; box-shadow: 0 0 8px #ff0000; }
         
-        /* X discreto */
+        /* X discreto da legenda */
         .legenda-fechar {
-            width: 18px;
-            height: 18px;
-            background: rgba(255,255,255,0.2);
+            width: 20px;
+            height: 20px;
+            background: rgba(255,255,255,0.15);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 14px;
             color: #ffd700;
             transition: all 0.2s;
             border: 1px solid rgba(255,215,0,0.3);
@@ -484,34 +480,6 @@
         .legenda-fechar:hover {
             background: rgba(255,215,0,0.3);
             transform: scale(1.1);
-        }
-        
-        /* Ícone da legenda (quando fechada) */
-        .legenda-icone {
-            position: fixed;
-            top: 140px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(10px);
-            border: 2px solid #ffd700;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            z-index: 9002;
-            color: #ffd700;
-            font-size: 18px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-        
-        .legenda-icone:hover {
-            background: rgba(255,215,0,0.2);
-            transform: translateX(-50%) scale(1.1);
         }
         
         /* ===== ALFINETE TECNOLÓGICO PRETO E VERDE COM LED ===== */
@@ -1048,23 +1016,44 @@
             cursor: pointer;
         }
         
-        /* BOTÃO RECENTRALIZAR */
-        .btn-recentrar {
+        /* BOTÃO RECENTRALIZAR NOVO - ÍCONE AO LADO DO CHAT */
+        .btn-recentrar-container {
             position: fixed;
-            bottom: 120px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.7);
-            color: #ffd700;
-            border-radius: 40px;
-            padding: 8px 20px;
-            cursor: pointer;
+            bottom: 80px;
+            right: 20px;
             z-index: 9000;
-            display: none;
-            border: 1px solid #ffd700;
-            font-size: 12px;
-            font-weight: bold;
-            backdrop-filter: blur(5px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .btn-recentrar-icone {
+            width: 45px;
+            height: 45px;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px);
+            border: 2px solid #ffd700;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #ffd700;
+            font-size: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: all 0.2s;
+        }
+        
+        .btn-recentrar-icone:hover {
+            transform: scale(1.1);
+            background: rgba(255,215,0,0.2);
+        }
+        
+        .btn-recentrar-icone.ativo {
+            background: #e53935;
+            color: white;
+            border-color: white;
         }
         
         #btn-px { 
@@ -1149,7 +1138,7 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
 
-        /* ===== BOTÃO SETA PARA OCULTAR INTERFACE (REPOSICIONADO) ===== */
+        /* ===== BOTÃO SETA NOVO - COLADO NO VELOCÍMETRO ===== */
         .toggle-interface {
             position: fixed;
             bottom: 20px;
@@ -1175,8 +1164,8 @@
             align-items: center;
             justify-content: center;
             color: #ffd700;
-            font-size: 20px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            font-size: 22px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
             transition: all 0.3s ease;
         }
         
@@ -1205,14 +1194,13 @@
         .interface-oculta .botoes-direita,
         .interface-oculta .lupa-container,
         .interface-oculta .header-esquerdo,
-        .interface-oculta .btn-recentrar,
+        .interface-oculta .btn-recentrar-container,
         .interface-oculta .btn-encerrar-rota,
         .interface-oculta .rota-info-panel,
         .interface-oculta .gravando-indicator,
         .interface-oculta .audio-notification,
         .interface-oculta .confirmacao-popup,
         .interface-oculta .legenda-transito,
-        .interface-oculta .legenda-icone,
         .interface-oculta #btn-px {
             display: none !important;
         }
@@ -1223,14 +1211,13 @@
         .botoes-direita,
         .lupa-container,
         .header-esquerdo,
-        .btn-recentrar,
+        .btn-recentrar-container,
         .btn-encerrar-rota,
         .rota-info-panel,
         .gravando-indicator,
         .audio-notification,
         .confirmacao-popup,
         .legenda-transito,
-        .legenda-icone,
         #btn-px {
             transition: opacity 0.3s ease, transform 0.3s ease;
         }
@@ -1359,7 +1346,7 @@
     </div>
     <div class="alertas-panel" id="alertasPanel">
         <div class="alertas-grid" id="alertasGrid"></div>
-        <div class="btn-fechar-painel" onclick="toggleReporte()">✖</div>
+        <div class="btn-fechar-painel" onclick="toggleReporte()">✕</div>
     </div>
 </div>
 
@@ -1371,8 +1358,15 @@
     </div>
 </div>
 
+<!-- BOTÃO SETA NOVO - COLADO NO VELOCÍMETRO -->
+<div class="toggle-interface" id="toggleInterface" onclick="toggleInterface()">
+    <div class="seta-container">
+        <i class="fas fa-chevron-up" id="iconeSeta"></i>
+    </div>
+</div>
+
 <!-- BOTÃO ENCERRAR ROTA -->
-<div class="btn-encerrar-rota" id="btnEncerrarRota" onclick="encerrarRota()">✖</div>
+<div class="btn-encerrar-rota" id="btnEncerrarRota" onclick="encerrarRota()">✕</div>
 
 <!-- LUPA -->
 <div class="lupa-container">
@@ -1380,9 +1374,11 @@
     <button onclick="buscarRota()"><i class="fas fa-search"></i></button>
 </div>
 
-<!-- BOTÃO RECENTRALIZAR -->
-<div class="btn-recentrar" id="btnRecenter" onclick="recentralizar()">
-    <i class="fas fa-location-arrow"></i> RECENTRALIZAR
+<!-- BOTÃO RECENTRALIZAR NOVO - ÍCONE AO LADO DO CHAT -->
+<div class="btn-recentrar-container" id="btnRecentrarContainer" style="display: none;">
+    <div class="btn-recentrar-icone" onclick="recentralizar()">
+        <i class="fas fa-location-arrow"></i>
+    </div>
 </div>
 
 <!-- HEADER SUPERIOR ESQUERDO -->
@@ -1418,37 +1414,23 @@
 
 <div id="btn-px">🎤</div>
 
-<!-- BOTÃO SETA PARA OCULTAR INTERFACE -->
-<div class="toggle-interface" id="toggleInterface" onclick="toggleInterface()">
-    <div class="seta-container">
-        <i class="fas fa-chevron-up" id="iconeSeta"></i>
-    </div>
-</div>
-
 <!-- LEGENDA DE TRÂNSITO SIMPLES -->
 <div class="legenda-transito" id="legendaTransito">
-    <div class="legenda-header">
-        <div class="legenda-itens">
-            <div class="legenda-item">
-                <div class="legenda-cor legenda-verde"></div>
-                <span>Normal</span>
-            </div>
-            <div class="legenda-item">
-                <div class="legenda-cor legenda-amarelo"></div>
-                <span>Intenso</span>
-            </div>
-            <div class="legenda-item">
-                <div class="legenda-cor legenda-vermelho"></div>
-                <span>Lento</span>
-            </div>
+    <div class="legenda-itens">
+        <div class="legenda-item">
+            <div class="legenda-cor legenda-verde"></div>
+            <span>Normal</span>
         </div>
-        <span class="legenda-fechar" onclick="fecharLegenda()">✕</span>
+        <div class="legenda-item">
+            <div class="legenda-cor legenda-amarelo"></div>
+            <span>Intenso</span>
+        </div>
+        <div class="legenda-item">
+            <div class="legenda-cor legenda-vermelho"></div>
+            <span>Lento</span>
+        </div>
     </div>
-</div>
-
-<!-- ÍCONE DA LEGENDA (QUANDO FECHADA) -->
-<div class="legenda-icone" id="legendaIcone" onclick="abrirLegenda()" style="display: none;">
-    <i class="fas fa-traffic-light"></i>
+    <span class="legenda-fechar" onclick="fecharLegenda()">✕</span>
 </div>
 
 <!-- POP-UP DE CONFIRMAÇÃO -->
@@ -1468,7 +1450,7 @@
             <i class="fas fa-comments"></i>
             <span>CHAT GERAL</span>
         </div>
-        <span onclick="fecharChatGeral()" style="cursor:pointer;">✖</span>
+        <span onclick="fecharChatGeral()" style="cursor:pointer;">✕</span>
     </div>
     <div class="chat-mensagens" id="chatMensagens"></div>
     <div class="chat-input">
@@ -1751,7 +1733,10 @@ function iniciarMapa() {
     tileSystem = new TileSystem();
     clusterSystem = new ClusterSystem(mapa);
     
-    mapa.on('dragstart', () => { seguirLocalizacao = false; document.getElementById('btnRecenter').style.display = 'block'; });
+    mapa.on('dragstart', () => { 
+        seguirLocalizacao = false; 
+        document.getElementById('btnRecentrarContainer').style.display = 'flex'; 
+    });
     mapa.on('zoomend', () => { zoomAtual = mapa.getZoom(); atualizarIconeCarro(); });
 }
 
@@ -1936,11 +1921,12 @@ function abrirPopupAlerta(alerta, id) {
         font-weight: bold;
         display: flex;
         justify-content: space-between;
+        align-items: center;
         border-radius: 10px 10px 0 0;
     `;
     header.innerHTML = `
         <span>${alerta.icone} ${alerta.nome}</span>
-        <span>✅ ${alerta.confirmacoes || 0}</span>
+        <span style="background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 20px;">✅ ${alerta.confirmacoes || 0}</span>
     `;
     conteudo.appendChild(header);
     
@@ -1950,13 +1936,12 @@ function abrirPopupAlerta(alerta, id) {
             padding: 10px;
             text-align: center;
             background: #1a1a1a;
-            cursor: pointer;
         `;
         imgContainer.innerHTML = `
-            <img src="${alerta.imagem.thumbnail}" 
+            <img src="${alerta.imagem.full}" 
                  style="max-width: 100%; max-height: 200px; border-radius: 10px; border: 2px solid #ffd700; cursor: pointer;"
                  onclick="window.open('${alerta.imagem.full}', '_blank')"
-                 onerror="this.style.display='none'">
+                 onerror="this.onerror=null; this.src='${alerta.imagem.thumbnail}';">
             <div style="font-size: 11px; color: #ffd700; margin-top: 5px;">
                 📷 Clique para ampliar
             </div>
@@ -1972,7 +1957,7 @@ function abrirPopupAlerta(alerta, id) {
         overflow-y: auto;
         background: #f5f5f5;
     `;
-    chatDiv.innerHTML = '<div style="text-align:center; color:#999;">Carregando...</div>';
+    chatDiv.innerHTML = '<div style="text-align:center; color:#999;">Nenhuma mensagem</div>';
     conteudo.appendChild(chatDiv);
     
     const inputDiv = document.createElement('div');
@@ -2139,6 +2124,7 @@ function mostrarNotificacaoDiscreta(texto, cor = '#ffd700') {
         font-size: 14px;
         font-weight: bold;
         animation: fadeOut 3s forwards;
+        pointer-events: none;
     `;
     notificacao.textContent = texto;
     document.body.appendChild(notificacao);
@@ -2215,17 +2201,18 @@ async function ativarAlertaComFoto(alerta) {
         const video = document.createElement('video');
         video.style.cssText = 'width:100%; height:280px; object-fit:cover;';
         video.autoplay = true;
+        video.playsInline = true;
         video.srcObject = stream;
         
         const botoes = document.createElement('div');
         botoes.style.cssText = 'display:flex; padding:10px; gap:8px; background:#2a2a2a;';
         
         const btnFoto = document.createElement('button');
-        btnFoto.style.cssText = 'flex:1; padding:12px; background:#ffd700; border:none; border-radius:40px; font-size:20px; cursor:pointer;';
+        btnFoto.style.cssText = 'flex:1; padding:12px; background:#ffd700; border:none; border-radius:40px; font-size:20px; cursor:pointer; transition:all 0.2s;';
         btnFoto.innerHTML = '📷';
         
         const btnPular = document.createElement('button');
-        btnPular.style.cssText = 'flex:1; padding:12px; background:#444; color:#ccc; border:none; border-radius:40px; font-size:14px; cursor:pointer;';
+        btnPular.style.cssText = 'flex:1; padding:12px; background:#444; color:#ccc; border:none; border-radius:40px; font-size:14px; cursor:pointer; transition:all 0.2s;';
         btnPular.innerHTML = '⏭️';
         
         botoes.appendChild(btnFoto);
@@ -2250,10 +2237,12 @@ async function ativarAlertaComFoto(alerta) {
         btnPular.onclick = () => {
             stream.getTracks().forEach(t => t.stop());
             document.body.removeChild(overlay);
+            mostrarNotificacaoDiscreta('Alerta criado sem foto');
         };
         
     } catch(e) {
         console.log('Câmera indisponível');
+        mostrarNotificacaoDiscreta('📷 Câmera não disponível');
     }
 }
 
@@ -2265,7 +2254,7 @@ function verificarProximidadeAlertas() {
         if (!alerta || alerta.criador === usuario) return;
         const chave = `${usuario}_${id}`;
         if (alertasConfirmados[chave]) return;
-        if (alerta.confirmacoes > 0) { 
+        if (alerta.confirmacoes && alerta.confirmacoes > 0) { 
             alertasConfirmados[chave] = true; 
             localStorage.setItem('br277_confirmacoes', JSON.stringify(alertasConfirmados)); 
             return; 
@@ -2285,6 +2274,7 @@ function verificarProximidadeAlertas() {
 function mostrarPopupConfirmacao(alerta) {
     const popup = document.getElementById('confirmacaoPopup');
     document.getElementById('confirmacaoTexto').innerHTML = `${alerta.nome} a 300 metros?`;
+    document.getElementById('confirmacaoSubtexto').innerHTML = 'Confirme se ainda está ativo';
     popup.style.display = 'flex';
     if (popupTimeout) clearTimeout(popupTimeout);
     popupTimeout = setTimeout(() => { popup.style.display = 'none'; alertaAtual = null; }, 10000);
@@ -2299,6 +2289,7 @@ function confirmarAlerta() {
     document.getElementById('confirmacaoPopup').style.display = 'none';
     if (popupTimeout) clearTimeout(popupTimeout);
     alertaAtual = null;
+    tocarBip();
 }
 
 function negarAlerta() {
@@ -2309,6 +2300,25 @@ function negarAlerta() {
     document.getElementById('confirmacaoPopup').style.display = 'none';
     if (popupTimeout) clearTimeout(popupTimeout);
     alertaAtual = null;
+}
+
+function tocarBip() {
+    try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(880, audioCtx.currentTime);
+        gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        
+        oscillator.start();
+        oscillator.stop(audioCtx.currentTime + 0.2);
+    } catch(e) {}
 }
 
 function carregarAlertasFixos() {
@@ -2467,28 +2477,13 @@ function toggleInterface() {
 
 function recentralizar() {
     seguirLocalizacao = true;
-    document.getElementById('btnRecenter').style.display = 'none';
+    document.getElementById('btnRecentrarContainer').style.display = 'none';
     if (minhaLocalizacao) mapa.flyTo(minhaLocalizacao, 17);
 }
 
 // ===== FUNÇÕES DA LEGENDA =====
 function fecharLegenda() {
     document.getElementById('legendaTransito').style.display = 'none';
-    document.getElementById('legendaIcone').style.display = 'flex';
-    localStorage.setItem('legenda_fechada', 'true');
-}
-
-function abrirLegenda() {
-    document.getElementById('legendaTransito').style.display = 'flex';
-    document.getElementById('legendaIcone').style.display = 'none';
-    localStorage.setItem('legenda_fechada', 'false');
-}
-
-// Verificar preferência da legenda ao carregar
-const legendaFechada = localStorage.getItem('legenda_fechada');
-if (legendaFechada === 'true') {
-    document.getElementById('legendaTransito').style.display = 'none';
-    document.getElementById('legendaIcone').style.display = 'flex';
 }
 
 // ===== ROTA =====
