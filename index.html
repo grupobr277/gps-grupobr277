@@ -1089,6 +1089,120 @@
             font-size: 14px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
+
+        /* ===== BOTÃO SETA PARA OCULTAR INTERFACE ===== */
+        .toggle-interface {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 20001;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .seta-container {
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border: 3px solid #ffd700;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffd700;
+            font-size: 24px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+            animation: pulse-seta 2s infinite;
+        }
+        
+        .seta-container:hover {
+            transform: scale(1.1);
+            background: rgba(255, 215, 0, 0.2);
+        }
+        
+        .toggle-text {
+            color: #ffd700;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            padding: 3px 10px;
+            border-radius: 20px;
+            border: 1px solid #ffd700;
+        }
+        
+        @keyframes pulse-seta {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        /* Classes para ocultar elementos */
+        .interface-oculta .reporte-container,
+        .interface-oculta .velocimetro-container,
+        .interface-oculta .botoes-direita,
+        .interface-oculta .legenda-transito,
+        .interface-oculta .lupa-container,
+        .interface-oculta .header-esquerdo,
+        .interface-oculta .btn-recentrar,
+        .interface-oculta .btn-encerrar-rota,
+        .interface-oculta .rota-info-panel,
+        .interface-oculta .gravando-indicator,
+        .interface-oculta .audio-notification,
+        .interface-oculta .confirmacao-popup {
+            display: none !important;
+        }
+        
+        /* Quando interface oculta, a seta fica na cor diferente */
+        .interface-oculta .seta-container {
+            background: rgba(229, 57, 53, 0.8);
+            border-color: white;
+        }
+        
+        .interface-oculta .seta-container i {
+            transform: rotate(180deg);
+            color: white;
+        }
+        
+        .interface-oculta .toggle-text {
+            background: rgba(229, 57, 53, 0.8);
+            color: white;
+            border-color: white;
+        }
+        
+        /* Ajuste para o botão PX ficar acima da seta */
+        #btn-px {
+            z-index: 20002;
+        }
+        
+        .interface-oculta #btn-px {
+            display: flex !important;
+        }
+        
+        /* Transição suave */
+        .reporte-container,
+        .velocimetro-container,
+        .botoes-direita,
+        .legenda-transito,
+        .lupa-container,
+        .header-esquerdo,
+        .btn-recentrar,
+        .btn-encerrar-rota,
+        .rota-info-panel,
+        .gravando-indicator,
+        .audio-notification,
+        .confirmacao-popup {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
     </style>
 </head>
 <body>
@@ -1273,6 +1387,14 @@
 
 <div id="btn-px">🎤</div>
 
+<!-- BOTÃO SETA PARA OCULTAR INTERFACE -->
+<div class="toggle-interface" id="toggleInterface" onclick="toggleInterface()">
+    <div class="seta-container">
+        <i class="fas fa-chevron-up" id="iconeSeta"></i>
+    </div>
+    <div class="toggle-text" id="toggleText">Ocultar</div>
+</div>
+
 <!-- POP-UP DE CONFIRMAÇÃO -->
 <div class="confirmacao-popup" id="confirmacaoPopup">
     <div class="confirmacao-texto" id="confirmacaoTexto">Acidente a 300 metros?</div>
@@ -1357,7 +1479,6 @@ const INTERVALO_GPS = 1000;
 let zoomAtual = 13;
 let clusterGroup = null;
 let alertasMapa = {};
-let alertasConfirmados = {};
 let pulsantesAlertas = {};
 let marcadorDestino = null;
 let wakeLock = null;
@@ -1366,6 +1487,19 @@ let permissoes = {
     microfone: false,
     audio: true
 };
+
+// ===== SISTEMA DE CONFIRMAÇÃO DE ALERTAS - CORRIGIDO =====
+let alertasConfirmados = {}; // Memória RAM
+let confirmacoesStorage = JSON.parse(localStorage.getItem('br277_confirmacoes')) || {};
+let ultimoAlertaExibido = {}; // Controle para não mostrar múltiplas vezes
+
+// Carregar confirmações do localStorage ao iniciar
+alertasConfirmados = { ...confirmacoesStorage };
+
+// Função para salvar confirmações no localStorage
+function salvarConfirmacoesStorage() {
+    localStorage.setItem('br277_confirmacoes', JSON.stringify(alertasConfirmados));
+}
 
 // ===== 10 ALERTAS =====
 const alertas = [
@@ -1478,6 +1612,10 @@ if (userSalvo) {
     telefone = localStorage.getItem('br277_telefone') || '';
     veiculoUsuario = localStorage.getItem('br277_veiculo') || 'carro';
     
+    // Carregar confirmações do localStorage
+    confirmacoesStorage = JSON.parse(localStorage.getItem('br277_confirmacoes')) || {};
+    alertasConfirmados = { ...confirmacoesStorage };
+    
     document.getElementById('welcomeModal').style.display = 'none';
     iniciarMapa();
     iniciarGPS();
@@ -1486,6 +1624,7 @@ if (userSalvo) {
     carregarChatGeral();
     criarIconesAlertas();
     iniciarCluster();
+    carregarConfirmacoesFirebase();
 }
 
 function salvarCadastro() {
@@ -1497,6 +1636,10 @@ function salvarCadastro() {
     
     usuario = nome;
     telefone = document.getElementById('telefoneUsuario').value.trim();
+    
+    // Carregar confirmações do localStorage
+    confirmacoesStorage = JSON.parse(localStorage.getItem('br277_confirmacoes')) || {};
+    alertasConfirmados = { ...confirmacoesStorage };
     
     localStorage.setItem('br277_usuario', nome);
     localStorage.setItem('br277_telefone', telefone);
@@ -1511,6 +1654,25 @@ function salvarCadastro() {
     carregarChatGeral();
     criarIconesAlertas();
     iniciarCluster();
+    carregarConfirmacoesFirebase();
+}
+
+// ===== CARREGAR CONFIRMAÇÕES DO FIREBASE AO INICIAR =====
+function carregarConfirmacoesFirebase() {
+    db.ref('confirmacoes_usuarios').once('value', snap => {
+        const confirmacoes = snap.val();
+        if (!confirmacoes) return;
+        
+        Object.keys(confirmacoes).forEach(alertaId => {
+            const usuariosConfirmaram = confirmacoes[alertaId];
+            if (usuariosConfirmaram && usuariosConfirmaram[usuario]) {
+                const chaveConfirmacao = `${usuario}_${alertaId}`;
+                alertasConfirmados[chaveConfirmacao] = true;
+            }
+        });
+        
+        salvarConfirmacoesStorage();
+    });
 }
 
 // ===== FUNÇÕES DE INTERFACE =====
@@ -1626,7 +1788,6 @@ function criarPulsantePorAlerta(alerta, id) {
         abrirChatAlerta(alerta, L.latLng(alerta.lat, alerta.lng), id);
     });
     
-    // Adicionar ao cluster
     if (clusterGroup) {
         clusterGroup.addLayer(marcador);
     }
@@ -1827,7 +1988,14 @@ function verificarProximidadeAlertas() {
         if (alerta.criador === usuario) return;
         
         const chaveConfirmacao = `${usuario}_${id}`;
+        
         if (alertasConfirmados[chaveConfirmacao]) return;
+        
+        if (alerta.confirmacoes && alerta.confirmacoes > 0) {
+            alertasConfirmados[chaveConfirmacao] = true;
+            salvarConfirmacoesStorage();
+            return;
+        }
         
         const distancia = calcularDistancia(
             minhaLocalizacao.lat, minhaLocalizacao.lng,
@@ -1835,6 +2003,13 @@ function verificarProximidadeAlertas() {
         );
         
         if (distancia < 0.3) {
+            const agora = Date.now();
+            if (ultimoAlertaExibido[chaveConfirmacao] && 
+                (agora - ultimoAlertaExibido[chaveConfirmacao] < 300000)) {
+                return;
+            }
+            
+            ultimoAlertaExibido[chaveConfirmacao] = agora;
             tocarBip();
             alertaAtual = { id, ...alerta };
             mostrarPopupConfirmacao(alerta);
@@ -1868,8 +2043,13 @@ function confirmarAlerta() {
     
     const chaveConfirmacao = `${usuario}_${alertaAtual.id}`;
     alertasConfirmados[chaveConfirmacao] = true;
+    salvarConfirmacoesStorage();
     
     db.ref('alertas_fixos/' + alertaAtual.id + '/confirmacoes').transaction(count => (count || 0) + 1);
+    db.ref('confirmacoes_usuarios/' + alertaAtual.id + '/' + usuario).set({
+        timestamp: Date.now(),
+        nome: usuario
+    });
     
     document.getElementById('confirmacaoPopup').style.display = 'none';
     if (popupTimeout) clearTimeout(popupTimeout);
@@ -1883,18 +2063,18 @@ function negarAlerta() {
     
     const chaveConfirmacao = `${usuario}_${alertaAtual.id}`;
     alertasConfirmados[chaveConfirmacao] = true;
+    salvarConfirmacoesStorage();
     
     document.getElementById('confirmacaoPopup').style.display = 'none';
     if (popupTimeout) clearTimeout(popupTimeout);
     alertaAtual = null;
 }
 
-// ===== USUÁRIOS ATIVOS - CORRIGIDO =====
+// ===== USUÁRIOS ATIVOS =====
 function carregarUsuariosAtivos() {
     db.ref('usuarios_ativos').on('value', snap => {
         const usuarios = snap.val();
         
-        // Limpar marcadores antigos
         Object.values(usuariosAtivos).forEach(m => {
             if (m && mapa) {
                 if (clusterGroup) {
@@ -1911,7 +2091,6 @@ function carregarUsuariosAtivos() {
             return;
         }
         
-        // Filtrar apenas usuários ativos nos últimos 10 segundos
         const agora = Date.now();
         const usuariosValidos = Object.entries(usuarios).filter(([id, dados]) => {
             return dados && dados.timestamp && (agora - dados.timestamp < 10000);
@@ -1936,7 +2115,6 @@ function carregarUsuariosAtivos() {
             usuariosAtivos[id] = marcador;
         });
         
-        // Remover usuários inativos do Firebase
         Object.entries(usuarios).forEach(([id, dados]) => {
             if (dados && dados.timestamp && (agora - dados.timestamp > 10000)) {
                 db.ref('usuarios_ativos/' + id).remove();
@@ -1952,6 +2130,11 @@ function carregarAlertasFixos() {
         const id = snap.key;
         
         alertasMapa[id] = alerta;
+        
+        const chaveConfirmacao = `${usuario}_${id}`;
+        if (alertasConfirmados[chaveConfirmacao]) {
+            // Já confirmou, não precisa fazer nada
+        }
         
         const pulsante = criarPulsantePorAlerta(alerta, id);
         if (clusterGroup) {
@@ -1978,7 +2161,7 @@ function carregarAlertasFixos() {
     setInterval(() => {
         const agora = Date.now();
         Object.keys(alertasMapa).forEach(id => {
-            if (agora - alertasMapa[id].timestamp > 1200000) { // 20 minutos
+            if (agora - alertasMapa[id].timestamp > 1200000) {
                 db.ref('alertas_fixos/' + id).remove();
             }
         });
@@ -1999,7 +2182,6 @@ function ativarAlerta(alerta) {
     };
     
     alertasMapa[id] = alertaData;
-    
     db.ref('alertas_fixos/' + id).set(alertaData);
 }
 
@@ -2285,7 +2467,7 @@ function formatarData(data) {
     return data;
 }
 
-// ===== RÁDIO PX - VERSÃO MELHORADA =====
+// ===== RÁDIO PX =====
 let gravador = null;
 let pedacosAudio = [];
 let streamAudio = null;
@@ -2404,6 +2586,26 @@ function recentralizar() {
     seguirLocalizacao = true;
     document.getElementById('btnRecenter').style.display = 'none';
     if (minhaLocalizacao) mapa.flyTo(minhaLocalizacao, 17);
+}
+
+// ===== FUNÇÃO PARA OCULTAR/MOSTRAR INTERFACE =====
+let interfaceVisivel = true;
+
+function toggleInterface() {
+    interfaceVisivel = !interfaceVisivel;
+    const body = document.body;
+    const setaIcone = document.getElementById('iconeSeta');
+    const toggleText = document.getElementById('toggleText');
+    
+    if (interfaceVisivel) {
+        body.classList.remove('interface-oculta');
+        setaIcone.className = 'fas fa-chevron-up';
+        toggleText.textContent = 'Ocultar';
+    } else {
+        body.classList.add('interface-oculta');
+        setaIcone.className = 'fas fa-chevron-down';
+        toggleText.textContent = 'Mostrar';
+    }
 }
 
 document.getElementById('buscaDestino').addEventListener('keypress', e => {
