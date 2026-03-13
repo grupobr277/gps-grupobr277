@@ -417,43 +417,123 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
-        /* ===== LEGENDA DE TRÂNSITO ===== */
+        /* ===== LEGENDA DE TRÂNSITO EM ÍCONE ===== */
         .legenda-transito {
             position: fixed;
             top: 140px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255,215,0,0.3);
-            border-radius: 30px;
-            padding: 5px 12px;
-            display: flex;
-            gap: 12px;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(10px);
+            border: 2px solid #ffd700;
+            border-radius: 20px;
+            padding: 12px 20px;
             z-index: 9002;
             color: white;
-            font-size: 10px;
+            font-size: 12px;
             font-weight: bold;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            opacity: 0.8;
-            pointer-events: none;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            min-width: 220px;
+            transition: all 0.3s ease;
+        }
+        
+        .legenda-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255,215,0,0.3);
+        }
+        
+        .legenda-titulo {
+            color: #ffd700;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+        
+        .legenda-fechar {
+            width: 24px;
+            height: 24px;
+            background: rgba(229,57,53,0.8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            color: white;
+            transition: all 0.2s;
+            border: 1px solid #ffd700;
+        }
+        
+        .legenda-fechar:hover {
+            background: #e53935;
+            transform: scale(1.1);
+        }
+        
+        .legenda-conteudo {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
         
         .legenda-item {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 10px;
+            padding: 4px 8px;
+            border-radius: 30px;
+            background: rgba(255,255,255,0.05);
         }
         
         .legenda-cor {
-            width: 10px;
-            height: 10px;
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
         }
         
-        .legenda-verde { background: #00ff00; box-shadow: 0 0 5px #00ff00; }
-        .legenda-amarelo { background: #ffff00; box-shadow: 0 0 5px #ffff00; }
-        .legenda-vermelho { background: #ff0000; box-shadow: 0 0 5px #ff0000; }
+        .legenda-verde { background: #00ff00; box-shadow: 0 0 10px #00ff00; }
+        .legenda-amarelo { background: #ffff00; box-shadow: 0 0 10px #ffff00; }
+        .legenda-vermelho { background: #ff0000; box-shadow: 0 0 10px #ff0000; }
+        .legenda-roxo { background: #800080; box-shadow: 0 0 10px #800080; }
+        
+        /* ===== ÍCONE DA LEGENDA (QUANDO FECHADA) ===== */
+        .legenda-icone {
+            position: fixed;
+            top: 140px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            border: 2px solid #ffd700;
+            border-radius: 40px;
+            padding: 8px 16px;
+            z-index: 9002;
+            color: #ffd700;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .legenda-icone:hover {
+            background: rgba(255,215,0,0.2);
+            transform: translateX(-50%) scale(1.05);
+        }
+        
+        .legenda-icone i {
+            font-size: 18px;
+        }
+        
+        .legenda-icone-texto {
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
         
         /* ===== ALFINETE TECNOLÓGICO PRETO E VERDE COM LED ===== */
         .alfinete-tecnologico {
@@ -1090,11 +1170,11 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
 
-        /* ===== BOTÃO SETA PARA OCULTAR INTERFACE (AJUSTADO) ===== */
+        /* ===== BOTÃO SETA PARA OCULTAR INTERFACE ===== */
         .toggle-interface {
             position: fixed;
-            bottom: 20px;
-            left: 90px; /* Entre velocímetro (esquerda) e microfone (centro) */
+            bottom: 90px;
+            left: 75px;
             transform: translateY(0);
             z-index: 20001;
             display: flex;
@@ -1126,12 +1206,10 @@
             background: rgba(255, 215, 0, 0.2);
         }
         
-        /* Remove o texto */
         .toggle-text {
             display: none;
         }
         
-        /* Mantém mesma cor quando oculto */
         .interface-oculta .seta-container {
             background: rgba(0, 0, 0, 0.8);
             border-color: #ffd700;
@@ -1146,7 +1224,6 @@
         .interface-oculta .reporte-container,
         .interface-oculta .velocimetro-container,
         .interface-oculta .botoes-direita,
-        .interface-oculta .legenda-transito,
         .interface-oculta .lupa-container,
         .interface-oculta .header-esquerdo,
         .interface-oculta .btn-recentrar,
@@ -1154,24 +1231,22 @@
         .interface-oculta .rota-info-panel,
         .interface-oculta .gravando-indicator,
         .interface-oculta .audio-notification,
-        .interface-oculta .confirmacao-popup {
+        .interface-oculta .confirmacao-popup,
+        .interface-oculta .legenda-transito,
+        .interface-oculta .legenda-icone,
+        .interface-oculta #btn-px {
             display: none !important;
         }
         
-        /* Botão PX sempre visível */
+        /* Botão PX normalmente visível */
         #btn-px {
             z-index: 20002;
-        }
-        
-        .interface-oculta #btn-px {
-            display: flex !important;
         }
         
         /* Transição suave */
         .reporte-container,
         .velocimetro-container,
         .botoes-direita,
-        .legenda-transito,
         .lupa-container,
         .header-esquerdo,
         .btn-recentrar,
@@ -1179,7 +1254,10 @@
         .rota-info-panel,
         .gravando-indicator,
         .audio-notification,
-        .confirmacao-popup {
+        .confirmacao-popup,
+        .legenda-transito,
+        .legenda-icone,
+        #btn-px {
             transition: opacity 0.3s ease, transform 0.3s ease;
         }
     </style>
@@ -1199,27 +1277,27 @@
         
         <div style="margin:20px 0; text-align:left; color:#ffd700;">Escolha seu veículo:</div>
         <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:20px;">
-            <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:15px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('carro', 'carro')" id="veiculo-carro">
+            <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:15px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('carro')" id="veiculo-carro">
                 <div style="font-size:30px;">🚗</div>
                 <div style="font-size:12px; color:white;">Carro</div>
             </div>
-            <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:15px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('caminhao', 'caminhao')" id="veiculo-caminhao">
+            <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:15px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('caminhao')" id="veiculo-caminhao">
                 <div style="font-size:30px;">🚛</div>
                 <div style="font-size:12px; color:white;">Caminhão</div>
             </div>
-            <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:15px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('moto', 'moto')" id="veiculo-moto">
+            <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:15px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('moto')" id="veiculo-moto">
                 <div style="font-size:30px;">🏍️</div>
                 <div style="font-size:12px; color:white;">Moto</div>
             </div>
-            <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:15px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('onibus', 'onibus')" id="veiculo-onibus">
+            <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:15px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('onibus')" id="veiculo-onibus">
                 <div style="font-size:30px;">🚌</div>
                 <div style="font-size:12px; color:white;">Ônibus</div>
             </div>
-            <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:15px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('van', 'van')" id="veiculo-van">
+            <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:15px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('van')" id="veiculo-van">
                 <div style="font-size:30px;">🚐</div>
                 <div style="font-size:12px; color:white;">Van</div>
             </div>
-            <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:15px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('pickup', 'pickup')" id="veiculo-pickup">
+            <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:15px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('pickup')" id="veiculo-pickup">
                 <div style="font-size:30px;">🛻</div>
                 <div style="font-size:12px; color:white;">Pickup</div>
             </div>
@@ -1366,11 +1444,43 @@
 
 <div id="btn-px">🎤</div>
 
-<!-- BOTÃO SETA PARA OCULTAR INTERFACE (POSIÇÃO CORRETA) -->
+<!-- BOTÃO SETA PARA OCULTAR INTERFACE -->
 <div class="toggle-interface" id="toggleInterface" onclick="toggleInterface()">
     <div class="seta-container">
         <i class="fas fa-chevron-up" id="iconeSeta"></i>
     </div>
+</div>
+
+<!-- LEGENDA DE TRÂNSITO -->
+<div class="legenda-transito" id="legendaTransito">
+    <div class="legenda-header">
+        <span class="legenda-titulo">🚦 TRÂNSITO</span>
+        <span class="legenda-fechar" onclick="fecharLegenda()">✕</span>
+    </div>
+    <div class="legenda-conteudo">
+        <div class="legenda-item">
+            <div class="legenda-cor legenda-verde"></div>
+            <span>Normal</span>
+        </div>
+        <div class="legenda-item">
+            <div class="legenda-cor legenda-amarelo"></div>
+            <span>Intenso</span>
+        </div>
+        <div class="legenda-item">
+            <div class="legenda-cor legenda-vermelho"></div>
+            <span>Lento</span>
+        </div>
+        <div class="legenda-item">
+            <div class="legenda-cor legenda-roxo"></div>
+            <span>Parado</span>
+        </div>
+    </div>
+</div>
+
+<!-- ÍCONE DA LEGENDA (QUANDO FECHADA) -->
+<div class="legenda-icone" id="legendaIcone" onclick="abrirLegenda()" style="display: none;">
+    <i class="fas fa-traffic-light"></i>
+    <span class="legenda-icone-texto">TRÂNSITO</span>
 </div>
 
 <!-- POP-UP DE CONFIRMAÇÃO -->
@@ -1410,22 +1520,6 @@
     <span>Áudio recebido...</span>
 </div>
 
-<!-- LEGENDA DE TRÂNSITO -->
-<div class="legenda-transito">
-    <div class="legenda-item">
-        <div class="legenda-cor legenda-verde"></div>
-        <span>Normal</span>
-    </div>
-    <div class="legenda-item">
-        <div class="legenda-cor legenda-amarelo"></div>
-        <span>Intenso</span>
-    </div>
-    <div class="legenda-item">
-        <div class="legenda-cor legenda-vermelho"></div>
-        <span>Lento/Parado</span>
-    </div>
-</div>
-
 <!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -1439,11 +1533,11 @@
 <script>
 // ===== CONFIGURAÇÕES DE OTIMIZAÇÃO =====
 const SCALABLE_CONFIG = {
-    POSITION_UPDATE_INTERVAL: 15000, // 15 segundos
-    TILE_SIZE: 0.05, // ~5km x 5km
-    VEHICLE_TIMEOUT: 30000, // 30 segundos
+    POSITION_UPDATE_INTERVAL: 15000,
+    TILE_SIZE: 0.05,
+    VEHICLE_TIMEOUT: 30000,
     CLUSTER_MAX_ZOOM: 16,
-    CACHE_TTL: 60000, // 1 minuto
+    CACHE_TTL: 60000,
     MAX_ALERTAS_POR_HORA: 5,
     MAX_FOTOS_POR_ALERTA: 1
 };
@@ -1472,6 +1566,7 @@ let mensagemRespondendo = null;
 let ultimaAtualizacaoGPS = 0;
 let zoomAtual = 13;
 let alertasMapa = {};
+let pulsantesAlertas = {};
 let alertasConfirmados = {};
 let confirmacoesStorage = JSON.parse(localStorage.getItem('br277_confirmacoes')) || {};
 let ultimoAlertaExibido = {};
@@ -1692,7 +1787,7 @@ function iniciarMapa() {
     mapa.on('zoomend', () => { zoomAtual = mapa.getZoom(); atualizarIconeCarro(); });
 }
 
-// ===== GPS OTIMIZADO (a cada 15 segundos) =====
+// ===== GPS OTIMIZADO =====
 function iniciarGPS() {
     if (!navigator.geolocation) return;
     let ultimoEnvio = 0;
@@ -1734,7 +1829,7 @@ function iniciarGPS() {
     setTimeout(() => ativarWakeLock(), 3000);
 }
 
-// ===== CARREGAR USUÁRIOS ATIVOS (OTIMIZADO) =====
+// ===== CARREGAR USUÁRIOS ATIVOS =====
 function carregarUsuariosAtivos() {
     db.ref('usuarios_ativos').on('value', snap => {
         const usuarios = snap.val();
@@ -1746,7 +1841,6 @@ function carregarUsuariosAtivos() {
         
         document.getElementById('numUsuarios').textContent = usuariosValidos.length;
         
-        // Limpar cluster
         if (clusterSystem) clusterSystem.limpar();
         
         usuariosValidos.forEach(([id, dados]) => {
@@ -1803,6 +1897,291 @@ function criarAlfineteTecnologico() {
     });
 }
 
+// ===== FUNÇÃO PARA CRIAR MARCADOR DE ALERTA COM FOTO =====
+function criarPulsantePorAlerta(alerta, id) {
+    let cor, tamanho = 40;
+    
+    switch(alerta.tipo) {
+        case 'congestionamento': cor = '#ff0000'; break;
+        case 'acidente': cor = '#ff4500'; break;
+        case 'bloqueio': cor = '#8b0000'; break;
+        case 'obras': cor = '#ffa500'; break;
+        case 'alagamento': cor = '#1e90ff'; break;
+        case 'neblina': cor = '#87ceeb'; break;
+        case 'animal': cor = '#9c27b0'; break;
+        case 'radar': cor = '#607d8b'; break;
+        case 'barreira': cor = '#8b4513'; break;
+        default: cor = '#ffff00';
+    }
+    
+    const temImagem = alerta.imagem && alerta.imagem.thumbnail;
+    
+    let htmlIcone;
+    if (temImagem) {
+        htmlIcone = `
+            <div style="position:relative; width: 50px; height: 50px;">
+                <div class="pulsante-alerta" style="background: rgba(255,0,0,0.3); border: 3px solid ${cor}; width: 50px; height: 50px;"></div>
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; border-radius: 50%; overflow: hidden; border: 2px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.5);">
+                    <img src="${alerta.imagem.thumbnail}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'">
+                </div>
+                <div style="position: absolute; bottom: -5px; right: -5px; background: ${cor}; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 12px; border: 2px solid white;">
+                    ${alerta.icone}
+                </div>
+            </div>
+        `;
+    } else {
+        htmlIcone = `
+            <div style="position:relative; width: ${tamanho}px; height: ${tamanho}px;">
+                <div class="pulsante-alerta" style="background: rgba(255,0,0,0.3); border: 3px solid ${cor}; width: ${tamanho}px; height: ${tamanho}px;"></div>
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-weight: bold; text-shadow: 0 0 5px black; font-size: ${tamanho/2}px;">${alerta.icone}</div>
+            </div>
+        `;
+    }
+    
+    const marcador = L.marker([alerta.lat, alerta.lng], {
+        icon: L.divIcon({
+            html: htmlIcone,
+            className: '',
+            iconSize: temImagem ? [50, 50] : [tamanho, tamanho],
+            iconAnchor: temImagem ? [25, 25] : [tamanho/2, tamanho/2]
+        }),
+        zIndexOffset: 2000
+    });
+    
+    marcador.on('click', () => {
+        abrirPopupAlerta(alerta, id);
+    });
+    
+    return marcador;
+}
+
+// ===== POPUP DO ALERTA COM IMAGEM =====
+function abrirPopupAlerta(alerta, id) {
+    const conteudo = document.createElement('div');
+    conteudo.style.maxWidth = '320px';
+    
+    const header = document.createElement('div');
+    header.style.cssText = `
+        padding: 10px;
+        background: ${alerta.cor};
+        color: white;
+        font-weight: bold;
+        display: flex;
+        justify-content: space-between;
+        border-radius: 10px 10px 0 0;
+    `;
+    header.innerHTML = `
+        <span>${alerta.icone} ${alerta.nome}</span>
+        <span>✅ ${alerta.confirmacoes || 0}</span>
+    `;
+    conteudo.appendChild(header);
+    
+    if (alerta.imagem && alerta.imagem.full) {
+        const imgContainer = document.createElement('div');
+        imgContainer.style.cssText = `
+            padding: 10px;
+            text-align: center;
+            background: #1a1a1a;
+            cursor: pointer;
+        `;
+        imgContainer.innerHTML = `
+            <img src="${alerta.imagem.thumbnail}" 
+                 style="max-width: 100%; max-height: 200px; border-radius: 10px; border: 2px solid #ffd700; cursor: pointer;"
+                 onclick="window.open('${alerta.imagem.full}', '_blank')"
+                 onerror="this.style.display='none'">
+            <div style="font-size: 11px; color: #ffd700; margin-top: 5px;">
+                📷 Clique para ampliar
+            </div>
+        `;
+        conteudo.appendChild(imgContainer);
+    }
+    
+    const chatDiv = document.createElement('div');
+    chatDiv.id = `chatAlerta-${id}`;
+    chatDiv.style.cssText = `
+        padding: 10px;
+        max-height: 200px;
+        overflow-y: auto;
+        background: #f5f5f5;
+    `;
+    chatDiv.innerHTML = '<div style="text-align:center; color:#999;">Carregando...</div>';
+    conteudo.appendChild(chatDiv);
+    
+    const inputDiv = document.createElement('div');
+    inputDiv.style.cssText = `
+        display: flex;
+        padding: 10px;
+        gap: 5px;
+        background: #e5e5e5;
+        border-radius: 0 0 10px 10px;
+    `;
+    inputDiv.innerHTML = `
+        <input type="text" id="inputAlerta-${id}" style="flex:1; padding:8px; border-radius:20px; border:1px solid #ccc;" placeholder="Digite...">
+        <button onclick="enviarMsgAlerta('${id}')" style="width:35px; height:35px; border-radius:50%; border:none; background:${alerta.cor}; color:white; cursor:pointer;">➔</button>
+    `;
+    conteudo.appendChild(inputDiv);
+    
+    L.popup({ maxWidth: 340 }).setLatLng([alerta.lat, alerta.lng]).setContent(conteudo).openOn(mapa);
+    
+    carregarMensagensAlerta(id);
+}
+
+// ===== CARREGAR MENSAGENS DO ALERTA =====
+function carregarMensagensAlerta(id) {
+    db.ref(`chats/alerta_${id}`).orderByChild('timestamp').on('value', snap => {
+        const chatDiv = document.getElementById(`chatAlerta-${id}`);
+        if (!chatDiv) return;
+        
+        const msgs = snap.val();
+        if (!msgs) {
+            chatDiv.innerHTML = '<div style="text-align:center; color:#999;">Nenhuma mensagem</div>';
+            return;
+        }
+        
+        let html = '';
+        Object.values(msgs).forEach(msg => {
+            const isMinha = msg.usuario === usuario;
+            html += `
+                <div style="background:${isMinha ? '#dcf8c6' : 'white'}; padding:8px; border-radius:10px; margin:5px 0; ${isMinha ? 'margin-left:20px;' : 'margin-right:20px;'}">
+                    <small><b>${msg.usuario}</b></small><br>
+                    ${msg.texto}<br>
+                    <small style="font-size:9px; color:#999;">${msg.hora}</small>
+                </div>
+            `;
+        });
+        
+        chatDiv.innerHTML = html;
+        chatDiv.scrollTop = chatDiv.scrollHeight;
+    });
+}
+
+// ===== FUNÇÃO DE UPLOAD CORRIGIDA =====
+async function fazerUploadFoto(blob, alertaId) {
+    try {
+        mostrarNotificacaoDiscreta('📤 Enviando foto...', '#ffd700');
+        
+        const thumbnailBlob = await comprimirImagem(blob, 150);
+        const fullBlob = await comprimirImagem(blob, 800);
+        
+        const data = new Date();
+        const ano = data.getFullYear();
+        const mes = (data.getMonth() + 1).toString().padStart(2, '0');
+        const nomeArquivo = `${alertaId}_${Date.now()}.jpg`;
+        
+        const thumbPath = `alertas/${ano}/${mes}/thumbnails/${nomeArquivo}`;
+        const thumbRef = storageRef.child(thumbPath);
+        await thumbRef.put(thumbnailBlob, { contentType: 'image/jpeg' });
+        const thumbUrl = await thumbRef.getDownloadURL();
+        
+        const fullPath = `alertas/${ano}/${mes}/full/${nomeArquivo}`;
+        const fullRef = storageRef.child(fullPath);
+        await fullRef.put(fullBlob, { contentType: 'image/jpeg' });
+        const fullUrl = await fullRef.getDownloadURL();
+        
+        await db.ref('alertas_fixos/' + alertaId).update({
+            imagem: {
+                thumbnail: thumbUrl,
+                full: fullUrl,
+                timestamp: Date.now()
+            }
+        });
+        
+        if (alertasMapa[alertaId]) {
+            alertasMapa[alertaId].imagem = {
+                thumbnail: thumbUrl,
+                full: fullUrl
+            };
+        }
+        
+        if (pulsantesAlertas[alertaId]) {
+            if (clusterSystem) {
+                clusterSystem.clusterGroup.removeLayer(pulsantesAlertas[alertaId]);
+            } else {
+                mapa.removeLayer(pulsantesAlertas[alertaId]);
+            }
+        }
+        
+        const novoMarcador = criarPulsantePorAlerta(alertasMapa[alertaId], alertaId);
+        if (clusterSystem) {
+            clusterSystem.clusterGroup.addLayer(novoMarcador);
+        } else {
+            novoMarcador.addTo(mapa);
+        }
+        pulsantesAlertas[alertaId] = novoMarcador;
+        
+        mostrarNotificacaoDiscreta('✅ Foto salva!', '#4caf50');
+        console.log('📸 Foto salva:', { thumbUrl, fullUrl });
+        
+    } catch (error) {
+        console.error('Erro no upload:', error);
+        mostrarNotificacaoDiscreta('❌ Erro ao salvar foto', '#e53935');
+    }
+}
+
+// ===== COMPRESSÃO DE IMAGEM =====
+function comprimirImagem(blob, maxWidth) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        const url = URL.createObjectURL(blob);
+        img.src = url;
+        
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            let width = img.width;
+            let height = img.height;
+            
+            if (width > maxWidth) {
+                height *= maxWidth / width;
+                width = maxWidth;
+            }
+            
+            canvas.width = width;
+            canvas.height = height;
+            
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            
+            canvas.toBlob((newBlob) => {
+                URL.revokeObjectURL(url);
+                resolve(newBlob);
+            }, 'image/jpeg', 0.7);
+        };
+        
+        img.onerror = () => {
+            URL.revokeObjectURL(url);
+            resolve(blob);
+        };
+    });
+}
+
+// ===== NOTIFICAÇÃO DISCRETA =====
+function mostrarNotificacaoDiscreta(texto, cor = '#ffd700') {
+    const notificacao = document.createElement('div');
+    notificacao.style.cssText = `
+        position: fixed;
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0,0,0,0.9);
+        color: ${cor};
+        padding: 10px 20px;
+        border-radius: 40px;
+        border: 2px solid ${cor};
+        z-index: 100000;
+        font-size: 14px;
+        font-weight: bold;
+        animation: fadeOut 3s forwards;
+    `;
+    notificacao.textContent = texto;
+    document.body.appendChild(notificacao);
+    
+    setTimeout(() => {
+        if (document.body.contains(notificacao)) {
+            document.body.removeChild(notificacao);
+        }
+    }, 3000);
+}
+
 // ===== ALERTAS =====
 function criarIconesAlertas() {
     const grid = document.getElementById('alertasGrid');
@@ -1818,7 +2197,17 @@ function criarIconesAlertas() {
             timer = setTimeout(() => {
                 if (!minhaLocalizacao) return;
                 const id = Date.now();
-                db.ref('alertas_fixos/' + id).set({ ...alerta, lat: minhaLocalizacao.lat, lng: minhaLocalizacao.lng, timestamp: id, criador: usuario, confirmacoes: 0 });
+                const alertaData = { 
+                    ...alerta, 
+                    lat: minhaLocalizacao.lat, 
+                    lng: minhaLocalizacao.lng, 
+                    timestamp: id, 
+                    criador: usuario, 
+                    confirmacoes: 0,
+                    status: 'sem_foto'
+                };
+                alertasMapa[id] = alertaData;
+                db.ref('alertas_fixos/' + id).set(alertaData);
                 mostrarNotificacaoDiscreta('Alerta sem foto');
             }, 800);
         });
@@ -1834,7 +2223,15 @@ async function ativarAlertaComFoto(alerta) {
     if (!minhaLocalizacao) return;
     
     const id = Date.now();
-    const alertaData = { ...alerta, lat: minhaLocalizacao.lat, lng: minhaLocalizacao.lng, timestamp: id, criador: usuario, confirmacoes: 0, status: 'aguardando_foto' };
+    const alertaData = { 
+        ...alerta, 
+        lat: minhaLocalizacao.lat, 
+        lng: minhaLocalizacao.lng, 
+        timestamp: id, 
+        criador: usuario, 
+        confirmacoes: 0, 
+        status: 'aguardando_foto' 
+    };
     alertasMapa[id] = alertaData;
     await db.ref('alertas_fixos/' + id).set(alertaData);
     
@@ -1892,54 +2289,6 @@ async function ativarAlertaComFoto(alerta) {
     }
 }
 
-async function fazerUploadFoto(blob, alertaId) {
-    mostrarNotificacaoDiscreta('📤 Enviando...');
-    
-    const thumbnailBlob = await comprimirImagem(blob, 150);
-    const fullBlob = await comprimirImagem(blob, 800);
-    
-    const path = `alertas/${new Date().getFullYear()}/${(new Date().getMonth()+1).toString().padStart(2,'0')}`;
-    const nome = `${alertaId}_${Date.now()}`;
-    
-    const thumbRef = storageRef.child(`${path}/thumbnails/${nome}.jpg`);
-    await thumbRef.put(thumbnailBlob);
-    const thumbUrl = await thumbRef.getDownloadURL();
-    
-    const fullRef = storageRef.child(`${path}/full/${nome}.jpg`);
-    await fullRef.put(fullBlob);
-    const fullUrl = await fullRef.getDownloadURL();
-    
-    await db.ref('alertas_fixos/' + alertaId).update({
-        imagem: { thumbnail: thumbUrl, full: fullUrl }
-    });
-    
-    mostrarNotificacaoDiscreta('✅ Foto enviada');
-}
-
-function comprimirImagem(blob, maxWidth) {
-    return new Promise(resolve => {
-        const img = new Image();
-        img.src = URL.createObjectURL(blob);
-        img.onload = () => {
-            const canvas = document.createElement('canvas');
-            let width = img.width, height = img.height;
-            if (width > maxWidth) { height *= maxWidth / width; width = maxWidth; }
-            canvas.width = width; canvas.height = height;
-            canvas.getContext('2d').drawImage(img, 0, 0, width, height);
-            canvas.toBlob(resolve, 'image/jpeg', 0.7);
-            URL.revokeObjectURL(img.src);
-        };
-    });
-}
-
-function mostrarNotificacaoDiscreta(texto, cor = '#ffd700') {
-    const div = document.createElement('div');
-    div.style.cssText = `position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.8); color:${cor}; padding:8px 16px; border-radius:30px; border:1px solid ${cor}; z-index:100000; font-size:13px; animation:fadeOut 2s forwards;`;
-    div.textContent = texto;
-    document.body.appendChild(div);
-    setTimeout(() => { if (document.body.contains(div)) document.body.removeChild(div); }, 2000);
-}
-
 // ===== VERIFICAÇÃO DE ALERTAS PRÓXIMOS =====
 function verificarProximidadeAlertas() {
     if (!minhaLocalizacao) return;
@@ -1948,7 +2297,11 @@ function verificarProximidadeAlertas() {
         if (!alerta || alerta.criador === usuario) return;
         const chave = `${usuario}_${id}`;
         if (alertasConfirmados[chave]) return;
-        if (alerta.confirmacoes > 0) { alertasConfirmados[chave] = true; localStorage.setItem('br277_confirmacoes', JSON.stringify(alertasConfirmados)); return; }
+        if (alerta.confirmacoes > 0) { 
+            alertasConfirmados[chave] = true; 
+            localStorage.setItem('br277_confirmacoes', JSON.stringify(alertasConfirmados)); 
+            return; 
+        }
         
         const dist = calcularDistancia(minhaLocalizacao.lat, minhaLocalizacao.lng, alerta.lat, alerta.lng);
         if (dist < 0.3) {
@@ -1993,47 +2346,35 @@ function negarAlerta() {
 function carregarAlertasFixos() {
     db.ref('alertas_fixos').on('child_added', snap => {
         const alerta = snap.val();
-        alertasMapa[snap.key] = alerta;
-        const cor = alerta.cor;
-        const tamanho = 40;
-        const marcador = L.marker([alerta.lat, alerta.lng], {
-            icon: L.divIcon({
-                html: `<div style="position:relative; width:${tamanho}px; height:${tamanho}px;"><div class="pulsante-alerta" style="background:rgba(255,0,0,0.3); border:3px solid ${cor}; width:${tamanho}px; height:${tamanho}px;"></div><div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:white; font-size:${tamanho/2}px;">${alerta.icone}</div></div>`,
-                className: '', iconSize: [tamanho, tamanho], iconAnchor: [tamanho/2, tamanho/2]
-            })
-        });
-        marcador.on('click', () => abrirChatAlerta(alerta, L.latLng(alerta.lat, alerta.lng), snap.key));
-        if (clusterSystem) clusterSystem.clusterGroup.addLayer(marcador);
+        const id = snap.key;
+        alertasMapa[id] = alerta;
+        
+        const marcador = criarPulsantePorAlerta(alerta, id);
+        if (clusterSystem) {
+            clusterSystem.clusterGroup.addLayer(marcador);
+        } else {
+            marcador.addTo(mapa);
+        }
+        pulsantesAlertas[id] = marcador;
     });
-}
-
-function abrirChatAlerta(alerta, pos, id) {
-    const div = document.createElement('div');
-    div.innerHTML = `
-        <div style="padding:10px; background:${alerta.cor}; color:white; display:flex; justify-content:space-between;">
-            <span>${alerta.icone} ${alerta.nome}</span> <span>✅ ${alerta.confirmacoes||0}</span>
-        </div>
-        ${alerta.imagem ? `<div style="margin:10px; text-align:center;"><img src="${alerta.imagem.thumbnail}" style="max-width:100%; max-height:150px; border-radius:10px; border:2px solid #ffd700; cursor:pointer;" onclick="window.open('${alerta.imagem.full}','_blank')"></div>` : ''}
-        <div style="padding:10px; max-height:200px; overflow-y:auto;" id="chatAlerta-${id}"></div>
-        <div style="display:flex; padding:8px;"><input type="text" id="inputAlerta-${id}" style="flex:1; padding:8px; border-radius:20px;" placeholder="Digite..."><button onclick="enviarMsgAlerta('${id}')" style="width:35px; height:35px; border-radius:50%; background:${alerta.cor}; color:white;">➔</button></div>
-    `;
-    L.popup().setLatLng(pos).setContent(div).openOn(mapa);
     
-    db.ref(`chats/alerta_${id}`).on('value', snap => {
-        const chat = document.getElementById(`chatAlerta-${id}`);
-        if (!chat) return;
-        if (!snap.val()) { chat.innerHTML = '<div style="text-align:center;">Nenhuma mensagem</div>'; return; }
-        let html = '';
-        Object.values(snap.val()).forEach(m => {
-            html += `<div style="background:${m.usuario===usuario?'#dcf8c6':'white'}; padding:5px; margin:3px 0;"><b>${m.usuario}</b><br>${m.texto}<br><small>${m.hora}</small></div>`;
-        });
-        chat.innerHTML = html;
+    db.ref('alertas_fixos').on('child_removed', snap => {
+        const id = snap.key;
+        if (pulsantesAlertas[id]) {
+            if (clusterSystem) {
+                clusterSystem.clusterGroup.removeLayer(pulsantesAlertas[id]);
+            } else {
+                mapa.removeLayer(pulsantesAlertas[id]);
+            }
+            delete pulsantesAlertas[id];
+        }
+        delete alertasMapa[id];
     });
 }
 
 function enviarMsgAlerta(id) {
     const input = document.getElementById(`inputAlerta-${id}`);
-    if (!input.value.trim()) return;
+    if (!input || !input.value.trim()) return;
     db.ref(`chats/alerta_${id}`).push({
         usuario, texto: input.value.trim(), hora: new Date().toLocaleTimeString(), timestamp: Date.now()
     });
@@ -2057,7 +2398,10 @@ function carregarChatGeral() {
         let ultimaData = '';
         Object.values(msgs).reverse().forEach(m => {
             const data = new Date(m.timestamp).toLocaleDateString();
-            if (data !== ultimaData) { html += `<div class="data-divider"><span>${data===new Date().toLocaleDateString()?'Hoje':data}</span></div>`; ultimaData = data; }
+            if (data !== ultimaData) { 
+                html += `<div class="data-divider"><span>${data===new Date().toLocaleDateString()?'Hoje':data}</span></div>`; 
+                ultimaData = data; 
+            }
             html += `<div class="mensagem-wrapper"><div class="mensagem ${m.usuario===usuario?'minha':'outra'}"><b>${m.usuario}</b><br>${m.texto}<br><small>${m.hora}</small></div></div>`;
         });
         chatDiv.innerHTML = html;
@@ -2119,6 +2463,7 @@ function pararGravacao() {
         gravador.stop();
         document.getElementById('btn-px').classList.remove('ativo');
         if (timerInterval) clearInterval(timerInterval);
+        document.getElementById('gravandoIndicator').style.display = 'none';
     }
 }
 
@@ -2156,6 +2501,26 @@ function recentralizar() {
     seguirLocalizacao = true;
     document.getElementById('btnRecenter').style.display = 'none';
     if (minhaLocalizacao) mapa.flyTo(minhaLocalizacao, 17);
+}
+
+// ===== FUNÇÕES DA LEGENDA =====
+function fecharLegenda() {
+    document.getElementById('legendaTransito').style.display = 'none';
+    document.getElementById('legendaIcone').style.display = 'flex';
+    localStorage.setItem('legenda_fechada', 'true');
+}
+
+function abrirLegenda() {
+    document.getElementById('legendaTransito').style.display = 'block';
+    document.getElementById('legendaIcone').style.display = 'none';
+    localStorage.setItem('legenda_fechada', 'false');
+}
+
+// Verificar preferência da legenda ao carregar
+const legendaFechada = localStorage.getItem('legenda_fechada');
+if (legendaFechada === 'true') {
+    document.getElementById('legendaTransito').style.display = 'none';
+    document.getElementById('legendaIcone').style.display = 'flex';
 }
 
 // ===== ROTA =====
@@ -2239,9 +2604,9 @@ if (userSalvo) {
 }
 
 // ===== ANIMAÇÃO FADEOUT =====
-const style = document.createElement('style');
-style.textContent = '@keyframes fadeOut{0%{opacity:1}70%{opacity:1}100%{opacity:0;transform:translateX(-50%) translateY(10px)}}';
-document.head.appendChild(style);
+const styleAnim = document.createElement('style');
+styleAnim.textContent = '@keyframes fadeOut{0%{opacity:1}70%{opacity:1}100%{opacity:0;transform:translateX(-50%) translateY(-20px)}}';
+document.head.appendChild(styleAnim);
 </script>
 </body>
 </html>
