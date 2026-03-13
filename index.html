@@ -994,10 +994,10 @@
             cursor: pointer;
         }
         
-        /* ===== BOTÃO RECENTRALIZAR PULSANTE AZUL (IGUAL GOOGLE MAPS) ===== */
+        /* ===== BOTÃO RECENTRALIZAR PULSANTE AZUL (ACIMA DO CHAT) ===== */
         .btn-recentrar-container {
             position: fixed;
-            bottom: 80px;
+            bottom: 140px; /* Subi para 140px (acima do botão mudo) */
             right: 20px;
             z-index: 9000;
             display: none;
@@ -1184,7 +1184,7 @@
             display: none !important;
         }
         
-        /* Recentralizar SEMPRE visível quando necessário */
+        /* Recentralizar SEMPRE visível quando necessário (não some) */
         .btn-recentrar-container {
             transition: opacity 0.3s ease;
         }
@@ -1920,7 +1920,7 @@ function criarPulsantePorAlerta(alerta, id) {
     return marcador;
 }
 
-// ===== POPUP DO ALERTA COM IMAGEM (SEM DUPLICAÇÃO) =====
+// ===== POPUP DO ALERTA COM IMAGEM (APENAS UMA FOTO - A DO CHAT) =====
 function abrirPopupAlerta(alerta, id) {
     const conteudo = document.createElement('div');
     conteudo.style.maxWidth = '320px';
@@ -1942,8 +1942,7 @@ function abrirPopupAlerta(alerta, id) {
     `;
     conteudo.appendChild(header);
     
-    // APENAS UMA VEZ - a imagem já está no ícone, não precisa repetir aqui
-    // O chat vai mostrar as imagens das mensagens
+    // NÃO colocar imagem aqui - apenas no chat
     
     const chatDiv = document.createElement('div');
     chatDiv.id = `chatAlerta-${id}`;
@@ -2471,7 +2470,7 @@ function toggleInterface() {
     document.body.classList.toggle('interface-oculta');
     document.getElementById('iconeSeta').className = interfaceVisivel ? 'fas fa-chevron-up' : 'fas fa-chevron-down';
     
-    // Recentralizar continua visível se necessário (NÃO some)
+    // Recentralizar continua visível se necessário (NUNCA some)
     if (!seguirLocalizacao) {
         document.getElementById('btnRecentrarContainer').style.display = 'flex';
     }
