@@ -954,24 +954,6 @@
             margin-left: 5px;
         }
         
-        .mention {
-            color: #075e54;
-            font-weight: bold;
-            background: rgba(7,94,84,0.1);
-            padding: 2px 4px;
-            border-radius: 4px;
-        }
-        
-        .resposta-preview {
-            background: rgba(0,0,0,0.05);
-            border-left: 3px solid #075e54;
-            padding: 6px 10px;
-            margin-bottom: 4px;
-            border-radius: 8px;
-            font-size: 12px;
-            color: #666;
-        }
-        
         .data-divider {
             text-align: center;
             margin: 15px 0;
@@ -1012,7 +994,7 @@
             cursor: pointer;
         }
         
-        /* BOTÃO RECENTRALIZAR - ACIMA DO CHAT */
+        /* ===== BOTÃO RECENTRALIZAR PULSANTE AZUL (IGUAL GOOGLE MAPS) ===== */
         .btn-recentrar-container {
             position: fixed;
             bottom: 80px;
@@ -1024,25 +1006,34 @@
         }
         
         .btn-recentrar-icone {
-            width: 45px;
-            height: 45px;
-            background: rgba(0,0,0,0.7);
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(10px);
-            border: 2px solid #ffd700;
+            border: 3px solid #00BFFF;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            color: #ffd700;
-            font-size: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            transition: all 0.2s;
+            color: #00BFFF;
+            font-size: 22px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+            animation: pulse-recentrar 2s infinite;
+        }
+        
+        @keyframes pulse-recentrar {
+            0% { box-shadow: 0 0 0 0 rgba(0, 191, 255, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(0, 191, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 191, 255, 0); }
         }
         
         .btn-recentrar-icone:hover {
             transform: scale(1.1);
-            background: rgba(255,215,0,0.2);
+            background: rgba(0, 191, 255, 0.2);
+            color: white;
+            border-color: white;
         }
         
         #btn-px { 
@@ -1177,7 +1168,7 @@
             color: #ffd700;
         }
         
-        /* Classes para ocultar elementos */
+        /* Classes para ocultar elementos - recentralizar NÃO some */
         .interface-oculta .reporte-container,
         .interface-oculta .velocimetro-container,
         .interface-oculta .botoes-direita,
@@ -1193,7 +1184,7 @@
             display: none !important;
         }
         
-        /* Recentralizar NÃO some quando oculta a interface */
+        /* Recentralizar SEMPRE visível quando necessário */
         .btn-recentrar-container {
             transition: opacity 0.3s ease;
         }
@@ -1366,7 +1357,7 @@
     <button onclick="buscarRota()"><i class="fas fa-search"></i></button>
 </div>
 
-<!-- BOTÃO RECENTRALIZAR - ACIMA DO CHAT -->
+<!-- BOTÃO RECENTRALIZAR PULSANTE AZUL - ACIMA DO CHAT -->
 <div class="btn-recentrar-container" id="btnRecentrarContainer">
     <div class="btn-recentrar-icone" onclick="recentralizar()">
         <i class="fas fa-location-arrow"></i>
@@ -1929,7 +1920,7 @@ function criarPulsantePorAlerta(alerta, id) {
     return marcador;
 }
 
-// ===== POPUP DO ALERTA COM IMAGEM =====
+// ===== POPUP DO ALERTA COM IMAGEM (SEM DUPLICAÇÃO) =====
 function abrirPopupAlerta(alerta, id) {
     const conteudo = document.createElement('div');
     conteudo.style.maxWidth = '320px';
@@ -1951,31 +1942,14 @@ function abrirPopupAlerta(alerta, id) {
     `;
     conteudo.appendChild(header);
     
-    // Se tiver imagem, mostra no topo do popup
-    if (alerta.imagem && alerta.imagem.thumbnail) {
-        const imgContainer = document.createElement('div');
-        imgContainer.style.cssText = `
-            padding: 10px;
-            text-align: center;
-            background: #1a1a1a;
-            border-bottom: 1px solid #333;
-        `;
-        imgContainer.innerHTML = `
-            <img src="${alerta.imagem.thumbnail}" 
-                 style="max-width: 100%; max-height: 150px; border-radius: 10px; border: 2px solid #ffd700; cursor: pointer;"
-                 onclick="window.open('${alerta.imagem.thumbnail}', '_blank')">
-            <div style="font-size: 11px; color: #ffd700; margin-top: 5px;">
-                📷 Clique para ampliar
-            </div>
-        `;
-        conteudo.appendChild(imgContainer);
-    }
+    // APENAS UMA VEZ - a imagem já está no ícone, não precisa repetir aqui
+    // O chat vai mostrar as imagens das mensagens
     
     const chatDiv = document.createElement('div');
     chatDiv.id = `chatAlerta-${id}`;
     chatDiv.style.cssText = `
         padding: 10px;
-        max-height: 250px;
+        max-height: 300px;
         overflow-y: auto;
         background: #f5f5f5;
     `;
@@ -2497,8 +2471,8 @@ function toggleInterface() {
     document.body.classList.toggle('interface-oculta');
     document.getElementById('iconeSeta').className = interfaceVisivel ? 'fas fa-chevron-up' : 'fas fa-chevron-down';
     
-    // Recentralizar continua visível se necessário
-    if (!interfaceVisivel && !seguirLocalizacao) {
+    // Recentralizar continua visível se necessário (NÃO some)
+    if (!seguirLocalizacao) {
         document.getElementById('btnRecentrarContainer').style.display = 'flex';
     }
 }
