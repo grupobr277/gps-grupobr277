@@ -1090,24 +1090,24 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
 
-        /* ===== BOTÃO SETA PARA OCULTAR INTERFACE ===== */
+        /* ===== BOTÃO SETA PARA OCULTAR INTERFACE (AJUSTADO) ===== */
         .toggle-interface {
             position: fixed;
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%);
+            bottom: 20px;
+            left: 90px; /* Entre velocímetro (esquerda) e microfone (centro) */
+            transform: translateY(0);
             z-index: 20001;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 5px;
+            gap: 2px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
         
         .seta-container {
-            width: 50px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
             background: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(10px);
             border: 3px solid #ffd700;
@@ -1116,10 +1116,9 @@
             align-items: center;
             justify-content: center;
             color: #ffd700;
-            font-size: 24px;
+            font-size: 20px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.5);
             transition: all 0.3s ease;
-            animation: pulse-seta 2s infinite;
         }
         
         .seta-container:hover {
@@ -1127,23 +1126,20 @@
             background: rgba(255, 215, 0, 0.2);
         }
         
+        /* Remove o texto */
         .toggle-text {
-            color: #ffd700;
-            font-size: 10px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.5);
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(5px);
-            padding: 3px 10px;
-            border-radius: 20px;
-            border: 1px solid #ffd700;
+            display: none;
         }
         
-        @keyframes pulse-seta {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
+        /* Mantém mesma cor quando oculto */
+        .interface-oculta .seta-container {
+            background: rgba(0, 0, 0, 0.8);
+            border-color: #ffd700;
+        }
+        
+        .interface-oculta .seta-container i {
+            transform: rotate(180deg);
+            color: #ffd700;
         }
         
         /* Classes para ocultar elementos */
@@ -1162,24 +1158,7 @@
             display: none !important;
         }
         
-        /* Quando interface oculta, a seta fica na cor diferente */
-        .interface-oculta .seta-container {
-            background: rgba(229, 57, 53, 0.8);
-            border-color: white;
-        }
-        
-        .interface-oculta .seta-container i {
-            transform: rotate(180deg);
-            color: white;
-        }
-        
-        .interface-oculta .toggle-text {
-            background: rgba(229, 57, 53, 0.8);
-            color: white;
-            border-color: white;
-        }
-        
-        /* Ajuste para o botão PX ficar acima da seta */
+        /* Botão PX sempre visível */
         #btn-px {
             z-index: 20002;
         }
@@ -1387,12 +1366,11 @@
 
 <div id="btn-px">🎤</div>
 
-<!-- BOTÃO SETA PARA OCULTAR INTERFACE -->
+<!-- BOTÃO SETA PARA OCULTAR INTERFACE (POSIÇÃO CORRETA) -->
 <div class="toggle-interface" id="toggleInterface" onclick="toggleInterface()">
     <div class="seta-container">
         <i class="fas fa-chevron-up" id="iconeSeta"></i>
     </div>
-    <div class="toggle-text" id="toggleText">Ocultar</div>
 </div>
 
 <!-- POP-UP DE CONFIRMAÇÃO -->
@@ -1448,21 +1426,39 @@
     </div>
 </div>
 
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+
+<!-- LEAFET -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
+// ===== CONFIGURAÇÕES DE OTIMIZAÇÃO =====
+const SCALABLE_CONFIG = {
+    POSITION_UPDATE_INTERVAL: 15000, // 15 segundos
+    TILE_SIZE: 0.05, // ~5km x 5km
+    VEHICLE_TIMEOUT: 30000, // 30 segundos
+    CLUSTER_MAX_ZOOM: 16,
+    CACHE_TTL: 60000, // 1 minuto
+    MAX_ALERTAS_POR_HORA: 5,
+    MAX_FOTOS_POR_ALERTA: 1
+};
+
 // ===== FIREBASE =====
 const firebaseConfig = {
-    databaseURL: "https://gps-br277-default-rtdb.firebaseio.com"
+    databaseURL: "https://gps-br277-default-rtdb.firebaseio.com",
+    storageBucket: "gps-br277.appspot.com"
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
+const storage = firebase.storage();
+const storageRef = storage.ref();
 
-// ===== VARIÁVEIS =====
+// ===== VARIÁVEIS GLOBAIS =====
 let usuario = null;
 let telefone = '';
 let veiculoUsuario = 'carro';
@@ -1471,35 +1467,25 @@ let meuMarcador = null;
 let seguirLocalizacao = true;
 let rotaAtual = null;
 let mapa = null;
-let usuariosAtivos = {};
 let mudo = false;
 let mensagemRespondendo = null;
 let ultimaAtualizacaoGPS = 0;
-const INTERVALO_GPS = 1000;
 let zoomAtual = 13;
-let clusterGroup = null;
 let alertasMapa = {};
-let pulsantesAlertas = {};
-let marcadorDestino = null;
-let wakeLock = null;
-let permissoes = {
-    localizacao: false,
-    microfone: false,
-    audio: true
-};
-
-// ===== SISTEMA DE CONFIRMAÇÃO DE ALERTAS - CORRIGIDO =====
-let alertasConfirmados = {}; // Memória RAM
+let alertasConfirmados = {};
 let confirmacoesStorage = JSON.parse(localStorage.getItem('br277_confirmacoes')) || {};
-let ultimoAlertaExibido = {}; // Controle para não mostrar múltiplas vezes
+let ultimoAlertaExibido = {};
+let popupTimeout = null;
+let alertaAtual = null;
+let ultimoHeading = 0;
+let wakeLock = null;
+let interfaceVisivel = true;
+let permissoes = { localizacao: false, microfone: false, audio: true };
+let clusterSystem = null;
+let tileSystem = null;
 
-// Carregar confirmações do localStorage ao iniciar
+// Carregar confirmações
 alertasConfirmados = { ...confirmacoesStorage };
-
-// Função para salvar confirmações no localStorage
-function salvarConfirmacoesStorage() {
-    localStorage.setItem('br277_confirmacoes', JSON.stringify(alertasConfirmados));
-}
 
 // ===== 10 ALERTAS =====
 const alertas = [
@@ -1515,341 +1501,183 @@ const alertas = [
     { tipo: 'bloqueio', nome: 'BLOQUEIO', icone: '⛔', cor: '#b71c1c' }
 ];
 
-// ===== FUNÇÃO PARA SOLICITAR PERMISSÕES =====
-async function solicitarPermissoes() {
-    // Solicitar localização
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            () => {
-                permissoes.localizacao = true;
-                document.getElementById('statusLocalizacao').textContent = '✅ Concedida';
-                document.getElementById('statusLocalizacao').className = 'permissao-status checked';
-                verificarPermissoesCompletas();
-            },
-            () => {
-                alert('Permissão de localização negada! Algumas funções podem não funcionar.');
-            }
-        );
+// ===== SISTEMA DE TILES =====
+class TileSystem {
+    constructor() {
+        this.veiculosPorTile = new Map();
     }
     
-    // Solicitar microfone
+    getTileId(lat, lng) {
+        const tileX = Math.floor(lat / SCALABLE_CONFIG.TILE_SIZE);
+        const tileY = Math.floor(lng / SCALABLE_CONFIG.TILE_SIZE);
+        return `${tileX}_${tileY}`;
+    }
+    
+    adicionarVeiculo(id, lat, lng, dados) {
+        const tileId = this.getTileId(lat, lng);
+        if (!this.veiculosPorTile.has(tileId)) {
+            this.veiculosPorTile.set(tileId, new Map());
+        }
+        this.veiculosPorTile.get(tileId).set(id, { ...dados, lat, lng, timestamp: Date.now() });
+        return tileId;
+    }
+    
+    removerVeiculo(id, tileId) {
+        if (this.veiculosPorTile.has(tileId)) {
+            this.veiculosPorTile.get(tileId).delete(id);
+            if (this.veiculosPorTile.get(tileId).size === 0) {
+                this.veiculosPorTile.delete(tileId);
+            }
+        }
+    }
+    
+    limparVeiculosAntigos() {
+        const agora = Date.now();
+        this.veiculosPorTile.forEach((veiculos, tileId) => {
+            veiculos.forEach((dados, id) => {
+                if (agora - dados.timestamp > SCALABLE_CONFIG.VEHICLE_TIMEOUT) {
+                    veiculos.delete(id);
+                }
+            });
+            if (veiculos.size === 0) this.veiculosPorTile.delete(tileId);
+        });
+    }
+}
+
+// ===== SISTEMA DE CLUSTER =====
+class ClusterSystem {
+    constructor(mapa) {
+        this.mapa = mapa;
+        this.marcadores = new Map();
+        this.clusterGroup = L.markerClusterGroup({
+            maxClusterRadius: 60,
+            iconCreateFunction: this.criarIconeCluster,
+            spiderfyOnMaxZoom: true,
+            showCoverageOnHover: false,
+            zoomToBoundsOnClick: true,
+            disableClusteringAtZoom: SCALABLE_CONFIG.CLUSTER_MAX_ZOOM
+        });
+        this.mapa.addLayer(this.clusterGroup);
+    }
+    
+    criarIconeCluster(cluster) {
+        const count = cluster.getChildCount();
+        let cor = '#ffd700';
+        let tamanho = 40;
+        if (count > 50) { cor = '#e53935'; tamanho = 50; }
+        else if (count > 20) { cor = '#ff9800'; tamanho = 45; }
+        return L.divIcon({
+            html: `<div class="cluster-marcador" style="background:${cor}; width:${tamanho}px; height:${tamanho}px;">${count}</div>`,
+            className: '', iconSize: [tamanho, tamanho]
+        });
+    }
+    
+    adicionarMarcador(id, lat, lng, dados) {
+        if (this.marcadores.has(id)) this.clusterGroup.removeLayer(this.marcadores.get(id));
+        const marcador = L.marker([lat, lng], {
+            icon: this.criarIconeVeiculo(dados),
+            zIndexOffset: dados.ehMeu ? 1000 : 0
+        });
+        if (!dados.ehMeu) marcador.bindPopup(this.criarPopupVeiculo(dados));
+        this.clusterGroup.addLayer(marcador);
+        this.marcadores.set(id, marcador);
+    }
+    
+    criarIconeVeiculo(dados) {
+        if (dados.ehMeu) {
+            return L.divIcon({
+                html: `<div style="position:relative; width:40px; height:40px;"><div class="pulsante-azul"></div><div style="font-size:32px; position:absolute; left:4px; top:4px; transform:rotate(${dados.direcao||0}deg);">${this.getIcone(dados.veiculo)}</div></div>`,
+                className: '', iconSize: [40,40], iconAnchor: [20,20]
+            });
+        } else {
+            return L.divIcon({
+                html: `<div style="font-size:24px; transform:rotate(${dados.direcao||0}deg);">${this.getIcone(dados.veiculo)}</div>`,
+                className: '', iconSize: [24,24], iconAnchor: [12,12]
+            });
+        }
+    }
+    
+    getIcone(tipo) {
+        const icones = { carro:'🚗', caminhao:'🚛', moto:'🏍️', onibus:'🚌', van:'🚐', pickup:'🛻' };
+        return icones[tipo] || '🚗';
+    }
+    
+    criarPopupVeiculo(dados) {
+        return `<div style="padding:5px;"><b>${dados.usuario}</b><br>🚗 ${dados.veiculo}<br>⚡ ${dados.velocidade||0} km/h</div>`;
+    }
+    
+    removerMarcador(id) {
+        if (this.marcadores.has(id)) {
+            this.clusterGroup.removeLayer(this.marcadores.get(id));
+            this.marcadores.delete(id);
+        }
+    }
+    
+    limpar() {
+        this.clusterGroup.clearLayers();
+        this.marcadores.clear();
+    }
+}
+
+// ===== FUNÇÕES DO MODAL =====
+function selecionarVeiculo(tipo) {
+    veiculoUsuario = tipo;
+    document.querySelectorAll('[id^="veiculo-"]').forEach(el => el.style.borderColor = 'transparent');
+    document.getElementById(`veiculo-${tipo}`).style.borderColor = '#ffd700';
+}
+
+async function solicitarPermissoes() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            () => { permissoes.localizacao = true; atualizarStatusPermissoes(); },
+            () => alert('Permissão de localização negada!')
+        );
+    }
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         permissoes.microfone = true;
-        document.getElementById('statusMicrofone').textContent = '✅ Concedida';
-        document.getElementById('statusMicrofone').className = 'permissao-status checked';
-        stream.getTracks().forEach(track => track.stop());
-        verificarPermissoesCompletas();
+        stream.getTracks().forEach(t => t.stop());
+        atualizarStatusPermissoes();
     } catch(e) {
-        alert('Permissão de microfone negada! O rádio PX não funcionará.');
-        document.getElementById('statusMicrofone').textContent = '❌ Negada';
-        document.getElementById('statusMicrofone').className = 'permissao-status unchecked';
+        alert('Permissão de microfone negada!');
     }
-    
-    // Testar auto-falantes
-    const audio = new Audio();
-    audio.volume = 0.1;
-    permissoes.audio = true;
 }
 
-function verificarPermissoesCompletas() {
+function atualizarStatusPermissoes() {
+    document.getElementById('statusLocalizacao').textContent = permissoes.localizacao ? '✅ Concedida' : '❌ Negada';
+    document.getElementById('statusLocalizacao').className = `permissao-status ${permissoes.localizacao ? 'checked' : 'unchecked'}`;
+    document.getElementById('statusMicrofone').textContent = permissoes.microfone ? '✅ Concedida' : '❌ Negada';
+    document.getElementById('statusMicrofone').className = `permissao-status ${permissoes.microfone ? 'checked' : 'unchecked'}`;
+    
     const btnEntrar = document.getElementById('btnEntrar');
     const aceite = document.getElementById('aceitePrivacidade').checked;
-    
     if (permissoes.localizacao && permissoes.microfone && aceite) {
         btnEntrar.disabled = false;
         btnEntrar.style.background = '#ffd700';
         btnEntrar.style.color = '#1a1a1a';
         btnEntrar.style.cursor = 'pointer';
         btnEntrar.textContent = 'ENTRAR NO MAPA';
-    } else {
-        btnEntrar.disabled = true;
-        btnEntrar.style.background = '#666';
-        btnEntrar.style.color = '#ccc';
-        btnEntrar.style.cursor = 'not-allowed';
     }
 }
 
-document.getElementById('aceitePrivacidade').addEventListener('change', verificarPermissoesCompletas);
+document.getElementById('aceitePrivacidade').addEventListener('change', atualizarStatusPermissoes);
 
-// ===== FUNÇÃO PARA MANTER TELA ATIVA (WAKE LOCK) =====
-async function ativarWakeLock() {
-    if ('wakeLock' in navigator) {
-        try {
-            wakeLock = await navigator.wakeLock.request('screen');
-            console.log('✅ Wake Lock ativado');
-            
-            wakeLock.addEventListener('release', () => {
-                if (document.visibilityState === 'visible') {
-                    ativarWakeLock();
-                }
-            });
-        } catch (err) {
-            console.log('❌ Erro ao ativar Wake Lock:', err);
-        }
-    }
-}
-
-document.addEventListener('visibilitychange', async () => {
-    if (document.visibilityState === 'visible' && !wakeLock) {
-        await ativarWakeLock();
-    }
-});
-
-// ===== FUNÇÕES DO MODAL =====
-function selecionarVeiculo(tipo, icone) {
-    veiculoUsuario = tipo;
-    document.querySelectorAll('[id^="veiculo-"]').forEach(el => {
-        el.style.borderColor = 'transparent';
-    });
-    document.getElementById(`veiculo-${tipo}`).style.borderColor = '#ffd700';
-}
-
-// ===== VERIFICA USUÁRIO =====
-const userSalvo = localStorage.getItem('br277_usuario');
-if (userSalvo) {
-    usuario = userSalvo;
-    telefone = localStorage.getItem('br277_telefone') || '';
-    veiculoUsuario = localStorage.getItem('br277_veiculo') || 'carro';
-    
-    // Carregar confirmações do localStorage
-    confirmacoesStorage = JSON.parse(localStorage.getItem('br277_confirmacoes')) || {};
-    alertasConfirmados = { ...confirmacoesStorage };
-    
-    document.getElementById('welcomeModal').style.display = 'none';
-    iniciarMapa();
-    iniciarGPS();
-    carregarUsuariosAtivos();
-    carregarAlertasFixos();
-    carregarChatGeral();
-    criarIconesAlertas();
-    iniciarCluster();
-    carregarConfirmacoesFirebase();
-}
-
+// ===== SALVAR CADASTRO =====
 function salvarCadastro() {
     const nome = document.getElementById('nomeUsuario').value.trim();
-    if (!nome) {
-        alert('Digite seu nome!');
-        return;
-    }
-    
+    if (!nome) { alert('Digite seu nome!'); return; }
     usuario = nome;
     telefone = document.getElementById('telefoneUsuario').value.trim();
-    
-    // Carregar confirmações do localStorage
-    confirmacoesStorage = JSON.parse(localStorage.getItem('br277_confirmacoes')) || {};
-    alertasConfirmados = { ...confirmacoesStorage };
-    
     localStorage.setItem('br277_usuario', nome);
     localStorage.setItem('br277_telefone', telefone);
     localStorage.setItem('br277_veiculo', veiculoUsuario);
-    
     document.getElementById('welcomeModal').style.display = 'none';
-    
     iniciarMapa();
     iniciarGPS();
     carregarUsuariosAtivos();
     carregarAlertasFixos();
     carregarChatGeral();
     criarIconesAlertas();
-    iniciarCluster();
-    carregarConfirmacoesFirebase();
-}
-
-// ===== CARREGAR CONFIRMAÇÕES DO FIREBASE AO INICIAR =====
-function carregarConfirmacoesFirebase() {
-    db.ref('confirmacoes_usuarios').once('value', snap => {
-        const confirmacoes = snap.val();
-        if (!confirmacoes) return;
-        
-        Object.keys(confirmacoes).forEach(alertaId => {
-            const usuariosConfirmaram = confirmacoes[alertaId];
-            if (usuariosConfirmaram && usuariosConfirmaram[usuario]) {
-                const chaveConfirmacao = `${usuario}_${alertaId}`;
-                alertasConfirmados[chaveConfirmacao] = true;
-            }
-        });
-        
-        salvarConfirmacoesStorage();
-    });
-}
-
-// ===== FUNÇÕES DE INTERFACE =====
-function toggleReporte() {
-    const panel = document.getElementById('alertasPanel');
-    const toggle = document.querySelector('.reporte-toggle');
-    panel.classList.toggle('visivel');
-    toggle.classList.toggle('ativo');
-}
-
-// ===== ICONES ALERTAS =====
-function criarIconesAlertas() {
-    const grid = document.getElementById('alertasGrid');
-    alertas.forEach(alerta => {
-        const div = document.createElement('div');
-        div.className = `alerta-item alerta-${alerta.tipo}`;
-        div.innerHTML = `
-            <div class="alerta-icone">${alerta.icone}</div>
-            <div class="alerta-nome">${alerta.nome}</div>
-        `;
-        div.onclick = () => ativarAlerta(alerta);
-        grid.appendChild(div);
-    });
-}
-
-// ===== INICIAR CLUSTER =====
-function iniciarCluster() {
-    clusterGroup = L.markerClusterGroup({
-        maxClusterRadius: 60,
-        iconCreateFunction: function(cluster) {
-            const count = cluster.getChildCount();
-            return L.divIcon({
-                html: `<div class="cluster-marcador">${count}</div>`,
-                className: '',
-                iconSize: [40, 40]
-            });
-        },
-        spiderfyOnMaxZoom: true,
-        showCoverageOnHover: false,
-        zoomToBoundsOnClick: true
-    });
-    mapa.addLayer(clusterGroup);
-}
-
-// ===== FUNÇÃO AUXILIAR HEX PARA RGB =====
-function hexToRgb(hex) {
-    const r = parseInt(hex.slice(1,3), 16);
-    const g = parseInt(hex.slice(3,5), 16);
-    const b = parseInt(hex.slice(5,7), 16);
-    return `${r}, ${g}, ${b}`;
-}
-
-// ===== FUNÇÃO PARA CRIAR PULSANTE BASEADO EM ALERTA REAL =====
-function criarPulsantePorAlerta(alerta, id) {
-    let cor, tamanho;
-    
-    switch(alerta.tipo) {
-        case 'congestionamento':
-            cor = '#ff0000';
-            tamanho = 45;
-            break;
-        case 'acidente':
-            cor = '#ff4500';
-            tamanho = 50;
-            break;
-        case 'bloqueio':
-            cor = '#8b0000';
-            tamanho = 45;
-            break;
-        case 'obras':
-            cor = '#ffa500';
-            tamanho = 40;
-            break;
-        case 'alagamento':
-            cor = '#1e90ff';
-            tamanho = 40;
-            break;
-        case 'neblina':
-            cor = '#87ceeb';
-            tamanho = 35;
-            break;
-        case 'animal':
-            cor = '#9c27b0';
-            tamanho = 35;
-            break;
-        case 'radar':
-            cor = '#607d8b';
-            tamanho = 30;
-            break;
-        case 'barreira':
-            cor = '#8b4513';
-            tamanho = 35;
-            break;
-        default:
-            cor = '#ffff00';
-            tamanho = 35;
-    }
-    
-    const marcador = L.marker([alerta.lat, alerta.lng], {
-        icon: L.divIcon({
-            html: `<div style="position:relative; width: ${tamanho}px; height: ${tamanho}px;">
-                <div class="pulsante-alerta" style="background: rgba(${hexToRgb(cor)}, 0.4); border: 3px solid ${cor}; width: ${tamanho}px; height: ${tamanho}px; left: 0; top: 0;"></div>
-                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-weight: bold; text-shadow: 0 0 5px black; font-size: ${tamanho/2}px;">${alerta.icone}</div>
-            </div>`,
-            className: '',
-            iconSize: [tamanho, tamanho],
-            iconAnchor: [tamanho/2, tamanho/2]
-        }),
-        zIndexOffset: 2000
-    });
-    
-    marcador.on('click', () => {
-        abrirChatAlerta(alerta, L.latLng(alerta.lat, alerta.lng), id);
-    });
-    
-    if (clusterGroup) {
-        clusterGroup.addLayer(marcador);
-    }
-    
-    return marcador;
-}
-
-// ===== FUNÇÃO PARA CRIAR ÍCONE DO CARRO COM PULSANTE AZUL =====
-function criarIconeCarro(ehMeu = true, direcao = 0) {
-    if (ehMeu) {
-        return L.divIcon({
-            html: `<div style="position:relative; width: 40px; height: 40px; background: transparent;">
-                <div class="pulsante-azul" style="left: 0; top: 0;"></div>
-                <div style="font-size: 32px; position: absolute; left: 4px; top: 4px; z-index: 2; transform: rotate(${direcao}deg);">🚗</div>
-            </div>`,
-            className: 'carro-marcador',
-            iconSize: [40, 40],
-            iconAnchor: [20, 20]
-        });
-    } else {
-        return L.divIcon({
-            html: `<div style="font-size: 24px; width: 24px; height: 24px; transform: rotate(${direcao}deg); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">🚗</div>`,
-            className: 'carro-marcador',
-            iconSize: [24, 24],
-            iconAnchor: [12, 12]
-        });
-    }
-}
-
-// ===== FUNÇÃO PARA CRIAR ALFINETE TECNOLÓGICO PRETO E VERDE =====
-function criarAlfineteTecnologico() {
-    return L.divIcon({
-        html: `<div class="alfinete-tecnologico" style="position:relative; width: 40px; height: 40px;">
-            <i class="fas fa-map-pin" style="color: #000000; font-size: 40px; filter: drop-shadow(0 0 0 3px #00ff00); -webkit-text-stroke: 2px #00ff00;"></i>
-            <div class="led-verde"></div>
-        </div>`,
-        className: '',
-        iconSize: [40, 40],
-        iconAnchor: [20, 40]
-    });
-}
-
-// ===== FUNÇÃO PARA TOCAR BIP =====
-function tocarBip() {
-    try {
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const oscillator = audioCtx.createOscillator();
-        const gainNode = audioCtx.createGain();
-        
-        oscillator.type = 'sine';
-        oscillator.frequency.setValueAtTime(880, audioCtx.currentTime);
-        gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(audioCtx.destination);
-        
-        oscillator.start();
-        oscillator.stop(audioCtx.currentTime + 0.2);
-    } catch(e) {
-        console.log('Erro ao tocar bip:', e);
-    }
 }
 
 // ===== MAPA =====
@@ -1857,707 +1685,440 @@ function iniciarMapa() {
     mapa = L.map('map', { zoomControl: false }).setView([-25.4284, -49.2733], 13);
     L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(mapa);
     
-    mapa.on('dragstart', () => {
-        seguirLocalizacao = false;
-        document.getElementById('btnRecenter').style.display = 'block';
-    });
+    tileSystem = new TileSystem();
+    clusterSystem = new ClusterSystem(mapa);
     
-    mapa.on('zoomend', () => {
-        zoomAtual = mapa.getZoom();
-        atualizarIconeCarro();
+    mapa.on('dragstart', () => { seguirLocalizacao = false; document.getElementById('btnRecenter').style.display = 'block'; });
+    mapa.on('zoomend', () => { zoomAtual = mapa.getZoom(); atualizarIconeCarro(); });
+}
+
+// ===== GPS OTIMIZADO (a cada 15 segundos) =====
+function iniciarGPS() {
+    if (!navigator.geolocation) return;
+    let ultimoEnvio = 0;
+    
+    navigator.geolocation.watchPosition(pos => {
+        const agora = Date.now();
+        if (agora - ultimoEnvio < SCALABLE_CONFIG.POSITION_UPDATE_INTERVAL) return;
+        ultimoEnvio = agora;
+        
+        minhaLocalizacao = L.latLng(pos.coords.latitude, pos.coords.longitude);
+        if (pos.coords.heading !== null) ultimoHeading = pos.coords.heading;
+        if (pos.coords.speed !== null) atualizarVelocimetroPessoal(pos.coords.speed * 3.6);
+        
+        const dadosVeiculo = {
+            lat: minhaLocalizacao.lat,
+            lng: minhaLocalizacao.lng,
+            velocidade: Math.round((pos.coords.speed || 0) * 3.6),
+            direcao: pos.coords.heading || 0,
+            veiculo: veiculoUsuario,
+            timestamp: Date.now()
+        };
+        
+        db.ref('usuarios_ativos/' + usuario).set(dadosVeiculo);
+        
+        if (!meuMarcador) {
+            meuMarcador = L.marker(minhaLocalizacao, { icon: criarIconeCarro(true, ultimoHeading), zIndexOffset: 1000 }).addTo(mapa);
+            mapa.setView(minhaLocalizacao, 17);
+        } else {
+            meuMarcador.setLatLng(minhaLocalizacao);
+            meuMarcador.setIcon(criarIconeCarro(true, ultimoHeading));
+        }
+        
+        if (seguirLocalizacao) mapa.panTo(minhaLocalizacao);
+        verificarProximidadeAlertas();
+        
+    }, null, { enableHighAccuracy: true, maximumAge: 0, timeout: 5000 });
+    
+    window.addEventListener('beforeunload', () => db.ref('usuarios_ativos/' + usuario).remove());
+    setTimeout(() => ativarWakeLock(), 3000);
+}
+
+// ===== CARREGAR USUÁRIOS ATIVOS (OTIMIZADO) =====
+function carregarUsuariosAtivos() {
+    db.ref('usuarios_ativos').on('value', snap => {
+        const usuarios = snap.val();
+        if (!usuarios) { document.getElementById('numUsuarios').textContent = '0'; return; }
+        
+        const agora = Date.now();
+        const limite = agora - SCALABLE_CONFIG.VEHICLE_TIMEOUT;
+        const usuariosValidos = Object.entries(usuarios).filter(([id, d]) => d && d.timestamp && d.timestamp > limite);
+        
+        document.getElementById('numUsuarios').textContent = usuariosValidos.length;
+        
+        // Limpar cluster
+        if (clusterSystem) clusterSystem.limpar();
+        
+        usuariosValidos.forEach(([id, dados]) => {
+            if (id === usuario) return;
+            tileSystem.adicionarVeiculo(id, dados.lat, dados.lng, dados);
+            clusterSystem.adicionarMarcador(id, dados.lat, dados.lng, {
+                usuario: id,
+                veiculo: dados.veiculo,
+                velocidade: dados.velocidade,
+                direcao: dados.direcao,
+                ehMeu: false
+            });
+        });
     });
 }
 
-// ===== ATUALIZA VELOCÍMETRO =====
+// ===== ATUALIZAR VELOCÍMETRO =====
 function atualizarVelocimetroPessoal(velocidade) {
-    const velocidadeInt = Math.round(velocidade);
-    document.getElementById('velocidadeRedonda').textContent = velocidadeInt;
+    document.getElementById('velocidadeRedonda').textContent = Math.round(velocidade);
 }
 
-// ===== ATUALIZA ÍCONE DO CARRO =====
+// ===== ATUALIZAR ÍCONE DO CARRO =====
 function atualizarIconeCarro() {
     if (!meuMarcador || !minhaLocalizacao) return;
-    
     mapa.removeLayer(meuMarcador);
-    
     if (zoomAtual >= 15) {
-        meuMarcador = L.marker(minhaLocalizacao, {
-            icon: criarIconeCarro(true, ultimoHeading || 0),
-            zIndexOffset: 1000
-        }).addTo(mapa);
+        meuMarcador = L.marker(minhaLocalizacao, { icon: criarIconeCarro(true, ultimoHeading), zIndexOffset: 1000 }).addTo(mapa);
     } else {
         meuMarcador = L.marker(minhaLocalizacao, {
-            icon: L.divIcon({
-                html: `<div class="ponto-azul"></div>`,
-                className: '',
-                iconSize: [20, 20],
-                iconAnchor: [10, 10]
-            }),
+            icon: L.divIcon({ html: '<div class="ponto-azul"></div>', className: '', iconSize: [20,20], iconAnchor: [10,10] }),
             zIndexOffset: 1000
         }).addTo(mapa);
     }
 }
 
-// ===== GPS =====
-let ultimoHeading = 0;
-
-function iniciarGPS() {
-    if (!navigator.geolocation) return;
-    
-    navigator.geolocation.watchPosition(pos => {
-        const agora = Date.now();
-        if (agora - ultimaAtualizacaoGPS < INTERVALO_GPS) return;
-        ultimaAtualizacaoGPS = agora;
-        
-        minhaLocalizacao = L.latLng(pos.coords.latitude, pos.coords.longitude);
-        
-        if (pos.coords.heading !== null) {
-            ultimoHeading = pos.coords.heading;
-        }
-        
-        if (pos.coords.speed !== null) {
-            const velocidadeKmh = pos.coords.speed * 3.6;
-            atualizarVelocimetroPessoal(velocidadeKmh);
-        }
-        
-        if (!meuMarcador) {
-            if (zoomAtual >= 15) {
-                meuMarcador = L.marker(minhaLocalizacao, {
-                    icon: criarIconeCarro(true, ultimoHeading || 0),
-                    zIndexOffset: 1000
-                }).addTo(mapa);
-            } else {
-                meuMarcador = L.marker(minhaLocalizacao, {
-                    icon: L.divIcon({
-                        html: `<div class="ponto-azul"></div>`,
-                        className: '',
-                        iconSize: [20, 20],
-                        iconAnchor: [10, 10]
-                    }),
-                    zIndexOffset: 1000
-                }).addTo(mapa);
-            }
-            
-            mapa.setView(minhaLocalizacao, 17);
-            
-            db.ref('usuarios_ativos/' + usuario).set({
-                lat: minhaLocalizacao.lat,
-                lng: minhaLocalizacao.lng,
-                veiculo: veiculoUsuario,
-                timestamp: Date.now()
-            });
-            
-        } else {
-            meuMarcador.setLatLng(minhaLocalizacao);
-            
-            if (zoomAtual >= 15) {
-                meuMarcador.setIcon(criarIconeCarro(true, ultimoHeading || 0));
-            }
-            
-            db.ref('usuarios_ativos/' + usuario).update({
-                lat: minhaLocalizacao.lat,
-                lng: minhaLocalizacao.lng,
-                timestamp: Date.now()
-            });
-        }
-        
-        if (seguirLocalizacao) mapa.panTo(minhaLocalizacao);
-        
-        verificarProximidadeAlertas();
-        
-    }, null, { enableHighAccuracy: true, maximumAge: 0, timeout: 5000 });
-    
-    window.addEventListener('beforeunload', () => {
-        db.ref('usuarios_ativos/' + usuario).remove();
-    });
-    
-    setTimeout(() => ativarWakeLock(), 3000);
+function criarIconeCarro(ehMeu, direcao) {
+    if (ehMeu) {
+        return L.divIcon({
+            html: `<div style="position:relative; width:40px; height:40px;"><div class="pulsante-azul"></div><div style="font-size:32px; position:absolute; left:4px; top:4px; transform:rotate(${direcao}deg);">🚗</div></div>`,
+            className: 'carro-marcador', iconSize: [40,40], iconAnchor: [20,20]
+        });
+    } else {
+        return L.divIcon({
+            html: `<div style="font-size:24px; transform:rotate(${direcao}deg);">🚗</div>`,
+            className: 'carro-marcador', iconSize: [24,24], iconAnchor: [12,12]
+        });
+    }
 }
 
-// ===== VERIFICAR PROXIMIDADE COM ALERTAS =====
-let popupTimeout = null;
-let alertaAtual = null;
+function criarAlfineteTecnologico() {
+    return L.divIcon({
+        html: `<div class="alfinete-tecnologico" style="position:relative; width:40px; height:40px;"><i class="fas fa-map-pin" style="color:#000; font-size:40px; -webkit-text-stroke:2px #00ff00;"></i><div class="led-verde"></div></div>`,
+        className: '', iconSize: [40,40], iconAnchor: [20,40]
+    });
+}
 
-function verificarProximidadeAlertas() {
+// ===== ALERTAS =====
+function criarIconesAlertas() {
+    const grid = document.getElementById('alertasGrid');
+    alertas.forEach(alerta => {
+        const div = document.createElement('div');
+        div.className = `alerta-item alerta-${alerta.tipo}`;
+        div.innerHTML = `<div class="alerta-icone">${alerta.icone}</div><div class="alerta-nome">${alerta.nome}</div><div style="font-size:8px; color:white;">📷 toque</div>`;
+        
+        div.onclick = () => ativarAlertaComFoto(alerta);
+        
+        let timer;
+        div.addEventListener('mousedown', () => {
+            timer = setTimeout(() => {
+                if (!minhaLocalizacao) return;
+                const id = Date.now();
+                db.ref('alertas_fixos/' + id).set({ ...alerta, lat: minhaLocalizacao.lat, lng: minhaLocalizacao.lng, timestamp: id, criador: usuario, confirmacoes: 0 });
+                mostrarNotificacaoDiscreta('Alerta sem foto');
+            }, 800);
+        });
+        div.addEventListener('mouseup', () => clearTimeout(timer));
+        div.addEventListener('mouseleave', () => clearTimeout(timer));
+        
+        grid.appendChild(div);
+    });
+}
+
+// ===== CAPTURA DE FOTO DISCRETA =====
+async function ativarAlertaComFoto(alerta) {
     if (!minhaLocalizacao) return;
     
+    const id = Date.now();
+    const alertaData = { ...alerta, lat: minhaLocalizacao.lat, lng: minhaLocalizacao.lng, timestamp: id, criador: usuario, confirmacoes: 0, status: 'aguardando_foto' };
+    alertasMapa[id] = alertaData;
+    await db.ref('alertas_fixos/' + id).set(alertaData);
+    
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
+        
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:100000; display:flex; align-items:center; justify-content:center;';
+        
+        const container = document.createElement('div');
+        container.style.cssText = 'width:90%; max-width:380px; background:#1a1a1a; border-radius:20px; overflow:hidden; border:2px solid #ffd700;';
+        
+        const video = document.createElement('video');
+        video.style.cssText = 'width:100%; height:280px; object-fit:cover;';
+        video.autoplay = true;
+        video.srcObject = stream;
+        
+        const botoes = document.createElement('div');
+        botoes.style.cssText = 'display:flex; padding:10px; gap:8px; background:#2a2a2a;';
+        
+        const btnFoto = document.createElement('button');
+        btnFoto.style.cssText = 'flex:1; padding:12px; background:#ffd700; border:none; border-radius:40px; font-size:20px; cursor:pointer;';
+        btnFoto.innerHTML = '📷';
+        
+        const btnPular = document.createElement('button');
+        btnPular.style.cssText = 'flex:1; padding:12px; background:#444; color:#ccc; border:none; border-radius:40px; font-size:14px; cursor:pointer;';
+        btnPular.innerHTML = '⏭️';
+        
+        botoes.appendChild(btnFoto);
+        botoes.appendChild(btnPular);
+        container.appendChild(video);
+        container.appendChild(botoes);
+        overlay.appendChild(container);
+        document.body.appendChild(overlay);
+        
+        btnFoto.onclick = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            canvas.toBlob(blob => {
+                stream.getTracks().forEach(t => t.stop());
+                document.body.removeChild(overlay);
+                fazerUploadFoto(blob, id);
+            }, 'image/jpeg', 0.7);
+        };
+        
+        btnPular.onclick = () => {
+            stream.getTracks().forEach(t => t.stop());
+            document.body.removeChild(overlay);
+        };
+        
+    } catch(e) {
+        console.log('Câmera indisponível');
+    }
+}
+
+async function fazerUploadFoto(blob, alertaId) {
+    mostrarNotificacaoDiscreta('📤 Enviando...');
+    
+    const thumbnailBlob = await comprimirImagem(blob, 150);
+    const fullBlob = await comprimirImagem(blob, 800);
+    
+    const path = `alertas/${new Date().getFullYear()}/${(new Date().getMonth()+1).toString().padStart(2,'0')}`;
+    const nome = `${alertaId}_${Date.now()}`;
+    
+    const thumbRef = storageRef.child(`${path}/thumbnails/${nome}.jpg`);
+    await thumbRef.put(thumbnailBlob);
+    const thumbUrl = await thumbRef.getDownloadURL();
+    
+    const fullRef = storageRef.child(`${path}/full/${nome}.jpg`);
+    await fullRef.put(fullBlob);
+    const fullUrl = await fullRef.getDownloadURL();
+    
+    await db.ref('alertas_fixos/' + alertaId).update({
+        imagem: { thumbnail: thumbUrl, full: fullUrl }
+    });
+    
+    mostrarNotificacaoDiscreta('✅ Foto enviada');
+}
+
+function comprimirImagem(blob, maxWidth) {
+    return new Promise(resolve => {
+        const img = new Image();
+        img.src = URL.createObjectURL(blob);
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            let width = img.width, height = img.height;
+            if (width > maxWidth) { height *= maxWidth / width; width = maxWidth; }
+            canvas.width = width; canvas.height = height;
+            canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+            canvas.toBlob(resolve, 'image/jpeg', 0.7);
+            URL.revokeObjectURL(img.src);
+        };
+    });
+}
+
+function mostrarNotificacaoDiscreta(texto, cor = '#ffd700') {
+    const div = document.createElement('div');
+    div.style.cssText = `position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.8); color:${cor}; padding:8px 16px; border-radius:30px; border:1px solid ${cor}; z-index:100000; font-size:13px; animation:fadeOut 2s forwards;`;
+    div.textContent = texto;
+    document.body.appendChild(div);
+    setTimeout(() => { if (document.body.contains(div)) document.body.removeChild(div); }, 2000);
+}
+
+// ===== VERIFICAÇÃO DE ALERTAS PRÓXIMOS =====
+function verificarProximidadeAlertas() {
+    if (!minhaLocalizacao) return;
     Object.keys(alertasMapa).forEach(id => {
         const alerta = alertasMapa[id];
-        if (!alerta) return;
+        if (!alerta || alerta.criador === usuario) return;
+        const chave = `${usuario}_${id}`;
+        if (alertasConfirmados[chave]) return;
+        if (alerta.confirmacoes > 0) { alertasConfirmados[chave] = true; localStorage.setItem('br277_confirmacoes', JSON.stringify(alertasConfirmados)); return; }
         
-        if (alerta.criador === usuario) return;
-        
-        const chaveConfirmacao = `${usuario}_${id}`;
-        
-        if (alertasConfirmados[chaveConfirmacao]) return;
-        
-        if (alerta.confirmacoes && alerta.confirmacoes > 0) {
-            alertasConfirmados[chaveConfirmacao] = true;
-            salvarConfirmacoesStorage();
-            return;
-        }
-        
-        const distancia = calcularDistancia(
-            minhaLocalizacao.lat, minhaLocalizacao.lng,
-            alerta.lat, alerta.lng
-        );
-        
-        if (distancia < 0.3) {
+        const dist = calcularDistancia(minhaLocalizacao.lat, minhaLocalizacao.lng, alerta.lat, alerta.lng);
+        if (dist < 0.3) {
             const agora = Date.now();
-            if (ultimoAlertaExibido[chaveConfirmacao] && 
-                (agora - ultimoAlertaExibido[chaveConfirmacao] < 300000)) {
-                return;
-            }
-            
-            ultimoAlertaExibido[chaveConfirmacao] = agora;
-            tocarBip();
+            if (ultimoAlertaExibido[chave] && agora - ultimoAlertaExibido[chave] < 300000) return;
+            ultimoAlertaExibido[chave] = agora;
             alertaAtual = { id, ...alerta };
             mostrarPopupConfirmacao(alerta);
         }
     });
 }
 
-// ===== MOSTRAR POP-UP DE CONFIRMAÇÃO =====
 function mostrarPopupConfirmacao(alerta) {
-    if (document.getElementById('confirmacaoPopup').style.display === 'flex') return;
-    
     const popup = document.getElementById('confirmacaoPopup');
-    const texto = document.getElementById('confirmacaoTexto');
-    const subtexto = document.getElementById('confirmacaoSubtexto');
-    
-    texto.innerHTML = `${alerta.nome} a 300 metros?`;
-    subtexto.innerHTML = 'Confirme se o alerta ainda está ativo';
+    document.getElementById('confirmacaoTexto').innerHTML = `${alerta.nome} a 300 metros?`;
     popup.style.display = 'flex';
-    
     if (popupTimeout) clearTimeout(popupTimeout);
-    
-    popupTimeout = setTimeout(() => {
-        popup.style.display = 'none';
-        alertaAtual = null;
-    }, 10000);
+    popupTimeout = setTimeout(() => { popup.style.display = 'none'; alertaAtual = null; }, 10000);
 }
 
-// ===== CONFIRMAR ALERTA =====
 function confirmarAlerta() {
     if (!alertaAtual) return;
-    
-    const chaveConfirmacao = `${usuario}_${alertaAtual.id}`;
-    alertasConfirmados[chaveConfirmacao] = true;
-    salvarConfirmacoesStorage();
-    
-    db.ref('alertas_fixos/' + alertaAtual.id + '/confirmacoes').transaction(count => (count || 0) + 1);
-    db.ref('confirmacoes_usuarios/' + alertaAtual.id + '/' + usuario).set({
-        timestamp: Date.now(),
-        nome: usuario
-    });
-    
+    const chave = `${usuario}_${alertaAtual.id}`;
+    alertasConfirmados[chave] = true;
+    localStorage.setItem('br277_confirmacoes', JSON.stringify(alertasConfirmados));
+    db.ref('alertas_fixos/' + alertaAtual.id + '/confirmacoes').transaction(c => (c||0)+1);
     document.getElementById('confirmacaoPopup').style.display = 'none';
     if (popupTimeout) clearTimeout(popupTimeout);
     alertaAtual = null;
-    tocarBip();
 }
 
-// ===== NEGAR ALERTA =====
 function negarAlerta() {
     if (!alertaAtual) return;
-    
-    const chaveConfirmacao = `${usuario}_${alertaAtual.id}`;
-    alertasConfirmados[chaveConfirmacao] = true;
-    salvarConfirmacoesStorage();
-    
+    const chave = `${usuario}_${alertaAtual.id}`;
+    alertasConfirmados[chave] = true;
+    localStorage.setItem('br277_confirmacoes', JSON.stringify(alertasConfirmados));
     document.getElementById('confirmacaoPopup').style.display = 'none';
     if (popupTimeout) clearTimeout(popupTimeout);
     alertaAtual = null;
 }
 
-// ===== USUÁRIOS ATIVOS =====
-function carregarUsuariosAtivos() {
-    db.ref('usuarios_ativos').on('value', snap => {
-        const usuarios = snap.val();
-        
-        Object.values(usuariosAtivos).forEach(m => {
-            if (m && mapa) {
-                if (clusterGroup) {
-                    clusterGroup.removeLayer(m);
-                } else {
-                    mapa.removeLayer(m);
-                }
-            }
-        });
-        usuariosAtivos = {};
-        
-        if (!usuarios) {
-            document.getElementById('numUsuarios').textContent = '0';
-            return;
-        }
-        
-        const agora = Date.now();
-        const usuariosValidos = Object.entries(usuarios).filter(([id, dados]) => {
-            return dados && dados.timestamp && (agora - dados.timestamp < 10000);
-        });
-        
-        const total = usuariosValidos.length;
-        document.getElementById('numUsuarios').textContent = total;
-        
-        usuariosValidos.forEach(([id, dados]) => {
-            if (id === usuario) return;
-            
-            const marcador = L.marker([dados.lat, dados.lng], {
-                icon: criarIconeCarro(false, 0)
-            });
-            
-            if (clusterGroup) {
-                clusterGroup.addLayer(marcador);
-            } else {
-                marcador.addTo(mapa);
-            }
-            
-            usuariosAtivos[id] = marcador;
-        });
-        
-        Object.entries(usuarios).forEach(([id, dados]) => {
-            if (dados && dados.timestamp && (agora - dados.timestamp > 10000)) {
-                db.ref('usuarios_ativos/' + id).remove();
-            }
-        });
-    });
-}
-
-// ===== ALERTAS FIXOS COM PULSANTES =====
 function carregarAlertasFixos() {
     db.ref('alertas_fixos').on('child_added', snap => {
         const alerta = snap.val();
-        const id = snap.key;
-        
-        alertasMapa[id] = alerta;
-        
-        const chaveConfirmacao = `${usuario}_${id}`;
-        if (alertasConfirmados[chaveConfirmacao]) {
-            // Já confirmou, não precisa fazer nada
-        }
-        
-        const pulsante = criarPulsantePorAlerta(alerta, id);
-        if (clusterGroup) {
-            clusterGroup.addLayer(pulsante);
-        } else {
-            pulsante.addTo(mapa);
-        }
-        pulsantesAlertas[id] = pulsante;
-    });
-    
-    db.ref('alertas_fixos').on('child_removed', snap => {
-        const id = snap.key;
-        if (pulsantesAlertas[id]) {
-            if (clusterGroup) {
-                clusterGroup.removeLayer(pulsantesAlertas[id]);
-            } else {
-                mapa.removeLayer(pulsantesAlertas[id]);
-            }
-            delete pulsantesAlertas[id];
-        }
-        delete alertasMapa[id];
-    });
-    
-    setInterval(() => {
-        const agora = Date.now();
-        Object.keys(alertasMapa).forEach(id => {
-            if (agora - alertasMapa[id].timestamp > 1200000) {
-                db.ref('alertas_fixos/' + id).remove();
-            }
+        alertasMapa[snap.key] = alerta;
+        const cor = alerta.cor;
+        const tamanho = 40;
+        const marcador = L.marker([alerta.lat, alerta.lng], {
+            icon: L.divIcon({
+                html: `<div style="position:relative; width:${tamanho}px; height:${tamanho}px;"><div class="pulsante-alerta" style="background:rgba(255,0,0,0.3); border:3px solid ${cor}; width:${tamanho}px; height:${tamanho}px;"></div><div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:white; font-size:${tamanho/2}px;">${alerta.icone}</div></div>`,
+                className: '', iconSize: [tamanho, tamanho], iconAnchor: [tamanho/2, tamanho/2]
+            })
         });
-    }, 60000);
+        marcador.on('click', () => abrirChatAlerta(alerta, L.latLng(alerta.lat, alerta.lng), snap.key));
+        if (clusterSystem) clusterSystem.clusterGroup.addLayer(marcador);
+    });
 }
 
-function ativarAlerta(alerta) {
-    if (!minhaLocalizacao) return;
-    
-    const id = Date.now();
-    const alertaData = { 
-        ...alerta, 
-        lat: minhaLocalizacao.lat, 
-        lng: minhaLocalizacao.lng, 
-        timestamp: id,
-        criador: usuario,
-        confirmacoes: 0
-    };
-    
-    alertasMapa[id] = alertaData;
-    db.ref('alertas_fixos/' + id).set(alertaData);
-}
-
-// ===== CHAT DO ALERTA =====
-function abrirChatAlerta(alerta, posicao, id) {
-    const conteudo = document.createElement('div');
-    conteudo.innerHTML = `
-        <div style="padding:10px; background:${alerta.cor}; color:white; font-weight:bold; display:flex; justify-content:space-between;">
-            <span>${alerta.icone} ${alerta.nome}</span>
-            <span>✅ ${alerta.confirmacoes || 0}</span>
+function abrirChatAlerta(alerta, pos, id) {
+    const div = document.createElement('div');
+    div.innerHTML = `
+        <div style="padding:10px; background:${alerta.cor}; color:white; display:flex; justify-content:space-between;">
+            <span>${alerta.icone} ${alerta.nome}</span> <span>✅ ${alerta.confirmacoes||0}</span>
         </div>
-        <div style="padding:10px; max-height:200px; overflow-y:auto;" id="chatAlerta-${id}">
-            <div style="text-align:center; color:#999;">Carregando...</div>
-        </div>
-        <div style="display:flex; padding:8px; gap:5px;">
-            <input type="text" id="inputAlerta-${id}" style="flex:1; padding:8px; border-radius:20px; border:1px solid #ccc;" placeholder="Digite..." onkeypress="if(event.key==='Enter') enviarMsgAlerta('${id}')">
-            <button onclick="enviarMsgAlerta('${id}')" style="width:35px; height:35px; border-radius:50%; border:none; background:${alerta.cor}; color:white; cursor:pointer;">➔</button>
-        </div>
+        ${alerta.imagem ? `<div style="margin:10px; text-align:center;"><img src="${alerta.imagem.thumbnail}" style="max-width:100%; max-height:150px; border-radius:10px; border:2px solid #ffd700; cursor:pointer;" onclick="window.open('${alerta.imagem.full}','_blank')"></div>` : ''}
+        <div style="padding:10px; max-height:200px; overflow-y:auto;" id="chatAlerta-${id}"></div>
+        <div style="display:flex; padding:8px;"><input type="text" id="inputAlerta-${id}" style="flex:1; padding:8px; border-radius:20px;" placeholder="Digite..."><button onclick="enviarMsgAlerta('${id}')" style="width:35px; height:35px; border-radius:50%; background:${alerta.cor}; color:white;">➔</button></div>
     `;
+    L.popup().setLatLng(pos).setContent(div).openOn(mapa);
     
-    L.popup({ maxWidth: 280 }).setLatLng(posicao).setContent(conteudo).openOn(mapa);
-    
-    db.ref(`chats/alerta_${id}`).orderByChild('timestamp').on('value', snap => {
-        const msgs = snap.val();
-        const chatDiv = document.getElementById(`chatAlerta-${id}`);
-        if (!chatDiv) return;
-        
-        if (!msgs) {
-            chatDiv.innerHTML = '<div style="text-align:center; color:#999;">Nenhuma mensagem</div>';
-            return;
-        }
-        
+    db.ref(`chats/alerta_${id}`).on('value', snap => {
+        const chat = document.getElementById(`chatAlerta-${id}`);
+        if (!chat) return;
+        if (!snap.val()) { chat.innerHTML = '<div style="text-align:center;">Nenhuma mensagem</div>'; return; }
         let html = '';
-        Object.values(msgs).forEach(msg => {
-            html += `
-                <div style="background:${msg.usuario === usuario ? '#dcf8c6' : 'white'}; padding:5px 8px; border-radius:10px; margin:3px 0;">
-                    <small><b>${msg.usuario}</b></small><br>${msg.texto}<br>
-                    <small style="font-size:9px;">${msg.hora}</small>
-                </div>
-            `;
+        Object.values(snap.val()).forEach(m => {
+            html += `<div style="background:${m.usuario===usuario?'#dcf8c6':'white'}; padding:5px; margin:3px 0;"><b>${m.usuario}</b><br>${m.texto}<br><small>${m.hora}</small></div>`;
         });
-        
-        chatDiv.innerHTML = html;
-        chatDiv.scrollTop = chatDiv.scrollHeight;
+        chat.innerHTML = html;
     });
 }
 
 function enviarMsgAlerta(id) {
     const input = document.getElementById(`inputAlerta-${id}`);
-    const texto = input.value.trim();
-    if (!texto) return;
-    
+    if (!input.value.trim()) return;
     db.ref(`chats/alerta_${id}`).push({
-        usuario: usuario,
-        texto: texto,
-        hora: new Date().toLocaleTimeString(),
-        timestamp: Date.now()
+        usuario, texto: input.value.trim(), hora: new Date().toLocaleTimeString(), timestamp: Date.now()
     });
-    
     input.value = '';
 }
 
-// ===== FORMATAR TEMPO =====
-function formatarTempo(minutos) {
-    if (minutos < 60) {
-        return `${minutos}min`;
-    } else {
-        const horas = Math.floor(minutos / 60);
-        const mins = minutos % 60;
-        return mins > 0 ? `${horas}h${mins}min` : `${horas}h`;
-    }
-}
-
-// ===== ROTA COM AZUL SUAVE E ALFINETE TECNOLÓGICO =====
-function buscarRota() {
-    const destino = document.getElementById('buscaDestino').value;
-    if (!destino || !minhaLocalizacao) return;
-    
-    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(destino)}, Brasil&limit=1`)
-        .then(res => res.json())
-        .then(data => {
-            if (data.length === 0) {
-                alert('Cidade não encontrada');
-                return;
-            }
-            
-            const dest = L.latLng(parseFloat(data[0].lat), parseFloat(data[0].lon));
-            
-            if (marcadorDestino) {
-                mapa.removeLayer(marcadorDestino);
-            }
-            
-            marcadorDestino = L.marker(dest, {
-                icon: criarAlfineteTecnologico(),
-                zIndexOffset: 3000
-            }).addTo(mapa);
-            
-            if (rotaAtual) mapa.removeControl(rotaAtual);
-            
-            rotaAtual = L.Routing.control({
-                waypoints: [minhaLocalizacao, dest],
-                lineOptions: { 
-                    styles: [{ 
-                        color: '#4169E1',
-                        weight: 4, 
-                        opacity: 0.5
-                    }] 
-                },
-                createMarker: () => null,
-                show: false,
-                routeWhileDragging: true,
-                showAlternatives: false,
-                addWaypoints: false,
-                fitSelectedRoutes: false
-            }).addTo(mapa);
-            
-            mapa.flyToBounds(L.latLngBounds([minhaLocalizacao, dest]), { padding: [50, 50] });
-            
-            document.getElementById('rotaInfoPanel').style.display = 'flex';
-            document.getElementById('btnEncerrarRota').style.display = 'flex';
-            
-            const distancia = parseFloat(calcularDistancia(
-                minhaLocalizacao.lat, minhaLocalizacao.lng,
-                dest.lat, dest.lng
-            ));
-            
-            const tempoMin = Math.round(distancia * 1.2);
-            const atraso = Math.round(tempoMin * 0.2);
-            
-            document.getElementById('rotaTempo').textContent = formatarTempo(tempoMin);
-            document.getElementById('rotaDistancia').textContent = `${distancia} km`;
-            document.getElementById('rotaAtraso').textContent = `+${formatarTempo(atraso)}`;
-        });
-}
-
-// ===== ENCERRAR ROTA =====
-function encerrarRota() {
-    if (rotaAtual) {
-        mapa.removeControl(rotaAtual);
-        rotaAtual = null;
-    }
-    
-    if (marcadorDestino) {
-        mapa.removeLayer(marcadorDestino);
-        marcadorDestino = null;
-    }
-    
-    document.getElementById('rotaInfoPanel').style.display = 'none';
-    document.getElementById('btnEncerrarRota').style.display = 'none';
-}
-
-function calcularDistancia(lat1, lon1, lat2, lon2) {
-    const R = 6371;
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-            Math.sin(dLon/2) * Math.sin(dLon/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    return (R * c).toFixed(1);
-}
-
 // ===== CHAT GERAL =====
-function gerarCorUsuario(nome) {
-    let hash = 0;
-    for (let i = 0; i < nome.length; i++) {
-        hash = nome.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    const cor = `hsl(${hash % 360}, 70%, 40%)`;
-    return cor;
-}
-
-function processarMencao(texto) {
-    return texto.replace(/@(\S+)/g, '<span class="mention">@$1</span>');
-}
-
 function toggleChatGeral() {
     const chat = document.getElementById('chatGeral');
     chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
 }
 
-function fecharChatGeral() {
-    document.getElementById('chatGeral').style.display = 'none';
-}
+function fecharChatGeral() { document.getElementById('chatGeral').style.display = 'none'; }
 
 function carregarChatGeral() {
     db.ref('chat_geral').orderByChild('timestamp').on('value', snap => {
         const msgs = snap.val();
         const chatDiv = document.getElementById('chatMensagens');
         if (!msgs) return;
-        
         let html = '';
         let ultimaData = '';
-        
-        const msgsArray = Object.values(msgs).reverse();
-        
-        msgsArray.forEach(msg => {
-            const dataMsg = new Date(msg.timestamp).toLocaleDateString();
-            
-            if (dataMsg !== ultimaData) {
-                html += `<div class="data-divider"><span>${formatarData(dataMsg)}</span></div>`;
-                ultimaData = dataMsg;
-            }
-            
-            const isMinha = msg.usuario === usuario;
-            const corUsuario = gerarCorUsuario(msg.usuario);
-            
-            const textoFormatado = processarMencao(msg.texto);
-            
-            html += `
-                <div class="mensagem-wrapper">
-                    ${msg.resposta ? `
-                        <div class="resposta-preview">
-                            <strong style="color:${gerarCorUsuario(msg.resposta.usuario)}">${msg.resposta.usuario}:</strong> ${msg.resposta.texto}
-                        </div>
-                    ` : ''}
-                    <div class="mensagem ${isMinha ? 'minha' : 'outra'}" data-user="${msg.usuario}">
-                        <div class="mensagem-remetente" style="color:${corUsuario}">
-                            🚗 ${msg.usuario}
-                            ${msg.telefone ? `<span class="mensagem-telefone">📱${msg.telefone}</span>` : ''}
-                        </div>
-                        ${textoFormatado}
-                        <div class="mensagem-info">
-                            <span>${msg.hora}</span>
-                        </div>
-                    </div>
-                    <div class="mensagem-acoes">
-                        <span onclick="responderMsg('${msg.usuario}', '${msg.texto.replace(/'/g, "\\'")}')">↩️</span>
-                        <span onclick="mencionarUsuario('${msg.usuario}')">@</span>
-                    </div>
-                </div>
-            `;
+        Object.values(msgs).reverse().forEach(m => {
+            const data = new Date(m.timestamp).toLocaleDateString();
+            if (data !== ultimaData) { html += `<div class="data-divider"><span>${data===new Date().toLocaleDateString()?'Hoje':data}</span></div>`; ultimaData = data; }
+            html += `<div class="mensagem-wrapper"><div class="mensagem ${m.usuario===usuario?'minha':'outra'}"><b>${m.usuario}</b><br>${m.texto}<br><small>${m.hora}</small></div></div>`;
         });
-        
         chatDiv.innerHTML = html;
-        chatDiv.scrollTop = 0;
     });
 }
 
 function enviarMsgGeral() {
     const input = document.getElementById('chatInput');
-    let texto = input.value.trim();
-    if (!texto) return;
-    
-    const mensagem = {
-        usuario: usuario,
-        telefone: telefone,
-        texto: texto,
-        hora: new Date().toLocaleTimeString(),
-        timestamp: Date.now()
-    };
-    
-    if (mensagemRespondendo) {
-        mensagem.resposta = {
-            usuario: mensagemRespondendo.usuario,
-            texto: mensagemRespondendo.texto
-        };
-        mensagemRespondendo = null;
-    }
-    
-    db.ref('chat_geral').push(mensagem);
+    if (!input.value.trim()) return;
+    db.ref('chat_geral').push({
+        usuario, telefone, texto: input.value.trim(), hora: new Date().toLocaleTimeString(), timestamp: Date.now()
+    });
     input.value = '';
 }
 
-function responderMsg(user, txt) {
-    mensagemRespondendo = { usuario: user, texto: txt };
-    document.getElementById('chatInput').focus();
-    document.getElementById('chatInput').placeholder = `Respondendo ${user}...`;
-}
-
-function mencionarUsuario(user) {
-    const input = document.getElementById('chatInput');
-    const nomeMencao = user.replace(/\s+/g, '');
-    input.value += ` @${nomeMencao} `;
-    input.focus();
-}
-
-function formatarData(data) {
-    const hoje = new Date().toLocaleDateString();
-    const ontem = new Date(Date.now() - 86400000).toLocaleDateString();
-    if (data === hoje) return 'Hoje';
-    if (data === ontem) return 'Ontem';
-    return data;
-}
-
 // ===== RÁDIO PX =====
-let gravador = null;
-let pedacosAudio = [];
-let streamAudio = null;
-let timerInterval = null;
-let tempoRestante = 20;
-let timeoutAutoEnvio = null;
-const botaoPX = document.getElementById('btn-px');
-
-botaoPX.addEventListener('click', async function() {
-    if (gravador && gravador.state === 'recording') {
-        pararGravacao(true);
-    } else {
-        try {
-            streamAudio = await navigator.mediaDevices.getUserMedia({ audio: true });
-            gravador = new MediaRecorder(streamAudio);
-            pedacosAudio = [];
-            tempoRestante = 20;
-            
-            gravador.ondataavailable = e => e.data.size > 0 && pedacosAudio.push(e.data);
-            
-            gravador.onstop = () => {
-                if (pedacosAudio.length > 0) {
-                    const reader = new FileReader();
-                    reader.onloadend = () => {
-                        db.ref('radio').push({
-                            audio: reader.result,
-                            usuario: usuario,
-                            timestamp: Date.now()
-                        });
-                        
-                        setTimeout(() => {
-                            db.ref('radio').orderByChild('timestamp').endAt(Date.now() - 20000).once('value', snap => {
-                                snap.forEach(child => child.ref.remove());
-                            });
-                        }, 20000);
-                    };
-                    reader.readAsDataURL(new Blob(pedacosAudio, { type: 'audio/webm' }));
-                }
-                
-                if (streamAudio) {
-                    streamAudio.getTracks().forEach(t => t.stop());
-                    streamAudio = null;
-                }
-                
-                document.getElementById('gravandoIndicator').style.display = 'none';
-                if (timerInterval) clearInterval(timerInterval);
-                if (timeoutAutoEnvio) clearTimeout(timeoutAutoEnvio);
-            };
-            
-            gravador.start();
-            botaoPX.classList.add('ativo');
-            
-            document.getElementById('gravandoIndicator').style.display = 'flex';
-            const timer = document.getElementById('gravandoTimer');
-            
-            timerInterval = setInterval(() => {
-                tempoRestante--;
-                timer.textContent = tempoRestante + 's';
-                
-                if (tempoRestante <= 1) {
-                    pararGravacao(false);
-                }
-            }, 1000);
-            
-            timeoutAutoEnvio = setTimeout(() => {
-                if (gravador && gravador.state === 'recording') {
-                    pararGravacao(false);
-                }
-            }, 19500);
-            
-        } catch(e) {
-            alert('Permita acesso ao microfone para usar o rádio PX');
-        }
-    }
+let gravador, pedacosAudio, streamAudio, timerInterval, tempoRestante = 20;
+document.getElementById('btn-px').addEventListener('click', async function() {
+    if (gravador && gravador.state === 'recording') { pararGravacao(); return; }
+    try {
+        streamAudio = await navigator.mediaDevices.getUserMedia({ audio: true });
+        gravador = new MediaRecorder(streamAudio);
+        pedacosAudio = [];
+        tempoRestante = 20;
+        
+        gravador.ondataavailable = e => e.data.size > 0 && pedacosAudio.push(e.data);
+        gravador.onstop = () => {
+            if (pedacosAudio.length > 0) {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    db.ref('radio').push({ audio: reader.result, usuario, timestamp: Date.now() });
+                    setTimeout(() => db.ref('radio').orderByChild('timestamp').endAt(Date.now()-20000).once('value', snap => snap.forEach(c => c.ref.remove())), 20000);
+                };
+                reader.readAsDataURL(new Blob(pedacosAudio, { type: 'audio/webm' }));
+            }
+            streamAudio.getTracks().forEach(t => t.stop());
+            document.getElementById('gravandoIndicator').style.display = 'none';
+            if (timerInterval) clearInterval(timerInterval);
+        };
+        
+        gravador.start();
+        document.getElementById('btn-px').classList.add('ativo');
+        document.getElementById('gravandoIndicator').style.display = 'flex';
+        const timer = document.getElementById('gravandoTimer');
+        
+        timerInterval = setInterval(() => {
+            tempoRestante--;
+            timer.textContent = tempoRestante + 's';
+            if (tempoRestante <= 1) pararGravacao();
+        }, 1000);
+        
+        setTimeout(() => pararGravacao(), 19500);
+        
+    } catch(e) { alert('Permita acesso ao microfone'); }
 });
 
-function pararGravacao(manual = false) {
+function pararGravacao() {
     if (gravador && gravador.state === 'recording') {
         gravador.stop();
-        botaoPX.classList.remove('ativo');
+        document.getElementById('btn-px').classList.remove('ativo');
         if (timerInterval) clearInterval(timerInterval);
-        if (timeoutAutoEnvio) clearTimeout(timeoutAutoEnvio);
-        document.getElementById('gravandoIndicator').style.display = 'none';
-        
-        if (!manual) {
-            const notification = document.getElementById('audioNotification');
-            notification.innerHTML = '<i class="fas fa-check-circle"></i> Áudio enviado automaticamente';
-            notification.style.display = 'flex';
-            setTimeout(() => notification.style.display = 'none', 2000);
-        }
     }
 }
 
@@ -2571,9 +2132,12 @@ db.ref('radio').orderByChild('timestamp').limitToLast(1).on('child_added', snap 
 });
 
 // ===== FUNÇÕES =====
-function toggleModoNoturno() {
-    document.getElementById('map').classList.toggle('mapa-noturno');
+function toggleReporte() {
+    document.getElementById('alertasPanel').classList.toggle('visivel');
+    document.querySelector('.reporte-toggle').classList.toggle('ativo');
 }
+
+function toggleModoNoturno() { document.getElementById('map').classList.toggle('mapa-noturno'); }
 
 function toggleMudo() {
     mudo = !mudo;
@@ -2582,39 +2146,102 @@ function toggleMudo() {
     btn.classList.toggle('mudo');
 }
 
+function toggleInterface() {
+    interfaceVisivel = !interfaceVisivel;
+    document.body.classList.toggle('interface-oculta');
+    document.getElementById('iconeSeta').className = interfaceVisivel ? 'fas fa-chevron-up' : 'fas fa-chevron-down';
+}
+
 function recentralizar() {
     seguirLocalizacao = true;
     document.getElementById('btnRecenter').style.display = 'none';
     if (minhaLocalizacao) mapa.flyTo(minhaLocalizacao, 17);
 }
 
-// ===== FUNÇÃO PARA OCULTAR/MOSTRAR INTERFACE =====
-let interfaceVisivel = true;
-
-function toggleInterface() {
-    interfaceVisivel = !interfaceVisivel;
-    const body = document.body;
-    const setaIcone = document.getElementById('iconeSeta');
-    const toggleText = document.getElementById('toggleText');
+// ===== ROTA =====
+function buscarRota() {
+    const destino = document.getElementById('buscaDestino').value;
+    if (!destino || !minhaLocalizacao) return;
     
-    if (interfaceVisivel) {
-        body.classList.remove('interface-oculta');
-        setaIcone.className = 'fas fa-chevron-up';
-        toggleText.textContent = 'Ocultar';
-    } else {
-        body.classList.add('interface-oculta');
-        setaIcone.className = 'fas fa-chevron-down';
-        toggleText.textContent = 'Mostrar';
+    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(destino)},Brasil&limit=1`)
+        .then(r => r.json())
+        .then(data => {
+            if (!data.length) { alert('Cidade não encontrada'); return; }
+            const dest = L.latLng(data[0].lat, data[0].lon);
+            
+            if (window.marcadorDestino) mapa.removeLayer(marcadorDestino);
+            marcadorDestino = L.marker(dest, { icon: criarAlfineteTecnologico() }).addTo(mapa);
+            
+            if (rotaAtual) mapa.removeControl(rotaAtual);
+            rotaAtual = L.Routing.control({
+                waypoints: [minhaLocalizacao, dest],
+                lineOptions: { styles: [{ color: '#4169E1', weight: 4, opacity: 0.5 }] },
+                createMarker: () => null,
+                show: false
+            }).addTo(mapa);
+            
+            mapa.flyToBounds(L.latLngBounds([minhaLocalizacao, dest]));
+            document.getElementById('rotaInfoPanel').style.display = 'flex';
+            document.getElementById('btnEncerrarRota').style.display = 'flex';
+            
+            const dist = calcularDistancia(minhaLocalizacao.lat, minhaLocalizacao.lng, dest.lat, dest.lng);
+            document.getElementById('rotaTempo').textContent = Math.round(dist * 1.2) + 'min';
+            document.getElementById('rotaDistancia').textContent = dist + ' km';
+            document.getElementById('rotaAtraso').textContent = '+' + Math.round(dist * 0.24) + 'min';
+        });
+}
+
+function encerrarRota() {
+    if (rotaAtual) { mapa.removeControl(rotaAtual); rotaAtual = null; }
+    if (marcadorDestino) { mapa.removeLayer(marcadorDestino); marcadorDestino = null; }
+    document.getElementById('rotaInfoPanel').style.display = 'none';
+    document.getElementById('btnEncerrarRota').style.display = 'none';
+}
+
+function calcularDistancia(lat1, lon1, lat2, lon2) {
+    const R = 6371;
+    const dLat = (lat2-lat1)*Math.PI/180;
+    const dLon = (lon2-lon1)*Math.PI/180;
+    const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+    return (R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))).toFixed(1);
+}
+
+// ===== WAKE LOCK =====
+async function ativarWakeLock() {
+    if ('wakeLock' in navigator) {
+        try {
+            wakeLock = await navigator.wakeLock.request('screen');
+            wakeLock.addEventListener('release', () => { if (document.visibilityState === 'visible') ativarWakeLock(); });
+        } catch(e) {}
     }
 }
 
-document.getElementById('buscaDestino').addEventListener('keypress', e => {
-    if (e.key === 'Enter') buscarRota();
-});
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && !wakeLock) ativarWakeLock(); });
 
-document.getElementById('chatInput').addEventListener('keypress', e => {
-    if (e.key === 'Enter') enviarMsgGeral();
-});
+// ===== ENTER NOS CAMPOS =====
+document.getElementById('buscaDestino').addEventListener('keypress', e => { if (e.key === 'Enter') buscarRota(); });
+document.getElementById('chatInput').addEventListener('keypress', e => { if (e.key === 'Enter') enviarMsgGeral(); });
+
+// ===== VERIFICAR USUÁRIO SALVO =====
+const userSalvo = localStorage.getItem('br277_usuario');
+if (userSalvo) {
+    usuario = userSalvo;
+    telefone = localStorage.getItem('br277_telefone') || '';
+    veiculoUsuario = localStorage.getItem('br277_veiculo') || 'carro';
+    alertasConfirmados = JSON.parse(localStorage.getItem('br277_confirmacoes')) || {};
+    document.getElementById('welcomeModal').style.display = 'none';
+    iniciarMapa();
+    iniciarGPS();
+    carregarUsuariosAtivos();
+    carregarAlertasFixos();
+    carregarChatGeral();
+    criarIconesAlertas();
+}
+
+// ===== ANIMAÇÃO FADEOUT =====
+const style = document.createElement('style');
+style.textContent = '@keyframes fadeOut{0%{opacity:1}70%{opacity:1}100%{opacity:0;transform:translateX(-50%) translateY(10px)}}';
+document.head.appendChild(style);
 </script>
 </body>
 </html>
