@@ -9,10 +9,6 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- Video.js para streaming -->
-    <link href="https://vjs.zencdn.net/8.3.0/video-js.css" rel="stylesheet" />
-    <!-- HLS.js para fallback -->
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body, #map { height: 100%; width: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
@@ -488,54 +484,6 @@
             0% { transform: scale(1); opacity: 1; box-shadow: 0 0 15px #00ff00; }
             50% { transform: scale(1.3); opacity: 0.8; box-shadow: 0 0 25px #00ff00; }
             100% { transform: scale(1); opacity: 1; box-shadow: 0 0 15px #00ff00; }
-        }
-        
-        /* ===== ESTILO PARA CÂMERAS AO VIVO ===== */
-        .camera-marcador {
-            font-size: 32px;
-            filter: drop-shadow(0 0 15px rgba(255,0,0,0.8));
-            cursor: pointer;
-            animation: pulse-camera 2s infinite;
-        }
-        
-        @keyframes pulse-camera {
-            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(255,0,0,0.8)); }
-            50% { transform: scale(1.1); filter: drop-shadow(0 0 20px rgba(255,0,0,1)); }
-        }
-        
-        .video-popup {
-            width: 450px;
-            max-width: 90vw;
-            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
-            border: 2px solid #ffd700;
-            border-radius: 15px;
-            padding: 15px;
-        }
-        
-        .video-popup h3 {
-            color: #ffd700;
-            font-size: 16px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .video-popup h3 i {
-            color: #ff0000;
-            animation: pulse-red 1.5s infinite;
-        }
-        
-        @keyframes pulse-red {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        
-        .video-js {
-            width: 100%;
-            height: 250px;
-            border-radius: 10px;
-            overflow: hidden;
         }
         
         /* VELOCÍMETRO */
@@ -1383,9 +1331,6 @@
 <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-<!-- Video.js para streaming -->
-<script src="https://vjs.zencdn.net/8.3.0/video.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-flash/2.2.0/videojs-flash.min.js"></script>
 
 <script>
 // ===== FIREBASE =====
@@ -1407,7 +1352,6 @@ let mapa = null;
 let usuariosAtivos = {};
 let mudo = false;
 let mensagemRespondendo = null;
-let coresUsuarios = {};
 let ultimaAtualizacaoGPS = 0;
 const INTERVALO_GPS = 1000;
 let zoomAtual = 13;
@@ -1417,7 +1361,6 @@ let alertasConfirmados = {};
 let pulsantesAlertas = {};
 let marcadorDestino = null;
 let wakeLock = null;
-let playersVideo = {};
 let permissoes = {
     localizacao: false,
     microfone: false,
@@ -1436,54 +1379,6 @@ const alertas = [
     { tipo: 'congestionamento', nome: 'CONGEST.', icone: '🔴', cor: '#f44336' },
     { tipo: 'alagamento', nome: 'ALAGAMENTO', icone: '💧', cor: '#2196f3' },
     { tipo: 'bloqueio', nome: 'BLOQUEIO', icone: '⛔', cor: '#b71c1c' }
-];
-
-// ===== CÂMERAS AO VIVO - 4 CÂMERAS CONFIGURADAS =====
-const cameras = [
-    {
-        id: 'cam1',
-        titulo: 'BR-277 - Km 30 (Sentido Litoral)',
-        descricao: 'Câmera 1 - Pedágio São José',
-        lat: -25.4567,
-        lng: -49.2345,
-        rtsp: 'rtsp://grupobr277:Grupobr277@200.195.141.246:654/00000001-0000-babe-0000-0002d1b3afb2/live',
-        rtmp: 'rtmp://connect-735.servicestream.io:1936/stream/ef92c235d45c',
-        hls: 'https://connect-735.servicestream.io/live/ef92c235d45c.m3u8',
-        proxy: 'https://cors-anywhere.herokuapp.com/rtsp://grupobr277:Grupobr277@200.195.141.246:654/00000001-0000-babe-0000-0002d1b3afb2/live'
-    },
-    {
-        id: 'cam2',
-        titulo: 'BR-277 - Km 45 (Curitiba)',
-        descricao: 'Câmera 2 - Trânsito em tempo real',
-        lat: -25.5123,
-        lng: -49.2987,
-        rtsp: 'rtsp://grupobr277:Grupobr277@200.195.141.246:654/00000001-0000-babe-0000-0002d1b3afb0/live',
-        rtmp: 'rtmp://connect-735.servicestream.io:1936/stream/75133459b2d6',
-        hls: 'https://connect-735.servicestream.io/live/75133459b2d6.m3u8',
-        proxy: 'https://cors-anywhere.herokuapp.com/rtsp://grupobr277:Grupobr277@200.195.141.246:654/00000001-0000-babe-0000-0002d1b3afb0/live'
-    },
-    {
-        id: 'cam3',
-        titulo: 'BR-277 - Km 60 (São José dos Pinhais)',
-        descricao: 'Câmera 3 - Região industrial',
-        lat: -25.5678,
-        lng: -49.3456,
-        rtsp: 'rtsp://grupobr277:Grupobr277@200.195.141.246:654/00000001-0000-babe-0000-0002d1b3afb2/live',
-        rtmp: 'rtmp://connect-735.servicestream.io:1936/stream/ef92c235d45c',
-        hls: 'https://connect-735.servicestream.io/live/ef92c235d45c.m3u8',
-        proxy: 'https://cors-anywhere.herokuapp.com/rtsp://grupobr277:Grupobr277@200.195.141.246:654/00000001-0000-babe-0000-0002d1b3afb2/live'
-    },
-    {
-        id: 'cam4',
-        titulo: 'BR-277 - Km 75 (Araucária)',
-        descricao: 'Câmera 4 - Acesso às refinarias',
-        lat: -25.6123,
-        lng: -49.4123,
-        rtsp: 'rtsp://grupobr277:Grupobr277@200.195.141.246:654/00000001-0000-babe-0000-0002d1b3afb0/live',
-        rtmp: 'rtmp://connect-735.servicestream.io:1936/stream/75133459b2d6',
-        hls: 'https://connect-735.servicestream.io/live/75133459b2d6.m3u8',
-        proxy: 'https://cors-anywhere.herokuapp.com/rtsp://grupobr277:Grupobr277@200.195.141.246:654/00000001-0000-babe-0000-0002d1b3afb0/live'
-    }
 ];
 
 // ===== FUNÇÃO PARA SOLICITAR PERMISSÕES =====
@@ -1543,162 +1438,6 @@ function verificarPermissoesCompletas() {
 
 document.getElementById('aceitePrivacidade').addEventListener('change', verificarPermissoesCompletas);
 
-// ===== FUNÇÃO PARA CRIAR MARCADOR DE CÂMERA =====
-function criarMarcadorCamera(camera) {
-    const iconeCamera = L.divIcon({
-        html: `<div class="camera-marcador">📹</div>`,
-        className: '',
-        iconSize: [40, 40],
-        iconAnchor: [20, 20]
-    });
-    
-    const marcador = L.marker([camera.lat, camera.lng], {
-        icon: iconeCamera,
-        zIndexOffset: 2000
-    }).addTo(mapa);
-    
-    // Adicionar ao cluster
-    if (clusterGroup) {
-        clusterGroup.addLayer(marcador);
-    }
-    
-    const playerId = 'player-' + camera.id;
-    
-    const popupContent = document.createElement('div');
-    popupContent.className = 'video-popup';
-    popupContent.innerHTML = `
-        <h3>
-            <i class="fas fa-circle" style="color: #ff0000; font-size: 10px;"></i>
-            ${camera.titulo}
-        </h3>
-        <p style="color: #ccc; font-size: 12px; margin-bottom: 10px;">${camera.descricao}</p>
-        <div id="player-container-${camera.id}">
-            <video id="${playerId}" class="video-js vjs-default-skin" controls preload="auto" width="400" height="250">
-                <source src="${camera.rtmp}" type="rtmp/mp4">
-                <source src="${camera.hls}" type="application/x-mpegURL">
-            </video>
-        </div>
-        <div style="margin-top: 10px; text-align: center;">
-            <button onclick="tentarReproduzir('${camera.id}', '${camera.rtmp}', '${camera.hls}', '${camera.proxy}')" style="background: #4caf50; color: white; border: none; padding: 5px 15px; border-radius: 20px; cursor: pointer; margin-right: 5px;">
-                🔄 Tentar Novamente
-            </button>
-            <a href="${camera.rtsp}" target="_blank" style="background: #ffd700; color: #1a1a1a; text-decoration: none; padding: 5px 15px; border-radius: 20px; display: inline-block;">
-                📹 Abrir no VLC
-            </a>
-        </div>
-        <p style="color: #4caf50; font-size: 11px; margin-top: 8px; text-align: center;">
-            🔴 AO VIVO • Clique no botão para tentar reproduzir
-        </p>
-    `;
-    
-    marcador.on('click', () => {
-        marcador.bindPopup(popupContent, {
-            maxWidth: 450,
-            className: 'custom-popup'
-        }).openPopup();
-        
-        setTimeout(() => {
-            tentarReproduzir(camera.id, camera.rtmp, camera.hls, camera.proxy);
-        }, 500);
-    });
-    
-    marcador.on('popupclose', () => {
-        if (playersVideo[camera.id]) {
-            playersVideo[camera.id].dispose();
-            delete playersVideo[camera.id];
-        }
-    });
-}
-
-// ===== FUNÇÃO PARA TENTAR REPRODUZIR VÍDEO =====
-function tentarReproduzir(cameraId, rtmpUrl, hlsUrl, proxyUrl) {
-    const videoElement = document.getElementById('player-' + cameraId);
-    if (!videoElement) return;
-    
-    try {
-        // Tentar HLS primeiro
-        if (Hls.isSupported() && hlsUrl) {
-            if (playersVideo[cameraId]) {
-                playersVideo[cameraId].dispose();
-            }
-            
-            const hls = new Hls({
-                enableWorker: true,
-                lowLatencyMode: true,
-                backBufferLength: 90
-            });
-            
-            hls.loadSource(hlsUrl);
-            hls.attachMedia(videoElement);
-            
-            hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                videoElement.play().catch(e => console.log('Auto-play bloqueado:', e));
-            });
-            
-            hls.on(Hls.Events.ERROR, (event, data) => {
-                console.log('HLS Error:', data);
-                // Se HLS falhar, tentar RTMP
-                tentarRTMP(cameraId, rtmpUrl);
-            });
-            
-            playersVideo[cameraId] = hls;
-        } else {
-            // Fallback para RTMP
-            tentarRTMP(cameraId, rtmpUrl);
-        }
-    } catch (e) {
-        console.error('Erro ao tentar reproduzir:', e);
-        tentarRTMP(cameraId, rtmpUrl);
-    }
-}
-
-// ===== FUNÇÃO PARA TENTAR RTMP =====
-function tentarRTMP(cameraId, rtmpUrl) {
-    const videoElement = document.getElementById('player-' + cameraId);
-    if (!videoElement) return;
-    
-    try {
-        if (playersVideo[cameraId] && playersVideo[cameraId].dispose) {
-            playersVideo[cameraId].dispose();
-        }
-        
-        const player = videojs(videoElement, {
-            techOrder: ['html5', 'flash'],
-            flash: { swf: 'https://vjs.zencdn.net/swf/5.4.2/video-js.swf' },
-            autoplay: false,
-            controls: true,
-            sources: [{
-                src: rtmpUrl,
-                type: 'rtmp/mp4'
-            }]
-        });
-        
-        playersVideo[cameraId] = player;
-        
-        player.ready(() => {
-            player.play().catch(() => {
-                console.log('Auto-play bloqueado para RTMP');
-            });
-        });
-        
-    } catch (e) {
-        console.error('Erro no RTMP:', e);
-        // Mostrar mensagem de fallback
-        const container = document.getElementById(`player-container-${cameraId}`);
-        if (container) {
-            container.innerHTML = `
-                <div style="background: #e53935; color: white; padding: 20px; border-radius: 10px; text-align: center;">
-                    <strong>⚠️ Não foi possível reproduzir</strong><br>
-                    <small style="color: #ffd700;">Use o link abaixo no VLC Media Player</small>
-                    <div style="background: #1a1a1a; padding: 10px; border-radius: 5px; margin-top: 10px; word-break: break-all;">
-                        rtsp://grupobr277:Grupobr277@200.195.141.246:654/...
-                    </div>
-                </div>
-            `;
-        }
-    }
-}
-
 // ===== FUNÇÃO PARA MANTER TELA ATIVA (WAKE LOCK) =====
 async function ativarWakeLock() {
     if ('wakeLock' in navigator) {
@@ -1747,7 +1486,6 @@ if (userSalvo) {
     carregarChatGeral();
     criarIconesAlertas();
     iniciarCluster();
-    carregarCameras();
 }
 
 function salvarCadastro() {
@@ -1773,17 +1511,6 @@ function salvarCadastro() {
     carregarChatGeral();
     criarIconesAlertas();
     iniciarCluster();
-    carregarCameras();
-}
-
-// ===== CARREGAR CÂMERAS =====
-function carregarCameras() {
-    setTimeout(() => {
-        cameras.forEach(camera => {
-            criarMarcadorCamera(camera);
-        });
-        console.log('📹 4 câmeras carregadas');
-    }, 2000);
 }
 
 // ===== FUNÇÕES DE INTERFACE =====
@@ -2569,7 +2296,7 @@ const botaoPX = document.getElementById('btn-px');
 
 botaoPX.addEventListener('click', async function() {
     if (gravador && gravador.state === 'recording') {
-        pararGravacao(true); // true = envio manual
+        pararGravacao(true);
     } else {
         try {
             streamAudio = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -2589,7 +2316,6 @@ botaoPX.addEventListener('click', async function() {
                             timestamp: Date.now()
                         });
                         
-                        // Auto-delete após 20 segundos
                         setTimeout(() => {
                             db.ref('radio').orderByChild('timestamp').endAt(Date.now() - 20000).once('value', snap => {
                                 snap.forEach(child => child.ref.remove());
@@ -2619,13 +2345,11 @@ botaoPX.addEventListener('click', async function() {
                 tempoRestante--;
                 timer.textContent = tempoRestante + 's';
                 
-                // Quando chegar a 1 segundo, já preparar para enviar automaticamente
                 if (tempoRestante <= 1) {
-                    pararGravacao(false); // false = envio automático
+                    pararGravacao(false);
                 }
             }, 1000);
             
-            // Timeout de segurança (19.5 segundos)
             timeoutAutoEnvio = setTimeout(() => {
                 if (gravador && gravador.state === 'recording') {
                     pararGravacao(false);
@@ -2646,7 +2370,6 @@ function pararGravacao(manual = false) {
         if (timeoutAutoEnvio) clearTimeout(timeoutAutoEnvio);
         document.getElementById('gravandoIndicator').style.display = 'none';
         
-        // Feedback visual
         if (!manual) {
             const notification = document.getElementById('audioNotification');
             notification.innerHTML = '<i class="fas fa-check-circle"></i> Áudio enviado automaticamente';
