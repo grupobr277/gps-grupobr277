@@ -383,7 +383,7 @@
         .alerta-alagamento { background: linear-gradient(135deg, #2196f3, #1976d2); }
         .alerta-bloqueio { background: linear-gradient(135deg, #b71c1c, #8B0000); }
         
-        /* ===== BOTÃO X DO REPORTE - AJUSTADO ===== */
+        /* ===== BOTÃO X DO REPORTE ===== */
         .btn-fechar-painel {
             position: absolute;
             right: -45px;
@@ -844,7 +844,7 @@
             cursor: pointer;
         }
         
-        /* CHAT WHATSAPP */
+        /* CHAT WHATSAPP - ESTILO CORRIGIDO */
         .chat-container {
             position: fixed;
             top: 10%;
@@ -875,7 +875,7 @@
             overflow-y: auto;
             padding: 15px;
             display: flex;
-            flex-direction: column-reverse;
+            flex-direction: column;
             background: #e5ddd5;
             background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAAbklEQVQ4jc2UOwrAIAxA38WpU8fq2F2K6GQp/VhLKm0LBYNbeA8egfgEAYCQUkpYXlSEjDHCOWf1QUTQWg8d+whKKUQE5xzGmGOpqqoYYwR3zpVS0FrHGCMAQERgjDnH0lpjjBEA4Jzz7u0fY0fB+u8LjwQAAAAASUVORK5CYII=');
         }
@@ -899,7 +899,6 @@
         .mensagem.minha {
             background: #dcf8c6;
             align-self: flex-end;
-            margin-left: auto;
             border-bottom-right-radius: 2px;
         }
         
@@ -925,7 +924,14 @@
             margin-top: 3px;
             font-size: 10px;
             color: #999;
+        }
+        
+        .mensagem.minha .mensagem-info {
             justify-content: flex-end;
+        }
+        
+        .mensagem.outra .mensagem-info {
+            justify-content: flex-start;
         }
         
         .mensagem-telefone {
@@ -1016,11 +1022,11 @@
             cursor: pointer;
         }
         
-        /* BOTÃO RECENTRALIZAR - NOVO ÍCONE AO LADO DO CHAT */
+        /* BOTÃO RECENTRALIZAR - POSICIONADO ACIMA DO CHAT */
         .btn-recentrar-container {
             position: fixed;
             bottom: 80px;
-            right: 80px;
+            right: 20px;
             z-index: 9000;
             display: none;
             flex-direction: column;
@@ -1131,11 +1137,11 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
 
-        /* ===== BOTÃO SETA NOVO - COLADO NO VELOCÍMETRO ===== */
+        /* ===== BOTÃO SETA - COLADO NO VELOCÍMETRO ===== */
         .toggle-interface {
             position: fixed;
             bottom: 20px;
-            left: 85px; /* Reduzido de 90px para 85px - mais colado */
+            left: 85px;
             transform: translateY(0);
             z-index: 20001;
             display: flex;
@@ -1149,7 +1155,7 @@
         .seta-container {
             width: 45px;
             height: 45px;
-            background: rgba(0, 0, 0, 0.6); /* Opacidade reduzida de 0.8 para 0.6 */
+            background: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(8px);
             border: 3px solid #ffd700;
             border-radius: 50%;
@@ -1187,7 +1193,6 @@
         .interface-oculta .botoes-direita,
         .interface-oculta .lupa-container,
         .interface-oculta .header-esquerdo,
-        .interface-oculta .btn-recentrar-container,
         .interface-oculta .btn-encerrar-rota,
         .interface-oculta .rota-info-panel,
         .interface-oculta .gravando-indicator,
@@ -1198,13 +1203,17 @@
             display: none !important;
         }
         
+        /* Recentralizar NÃO some quando oculta a interface (sempre visível se necessário) */
+        .btn-recentrar-container {
+            transition: opacity 0.3s ease;
+        }
+        
         /* Transição suave */
         .reporte-container,
         .velocimetro-container,
         .botoes-direita,
         .lupa-container,
         .header-esquerdo,
-        .btn-recentrar-container,
         .btn-encerrar-rota,
         .rota-info-panel,
         .gravando-indicator,
@@ -1351,7 +1360,7 @@
     </div>
 </div>
 
-<!-- BOTÃO SETA NOVO - COLADO NO VELOCÍMETRO -->
+<!-- BOTÃO SETA - COLADO NO VELOCÍMETRO -->
 <div class="toggle-interface" id="toggleInterface" onclick="toggleInterface()">
     <div class="seta-container">
         <i class="fas fa-chevron-up" id="iconeSeta"></i>
@@ -1367,7 +1376,7 @@
     <button onclick="buscarRota()"><i class="fas fa-search"></i></button>
 </div>
 
-<!-- BOTÃO RECENTRALIZAR - NOVO ÍCONE AO LADO DO CHAT -->
+<!-- BOTÃO RECENTRALIZAR - POSICIONADO ACIMA DO CHAT -->
 <div class="btn-recentrar-container" id="btnRecentrarContainer">
     <div class="btn-recentrar-icone" onclick="recentralizar()">
         <i class="fas fa-location-arrow"></i>
@@ -1988,10 +1997,10 @@ function carregarMensagensAlerta(id) {
         Object.values(msgs).forEach(msg => {
             const isMinha = msg.usuario === usuario;
             html += `
-                <div style="background:${isMinha ? '#dcf8c6' : 'white'}; padding:8px; border-radius:10px; margin:5px 0; ${isMinha ? 'margin-left:20px;' : 'margin-right:20px;'}">
+                <div style="background:${isMinha ? '#dcf8c6' : 'white'}; padding:8px; border-radius:10px; margin:5px 0; ${isMinha ? 'margin-left:auto;' : 'margin-right:auto;'} max-width:80%;">
                     <small><b>${msg.usuario}</b></small><br>
                     ${msg.texto}<br>
-                    <small style="font-size:9px; color:#999;">${msg.hora}</small>
+                    <small style="font-size:9px; color:#999; display:block; text-align:${isMinha ? 'right' : 'left'};">${msg.hora}</small>
                 </div>
             `;
         });
@@ -2365,25 +2374,62 @@ function carregarChatGeral() {
         const msgs = snap.val();
         const chatDiv = document.getElementById('chatMensagens');
         if (!msgs) return;
+        
         let html = '';
         let ultimaData = '';
-        Object.values(msgs).reverse().forEach(m => {
-            const data = new Date(m.timestamp).toLocaleDateString();
-            if (data !== ultimaData) { 
-                html += `<div class="data-divider"><span>${data===new Date().toLocaleDateString()?'Hoje':data}</span></div>`; 
-                ultimaData = data; 
+        
+        // Ordenar mensagens por timestamp (mais antigas primeiro)
+        const msgsArray = Object.values(msgs).sort((a, b) => a.timestamp - b.timestamp);
+        
+        msgsArray.forEach(msg => {
+            const dataMsg = new Date(msg.timestamp).toLocaleDateString();
+            
+            if (dataMsg !== ultimaData) {
+                html += `<div class="data-divider"><span>${dataMsg === new Date().toLocaleDateString() ? 'Hoje' : dataMsg}</span></div>`;
+                ultimaData = dataMsg;
             }
-            html += `<div class="mensagem-wrapper"><div class="mensagem ${m.usuario===usuario?'minha':'outra'}"><b>${m.usuario}</b><br>${m.texto}<br><small>${m.hora}</small></div></div>`;
+            
+            const isMinha = msg.usuario === usuario;
+            const corUsuario = gerarCorUsuario(msg.usuario);
+            
+            html += `
+                <div class="mensagem-wrapper">
+                    <div class="mensagem ${isMinha ? 'minha' : 'outra'}">
+                        <div class="mensagem-remetente" style="color:${corUsuario}">
+                            🚗 ${msg.usuario}
+                            ${msg.telefone ? `<span class="mensagem-telefone">📱${msg.telefone}</span>` : ''}
+                        </div>
+                        ${msg.texto}
+                        <div class="mensagem-info">
+                            <span>${msg.hora}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
         });
+        
         chatDiv.innerHTML = html;
+        chatDiv.scrollTop = chatDiv.scrollHeight;
     });
+}
+
+function gerarCorUsuario(nome) {
+    let hash = 0;
+    for (let i = 0; i < nome.length; i++) {
+        hash = nome.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return `hsl(${hash % 360}, 70%, 40%)`;
 }
 
 function enviarMsgGeral() {
     const input = document.getElementById('chatInput');
     if (!input.value.trim()) return;
     db.ref('chat_geral').push({
-        usuario, telefone, texto: input.value.trim(), hora: new Date().toLocaleTimeString(), timestamp: Date.now()
+        usuario, 
+        telefone, 
+        texto: input.value.trim(), 
+        hora: new Date().toLocaleTimeString(), 
+        timestamp: Date.now()
     });
     input.value = '';
 }
@@ -2466,6 +2512,11 @@ function toggleInterface() {
     interfaceVisivel = !interfaceVisivel;
     document.body.classList.toggle('interface-oculta');
     document.getElementById('iconeSeta').className = interfaceVisivel ? 'fas fa-chevron-up' : 'fas fa-chevron-down';
+    
+    // Quando ocultar a interface, o recentralizar continua visível se necessário
+    if (!interfaceVisivel && !seguirLocalizacao) {
+        document.getElementById('btnRecentrarContainer').style.display = 'flex';
+    }
 }
 
 function recentralizar() {
