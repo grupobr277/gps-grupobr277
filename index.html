@@ -844,7 +844,7 @@
             cursor: pointer;
         }
         
-        /* CHAT WHATSAPP - ESTILO CORRIGIDO */
+        /* CHAT WHATSAPP */
         .chat-container {
             position: fixed;
             top: 10%;
@@ -884,11 +884,18 @@
             display: flex;
             flex-direction: column;
             margin: 8px 0;
-            position: relative;
+            max-width: 80%;
+        }
+        
+        .mensagem.minha {
+            align-self: flex-end;
+        }
+        
+        .mensagem.outra {
+            align-self: flex-start;
         }
         
         .mensagem {
-            max-width: 75%;
             padding: 8px 12px;
             border-radius: 15px;
             font-size: 14px;
@@ -896,16 +903,18 @@
             position: relative;
         }
         
-        .mensagem.minha {
+        .mensagem.minha .mensagem-conteudo {
             background: #dcf8c6;
-            align-self: flex-end;
-            border-bottom-right-radius: 2px;
+            border-radius: 15px 15px 2px 15px;
         }
         
-        .mensagem.outra {
+        .mensagem.outra .mensagem-conteudo {
             background: white;
-            align-self: flex-start;
-            border-bottom-left-radius: 2px;
+            border-radius: 15px 15px 15px 2px;
+        }
+        
+        .mensagem-conteudo {
+            padding: 8px 12px;
         }
         
         .mensagem-remetente {
@@ -917,6 +926,23 @@
             gap: 5px;
         }
         
+        .mensagem-texto {
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        
+        .mensagem-imagem {
+            max-width: 200px;
+            border-radius: 10px;
+            cursor: pointer;
+            border: 2px solid rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        
+        .mensagem-imagem:hover {
+            transform: scale(1.02);
+        }
+        
         .mensagem-info {
             display: flex;
             align-items: center;
@@ -924,14 +950,7 @@
             margin-top: 3px;
             font-size: 10px;
             color: #999;
-        }
-        
-        .mensagem.minha .mensagem-info {
             justify-content: flex-end;
-        }
-        
-        .mensagem.outra .mensagem-info {
-            justify-content: flex-start;
         }
         
         .mensagem-telefone {
@@ -956,30 +975,6 @@
             border-radius: 8px;
             font-size: 12px;
             color: #666;
-        }
-        
-        .mensagem-acoes {
-            position: absolute;
-            top: -25px;
-            right: 0;
-            background: white;
-            border-radius: 30px;
-            padding: 4px 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            display: none;
-            gap: 12px;
-            z-index: 10;
-            border: 1px solid #075e54;
-        }
-        
-        .mensagem-wrapper:hover .mensagem-acoes {
-            display: flex;
-        }
-        
-        .mensagem-acoes span {
-            cursor: pointer;
-            font-size: 14px;
-            color: #075e54;
         }
         
         .data-divider {
@@ -1022,7 +1017,7 @@
             cursor: pointer;
         }
         
-        /* BOTÃO RECENTRALIZAR - POSICIONADO ACIMA DO CHAT */
+        /* BOTÃO RECENTRALIZAR - ACIMA DO CHAT */
         .btn-recentrar-container {
             position: fixed;
             bottom: 80px;
@@ -1203,7 +1198,7 @@
             display: none !important;
         }
         
-        /* Recentralizar NÃO some quando oculta a interface (sempre visível se necessário) */
+        /* Recentralizar NÃO some quando oculta a interface */
         .btn-recentrar-container {
             transition: opacity 0.3s ease;
         }
@@ -1376,7 +1371,7 @@
     <button onclick="buscarRota()"><i class="fas fa-search"></i></button>
 </div>
 
-<!-- BOTÃO RECENTRALIZAR - POSICIONADO ACIMA DO CHAT -->
+<!-- BOTÃO RECENTRALIZAR - ACIMA DO CHAT -->
 <div class="btn-recentrar-container" id="btnRecentrarContainer">
     <div class="btn-recentrar-icone" onclick="recentralizar()">
         <i class="fas fa-location-arrow"></i>
@@ -1475,34 +1470,23 @@
 <!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
-
-<!-- LEAFET -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
-<script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
 
 <script>
-// ===== CONFIGURAÇÕES DE OTIMIZAÇÃO =====
+// ===== CONFIGURAÇÕES =====
 const SCALABLE_CONFIG = {
     POSITION_UPDATE_INTERVAL: 15000,
     TILE_SIZE: 0.05,
     VEHICLE_TIMEOUT: 30000,
     CLUSTER_MAX_ZOOM: 16,
-    CACHE_TTL: 60000,
-    MAX_ALERTAS_POR_HORA: 5,
-    MAX_FOTOS_POR_ALERTA: 1
+    MAX_ALERTAS_POR_HORA: 5
 };
 
 // ===== FIREBASE =====
 const firebaseConfig = {
-    databaseURL: "https://gps-br277-default-rtdb.firebaseio.com",
-    storageBucket: "gps-br277.appspot.com"
+    databaseURL: "https://gps-br277-default-rtdb.firebaseio.com"
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
-const storage = firebase.storage();
-const storageRef = storage.ref();
 
 // ===== VARIÁVEIS GLOBAIS =====
 let usuario = null;
@@ -1531,7 +1515,6 @@ let permissoes = { localizacao: false, microfone: false, audio: true };
 let clusterSystem = null;
 let tileSystem = null;
 
-// Carregar confirmações
 alertasConfirmados = { ...confirmacoesStorage };
 
 // ===== 10 ALERTAS =====
@@ -1852,6 +1835,42 @@ function criarAlfineteTecnologico() {
     });
 }
 
+// ===== FUNÇÃO PARA COMPRIMIR IMAGEM EM BASE64 =====
+function comprimirImagemParaBase64(blob, maxWidth) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        const url = URL.createObjectURL(blob);
+        img.src = url;
+        
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            let width = img.width;
+            let height = img.height;
+            
+            if (width > maxWidth) {
+                height *= maxWidth / width;
+                width = maxWidth;
+            }
+            
+            canvas.width = width;
+            canvas.height = height;
+            
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            
+            // Converter para Base64 com qualidade 0.6 (economiza espaço)
+            const base64 = canvas.toDataURL('image/jpeg', 0.6);
+            URL.revokeObjectURL(url);
+            resolve(base64);
+        };
+        
+        img.onerror = () => {
+            URL.revokeObjectURL(url);
+            resolve(null);
+        };
+    });
+}
+
 // ===== FUNÇÃO PARA CRIAR MARCADOR DE ALERTA COM FOTO =====
 function criarPulsantePorAlerta(alerta, id) {
     let cor, tamanho = 40;
@@ -1877,7 +1896,7 @@ function criarPulsantePorAlerta(alerta, id) {
             <div style="position:relative; width: 50px; height: 50px;">
                 <div class="pulsante-alerta" style="background: rgba(255,0,0,0.3); border: 3px solid ${cor}; width: 50px; height: 50px;"></div>
                 <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; border-radius: 50%; overflow: hidden; border: 2px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.5);">
-                    <img src="${alerta.imagem.thumbnail}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'">
+                    <img src="${alerta.imagem.thumbnail}" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
                 <div style="position: absolute; bottom: -5px; right: -5px; background: ${cor}; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 12px; border: 2px solid white;">
                     ${alerta.icone}
@@ -1932,34 +1951,16 @@ function abrirPopupAlerta(alerta, id) {
     `;
     conteudo.appendChild(header);
     
-    if (alerta.imagem && alerta.imagem.full) {
-        const imgContainer = document.createElement('div');
-        imgContainer.style.cssText = `
-            padding: 10px;
-            text-align: center;
-            background: #1a1a1a;
-        `;
-        imgContainer.innerHTML = `
-            <img src="${alerta.imagem.full}" 
-                 style="max-width: 100%; max-height: 200px; border-radius: 10px; border: 2px solid #ffd700; cursor: pointer;"
-                 onclick="window.open('${alerta.imagem.full}', '_blank')"
-                 onerror="this.onerror=null; this.src='${alerta.imagem.thumbnail}';">
-            <div style="font-size: 11px; color: #ffd700; margin-top: 5px;">
-                📷 Clique para ampliar
-            </div>
-        `;
-        conteudo.appendChild(imgContainer);
-    }
-    
+    // Carregar mensagens do chat
     const chatDiv = document.createElement('div');
     chatDiv.id = `chatAlerta-${id}`;
     chatDiv.style.cssText = `
         padding: 10px;
-        max-height: 200px;
+        max-height: 300px;
         overflow-y: auto;
         background: #f5f5f5;
     `;
-    chatDiv.innerHTML = '<div style="text-align:center; color:#999;">Nenhuma mensagem</div>';
+    chatDiv.innerHTML = '<div style="text-align:center; color:#999;">Carregando mensagens...</div>';
     conteudo.appendChild(chatDiv);
     
     const inputDiv = document.createElement('div');
@@ -1989,20 +1990,44 @@ function carregarMensagensAlerta(id) {
         
         const msgs = snap.val();
         if (!msgs) {
-            chatDiv.innerHTML = '<div style="text-align:center; color:#999;">Nenhuma mensagem</div>';
+            chatDiv.innerHTML = '<div style="text-align:center; color:#999;">Nenhuma mensagem ainda</div>';
             return;
         }
         
         let html = '';
-        Object.values(msgs).forEach(msg => {
+        // Ordenar por timestamp (mais antigas primeiro)
+        const msgsArray = Object.values(msgs).sort((a, b) => a.timestamp - b.timestamp);
+        
+        msgsArray.forEach(msg => {
             const isMinha = msg.usuario === usuario;
-            html += `
-                <div style="background:${isMinha ? '#dcf8c6' : 'white'}; padding:8px; border-radius:10px; margin:5px 0; ${isMinha ? 'margin-left:auto;' : 'margin-right:auto;'} max-width:80%;">
-                    <small><b>${msg.usuario}</b></small><br>
-                    ${msg.texto}<br>
-                    <small style="font-size:9px; color:#999; display:block; text-align:${isMinha ? 'right' : 'left'};">${msg.hora}</small>
-                </div>
-            `;
+            
+            if (msg.tipo === 'imagem') {
+                // Mensagem de imagem
+                html += `
+                    <div style="display:flex; flex-direction:column; align-items:${isMinha ? 'flex-end' : 'flex-start'}; margin:10px 0;">
+                        <div style="max-width:80%; background:${isMinha ? '#dcf8c6' : 'white'}; border-radius:10px; padding:5px;">
+                            <small style="color:#666; display:block; margin-bottom:3px;"><b>${msg.usuario}</b></small>
+                            <img src="${msg.imagem}" style="max-width:200px; max-height:200px; border-radius:8px; cursor:pointer;" onclick="window.open('${msg.imagem}', '_blank')">
+                            <div style="display:flex; justify-content:${isMinha ? 'flex-end' : 'flex-start'}; margin-top:3px;">
+                                <small style="color:#999;">${msg.hora}</small>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // Mensagem de texto
+                html += `
+                    <div style="display:flex; flex-direction:column; align-items:${isMinha ? 'flex-end' : 'flex-start'}; margin:5px 0;">
+                        <div style="max-width:80%; background:${isMinha ? '#dcf8c6' : 'white'}; border-radius:10px; padding:8px;">
+                            <small style="color:#666; display:block; margin-bottom:3px;"><b>${msg.usuario}</b></small>
+                            <div>${msg.texto}</div>
+                            <div style="display:flex; justify-content:${isMinha ? 'flex-end' : 'flex-start'}; margin-top:3px;">
+                                <small style="color:#999;">${msg.hora}</small>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
         });
         
         chatDiv.innerHTML = html;
@@ -2010,103 +2035,140 @@ function carregarMensagensAlerta(id) {
     });
 }
 
-// ===== FUNÇÃO DE UPLOAD CORRIGIDA =====
-async function fazerUploadFoto(blob, alertaId) {
-    try {
-        mostrarNotificacaoDiscreta('📤 Enviando foto...', '#ffd700');
-        
-        const thumbnailBlob = await comprimirImagem(blob, 150);
-        const fullBlob = await comprimirImagem(blob, 800);
-        
-        const data = new Date();
-        const ano = data.getFullYear();
-        const mes = (data.getMonth() + 1).toString().padStart(2, '0');
-        const nomeArquivo = `${alertaId}_${Date.now()}.jpg`;
-        
-        const thumbPath = `alertas/${ano}/${mes}/thumbnails/${nomeArquivo}`;
-        const thumbRef = storageRef.child(thumbPath);
-        await thumbRef.put(thumbnailBlob, { contentType: 'image/jpeg' });
-        const thumbUrl = await thumbRef.getDownloadURL();
-        
-        const fullPath = `alertas/${ano}/${mes}/full/${nomeArquivo}`;
-        const fullRef = storageRef.child(fullPath);
-        await fullRef.put(fullBlob, { contentType: 'image/jpeg' });
-        const fullUrl = await fullRef.getDownloadURL();
-        
-        await db.ref('alertas_fixos/' + alertaId).update({
-            imagem: {
-                thumbnail: thumbUrl,
-                full: fullUrl,
-                timestamp: Date.now()
-            }
-        });
-        
-        if (alertasMapa[alertaId]) {
-            alertasMapa[alertaId].imagem = {
-                thumbnail: thumbUrl,
-                full: fullUrl
-            };
-        }
-        
-        if (pulsantesAlertas[alertaId]) {
-            if (clusterSystem) {
-                clusterSystem.clusterGroup.removeLayer(pulsantesAlertas[alertaId]);
-            } else {
-                mapa.removeLayer(pulsantesAlertas[alertaId]);
-            }
-        }
-        
-        const novoMarcador = criarPulsantePorAlerta(alertasMapa[alertaId], alertaId);
-        if (clusterSystem) {
-            clusterSystem.clusterGroup.addLayer(novoMarcador);
-        } else {
-            novoMarcador.addTo(mapa);
-        }
-        pulsantesAlertas[alertaId] = novoMarcador;
-        
-        mostrarNotificacaoDiscreta('✅ Foto salva!', '#4caf50');
-        console.log('📸 Foto salva:', { thumbUrl, fullUrl });
-        
-    } catch (error) {
-        console.error('Erro no upload:', error);
-        mostrarNotificacaoDiscreta('❌ Erro ao salvar foto', '#e53935');
-    }
+// ===== FUNÇÃO PARA ENVIAR MENSAGEM NO ALERTA =====
+function enviarMsgAlerta(id) {
+    const input = document.getElementById(`inputAlerta-${id}`);
+    const texto = input.value.trim();
+    if (!texto) return;
+    
+    db.ref(`chats/alerta_${id}`).push({
+        tipo: 'texto',
+        usuario: usuario,
+        texto: texto,
+        hora: new Date().toLocaleTimeString(),
+        timestamp: Date.now()
+    });
+    
+    input.value = '';
 }
 
-// ===== COMPRESSÃO DE IMAGEM =====
-function comprimirImagem(blob, maxWidth) {
-    return new Promise((resolve) => {
-        const img = new Image();
-        const url = URL.createObjectURL(blob);
-        img.src = url;
+// ===== FUNÇÃO PARA ATIVAR ALERTA COM FOTO =====
+async function ativarAlertaComFoto(alerta) {
+    if (!minhaLocalizacao) return;
+    
+    const id = Date.now();
+    
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
         
-        img.onload = () => {
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:100000; display:flex; flex-direction:column; align-items:center; justify-content:center;';
+        
+        const video = document.createElement('video');
+        video.style.cssText = 'width:100%; max-width:400px; height:auto; border-radius:20px; border:3px solid #ffd700;';
+        video.autoplay = true;
+        video.playsInline = true;
+        video.srcObject = stream;
+        
+        const btnContainer = document.createElement('div');
+        btnContainer.style.cssText = 'display:flex; gap:10px; margin-top:20px;';
+        
+        const btnFoto = document.createElement('button');
+        btnFoto.style.cssText = 'padding:15px 30px; background:#ffd700; border:none; border-radius:40px; font-size:18px; font-weight:bold; cursor:pointer;';
+        btnFoto.innerHTML = '📷 TIRAR FOTO';
+        
+        const btnPular = document.createElement('button');
+        btnPular.style.cssText = 'padding:15px 30px; background:#666; color:white; border:none; border-radius:40px; font-size:18px; font-weight:bold; cursor:pointer;';
+        btnPular.innerHTML = '⏭️ PULAR';
+        
+        btnContainer.appendChild(btnFoto);
+        btnContainer.appendChild(btnPular);
+        overlay.appendChild(video);
+        overlay.appendChild(btnContainer);
+        document.body.appendChild(overlay);
+        
+        btnFoto.onclick = async () => {
             const canvas = document.createElement('canvas');
-            let width = img.width;
-            let height = img.height;
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
             
-            if (width > maxWidth) {
-                height *= maxWidth / width;
-                width = maxWidth;
-            }
-            
-            canvas.width = width;
-            canvas.height = height;
-            
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, width, height);
-            
-            canvas.toBlob((newBlob) => {
-                URL.revokeObjectURL(url);
-                resolve(newBlob);
+            canvas.toBlob(async (blob) => {
+                stream.getTracks().forEach(t => t.stop());
+                document.body.removeChild(overlay);
+                
+                // Comprimir imagem para Base64
+                mostrarNotificacaoDiscreta('📤 Processando imagem...', '#ffd700');
+                const thumbnailBase64 = await comprimirImagemParaBase64(blob, 300);
+                
+                if (thumbnailBase64) {
+                    // Salvar alerta com imagem
+                    const alertaData = { 
+                        ...alerta, 
+                        lat: minhaLocalizacao.lat, 
+                        lng: minhaLocalizacao.lng, 
+                        timestamp: id, 
+                        criador: usuario, 
+                        confirmacoes: 0,
+                        imagem: {
+                            thumbnail: thumbnailBase64
+                        }
+                    };
+                    
+                    alertasMapa[id] = alertaData;
+                    await db.ref('alertas_fixos/' + id).set(alertaData);
+                    
+                    // Adicionar mensagem de imagem no chat
+                    await db.ref(`chats/alerta_${id}`).push({
+                        tipo: 'imagem',
+                        usuario: usuario,
+                        imagem: thumbnailBase64,
+                        hora: new Date().toLocaleTimeString(),
+                        timestamp: Date.now()
+                    });
+                    
+                    mostrarNotificacaoDiscreta('✅ Alerta com foto criado!', '#4caf50');
+                }
             }, 'image/jpeg', 0.7);
         };
         
-        img.onerror = () => {
-            URL.revokeObjectURL(url);
-            resolve(blob);
+        btnPular.onclick = () => {
+            stream.getTracks().forEach(t => t.stop());
+            document.body.removeChild(overlay);
+            
+            // Criar alerta sem imagem
+            const alertaData = { 
+                ...alerta, 
+                lat: minhaLocalizacao.lat, 
+                lng: minhaLocalizacao.lng, 
+                timestamp: id, 
+                criador: usuario, 
+                confirmacoes: 0
+            };
+            
+            alertasMapa[id] = alertaData;
+            db.ref('alertas_fixos/' + id).set(alertaData);
+            
+            mostrarNotificacaoDiscreta('Alerta criado sem foto');
         };
-    });
+        
+    } catch(e) {
+        console.log('Erro ao acessar câmera:', e);
+        mostrarNotificacaoDiscreta('📷 Câmera não disponível', '#e53935');
+        
+        // Criar alerta sem imagem mesmo assim
+        const alertaData = { 
+            ...alerta, 
+            lat: minhaLocalizacao.lat, 
+            lng: minhaLocalizacao.lng, 
+            timestamp: id, 
+            criador: usuario, 
+            confirmacoes: 0
+        };
+        
+        alertasMapa[id] = alertaData;
+        db.ref('alertas_fixos/' + id).set(alertaData);
+    }
 }
 
 // ===== NOTIFICAÇÃO DISCRETA =====
@@ -2148,104 +2210,8 @@ function criarIconesAlertas() {
         
         div.onclick = () => ativarAlertaComFoto(alerta);
         
-        let timer;
-        div.addEventListener('mousedown', () => {
-            timer = setTimeout(() => {
-                if (!minhaLocalizacao) return;
-                const id = Date.now();
-                const alertaData = { 
-                    ...alerta, 
-                    lat: minhaLocalizacao.lat, 
-                    lng: minhaLocalizacao.lng, 
-                    timestamp: id, 
-                    criador: usuario, 
-                    confirmacoes: 0,
-                    status: 'sem_foto'
-                };
-                alertasMapa[id] = alertaData;
-                db.ref('alertas_fixos/' + id).set(alertaData);
-                mostrarNotificacaoDiscreta('Alerta sem foto');
-            }, 800);
-        });
-        div.addEventListener('mouseup', () => clearTimeout(timer));
-        div.addEventListener('mouseleave', () => clearTimeout(timer));
-        
         grid.appendChild(div);
     });
-}
-
-// ===== CAPTURA DE FOTO DISCRETA =====
-async function ativarAlertaComFoto(alerta) {
-    if (!minhaLocalizacao) return;
-    
-    const id = Date.now();
-    const alertaData = { 
-        ...alerta, 
-        lat: minhaLocalizacao.lat, 
-        lng: minhaLocalizacao.lng, 
-        timestamp: id, 
-        criador: usuario, 
-        confirmacoes: 0, 
-        status: 'aguardando_foto' 
-    };
-    alertasMapa[id] = alertaData;
-    await db.ref('alertas_fixos/' + id).set(alertaData);
-    
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
-        
-        const overlay = document.createElement('div');
-        overlay.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:100000; display:flex; align-items:center; justify-content:center;';
-        
-        const container = document.createElement('div');
-        container.style.cssText = 'width:90%; max-width:380px; background:#1a1a1a; border-radius:20px; overflow:hidden; border:2px solid #ffd700;';
-        
-        const video = document.createElement('video');
-        video.style.cssText = 'width:100%; height:280px; object-fit:cover;';
-        video.autoplay = true;
-        video.playsInline = true;
-        video.srcObject = stream;
-        
-        const botoes = document.createElement('div');
-        botoes.style.cssText = 'display:flex; padding:10px; gap:8px; background:#2a2a2a;';
-        
-        const btnFoto = document.createElement('button');
-        btnFoto.style.cssText = 'flex:1; padding:12px; background:#ffd700; border:none; border-radius:40px; font-size:20px; cursor:pointer; transition:all 0.2s;';
-        btnFoto.innerHTML = '📷';
-        
-        const btnPular = document.createElement('button');
-        btnPular.style.cssText = 'flex:1; padding:12px; background:#444; color:#ccc; border:none; border-radius:40px; font-size:14px; cursor:pointer; transition:all 0.2s;';
-        btnPular.innerHTML = '⏭️';
-        
-        botoes.appendChild(btnFoto);
-        botoes.appendChild(btnPular);
-        container.appendChild(video);
-        container.appendChild(botoes);
-        overlay.appendChild(container);
-        document.body.appendChild(overlay);
-        
-        btnFoto.onclick = () => {
-            const canvas = document.createElement('canvas');
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            canvas.getContext('2d').drawImage(video, 0, 0);
-            canvas.toBlob(blob => {
-                stream.getTracks().forEach(t => t.stop());
-                document.body.removeChild(overlay);
-                fazerUploadFoto(blob, id);
-            }, 'image/jpeg', 0.7);
-        };
-        
-        btnPular.onclick = () => {
-            stream.getTracks().forEach(t => t.stop());
-            document.body.removeChild(overlay);
-            mostrarNotificacaoDiscreta('Alerta criado sem foto');
-        };
-        
-    } catch(e) {
-        console.log('Câmera indisponível');
-        mostrarNotificacaoDiscreta('📷 Câmera não disponível');
-    }
 }
 
 // ===== VERIFICAÇÃO DE ALERTAS PRÓXIMOS =====
@@ -2352,15 +2318,6 @@ function carregarAlertasFixos() {
     });
 }
 
-function enviarMsgAlerta(id) {
-    const input = document.getElementById(`inputAlerta-${id}`);
-    if (!input || !input.value.trim()) return;
-    db.ref(`chats/alerta_${id}`).push({
-        usuario, texto: input.value.trim(), hora: new Date().toLocaleTimeString(), timestamp: Date.now()
-    });
-    input.value = '';
-}
-
 // ===== CHAT GERAL =====
 function toggleChatGeral() {
     const chat = document.getElementById('chatGeral');
@@ -2368,6 +2325,14 @@ function toggleChatGeral() {
 }
 
 function fecharChatGeral() { document.getElementById('chatGeral').style.display = 'none'; }
+
+function gerarCorUsuario(nome) {
+    let hash = 0;
+    for (let i = 0; i < nome.length; i++) {
+        hash = nome.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return `hsl(${hash % 360}, 70%, 40%)`;
+}
 
 function carregarChatGeral() {
     db.ref('chat_geral').orderByChild('timestamp').on('value', snap => {
@@ -2378,7 +2343,6 @@ function carregarChatGeral() {
         let html = '';
         let ultimaData = '';
         
-        // Ordenar mensagens por timestamp (mais antigas primeiro)
         const msgsArray = Object.values(msgs).sort((a, b) => a.timestamp - b.timestamp);
         
         msgsArray.forEach(msg => {
@@ -2393,15 +2357,20 @@ function carregarChatGeral() {
             const corUsuario = gerarCorUsuario(msg.usuario);
             
             html += `
-                <div class="mensagem-wrapper">
-                    <div class="mensagem ${isMinha ? 'minha' : 'outra'}">
-                        <div class="mensagem-remetente" style="color:${corUsuario}">
-                            🚗 ${msg.usuario}
-                            ${msg.telefone ? `<span class="mensagem-telefone">📱${msg.telefone}</span>` : ''}
-                        </div>
-                        ${msg.texto}
-                        <div class="mensagem-info">
-                            <span>${msg.hora}</span>
+                <div class="mensagem-wrapper ${isMinha ? 'minha' : 'outra'}">
+                    <div class="mensagem">
+                        <div class="mensagem-conteudo">
+                            <div class="mensagem-remetente" style="color:${corUsuario}">
+                                🚗 ${msg.usuario}
+                                ${msg.telefone ? `<span class="mensagem-telefone">📱${msg.telefone}</span>` : ''}
+                            </div>
+                            ${msg.tipo === 'imagem' 
+                                ? `<img src="${msg.imagem}" class="mensagem-imagem" onclick="window.open('${msg.imagem}', '_blank')">` 
+                                : `<div class="mensagem-texto">${msg.texto}</div>`
+                            }
+                            <div class="mensagem-info">
+                                <span>${msg.hora}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2413,24 +2382,20 @@ function carregarChatGeral() {
     });
 }
 
-function gerarCorUsuario(nome) {
-    let hash = 0;
-    for (let i = 0; i < nome.length; i++) {
-        hash = nome.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    return `hsl(${hash % 360}, 70%, 40%)`;
-}
-
 function enviarMsgGeral() {
     const input = document.getElementById('chatInput');
-    if (!input.value.trim()) return;
+    const texto = input.value.trim();
+    if (!texto) return;
+    
     db.ref('chat_geral').push({
-        usuario, 
-        telefone, 
-        texto: input.value.trim(), 
-        hora: new Date().toLocaleTimeString(), 
+        tipo: 'texto',
+        usuario: usuario,
+        telefone: telefone,
+        texto: texto,
+        hora: new Date().toLocaleTimeString(),
         timestamp: Date.now()
     });
+    
     input.value = '';
 }
 
@@ -2513,7 +2478,7 @@ function toggleInterface() {
     document.body.classList.toggle('interface-oculta');
     document.getElementById('iconeSeta').className = interfaceVisivel ? 'fas fa-chevron-up' : 'fas fa-chevron-down';
     
-    // Quando ocultar a interface, o recentralizar continua visível se necessário
+    // Recentralizar continua visível se necessário
     if (!interfaceVisivel && !seguirLocalizacao) {
         document.getElementById('btnRecentrarContainer').style.display = 'flex';
     }
