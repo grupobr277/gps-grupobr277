@@ -24,92 +24,48 @@
             --cor-carro: #00BFFF;
         }
         
-        /* Temas de COR PRIMÁRIA */
-        body.tema-azul {
-            --cor-primaria: #00BFFF;
-            --cor-secundaria: #0066cc;
-            --cor-texto: #00BFFF;
-            --cor-borda: #00BFFF;
-            --cor-carro: #00BFFF;
-        }
+        /* ===== 10 CORES PRIMÁRIAS ===== */
+        body.tema-azul { --cor-primaria: #00BFFF; --cor-secundaria: #0066cc; --cor-texto: #00BFFF; --cor-borda: #00BFFF; --cor-carro: #00BFFF; }
+        body.tema-verde { --cor-primaria: #4caf50; --cor-secundaria: #2e7d32; --cor-texto: #4caf50; --cor-borda: #4caf50; --cor-carro: #4caf50; }
+        body.tema-vermelho { --cor-primaria: #e53935; --cor-secundaria: #b71c1c; --cor-texto: #e53935; --cor-borda: #e53935; --cor-carro: #e53935; }
+        body.tema-laranja { --cor-primaria: #ff9800; --cor-secundaria: #f57c00; --cor-texto: #ff9800; --cor-borda: #ff9800; --cor-carro: #ff9800; }
+        body.tema-rosa { --cor-primaria: #e91e63; --cor-secundaria: #c2185b; --cor-texto: #e91e63; --cor-borda: #e91e63; --cor-carro: #e91e63; }
+        body.tema-roxo { --cor-primaria: #9c27b0; --cor-secundaria: #7b1fa2; --cor-texto: #9c27b0; --cor-borda: #9c27b0; --cor-carro: #9c27b0; }
+        body.tema-amarelo { --cor-primaria: #ffeb3b; --cor-secundaria: #fbc02d; --cor-texto: #000; --cor-borda: #ffeb3b; --cor-carro: #ffeb3b; }
+        body.tema-cyan { --cor-primaria: #00bcd4; --cor-secundaria: #0097a7; --cor-texto: #00bcd4; --cor-borda: #00bcd4; --cor-carro: #00bcd4; }
+        body.tema-roxo-escuro { --cor-primaria: #673ab7; --cor-secundaria: #512da8; --cor-texto: #673ab7; --cor-borda: #673ab7; --cor-carro: #673ab7; }
+        body.tema-verde-limao { --cor-primaria: #cddc39; --cor-secundaria: #afb42b; --cor-texto: #333; --cor-borda: #cddc39; --cor-carro: #cddc39; }
         
-        body.tema-verde {
-            --cor-primaria: #4caf50;
-            --cor-secundaria: #2e7d32;
-            --cor-texto: #4caf50;
-            --cor-borda: #4caf50;
-            --cor-carro: #4caf50;
-        }
-        
-        body.tema-vermelho {
-            --cor-primaria: #e53935;
-            --cor-secundaria: #b71c1c;
-            --cor-texto: #e53935;
-            --cor-borda: #e53935;
-            --cor-carro: #e53935;
-        }
-        
-        body.tema-laranja {
-            --cor-primaria: #ff9800;
-            --cor-secundaria: #f57c00;
-            --cor-texto: #ff9800;
-            --cor-borda: #ff9800;
-            --cor-carro: #ff9800;
-        }
-        
-        body.tema-rosa {
-            --cor-primaria: #e91e63;
-            --cor-secundaria: #c2185b;
-            --cor-texto: #e91e63;
-            --cor-borda: #e91e63;
-            --cor-carro: #e91e63;
-        }
-        
-        body.tema-roxo {
-            --cor-primaria: #9c27b0;
-            --cor-secundaria: #7b1fa2;
-            --cor-texto: #9c27b0;
-            --cor-borda: #9c27b0;
-            --cor-carro: #9c27b0;
-        }
-        
-        /* Temas de FUNDO dos botões */
-        body.fundo-preto {
-            --cor-fundo: #2a2a2a;
-        }
-        
-        body.fundo-branco {
-            --cor-fundo: #ffffff;
-        }
-        
-        body.fundo-cinza {
-            --cor-fundo: #808080;
-        }
-        
-        body.fundo-cinza-claro {
-            --cor-fundo: #d3d3d3;
-        }
-        
-        body.fundo-azul-claro {
-            --cor-fundo: #87CEEB;
-        }
-        
-        body.fundo-beje {
-            --cor-fundo: #f5f5dc;
-        }
+        /* ===== 10 CORES DE FUNDO ===== */
+        body.fundo-preto { --cor-fundo: #1a1a1a; }
+        body.fundo-branco { --cor-fundo: #ffffff; }
+        body.fundo-cinza { --cor-fundo: #808080; }
+        body.fundo-cinza-claro { --cor-fundo: #d3d3d3; }
+        body.fundo-azul-claro { --cor-fundo: #87CEEB; }
+        body.fundo-beje { --cor-fundo: #f5f5dc; }
+        body.fundo-azul-escuro { --cor-fundo: #1a237e; }
+        body.fundo-verde-claro { --cor-fundo: #c8e6c9; }
+        body.fundo-roxo-claro { --cor-fundo: #e1bee7; }
+        body.fundo-amarelo-claro { --cor-fundo: #fff9c4; }
         
         /* Ajuste de cor do texto baseado no fundo */
         body.fundo-branco .btn-barra,
         body.fundo-cinza-claro .btn-barra,
         body.fundo-azul-claro .btn-barra,
-        body.fundo-beje .btn-barra {
+        body.fundo-beje .btn-barra,
+        body.fundo-verde-claro .btn-barra,
+        body.fundo-roxo-claro .btn-barra,
+        body.fundo-amarelo-claro .btn-barra {
             color: #333 !important;
         }
         
         body.fundo-branco .legenda-texto,
         body.fundo-cinza-claro .legenda-texto,
         body.fundo-azul-claro .legenda-texto,
-        body.fundo-beje .legenda-texto {
+        body.fundo-beje .legenda-texto,
+        body.fundo-verde-claro .legenda-texto,
+        body.fundo-roxo-claro .legenda-texto,
+        body.fundo-amarelo-claro .legenda-texto {
             color: #333 !important;
         }
         
@@ -151,7 +107,7 @@
             padding: 25px 20px;
             border-radius: 30px;
             text-align: center;
-            max-width: 420px;
+            max-width: 450px;
             width: 100%;
             border: 2px solid var(--cor-primaria);
             box-shadow: 0 0 30px var(--cor-primaria);
@@ -182,26 +138,26 @@
             text-align: left;
             font-size: 14px;
             font-weight: 600;
-            margin: 15px 0 5px;
+            margin: 10px 0 5px;
         }
         
         .cores-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 5px;
             margin: 5px 0;
         }
         
         .cor-opcao {
-            padding: 10px;
-            border-radius: 15px;
+            padding: 8px 4px;
+            border-radius: 10px;
             cursor: pointer;
-            border: 3px solid transparent;
+            border: 2px solid transparent;
             text-align: center;
-            font-weight: 700;
+            font-weight: 600;
             color: white;
             transition: all 0.2s;
-            font-size: 12px;
+            font-size: 10px;
         }
         
         .cor-opcao:hover {
@@ -210,44 +166,54 @@
         
         .cor-opcao.selecionada {
             border-color: white;
-            box-shadow: 0 0 20px currentColor;
+            box-shadow: 0 0 15px currentColor;
         }
         
+        /* Cores primárias */
         .cor-azul { background: #00BFFF; }
         .cor-verde { background: #4caf50; }
         .cor-vermelho { background: #e53935; }
         .cor-laranja { background: #ff9800; }
         .cor-rosa { background: #e91e63; }
         .cor-roxo { background: #9c27b0; }
+        .cor-amarelo { background: #ffeb3b; color: #333; }
+        .cor-cyan { background: #00bcd4; }
+        .cor-roxo-escuro { background: #673ab7; }
+        .cor-verde-limao { background: #cddc39; color: #333; }
         
-        .fundo-preto { background: #2a2a2a; color: white; }
+        /* Cores de fundo */
+        .fundo-preto { background: #1a1a1a; color: white; }
         .fundo-branco { background: #ffffff; color: #333; border: 1px solid #333; }
         .fundo-cinza { background: #808080; color: white; }
         .fundo-cinza-claro { background: #d3d3d3; color: #333; }
         .fundo-azul-claro { background: #87CEEB; color: #333; }
         .fundo-beje { background: #f5f5dc; color: #333; }
+        .fundo-azul-escuro { background: #1a237e; color: white; }
+        .fundo-verde-claro { background: #c8e6c9; color: #333; }
+        .fundo-roxo-claro { background: #e1bee7; color: #333; }
+        .fundo-amarelo-claro { background: #fff9c4; color: #333; }
         
         /* ===== PERMISSÕES ===== */
         .permissoes-container {
             background: #222;
             border-radius: 20px;
-            padding: 15px;
-            margin: 15px 0;
+            padding: 12px;
+            margin: 12px 0;
             border: 1px solid var(--cor-primaria);
         }
         
         .permissao-item {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             color: white;
-            margin: 8px 0;
-            font-size: 13px;
+            margin: 6px 0;
+            font-size: 12px;
         }
         
         .permissao-item i {
             color: var(--cor-primaria);
-            width: 20px;
+            width: 18px;
         }
         
         .checkbox-container {
@@ -256,35 +222,33 @@
             gap: 8px;
             color: white;
             font-size: 12px;
-            margin: 12px 0;
+            margin: 10px 0;
             cursor: pointer;
         }
         
         .btn-ativar {
             width: 100%;
-            padding: 14px;
+            padding: 12px;
             background: var(--cor-primaria);
             border: none;
             border-radius: 40px;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
             cursor: pointer;
             color: white;
-            margin-bottom: 10px;
-            transition: all 0.2s;
+            margin-bottom: 8px;
         }
         
         .btn-entrar {
             width: 100%;
-            padding: 14px;
+            padding: 12px;
             background: #444;
             border: none;
             border-radius: 40px;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
             cursor: not-allowed;
             color: #999;
-            transition: all 0.2s;
         }
         
         .btn-entrar.ativo {
@@ -296,25 +260,25 @@
         /* ===== HEADER ===== */
         .header-mobile {
             position: fixed;
-            top: 10px;
-            left: 10px;
+            top: 8px;
+            left: 8px;
             z-index: 9000;
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 4px;
         }
         
         .contador-mobile {
             background: var(--cor-fundo);
             backdrop-filter: blur(5px);
             color: var(--cor-texto);
-            padding: 4px 10px;
-            border-radius: 30px;
-            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 25px;
+            font-size: 9px;
             font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
             border: 1px solid var(--cor-borda);
         }
         
@@ -322,24 +286,23 @@
             background: var(--cor-fundo);
             backdrop-filter: blur(5px);
             color: var(--cor-texto);
-            padding: 4px 12px;
-            border-radius: 30px;
-            font-size: 11px;
+            padding: 3px 10px;
+            border-radius: 25px;
+            font-size: 10px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             border: 1px solid var(--cor-borda);
             cursor: pointer;
         }
         
-        /* ===== LUPA ===== */
+        /* ===== LUPA - CORRIGIDA ===== */
         .lupa-mobile {
             position: fixed;
-            top: 10px;
-            left: 130px;
-            right: 10px;
+            top: 8px;
+            left: 120px;
+            right: 45px;
             width: auto;
-            max-width: 240px;
             z-index: 9000;
             background: white;
             border-radius: 40px;
@@ -351,44 +314,49 @@
         
         .lupa-mobile input {
             flex: 1;
-            padding: 10px 15px;
+            padding: 8px 12px;
             border: none;
-            font-size: 14px;
+            font-size: 13px;
             outline: none;
+            min-width: 100px;
         }
         
         .lupa-mobile button {
             background: #075e54;
             color: white;
             border: none;
-            width: 48px;
-            height: 48px;
+            width: 40px;
+            height: 40px;
             cursor: pointer;
-            font-size: 18px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
         }
         
         /* ===== BARRA INFERIOR ===== */
         .barra-inferior-mobile {
             position: fixed;
-            bottom: 20px;
+            bottom: 15px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 9500;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             background: var(--cor-fundo);
             backdrop-filter: blur(10px);
-            padding: 8px 15px;
-            border-radius: 50px;
+            padding: 6px 12px;
+            border-radius: 40px;
             border: 2px solid var(--cor-borda);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
         }
         
         .btn-barra {
-            width: 44px;
-            height: 44px;
-            border-radius: 30px;
+            width: 40px;
+            height: 40px;
+            border-radius: 25px;
             background: var(--cor-fundo);
             border: 2px solid var(--cor-borda);
             display: flex;
@@ -396,37 +364,43 @@
             justify-content: center;
             cursor: pointer;
             color: var(--cor-texto);
-            font-size: 20px;
+            font-size: 18px;
             transition: all 0.2s;
         }
         
         .btn-barra:hover { transform: scale(1.05); }
         .btn-barra.ativo { border-color: #ffd700; color: #ffd700; }
-        .btn-barra.mudo { border-color: #e53935; color: #e53935; }
+        .btn-barra.mudo { border-color: #e53935; color: #e53935; background: #e5393522; }
         
         .velocimetro-barra {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
             background: var(--cor-fundo);
-            padding: 5px 12px;
-            border-radius: 30px;
+            padding: 4px 10px;
+            border-radius: 25px;
             border: 2px solid var(--cor-borda);
             box-shadow: 0 0 10px var(--cor-primaria);
         }
         
         .vel-numero-barra {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 700;
             color: var(--cor-texto);
             font-family: 'Courier New', monospace;
-            min-width: 50px;
+            min-width: 45px;
             text-align: center;
         }
         
+        .vel-unidade-barra {
+            font-size: 8px;
+            color: #ffd700;
+            font-weight: 600;
+        }
+        
         .btn-ptt {
-            width: 52px;
-            height: 52px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             background: var(--cor-fundo);
             border: 3px solid var(--cor-borda);
@@ -435,14 +409,14 @@
             justify-content: center;
             cursor: pointer;
             color: var(--cor-texto);
-            font-size: 24px;
+            font-size: 16px;
             box-shadow: 0 0 15px var(--cor-primaria);
             position: relative;
             font-weight: 700;
         }
         
         .btn-ptt span {
-            font-size: 14px;
+            font-size: 16px;
             font-weight: 700;
         }
         
@@ -450,37 +424,43 @@
             background: #e53935;
             color: white;
             border-color: white;
+            animation: pulsePTT 1.5s infinite;
+        }
+        
+        @keyframes pulsePTT {
+            0% { box-shadow: 0 0 0 0 #e53935; }
+            70% { box-shadow: 0 0 0 15px transparent; }
         }
         
         /* ===== REPORTE E LEGENDA ===== */
         .info-container {
             position: fixed;
-            bottom: 100px;
-            left: 15px;
+            bottom: 90px;
+            left: 10px;
             z-index: 9300;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
         
         .reporte-btn-mobile {
             background: var(--cor-fundo);
             border: 2px solid var(--cor-borda);
             border-radius: 30px;
-            padding: 6px 14px;
+            padding: 5px 12px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
             cursor: pointer;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 700;
             color: var(--cor-texto);
             box-shadow: 0 0 15px var(--cor-primaria);
         }
         
         .reporte-led {
-            width: 8px;
-            height: 8px;
+            width: 7px;
+            height: 7px;
             border-radius: 50%;
             background: #4caf50;
             box-shadow: 0 0 10px #4caf50;
@@ -490,38 +470,38 @@
         .legenda-container {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             background: var(--cor-fundo);
             border: 2px solid var(--cor-borda);
             border-radius: 30px;
-            padding: 6px 14px;
+            padding: 5px 12px;
         }
         
         .legenda-item {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 3px;
         }
         
         .legenda-cor {
-            width: 8px;
-            height: 8px;
+            width: 7px;
+            height: 7px;
             border-radius: 50%;
         }
         
-        .legenda-verde { background: #00ff00; box-shadow: 0 0 8px #00ff00; }
-        .legenda-amarelo { background: #ffff00; box-shadow: 0 0 8px #ffff00; }
-        .legenda-vermelho { background: #ff0000; box-shadow: 0 0 8px #ff0000; }
+        .legenda-verde { background: #00ff00; box-shadow: 0 0 6px #00ff00; }
+        .legenda-amarelo { background: #ffff00; box-shadow: 0 0 6px #ffff00; }
+        .legenda-vermelho { background: #ff0000; box-shadow: 0 0 6px #ff0000; }
         
         .legenda-texto {
             color: var(--cor-texto);
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 600;
         }
         
         .legenda-fechar {
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
             background: #e53935;
             border: 1px solid var(--cor-borda);
             border-radius: 50%;
@@ -530,8 +510,8 @@
             justify-content: center;
             cursor: pointer;
             color: white;
-            font-size: 10px;
-            margin-left: 4px;
+            font-size: 9px;
+            margin-left: 3px;
         }
         
         /* ===== PAINEL DE CONFIGURAÇÕES ===== */
@@ -543,12 +523,12 @@
             background: #1a1a1a;
             border: 3px solid var(--cor-borda);
             border-radius: 30px;
-            padding: 25px;
+            padding: 20px;
             z-index: 100000;
             display: none;
             flex-direction: column;
-            gap: 15px;
-            min-width: 320px;
+            gap: 12px;
+            min-width: 300px;
             max-width: 90%;
             max-height: 80vh;
             overflow-y: auto;
@@ -562,42 +542,36 @@
             justify-content: space-between;
             align-items: center;
             color: var(--cor-texto);
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
             border-bottom: 1px solid var(--cor-borda);
-            padding-bottom: 10px;
+            padding-bottom: 8px;
         }
         
         .config-section {
-            margin: 5px 0;
-            padding: 10px;
+            margin: 3px 0;
+            padding: 8px;
             background: #222;
-            border-radius: 15px;
+            border-radius: 12px;
         }
         
         .config-section h3 {
             color: white;
-            font-size: 14px;
-            margin-bottom: 10px;
+            font-size: 13px;
+            margin-bottom: 6px;
         }
         
-        .config-cores {
+        .config-cores, .config-fundos {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-        }
-        
-        .config-fundos {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 5px;
         }
         
         .config-cor, .config-fundo {
             aspect-ratio: 1/1;
-            border-radius: 15px;
+            border-radius: 10px;
             cursor: pointer;
-            border: 3px solid transparent;
+            border: 2px solid transparent;
             transition: all 0.2s;
         }
         
@@ -606,13 +580,12 @@
         
         .config-input {
             width: 100%;
-            padding: 12px;
+            padding: 10px;
             background: #333;
             border: 2px solid var(--cor-borda);
             border-radius: 30px;
             color: white;
-            font-size: 14px;
-            margin: 5px 0;
+            font-size: 13px;
         }
         
         .config-botao {
@@ -620,10 +593,10 @@
             color: white;
             border: none;
             border-radius: 30px;
-            padding: 12px;
+            padding: 10px;
             font-weight: 700;
             cursor: pointer;
-            margin: 5px 0;
+            margin: 3px 0;
         }
         
         .config-botao.perigo {
@@ -635,27 +608,21 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px;
+            padding: 6px;
             background: #333;
-            border-radius: 10px;
-            margin: 5px 0;
-        }
-        
-        .usuario-info {
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            border-radius: 8px;
+            margin: 4px 0;
         }
         
         .usuario-nome {
             color: white;
-            font-size: 13px;
+            font-size: 12px;
         }
         
         .usuario-status {
-            font-size: 10px;
-            padding: 2px 6px;
-            border-radius: 10px;
+            font-size: 9px;
+            padding: 2px 5px;
+            border-radius: 8px;
         }
         
         .status-online { background: #4caf50; color: white; }
@@ -665,25 +632,23 @@
             background: #e53935;
             color: white;
             border: none;
-            border-radius: 10px;
-            padding: 4px 10px;
-            font-size: 11px;
+            border-radius: 8px;
+            padding: 3px 8px;
+            font-size: 10px;
             cursor: pointer;
         }
-        
-        .btn-banir:hover { background: #b71c1c; }
         
         /* ===== PAINEL DE ALERTAS ===== */
         .alertas-panel-mobile {
             position: fixed;
-            bottom: 160px;
-            left: 15px;
+            bottom: 150px;
+            left: 10px;
             background: var(--cor-fundo);
             border: 2px solid var(--cor-borda);
-            border-radius: 25px;
-            padding: 15px;
+            border-radius: 20px;
+            padding: 12px;
             display: none;
-            width: 210px;
+            width: 200px;
             z-index: 9400;
         }
         
@@ -692,19 +657,19 @@
         .alertas-grid-mobile {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-            margin-bottom: 12px;
+            gap: 6px;
+            margin-bottom: 10px;
         }
         
         .alerta-item-mobile {
             aspect-ratio: 1/1;
-            border-radius: 15px;
+            border-radius: 12px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 22px;
+            font-size: 20px;
             color: white;
             font-weight: 700;
             border: 2px solid transparent;
@@ -717,20 +682,20 @@
         }
         
         .alerta-item-mobile span { 
-            font-size: 9px; 
+            font-size: 8px; 
             margin-top: 2px;
             background: rgba(0,0,0,0.6);
-            padding: 2px 8px;
-            border-radius: 20px;
+            padding: 2px 6px;
+            border-radius: 15px;
         }
         
         .btn-fechar-retangular {
             background: #e53935;
             border: 2px solid var(--cor-borda);
-            border-radius: 12px;
+            border-radius: 10px;
             color: white;
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -741,15 +706,15 @@
         /* ===== RECENTRALIZAR ===== */
         .recentrar-mobile {
             position: fixed;
-            bottom: 100px;
-            right: 15px;
+            bottom: 90px;
+            right: 10px;
             z-index: 9300;
             display: none;
         }
         
         .recentrar-btn-mobile {
-            width: 45px;
-            height: 45px;
+            width: 42px;
+            height: 42px;
             background: var(--cor-fundo);
             border: 3px solid var(--cor-borda);
             border-radius: 50%;
@@ -758,7 +723,7 @@
             justify-content: center;
             cursor: pointer;
             color: var(--cor-texto);
-            font-size: 20px;
+            font-size: 18px;
             box-shadow: 0 0 20px var(--cor-primaria);
             animation: pulseBlue 2s infinite;
         }
@@ -766,7 +731,7 @@
         /* ===== SETA VOLTAR ===== */
         .seta-voltar {
             position: fixed;
-            bottom: 20px;
+            bottom: 15px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 9600;
@@ -774,8 +739,8 @@
         }
         
         .seta-voltar-btn {
-            width: 50px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
             background: var(--cor-fundo);
             border: 2px solid var(--cor-borda);
             border-radius: 50%;
@@ -784,8 +749,27 @@
             justify-content: center;
             cursor: pointer;
             color: var(--cor-texto);
-            font-size: 22px;
+            font-size: 20px;
             animation: pulseSeta 1.5s infinite;
+        }
+        
+        /* ===== BOTÃO CONFIG ===== */
+        .btn-config {
+            position: fixed;
+            top: 8px;
+            right: 8px;
+            width: 36px;
+            height: 36px;
+            background: var(--cor-fundo);
+            border: 2px solid var(--cor-borda);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--cor-texto);
+            font-size: 16px;
+            z-index: 9000;
         }
         
         /* ===== CHAT ===== */
@@ -806,17 +790,18 @@
         .chat-header-mobile {
             background: #075e54;
             color: white;
-            padding: 15px 20px;
+            padding: 12px 15px;
             border-radius: 23px 23px 0 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            font-size: 14px;
         }
         
         .chat-mensagens-mobile {
             flex: 1;
             overflow-y: auto;
-            padding: 15px;
+            padding: 12px;
             background: #e5ddd5;
         }
         
@@ -832,56 +817,56 @@
         .mensagem-wrapper.outra { align-self: flex-start; }
         
         .mensagem {
-            padding: 8px 12px;
-            border-radius: 18px;
-            font-size: 14px;
+            padding: 7px 10px;
+            border-radius: 15px;
+            font-size: 13px;
         }
         
         .mensagem.minha {
             background: #dcf8c6;
             color: #000;
-            border-bottom-right-radius: 4px;
+            border-bottom-right-radius: 3px;
         }
         
         .mensagem.outra {
             background: white;
             color: #000;
-            border-bottom-left-radius: 4px;
+            border-bottom-left-radius: 3px;
         }
         
         .mensagem-remetente {
             font-weight: 700;
-            font-size: 12px;
-            margin-bottom: 3px;
+            font-size: 11px;
+            margin-bottom: 2px;
             color: #075e54;
         }
         
         .mensagem-hora {
-            font-size: 10px;
+            font-size: 9px;
             color: #999;
-            margin-top: 3px;
+            margin-top: 2px;
             text-align: right;
         }
         
         .resposta-preview {
             background: rgba(0,0,0,0.05);
             border-left: 3px solid #075e54;
-            padding: 6px 10px;
-            margin-bottom: 4px;
-            border-radius: 8px;
-            font-size: 12px;
+            padding: 5px 8px;
+            margin-bottom: 3px;
+            border-radius: 6px;
+            font-size: 11px;
             color: #666;
         }
         
         .mensagem-acoes {
             position: absolute;
-            top: -25px;
+            top: -22px;
             right: 0;
             background: white;
-            border-radius: 30px;
-            padding: 4px 10px;
+            border-radius: 25px;
+            padding: 3px 8px;
             display: none;
-            gap: 10px;
+            gap: 8px;
             border: 1px solid #075e54;
         }
         
@@ -889,29 +874,30 @@
         
         .acao {
             cursor: pointer;
-            font-size: 14px;
+            font-size: 12px;
             color: #075e54;
         }
         
         .chat-input-mobile {
-            padding: 15px;
+            padding: 12px;
             background: #f0f0f0;
             display: flex;
-            gap: 10px;
+            gap: 8px;
             border-radius: 0 0 23px 23px;
         }
         
         .chat-input-mobile input {
             flex: 1;
-            padding: 12px 18px;
+            padding: 10px 15px;
             border-radius: 30px;
             border: 1px solid #ccc;
             background: white;
+            font-size: 13px;
         }
         
         .chat-input-mobile button {
-            width: 50px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
             border: none;
             background: #075e54;
@@ -925,64 +911,71 @@
             border: 2px solid #075e54;
             border-radius: 20px;
             overflow: hidden;
-            max-width: 300px;
+            max-width: 280px;
         }
         
         .popup-header-mobile {
-            padding: 12px 15px;
+            padding: 10px;
             color: white;
             font-weight: 700;
             display: flex;
             justify-content: space-between;
             background: #075e54;
+            font-size: 14px;
         }
         
         .popup-imagem-mobile {
-            padding: 12px;
+            padding: 10px;
             background: #f5f5f5;
             text-align: center;
         }
         
         .popup-imagem-mobile img {
             max-width: 100%;
-            max-height: 160px;
-            border-radius: 15px;
-            border: 3px solid #075e54;
+            max-height: 140px;
+            border-radius: 12px;
+            border: 2px solid #075e54;
             cursor: pointer;
         }
         
         .popup-stats-mobile {
             display: flex;
             justify-content: space-around;
-            padding: 12px;
+            padding: 10px;
             background: #f0f0f0;
+            font-size: 12px;
+        }
+        
+        .popup-stats-mobile span {
+            cursor: pointer;
         }
         
         .popup-chat-mobile {
-            padding: 10px;
-            max-height: 150px;
+            padding: 8px;
+            max-height: 130px;
             overflow-y: auto;
             background: #f9f9f9;
         }
         
         .popup-input-mobile {
             display: flex;
-            padding: 10px;
+            padding: 8px;
             gap: 5px;
             background: #f0f0f0;
         }
         
         .popup-input-mobile input {
             flex: 1;
-            padding: 8px;
-            border-radius: 20px;
+            padding: 7px;
+            border-radius: 18px;
             border: 1px solid #075e54;
             background: white;
+            font-size: 12px;
         }
         
         .popup-input-mobile button {
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             border: none;
             background: #075e54;
@@ -992,35 +985,35 @@
         
         /* ===== CARRO ===== */
         .carro-simples {
-            font-size: 32px;
+            font-size: 30px;
             filter: drop-shadow(0 0 10px var(--cor-primaria));
             color: var(--cor-carro);
         }
         
         .ponto-azul {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
             background: var(--cor-primaria);
-            border: 3px solid white;
-            box-shadow: 0 0 15px var(--cor-primaria);
+            border: 2px solid white;
+            box-shadow: 0 0 12px var(--cor-primaria);
             animation: pulse-ponto 1.5s infinite;
         }
         
         /* ===== ALERTA COM FOTO ===== */
         .alerta-com-foto {
             position: relative;
-            width: 50px;
-            height: 50px;
+            width: 48px;
+            height: 48px;
             z-index: 10000;
         }
         
         .alerta-pulsante {
-            width: 50px;
-            height: 50px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             background: rgba(255,0,0,0.3);
-            border: 4px solid;
+            border: 3px solid;
             position: absolute;
             animation: pulseAlerta 1.2s infinite;
         }
@@ -1030,8 +1023,8 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 38px;
-            height: 38px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             overflow: hidden;
             border: 2px solid white;
@@ -1045,33 +1038,99 @@
         
         .alerta-icone-pequeno {
             position: absolute;
-            bottom: -3px;
-            right: -3px;
+            bottom: -2px;
+            right: -2px;
             background: inherit;
             color: white;
             border-radius: 50%;
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
+            font-size: 10px;
             border: 2px solid white;
         }
         
-        /* ===== OUTROS ===== */
+        /* ===== INDICADORES ===== */
+        .gravando-indicator {
+            position: fixed;
+            bottom: 140px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #e53935;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            z-index: 10000;
+            display: none;
+            border: 2px solid var(--cor-borda);
+            font-size: 13px;
+            font-weight: 700;
+        }
+        
+        .audio-notification {
+            position: fixed;
+            bottom: 140px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--cor-primaria);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            z-index: 10000;
+            display: none;
+            font-size: 13px;
+            font-weight: 700;
+            border: 2px solid white;
+        }
+        
+        /* ===== CONFIRMAÇÃO ===== */
+        .confirmacao-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #1a1a1a;
+            border: 3px solid var(--cor-borda);
+            border-radius: 30px;
+            padding: 20px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            z-index: 100000;
+            color: white;
+            min-width: 250px;
+        }
+        
+        .btn-confirmar, .btn-negar {
+            border: none;
+            border-radius: 30px;
+            padding: 10px 25px;
+            font-weight: 700;
+            cursor: pointer;
+            border: 2px solid var(--cor-borda);
+        }
+        
+        .btn-confirmar { background: #4caf50; color: white; }
+        .btn-negar { background: #e53935; color: white; }
+        
+        /* ===== ANIMAÇÕES ===== */
         @keyframes ledPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
-        @keyframes pulse-ponto { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
-        @keyframes pulseAlerta { 0% { transform: scale(0.9); } 70% { transform: scale(1.4); } 100% { transform: scale(0.9); } }
-        @keyframes pulseBlue { 0% { box-shadow: 0 0 0 0 var(--cor-primaria); } 70% { box-shadow: 0 0 0 15px transparent; } }
-        @keyframes pulseSeta { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        @keyframes pulse-ponto { 0% { transform: scale(1); } 50% { transform: scale(1.2); } }
+        @keyframes pulseAlerta { 0% { transform: scale(0.9); } 70% { transform: scale(1.3); } }
+        @keyframes pulseBlue { 0% { box-shadow: 0 0 0 0 var(--cor-primaria); } 70% { box-shadow: 0 0 0 12px transparent; } }
+        @keyframes pulseSeta { 0% { transform: scale(1); } 50% { transform: scale(1.1); } }
         
         .mapa-noturno { filter: invert(100%) hue-rotate(180deg) brightness(95%); }
         
+        /* ===== OCULTAR INTERFACE ===== */
         .interface-oculta .header-mobile,
         .interface-oculta .lupa-mobile,
         .interface-oculta .barra-inferior-mobile,
         .interface-oculta .info-container,
+        .interface-oculta .btn-config,
         .interface-oculta .btn-encerrar-rota,
         .interface-oculta .rota-info-panel,
         .interface-oculta .gravando-indicator,
@@ -1084,6 +1143,40 @@
         
         .interface-oculta .recentrar-mobile { display: flex !important; }
         .interface-oculta .seta-voltar { display: flex !important; }
+        
+        .btn-encerrar-rota {
+            position: fixed;
+            top: 55px;
+            right: 8px;
+            background: #e53935;
+            color: white;
+            border: 2px solid var(--cor-borda);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 9400;
+        }
+        
+        .rota-info-panel {
+            position: fixed;
+            top: 55px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--cor-fundo);
+            color: white;
+            padding: 6px 15px;
+            border-radius: 30px;
+            display: none;
+            align-items: center;
+            gap: 15px;
+            border: 2px solid var(--cor-borda);
+            z-index: 9400;
+            font-size: 11px;
+        }
     </style>
 </head>
 <body class="tema-azul fundo-preto">
@@ -1094,11 +1187,11 @@
 <div class="welcome-modal" id="welcomeModal">
     <div class="welcome-content">
         <h2>🏁 GRUPO BR 277</h2>
-        <p style="color:#fff; font-size:12px;">SISTEMA DE TRÂNSITO</p>
+        <p style="color:#fff; font-size:11px;">SISTEMA DE TRÂNSITO</p>
         
         <input type="text" id="nomeUsuario" placeholder="SEU NOME" value="Motorista">
         
-        <!-- COR PRIMÁRIA -->
+        <!-- COR PRIMÁRIA - 10 CORES -->
         <div class="secao-titulo">COR DO APP:</div>
         <div class="cores-grid">
             <div class="cor-opcao cor-azul selecionada" onclick="selecionarCor('azul')" id="cor-azul">AZUL</div>
@@ -1107,17 +1200,25 @@
             <div class="cor-opcao cor-laranja" onclick="selecionarCor('laranja')" id="cor-laranja">LARA</div>
             <div class="cor-opcao cor-rosa" onclick="selecionarCor('rosa')" id="cor-rosa">ROSA</div>
             <div class="cor-opcao cor-roxo" onclick="selecionarCor('roxo')" id="cor-roxo">ROXO</div>
+            <div class="cor-opcao cor-amarelo" onclick="selecionarCor('amarelo')" id="cor-amarelo">AMAR</div>
+            <div class="cor-opcao cor-cyan" onclick="selecionarCor('cyan')" id="cor-cyan">CYAN</div>
+            <div class="cor-opcao cor-roxo-escuro" onclick="selecionarCor('roxo-escuro')" id="cor-roxo-escuro">RXE</div>
+            <div class="cor-opcao cor-verde-limao" onclick="selecionarCor('verde-limao')" id="cor-verde-limao">VLIM</div>
         </div>
         
-        <!-- COR DE FUNDO -->
+        <!-- COR DE FUNDO - 10 CORES -->
         <div class="secao-titulo">FUNDO DOS ÍCONES:</div>
-        <div class="cores-grid" style="grid-template-columns:repeat(3,1fr);">
+        <div class="cores-grid" style="grid-template-columns:repeat(5,1fr);">
             <div class="cor-opcao fundo-preto" onclick="selecionarFundo('preto')" id="fundo-preto">PRETO</div>
             <div class="cor-opcao fundo-branco" onclick="selecionarFundo('branco')" id="fundo-branco">BRANCO</div>
             <div class="cor-opcao fundo-cinza" onclick="selecionarFundo('cinza')" id="fundo-cinza">CINZA</div>
-            <div class="cor-opcao fundo-cinza-claro" onclick="selecionarFundo('cinza-claro')" id="fundo-cinza-claro">C. CLARO</div>
-            <div class="cor-opcao fundo-azul-claro" onclick="selecionarFundo('azul-claro')" id="fundo-azul-claro">AZ. CLARO</div>
+            <div class="cor-opcao fundo-cinza-claro" onclick="selecionarFundo('cinza-claro')" id="fundo-cinza-claro">C.CLARO</div>
+            <div class="cor-opcao fundo-azul-claro" onclick="selecionarFundo('azul-claro')" id="fundo-azul-claro">AZ.CLARO</div>
             <div class="cor-opcao fundo-beje" onclick="selecionarFundo('beje')" id="fundo-beje">BEJE</div>
+            <div class="cor-opcao fundo-azul-escuro" onclick="selecionarFundo('azul-escuro')" id="fundo-azul-escuro">AZ.ESC</div>
+            <div class="cor-opcao fundo-verde-claro" onclick="selecionarFundo('verde-claro')" id="fundo-verde-claro">VD.CLARO</div>
+            <div class="cor-opcao fundo-roxo-claro" onclick="selecionarFundo('roxo-claro')" id="fundo-roxo-claro">RX.CLARO</div>
+            <div class="cor-opcao fundo-amarelo-claro" onclick="selecionarFundo('amarelo-claro')" id="fundo-amarelo-claro">AM.CLARO</div>
         </div>
         
         <!-- PERMISSÕES -->
@@ -1149,52 +1250,6 @@
     </div>
 </div>
 
-<!-- PAINEL DE CONFIGURAÇÕES -->
-<div class="config-panel" id="configPanel">
-    <div class="config-header">
-        <span>⚙️ CONFIGURAÇÕES</span>
-        <span onclick="fecharConfig()" style="cursor:pointer;">✕</span>
-    </div>
-    
-    <div class="config-section">
-        <h3>SEU NOME</h3>
-        <input type="text" id="configNome" class="config-input" placeholder="Seu nome">
-    </div>
-    
-    <div class="config-section">
-        <h3>COR DO APP</h3>
-        <div class="config-cores">
-            <div class="config-cor cor-azul" onclick="mudarCor('azul')" id="config-azul"></div>
-            <div class="config-cor cor-verde" onclick="mudarCor('verde')" id="config-verde"></div>
-            <div class="config-cor cor-vermelho" onclick="mudarCor('vermelho')" id="config-vermelho"></div>
-            <div class="config-cor cor-laranja" onclick="mudarCor('laranja')" id="config-laranja"></div>
-            <div class="config-cor cor-rosa" onclick="mudarCor('rosa')" id="config-rosa"></div>
-            <div class="config-cor cor-roxo" onclick="mudarCor('roxo')" id="config-roxo"></div>
-        </div>
-    </div>
-    
-    <div class="config-section">
-        <h3>FUNDO DOS ÍCONES</h3>
-        <div class="config-fundos">
-            <div class="config-fundo fundo-preto" onclick="mudarFundo('preto')" id="fundo-config-preto"></div>
-            <div class="config-fundo fundo-branco" onclick="mudarFundo('branco')" id="fundo-config-branco"></div>
-            <div class="config-fundo fundo-cinza" onclick="mudarFundo('cinza')" id="fundo-config-cinza"></div>
-            <div class="config-fundo fundo-cinza-claro" onclick="mudarFundo('cinza-claro')" id="fundo-config-cinza-claro"></div>
-            <div class="config-fundo fundo-azul-claro" onclick="mudarFundo('azul-claro')" id="fundo-config-azul-claro"></div>
-            <div class="config-fundo fundo-beje" onclick="mudarFundo('beje')" id="fundo-config-beje"></div>
-        </div>
-    </div>
-    
-    <div class="config-section" id="adminSection" style="display:none;">
-        <h3>👑 ADMIN - GERENCIAR USUÁRIOS</h3>
-        <div id="usuariosLista"></div>
-        <button class="config-botao perigo" onclick="limparTodosAlertas()">LIMPAR TODOS ALERTAS</button>
-        <button class="config-botao perigo" onclick="sairAdmin()">SAIR DO MODO ADMIN</button>
-    </div>
-    
-    <button class="config-botao" onclick="salvarConfig()">SALVAR</button>
-</div>
-
 <!-- HEADER -->
 <div class="header-mobile">
     <div class="contador-mobile" id="contadorUsuarios">
@@ -1207,10 +1262,15 @@
     </div>
 </div>
 
-<!-- LUPA -->
+<!-- LUPA - CORRIGIDA -->
 <div class="lupa-mobile">
     <input type="text" id="buscaDestino" placeholder="Digite seu destino...">
     <button onclick="buscarRota()"><i class="fas fa-search"></i></button>
+</div>
+
+<!-- BOTÃO CONFIG -->
+<div class="btn-config" onclick="abrirConfig()">
+    ⚙️
 </div>
 
 <!-- BARRA INFERIOR -->
@@ -1272,9 +1332,58 @@
     <div class="btn-fechar-retangular" onclick="toggleReporteMobile()">✕</div>
 </div>
 
-<!-- BOTÃO CONFIGURAÇÕES -->
-<div style="position:fixed; top:10px; right:10px; z-index:9000;">
-    <div class="btn-barra" onclick="abrirConfig()" style="width:40px; height:40px;">⚙️</div>
+<!-- PAINEL DE CONFIGURAÇÕES -->
+<div class="config-panel" id="configPanel">
+    <div class="config-header">
+        <span>⚙️ CONFIGURAÇÕES</span>
+        <span onclick="fecharConfig()" style="cursor:pointer;">✕</span>
+    </div>
+    
+    <div class="config-section">
+        <h3>SEU NOME</h3>
+        <input type="text" id="configNome" class="config-input" placeholder="Seu nome">
+    </div>
+    
+    <div class="config-section">
+        <h3>COR DO APP</h3>
+        <div class="config-cores">
+            <div class="config-cor cor-azul" onclick="mudarCor('azul')" id="config-azul"></div>
+            <div class="config-cor cor-verde" onclick="mudarCor('verde')" id="config-verde"></div>
+            <div class="config-cor cor-vermelho" onclick="mudarCor('vermelho')" id="config-vermelho"></div>
+            <div class="config-cor cor-laranja" onclick="mudarCor('laranja')" id="config-laranja"></div>
+            <div class="config-cor cor-rosa" onclick="mudarCor('rosa')" id="config-rosa"></div>
+            <div class="config-cor cor-roxo" onclick="mudarCor('roxo')" id="config-roxo"></div>
+            <div class="config-cor cor-amarelo" onclick="mudarCor('amarelo')" id="config-amarelo"></div>
+            <div class="config-cor cor-cyan" onclick="mudarCor('cyan')" id="config-cyan"></div>
+            <div class="config-cor cor-roxo-escuro" onclick="mudarCor('roxo-escuro')" id="config-roxo-escuro"></div>
+            <div class="config-cor cor-verde-limao" onclick="mudarCor('verde-limao')" id="config-verde-limao"></div>
+        </div>
+    </div>
+    
+    <div class="config-section">
+        <h3>FUNDO DOS ÍCONES</h3>
+        <div class="config-fundos">
+            <div class="config-fundo fundo-preto" onclick="mudarFundo('preto')" id="fundo-config-preto"></div>
+            <div class="config-fundo fundo-branco" onclick="mudarFundo('branco')" id="fundo-config-branco"></div>
+            <div class="config-fundo fundo-cinza" onclick="mudarFundo('cinza')" id="fundo-config-cinza"></div>
+            <div class="config-fundo fundo-cinza-claro" onclick="mudarFundo('cinza-claro')" id="fundo-config-cinza-claro"></div>
+            <div class="config-fundo fundo-azul-claro" onclick="mudarFundo('azul-claro')" id="fundo-config-azul-claro"></div>
+            <div class="config-fundo fundo-beje" onclick="mudarFundo('beje')" id="fundo-config-beje"></div>
+            <div class="config-fundo fundo-azul-escuro" onclick="mudarFundo('azul-escuro')" id="fundo-config-azul-escuro"></div>
+            <div class="config-fundo fundo-verde-claro" onclick="mudarFundo('verde-claro')" id="fundo-config-verde-claro"></div>
+            <div class="config-fundo fundo-roxo-claro" onclick="mudarFundo('roxo-claro')" id="fundo-config-roxo-claro"></div>
+            <div class="config-fundo fundo-amarelo-claro" onclick="mudarFundo('amarelo-claro')" id="fundo-config-amarelo-claro"></div>
+        </div>
+    </div>
+    
+    <div class="config-section" id="adminSection" style="display:none;">
+        <h3>👑 ADMIN - GERENCIAR USUÁRIOS</h3>
+        <div id="usuariosLista"></div>
+        <button class="config-botao perigo" onclick="limparTodosAlertas()">LIMPAR TODOS ALERTAS</button>
+        <button class="config-botao perigo" onclick="sairAdmin()">SAIR DO MODO ADMIN</button>
+    </div>
+    
+    <button class="config-botao" onclick="salvarConfig()">SALVAR</button>
 </div>
 
 <!-- RECENTRALIZAR -->
@@ -1298,7 +1407,7 @@
 <div class="confirmacao-popup" id="confirmacaoPopup">
     <div class="confirmacao-texto" id="confirmacaoTexto">ALERTA A 300 METROS?</div>
     <div class="confirmacao-subtexto" id="confirmacaoSubtexto">Confirme se ainda está ativo</div>
-    <div style="display:flex; gap:15px;">
+    <div style="display:flex; gap:10px;">
         <button class="btn-confirmar" onclick="confirmarAlerta()">✅ SIM</button>
         <button class="btn-negar" onclick="negarAlerta()">❌ NÃO</button>
     </div>
@@ -1309,7 +1418,7 @@
     <div class="chat-header-mobile">
         <span><i class="fas fa-comments"></i> GRUPO BR 277</span>
         <div>
-            <span style="margin-right:15px; cursor:pointer;" onclick="mostrarAdminPanel()">👑</span>
+            <span style="margin-right:12px; cursor:pointer;" onclick="mostrarAdminPanel()">👑</span>
             <span onclick="fecharChatGeral()" style="cursor:pointer;">✕</span>
         </div>
     </div>
@@ -1323,8 +1432,8 @@
 <!-- PAINEL ADMIN -->
 <div class="confirmacao-popup" id="adminPanel" style="display:none;">
     <div class="confirmacao-texto">👑 ADMIN</div>
-    <input type="password" id="adminSenha" placeholder="Senha" style="padding:10px; border-radius:20px; border:2px solid var(--cor-primaria); background:#333; color:white; width:100%;">
-    <div style="display:flex; gap:10px; margin-top:10px;">
+    <input type="password" id="adminSenha" placeholder="Senha" style="padding:8px; border-radius:20px; border:2px solid var(--cor-primaria); background:#333; color:white; width:100%;">
+    <div style="display:flex; gap:10px; margin-top:8px;">
         <button class="btn-confirmar" onclick="verificarAdmin()">ENTRAR</button>
         <button class="btn-negar" onclick="fecharAdminPanel()">CANCELAR</button>
     </div>
@@ -1625,8 +1734,8 @@ function iniciarGPS() {
                 icon: L.divIcon({
                     html: `<div class="carro-simples">🚗</div>`,
                     className: '',
-                    iconSize: [32, 32],
-                    iconAnchor: [16, 16]
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 15]
                 })
             }).addTo(mapa);
             mapa.setView(minhaLocalizacao, 17);
@@ -1693,7 +1802,6 @@ async function abrirCameraParaAlerta(alerta, id) {
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
         
-        // Criar overlay da câmera
         const overlay = document.createElement('div');
         overlay.style.cssText = `
             position: fixed;
@@ -1710,16 +1818,16 @@ async function abrirCameraParaAlerta(alerta, id) {
         `;
         
         const video = document.createElement('video');
-        video.style.cssText = 'width:100%; max-width:400px; border-radius:20px;';
+        video.style.cssText = 'width:90%; max-width:350px; border-radius:20px;';
         video.autoplay = true;
         video.srcObject = stream;
         
         const btnFoto = document.createElement('button');
-        btnFoto.style.cssText = 'margin:20px; padding:15px 30px; background:#ffd700; border:none; border-radius:40px; font-size:18px; font-weight:700; cursor:pointer;';
+        btnFoto.style.cssText = 'margin:15px; padding:12px 25px; background:#ffd700; border:none; border-radius:40px; font-size:16px; font-weight:700; cursor:pointer;';
         btnFoto.innerHTML = '📷 TIRAR FOTO';
         
         const btnFechar = document.createElement('button');
-        btnFechar.style.cssText = 'position:absolute; top:20px; right:20px; width:40px; height:40px; background:#e53935; border:none; border-radius:50%; color:white; font-size:20px; cursor:pointer;';
+        btnFechar.style.cssText = 'position:absolute; top:15px; right:15px; width:40px; height:40px; background:#e53935; border:none; border-radius:50%; color:white; font-size:18px; cursor:pointer;';
         btnFechar.innerHTML = '✕';
         
         overlay.appendChild(video);
@@ -1763,7 +1871,6 @@ async function abrirCameraParaAlerta(alerta, id) {
         
     } catch(e) {
         console.log('Erro na câmera:', e);
-        // Criar alerta sem foto
         const alertaData = {
             ...alerta,
             lat: minhaLocalizacao.lat,
@@ -1801,8 +1908,8 @@ function carregarAlertas() {
             icon: L.divIcon({
                 html: htmlIcone,
                 className: '',
-                iconSize: temImagem ? [50,50] : [40,40],
-                iconAnchor: temImagem ? [25,25] : [20,20]
+                iconSize: temImagem ? [48,48] : [40,40],
+                iconAnchor: temImagem ? [24,24] : [20,20]
             })
         }).addTo(mapa);
         
@@ -1840,7 +1947,7 @@ function abrirPopupAlerta(alerta, id) {
         </div>
     `;
     
-    L.popup({ maxWidth: 280 }).setLatLng([alerta.lat, alerta.lng]).setContent(popup).openOn(mapa);
+    L.popup({ maxWidth: 260 }).setLatLng([alerta.lat, alerta.lng]).setContent(popup).openOn(mapa);
     carregarChatAlerta(id);
 }
 
@@ -1863,8 +1970,8 @@ function carregarChatAlerta(id) {
         Object.values(msgs).forEach(m => {
             const isMinha = m.usuario === usuario;
             html += `
-                <div style="display:flex; flex-direction:column; align-items:${isMinha ? 'flex-end' : 'flex-start'}; margin:5px 0;">
-                    <div style="background:${isMinha?'#dcf8c6':'white'}; padding:6px; border-radius:10px; max-width:100%;">
+                <div style="display:flex; flex-direction:column; align-items:${isMinha ? 'flex-end' : 'flex-start'}; margin:4px 0;">
+                    <div style="background:${isMinha?'#dcf8c6':'white'}; padding:5px; border-radius:8px; max-width:100%; font-size:12px;">
                         <b>${m.usuario}</b><br>${m.texto}<br>
                         <small>${new Date(m.timestamp).toLocaleTimeString().slice(0,5)}</small>
                     </div>
@@ -1884,28 +1991,7 @@ function enviarMsgAlerta(id) {
     input.value = '';
 }
 
-// ===== VERIFICAÇÃO DE ALERTAS PRÓXIMOS =====
-let alertaAtual = null;
-let popupTimeout = null;
-
-function verificarAlertasProximos() {
-    // Função simplificada
-}
-
-function confirmarAlerta() {
-    if (alertaAtual) {
-        db.ref('alertas_fixos/' + alertaAtual.id + '/confirmacoes').transaction(c => (c||0)+1);
-        document.getElementById('confirmacaoPopup').style.display = 'none';
-        alertaAtual = null;
-    }
-}
-
-function negarAlerta() {
-    document.getElementById('confirmacaoPopup').style.display = 'none';
-    alertaAtual = null;
-}
-
-// ===== CHAT =====
+// ===== CHAT GERAL =====
 function toggleChatGeral() {
     const chat = document.getElementById('chatGeralMobile');
     chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
@@ -1928,7 +2014,6 @@ function carregarChat() {
         let html = '';
         Object.values(msgs).sort((a,b) => a.timestamp - b.timestamp).forEach(msg => {
             const isMinha = msg.usuario === usuario;
-            const data = new Date(msg.timestamp).toLocaleDateString();
             const hora = new Date(msg.timestamp).toLocaleTimeString().slice(0,5);
             
             html += `
@@ -1946,7 +2031,6 @@ function carregarChat() {
                     ${isAdmin || isMinha ? `
                         <div class="mensagem-acoes">
                             <span class="acao" onclick="responderMsg('${msg.usuario}', '${msg.texto.replace(/'/g, "\\'")}')">↩️</span>
-                            <span class="acao" onclick="reagirMsg(${msg.timestamp}, '👍')">👍</span>
                             <span class="acao" onclick="apagarMsg(${msg.timestamp})">🗑️</span>
                         </div>
                     ` : ''}
@@ -1965,10 +2049,6 @@ function responderMsg(user, txt) {
     mensagemRespondendo = { usuario: user, texto: txt };
     document.getElementById('chatInputMobile').focus();
     document.getElementById('chatInputMobile').placeholder = `Respondendo ${user}...`;
-}
-
-function reagirMsg(timestamp, reacao) {
-    mostrarNotificacao(`${reacao} Reação enviada!`);
 }
 
 function apagarMsg(timestamp) {
@@ -1999,8 +2079,14 @@ function enviarMsgGeral() {
 
 // ===== RÁDIO PTT =====
 let gravador, pedacosAudio, streamAudio, timerInterval, tempoRestante = 20;
+let timeoutAutoEnvio = null;
+
 document.getElementById('btn-ptt-mobile').addEventListener('click', async function() {
-    if (gravador && gravador.state === 'recording') { pararGravacao(); return; }
+    if (gravador && gravador.state === 'recording') { 
+        pararGravacao(); 
+        return; 
+    }
+    
     try {
         streamAudio = await navigator.mediaDevices.getUserMedia({ audio: true });
         gravador = new MediaRecorder(streamAudio);
@@ -2008,22 +2094,30 @@ document.getElementById('btn-ptt-mobile').addEventListener('click', async functi
         tempoRestante = 20;
         
         gravador.ondataavailable = e => e.data.size > 0 && pedacosAudio.push(e.data);
+        
         gravador.onstop = () => {
             if (pedacosAudio.length > 0) {
                 const reader = new FileReader();
                 reader.onloadend = () => {
-                    db.ref('radio').push({ audio: reader.result, usuario, timestamp: Date.now() });
+                    db.ref('radio').push({ 
+                        audio: reader.result, 
+                        usuario, 
+                        timestamp: Date.now() 
+                    });
+                    
                     setTimeout(() => {
-                        db.ref('radio').orderByChild('timestamp').endAt(Date.now()-20000).once('value', snap => {
-                            snap.forEach(c => c.ref.remove());
+                        db.ref('radio').orderByChild('timestamp').endAt(Date.now() - 20000).once('value', snap => {
+                            snap.forEach(child => child.ref.remove());
                         });
                     }, 20000);
                 };
                 reader.readAsDataURL(new Blob(pedacosAudio, { type: 'audio/webm' }));
             }
+            
             streamAudio.getTracks().forEach(t => t.stop());
             document.getElementById('gravandoIndicator').style.display = 'none';
             if (timerInterval) clearInterval(timerInterval);
+            if (timeoutAutoEnvio) clearTimeout(timeoutAutoEnvio);
             document.getElementById('btn-ptt-mobile').classList.remove('ativo');
         };
         
@@ -2035,18 +2129,25 @@ document.getElementById('btn-ptt-mobile').addEventListener('click', async functi
         timerInterval = setInterval(() => {
             tempoRestante--;
             timer.textContent = tempoRestante + 's';
-            if (tempoRestante <= 1) pararGravacao();
+            if (tempoRestante <= 1) {
+                pararGravacao();
+            }
         }, 1000);
-        setTimeout(() => pararGravacao(), 19500);
-    } catch(e) { alert('Permita acesso ao microfone'); }
+        
+        timeoutAutoEnvio = setTimeout(() => {
+            if (gravador && gravador.state === 'recording') {
+                pararGravacao();
+            }
+        }, 19500);
+        
+    } catch(e) { 
+        alert('Permita acesso ao microfone'); 
+    }
 });
 
 function pararGravacao() {
     if (gravador && gravador.state === 'recording') {
         gravador.stop();
-        document.getElementById('btn-ptt-mobile').classList.remove('ativo');
-        if (timerInterval) clearInterval(timerInterval);
-        document.getElementById('gravandoIndicator').style.display = 'none';
     }
 }
 
@@ -2076,6 +2177,11 @@ function toggleModoNoturno() {
 function toggleMudo() {
     const btn = document.getElementById('btn-mudo-mobile');
     btn.classList.toggle('mudo');
+    if (btn.classList.contains('mudo')) {
+        btn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+    } else {
+        btn.innerHTML = '<i class="fas fa-volume-up"></i>';
+    }
 }
 
 function toggleInterface() {
@@ -2095,7 +2201,7 @@ function recentralizar() {
 
 function mostrarNotificacao(texto) {
     const notif = document.createElement('div');
-    notif.style.cssText = 'position:fixed; bottom:200px; left:50%; transform:translateX(-50%); background:var(--cor-primaria); color:white; padding:8px 20px; border-radius:40px; z-index:100000; font-size:13px; font-weight:700; border:2px solid white;';
+    notif.style.cssText = 'position:fixed; bottom:180px; left:50%; transform:translateX(-50%); background:var(--cor-primaria); color:white; padding:6px 16px; border-radius:30px; z-index:100000; font-size:12px; font-weight:700; border:2px solid white;';
     notif.textContent = texto;
     document.body.appendChild(notif);
     setTimeout(() => notif.remove(), 2000);
@@ -2116,15 +2222,15 @@ function buscarRota() {
             if (marcadorDestino) mapa.removeLayer(marcadorDestino);
             marcadorDestino = L.marker(dest, { 
                 icon: L.divIcon({
-                    html: `<div style="font-size:30px;">📍</div>`,
-                    className: '', iconSize: [30,30], iconAnchor: [15,30]
+                    html: `<div style="font-size:28px;">📍</div>`,
+                    className: '', iconSize: [28,28], iconAnchor: [14,28]
                 })
             }).addTo(mapa);
             
             if (rotaAtual) mapa.removeControl(rotaAtual);
             rotaAtual = L.Routing.control({
                 waypoints: [minhaLocalizacao, dest],
-                lineOptions: { styles: [{ color: '#4169E1', weight: 6, opacity: 0.5 }] },
+                lineOptions: { styles: [{ color: '#4169E1', weight: 5, opacity: 0.6 }] },
                 createMarker: () => null,
                 show: false
             }).addTo(mapa);
@@ -2134,9 +2240,13 @@ function buscarRota() {
             document.getElementById('btnEncerrarRota').style.display = 'flex';
             
             const dist = calcularDistancia(minhaLocalizacao.lat, minhaLocalizacao.lng, dest.lat, dest.lng);
-            document.getElementById('rotaTempo').textContent = Math.round(dist * 1.2) + 'min';
+            const tempoMin = Math.round(dist * 1.2);
+            const horas = Math.floor(tempoMin / 60);
+            const mins = tempoMin % 60;
+            
+            document.getElementById('rotaTempo').textContent = horas > 0 ? `${horas}h${mins}min` : `${tempoMin}min`;
             document.getElementById('rotaDistancia').textContent = dist + ' km';
-            document.getElementById('rotaAtraso').textContent = '+' + Math.round(dist * 0.24) + 'min';
+            document.getElementById('rotaAtraso').textContent = '+' + (horas > 0 ? `${horas}h${mins}min` : `${tempoMin}min`);
         });
 }
 
@@ -2153,6 +2263,27 @@ function encerrarRota() {
     if (marcadorDestino) { mapa.removeLayer(marcadorDestino); marcadorDestino = null; }
     document.getElementById('rotaInfoPanel').style.display = 'none';
     document.getElementById('btnEncerrarRota').style.display = 'none';
+}
+
+// ===== VERIFICAÇÃO DE ALERTAS PRÓXIMOS =====
+let alertaAtual = null;
+let popupTimeout = null;
+
+function verificarAlertasProximos() {
+    // Função simplificada
+}
+
+function confirmarAlerta() {
+    if (alertaAtual) {
+        db.ref('alertas_fixos/' + alertaAtual.id + '/confirmacoes').transaction(c => (c||0)+1);
+        document.getElementById('confirmacaoPopup').style.display = 'none';
+        alertaAtual = null;
+    }
+}
+
+function negarAlerta() {
+    document.getElementById('confirmacaoPopup').style.display = 'none';
+    alertaAtual = null;
 }
 
 // ===== CARREGAR DADOS SALVOS =====
