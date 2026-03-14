@@ -13,7 +13,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body, #map { height: 100%; width: 100%; font-family: 'Segoe UI', Roboto, sans-serif; }
         
-        /* MODAL DE BOAS-VINDAS */
+        /* ===== MODAL DE BOAS-VINDAS ===== */
         .welcome-modal {
             position: fixed;
             top: 0;
@@ -56,50 +56,7 @@
             color: white;
         }
         
-        /* PERMISSÕES */
-        .permissoes-container {
-            background: #222;
-            border-radius: 20px;
-            padding: 12px;
-            margin: 15px 0;
-            border: 1px solid #ffd700;
-        }
-        
-        .permissao-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: white;
-            margin: 8px 0;
-            font-size: 13px;
-        }
-        
-        .permissao-item i {
-            color: #ffd700;
-            width: 20px;
-        }
-        
-        .permissao-status {
-            margin-left: auto;
-            font-size: 11px;
-            padding: 3px 8px;
-            border-radius: 20px;
-            background: #333;
-        }
-        
-        .permissao-status.checked { color: #4caf50; }
-        .permissao-status.unchecked { color: #e53935; }
-        
-        .checkbox-container {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: white;
-            font-size: 12px;
-            margin: 12px 0;
-        }
-        
-        /* HEADER SUPERIOR */
+        /* ===== HEADER SUPERIOR ===== */
         .header-mobile {
             position: fixed;
             top: 10px;
@@ -143,7 +100,7 @@
             color: #ffd700;
         }
         
-        /* LUPA MOBILE - MAIOR PARA MELHOR TOQUE */
+        /* ===== LUPA MOBILE ===== */
         .lupa-mobile {
             position: fixed;
             top: 10px;
@@ -166,6 +123,12 @@
             border: none;
             font-size: 14px;
             outline: none;
+            color: #333;
+        }
+        
+        .lupa-mobile input::placeholder {
+            color: #999;
+            font-style: italic;
         }
         
         .lupa-mobile button {
@@ -175,40 +138,16 @@
             width: 45px;
             cursor: pointer;
             font-size: 16px;
-        }
-        
-        /* VELOCÍMETRO LADO ESQUERDO */
-        .velocimetro-mobile {
-            position: fixed;
-            bottom: 20px;
-            left: 15px;
-            z-index: 9300;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(5px);
-            border: 2px solid #00BFFF;
-            border-radius: 40px;
-            padding: 8px 16px;
             display: flex;
             align-items: center;
-            gap: 8px;
-            color: white;
+            justify-content: center;
         }
         
-        .vel-numero-mobile {
-            font-size: 22px;
-            font-weight: 700;
-            color: #00BFFF;
-            font-family: 'Courier New', monospace;
-            min-width: 50px;
-            text-align: center;
+        .lupa-mobile button i {
+            font-size: 18px;
         }
         
-        .vel-unidade-mobile {
-            font-size: 10px;
-            color: #ffd700;
-        }
-        
-        /* BARRA INFERIOR MOBILE - COM REPORTE E LEGENDA ALINHADOS */
+        /* ===== BARRA INFERIOR COMPLETA ===== */
         .barra-inferior-mobile {
             position: fixed;
             bottom: 20px;
@@ -217,10 +156,10 @@
             z-index: 9500;
             display: flex;
             align-items: center;
-            gap: 12px;
-            background: rgba(0,0,0,0.8);
+            gap: 8px;
+            background: rgba(0,0,0,0.85);
             backdrop-filter: blur(10px);
-            padding: 8px 20px;
+            padding: 8px 15px;
             border-radius: 50px;
             border: 2px solid #ffd700;
             box-shadow: 0 5px 20px rgba(0,0,0,0.5);
@@ -242,13 +181,40 @@
         }
         
         .btn-barra:hover { transform: scale(1.05); }
-        .btn-barra.ativo { border-color: #00BFFF; background: #00BFFF22; }
-        .btn-barra.mudo { border-color: #e53935; }
+        .btn-barra.ativo { border-color: #00BFFF; background: #00BFFF22; color: #00BFFF; }
+        .btn-barra.mudo { border-color: #e53935; color: #e53935; }
         
-        /* BOTÃO PTT (PUSH TO TALK) - ESTILO RÁDIO */
+        /* Velocímetro dentro da barra */
+        .velocimetro-barra {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: #1a1a1a;
+            padding: 5px 12px;
+            border-radius: 30px;
+            border: 2px solid #00BFFF;
+            box-shadow: 0 0 10px rgba(0,191,255,0.5);
+        }
+        
+        .vel-numero-barra {
+            font-size: 22px;
+            font-weight: 700;
+            color: #00BFFF;
+            font-family: 'Courier New', monospace;
+            min-width: 50px;
+            text-align: center;
+        }
+        
+        .vel-unidade-barra {
+            font-size: 9px;
+            color: #ffd700;
+            font-weight: 600;
+        }
+        
+        /* Botão PTT especial */
         .btn-ptt {
-            width: 60px;
-            height: 60px;
+            width: 52px;
+            height: 52px;
             border-radius: 50%;
             background: #e53935;
             border: 3px solid #ffd700;
@@ -257,20 +223,23 @@
             justify-content: center;
             cursor: pointer;
             color: white;
-            font-size: 24px;
-            box-shadow: 0 0 20px rgba(229,57,53,0.5);
+            font-size: 22px;
+            box-shadow: 0 0 15px rgba(229,57,53,0.7);
             transition: all 0.2s;
             position: relative;
-            overflow: hidden;
         }
         
-        .btn-ptt::before {
+        .btn-ptt::after {
             content: 'PTT';
             position: absolute;
-            bottom: -15px;
+            bottom: -12px;
             font-size: 8px;
             font-weight: 700;
-            color: white;
+            color: #ffd700;
+            background: rgba(0,0,0,0.5);
+            padding: 2px 6px;
+            border-radius: 10px;
+            white-space: nowrap;
         }
         
         .btn-ptt.ativo {
@@ -286,130 +255,89 @@
             100% { box-shadow: 0 0 0 0 rgba(255,215,0,0); }
         }
         
-        /* REPORTE MOBILE - RETÂNGULO MENOR */
+        /* ===== REPORTE MOBILE ===== */
         .reporte-mobile {
             position: fixed;
-            bottom: 95px;
+            bottom: 100px;
             left: 15px;
             z-index: 9300;
         }
         
         .reporte-btn-mobile {
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.8);
             backdrop-filter: blur(5px);
-            border: 1px solid #ffd700;
-            border-radius: 25px;
-            padding: 6px 14px;
+            border: 2px solid #ffd700;
+            border-radius: 30px;
+            padding: 8px 18px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             cursor: pointer;
-            font-size: 12px;
-            font-weight: 600;
+            font-size: 14px;
+            font-weight: 700;
             color: #ffd700;
+            box-shadow: 0 0 15px rgba(255,215,0,0.3);
         }
         
         .reporte-led {
-            width: 8px;
-            height: 8px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
             background: #4caf50;
-            box-shadow: 0 0 10px #4caf50;
+            box-shadow: 0 0 15px #4caf50;
             animation: ledPulse 1.5s infinite;
         }
         
-        /* LEGENDA NA LINHA DO REPORTE */
-        .legenda-mobile {
-            position: fixed;
-            bottom: 95px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(5px);
-            border: 1px solid #ffd700;
-            border-radius: 30px;
-            padding: 6px 16px;
-            z-index: 9300;
-            display: flex;
-            align-items: center;
-            gap: 15px;
+        @keyframes ledPulse {
+            0%,100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
         
-        .legenda-item-mobile {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        
-        .legenda-cor-mobile {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-        }
-        
-        .legenda-verde-mobile { background: #00ff00; box-shadow: 0 0 8px #00ff00; }
-        .legenda-amarelo-mobile { background: #ffff00; box-shadow: 0 0 8px #ffff00; }
-        .legenda-vermelho-mobile { background: #ff0000; box-shadow: 0 0 8px #ff0000; }
-        
-        .legenda-texto-mobile {
-            color: white;
-            font-size: 11px;
-            font-weight: 500;
-        }
-        
-        .legenda-fechar-mobile {
-            width: 18px;
-            height: 18px;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid #ffd700;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: #ffd700;
-            font-size: 11px;
-            margin-left: 5px;
-        }
-        
-        /* PAINEL DE ALERTAS */
+        /* ===== PAINEL DE ALERTAS ===== */
         .alertas-panel-mobile {
             position: fixed;
-            bottom: 150px;
+            bottom: 160px;
             left: 15px;
             background: rgba(0,0,0,0.95);
             backdrop-filter: blur(10px);
             border: 2px solid #ffd700;
-            border-radius: 20px;
-            padding: 12px;
+            border-radius: 25px;
+            padding: 15px;
             display: none;
-            width: 200px;
+            width: 210px;
             z-index: 9400;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
         }
         
-        .alertas-panel-mobile.visivel { display: block; }
+        .alertas-panel-mobile.visivel { display: block; animation: slideIn 0.2s; }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
         
         .alertas-grid-mobile {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 6px;
-            margin-bottom: 10px;
+            gap: 8px;
+            margin-bottom: 12px;
         }
         
         .alerta-item-mobile {
             aspect-ratio: 1/1;
-            border-radius: 12px;
+            border-radius: 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 18px;
+            font-size: 22px;
             color: white;
-            font-weight: 600;
-            text-shadow: 0 1px 2px black;
+            font-weight: 700;
+            text-shadow: 0 1px 3px black;
             border: 2px solid transparent;
             transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
         
         .alerta-item-mobile:hover {
@@ -420,14 +348,15 @@
         .alerta-item-mobile span { 
             font-size: 9px; 
             margin-top: 2px;
-            background: rgba(0,0,0,0.5);
-            padding: 2px 6px;
+            background: rgba(0,0,0,0.6);
+            padding: 2px 8px;
             border-radius: 20px;
+            letter-spacing: 0.5px;
         }
         
         .btn-fechar-mobile {
-            width: 30px;
-            height: 30px;
+            width: 32px;
+            height: 32px;
             background: #e53935;
             border: 2px solid #ffd700;
             border-radius: 50%;
@@ -438,40 +367,46 @@
             cursor: pointer;
             color: white;
             font-size: 16px;
+            transition: all 0.2s;
         }
         
-        /* RECENTRALIZAR MOBILE */
+        .btn-fechar-mobile:hover {
+            transform: rotate(90deg);
+        }
+        
+        /* ===== RECENTRALIZAR MOBILE ===== */
         .recentrar-mobile {
             position: fixed;
-            bottom: 95px;
+            bottom: 100px;
             right: 15px;
             z-index: 9300;
             display: none;
         }
         
         .recentrar-btn-mobile {
-            width: 45px;
-            height: 45px;
-            background: rgba(0,0,0,0.7);
+            width: 48px;
+            height: 48px;
+            background: rgba(0,0,0,0.8);
             backdrop-filter: blur(5px);
-            border: 2px solid #00BFFF;
+            border: 3px solid #00BFFF;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             color: #00BFFF;
-            font-size: 20px;
+            font-size: 22px;
+            box-shadow: 0 0 20px rgba(0,191,255,0.5);
             animation: pulseBlue 2s infinite;
         }
         
         @keyframes pulseBlue {
             0% { box-shadow: 0 0 0 0 rgba(0,191,255,0.5); }
-            70% { box-shadow: 0 0 0 12px rgba(0,191,255,0); }
+            70% { box-shadow: 0 0 0 15px rgba(0,191,255,0); }
             100% { box-shadow: 0 0 0 0 rgba(0,191,255,0); }
         }
         
-        /* SETA PARA VOLTAR (sempre visível quando oculto) */
+        /* ===== SETA PARA VOLTAR ===== */
         .seta-voltar {
             position: fixed;
             bottom: 20px;
@@ -494,7 +429,7 @@
             cursor: pointer;
             color: #ffd700;
             font-size: 22px;
-            animation: pulseSeta 2s infinite;
+            animation: pulseSeta 1.5s infinite;
         }
         
         @keyframes pulseSeta {
@@ -503,7 +438,7 @@
             100% { transform: scale(1); }
         }
         
-        /* CHAT MOBILE - ESTILO WHATSAPP DE VERDADE */
+        /* ===== CHAT MOBILE - ESTILO WHATSAPP ===== */
         .chat-mobile {
             position: fixed;
             top: 5%;
@@ -522,7 +457,7 @@
         .chat-header-mobile {
             background: #075e54;
             color: white;
-            padding: 15px;
+            padding: 15px 20px;
             border-radius: 23px 23px 0 0;
             display: flex;
             justify-content: space-between;
@@ -544,7 +479,7 @@
         .mensagem-wrapper-mobile {
             display: flex;
             flex-direction: column;
-            margin: 5px 0;
+            margin: 4px 0;
             max-width: 80%;
         }
         
@@ -557,6 +492,7 @@
             font-size: 14px;
             position: relative;
             word-wrap: break-word;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
         
         .mensagem-mobile.minha {
@@ -574,14 +510,14 @@
         .mensagem-remetente-mobile {
             font-weight: 700;
             font-size: 12px;
-            margin-bottom: 2px;
+            margin-bottom: 3px;
             color: #075e54;
         }
         
         .mensagem-hora-mobile {
             font-size: 9px;
             color: #999;
-            margin-top: 2px;
+            margin-top: 3px;
             text-align: right;
         }
         
@@ -591,11 +527,12 @@
         }
         
         .data-divider-mobile span {
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.6);
             color: white;
             padding: 4px 15px;
             border-radius: 30px;
             font-size: 11px;
+            font-weight: 600;
         }
         
         .chat-input-mobile {
@@ -625,9 +562,14 @@
             color: white;
             cursor: pointer;
             font-size: 18px;
+            transition: all 0.2s;
         }
         
-        /* POPUP ALERTA COM FOTO */
+        .chat-input-mobile button:hover {
+            transform: scale(1.05);
+        }
+        
+        /* ===== POPUP ALERTA COM DESIGN BONITO ===== */
         .popup-mobile {
             background: white;
             border: 2px solid #ffd700;
@@ -638,161 +580,233 @@
         }
         
         .popup-header-mobile {
-            padding: 12px;
+            padding: 12px 15px;
             color: white;
             font-weight: 700;
-            font-size: 15px;
+            font-size: 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background: linear-gradient(145deg, #e53935, #b71c1c); /* fallback */
+        }
+        
+        .popup-header-mobile span:last-child {
+            background: rgba(255,255,255,0.3);
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 12px;
         }
         
         .popup-imagem-mobile {
-            padding: 10px;
+            padding: 12px;
             background: #f5f5f5;
             text-align: center;
+            border-bottom: 1px solid #eee;
         }
         
         .popup-imagem-mobile img {
             max-width: 100%;
-            max-height: 150px;
-            border-radius: 12px;
-            border: 2px solid #ffd700;
+            max-height: 160px;
+            border-radius: 15px;
+            border: 3px solid #ffd700;
             cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
         
         .popup-stats-mobile {
             display: flex;
             justify-content: space-around;
-            padding: 10px;
-            background: #f0f0f0;
+            padding: 12px;
+            background: #f8f8f8;
             border-bottom: 1px solid #ddd;
         }
         
         .popup-stats-mobile span {
             display: flex;
             align-items: center;
-            gap: 5px;
-            font-size: 12px;
+            gap: 6px;
+            font-size: 13px;
             color: #333;
+            font-weight: 600;
         }
         
         .popup-stats-mobile i {
             color: #ffd700;
+            font-size: 16px;
         }
         
-        /* BOTÕES SIM/NÃO MAIS BONITOS */
-        .btn-confirmar {
-            background: #4caf50;
-            color: white;
-            border: none;
-            border-radius: 40px;
-            padding: 12px 25px;
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 14px;
-            min-width: 100px;
-            transition: all 0.2s;
-            box-shadow: 0 2px 10px rgba(76,175,80,0.3);
-        }
+        .popup-stats-mobile .likes i { color: #4caf50; }
+        .popup-stats-mobile .dislikes i { color: #e53935; }
         
-        .btn-confirmar:hover {
-            transform: scale(1.05);
-            background: #45a049;
-        }
-        
-        .btn-negar {
-            background: #e53935;
-            color: white;
-            border: none;
-            border-radius: 40px;
-            padding: 12px 25px;
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 14px;
-            min-width: 100px;
-            transition: all 0.2s;
-            box-shadow: 0 2px 10px rgba(229,57,53,0.3);
-        }
-        
-        .btn-negar:hover {
-            transform: scale(1.05);
-            background: #d32f2f;
-        }
-        
-        /* INDICADOR DE GRAVAÇÃO - MAIS PARA CIMA */
-        .gravando-indicator {
-            position: fixed;
-            bottom: 140px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #e53935;
-            color: white;
-            padding: 10px 25px;
-            border-radius: 40px;
-            z-index: 10000;
-            display: none;
-            border: 2px solid #ffd700;
-            font-size: 14px;
-            font-weight: 700;
-            box-shadow: 0 0 20px #e53935;
-        }
-        
-        .audio-notification {
-            position: fixed;
-            bottom: 140px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #ffd700;
-            color: #000;
-            padding: 10px 25px;
-            border-radius: 40px;
-            z-index: 10000;
-            display: none;
-            font-size: 14px;
-            font-weight: 700;
-            box-shadow: 0 0 20px #ffd700;
-        }
-        
+        /* ===== BOTÕES SIM/NÃO BONITOS ===== */
         .confirmacao-popup {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: white;
+            background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
             border: 3px solid #ffd700;
-            border-radius: 30px;
+            border-radius: 40px;
             padding: 25px;
             display: none;
             flex-direction: column;
             align-items: center;
             gap: 20px;
             z-index: 100000;
-            color: #333;
+            color: white;
             min-width: 280px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5), 0 0 30px rgba(255,215,0,0.3);
         }
         
         .confirmacao-texto {
             font-weight: 700;
-            font-size: 18px;
-            color: #e53935;
+            font-size: 20px;
+            color: #ffd700;
+            text-shadow: 0 0 10px rgba(255,215,0,0.5);
         }
         
         .confirmacao-subtexto {
-            font-size: 13px;
-            color: #666;
+            font-size: 14px;
+            color: #ccc;
+            margin-bottom: 5px;
         }
         
+        .btn-confirmar {
+            background: linear-gradient(145deg, #4caf50, #2e7d32);
+            color: white;
+            border: 2px solid #ffd700;
+            border-radius: 50px;
+            padding: 12px 30px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 16px;
+            min-width: 120px;
+            transition: all 0.2s;
+            box-shadow: 0 5px 15px rgba(76,175,80,0.4);
+        }
+        
+        .btn-confirmar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px #4caf50;
+        }
+        
+        .btn-negar {
+            background: linear-gradient(145deg, #e53935, #b71c1c);
+            color: white;
+            border: 2px solid #ffd700;
+            border-radius: 50px;
+            padding: 12px 30px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 16px;
+            min-width: 120px;
+            transition: all 0.2s;
+            box-shadow: 0 5px 15px rgba(229,57,53,0.4);
+        }
+        
+        .btn-negar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px #e53935;
+        }
+        
+        /* ===== INDICADORES ===== */
+        .gravando-indicator {
+            position: fixed;
+            bottom: 150px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(145deg, #e53935, #b71c1c);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 50px;
+            z-index: 10000;
+            display: none;
+            border: 2px solid #ffd700;
+            font-size: 14px;
+            font-weight: 700;
+            box-shadow: 0 0 30px #e53935;
+            animation: pulseGravando 1.5s infinite;
+        }
+        
+        @keyframes pulseGravando {
+            0% { box-shadow: 0 0 0 0 rgba(229,57,53,0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(229,57,53,0); }
+            100% { box-shadow: 0 0 0 0 rgba(229,57,53,0); }
+        }
+        
+        .audio-notification {
+            position: fixed;
+            bottom: 150px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(145deg, #ffd700, #ffaa00);
+            color: #000;
+            padding: 10px 25px;
+            border-radius: 50px;
+            z-index: 10000;
+            display: none;
+            font-size: 14px;
+            font-weight: 700;
+            border: 2px solid white;
+            box-shadow: 0 0 30px #ffd700;
+        }
+        
+        /* ===== BOTÃO ENCERRAR ROTA ===== */
+        .btn-encerrar-rota {
+            position: fixed;
+            top: 60px;
+            right: 10px;
+            background: linear-gradient(145deg, #e53935, #b71c1c);
+            color: white;
+            border: 2px solid #ffd700;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 9400;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 0 20px rgba(229,57,53,0.5);
+        }
+        
+        /* ===== PAINEL DE ROTA ===== */
+        .rota-info-panel {
+            position: fixed;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(5px);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            display: none;
+            align-items: center;
+            gap: 20px;
+            border: 2px solid #ffd700;
+            z-index: 9400;
+            font-size: 13px;
+            font-weight: 600;
+            box-shadow: 0 0 20px rgba(255,215,0,0.3);
+        }
+        
+        /* ===== MAPA NOTURNO ===== */
         .mapa-noturno { filter: invert(100%) hue-rotate(180deg) brightness(95%); }
         
-        /* OCULTAR INTERFACE */
+        /* ===== CARRO ESTÁTICO ===== */
+        .carro-estatico {
+            font-size: 32px;
+            filter: drop-shadow(0 0 10px #00BFFF);
+        }
+        
+        /* ===== OCULTAR INTERFACE ===== */
         .interface-oculta .header-mobile,
         .interface-oculta .lupa-mobile,
         .interface-oculta .barra-inferior-mobile,
-        .interface-oculta .velocimetro-mobile,
         .interface-oculta .reporte-mobile,
-        .interface-oculta .legenda-mobile,
         .interface-oculta .btn-encerrar-rota,
         .interface-oculta .rota-info-panel,
         .interface-oculta .gravando-indicator,
@@ -804,45 +818,6 @@
         
         .interface-oculta .recentrar-mobile { display: flex !important; }
         .interface-oculta .seta-voltar { display: flex !important; }
-        
-        /* BOTÃO ENCERRAR ROTA */
-        .btn-encerrar-rota {
-            position: fixed;
-            top: 60px;
-            right: 10px;
-            background: #e53935;
-            color: white;
-            border: 2px solid #ffd700;
-            border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 9400;
-            font-size: 16px;
-            box-shadow: 0 0 20px #e53935;
-        }
-        
-        /* PAINEL DE ROTA */
-        .rota-info-panel {
-            position: fixed;
-            top: 60px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(5px);
-            color: white;
-            padding: 8px 20px;
-            border-radius: 40px;
-            display: none;
-            align-items: center;
-            gap: 20px;
-            border: 2px solid #ffd700;
-            z-index: 9400;
-            font-size: 12px;
-        }
     </style>
 </head>
 <body>
@@ -917,30 +892,39 @@
     <button onclick="buscarRota()"><i class="fas fa-search"></i></button>
 </div>
 
-<!-- VELOCÍMETRO LADO ESQUERDO -->
-<div class="velocimetro-mobile">
-    <span class="vel-numero-mobile" id="velocimetroDisplay">0</span>
-    <span class="vel-unidade-mobile">KM/H</span>
-</div>
-
-<!-- BARRA INFERIOR MOBILE -->
+<!-- BARRA INFERIOR COMPLETA -->
 <div class="barra-inferior-mobile">
+    <!-- Velocímetro integrado -->
+    <div class="velocimetro-barra">
+        <span class="vel-numero-barra" id="velocimetroDisplay">0</span>
+        <span class="vel-unidade-barra">KM/H</span>
+    </div>
+    
+    <!-- Chat -->
     <div class="btn-barra" onclick="toggleChatGeral()" title="Chat">
         <i class="fas fa-comment"></i>
     </div>
+    
+    <!-- Luz Noturna -->
     <div class="btn-barra" id="btn-luz-mobile" onclick="toggleModoNoturno()" title="Modo Noturno">
         💡
     </div>
+    
+    <!-- Rádio PTT -->
     <div class="btn-ptt" id="btn-ptt-mobile" title="Push To Talk">🎤</div>
+    
+    <!-- Mudo -->
     <div class="btn-barra" id="btn-mudo-mobile" onclick="toggleMudo()" title="Mudo">
         <i class="fas fa-volume-up"></i>
     </div>
+    
+    <!-- Ocultar/Mostrar -->
     <div class="btn-barra" onclick="toggleInterface()" title="Ocultar">
         <i class="fas fa-chevron-up" id="iconeSeta"></i>
     </div>
 </div>
 
-<!-- SETA PARA VOLTAR (quando oculto) -->
+<!-- SETA PARA VOLTAR -->
 <div class="seta-voltar" id="setaVoltar" onclick="toggleInterface()">
     <div class="seta-voltar-btn">
         <i class="fas fa-chevron-down"></i>
@@ -959,23 +943,6 @@
     </div>
 </div>
 
-<!-- LEGENDA MOBILE (na linha do reporte) -->
-<div class="legenda-mobile" id="legendaMobile">
-    <div class="legenda-item-mobile">
-        <div class="legenda-cor-mobile legenda-verde-mobile"></div>
-        <span class="legenda-texto-mobile">Normal</span>
-    </div>
-    <div class="legenda-item-mobile">
-        <div class="legenda-cor-mobile legenda-amarelo-mobile"></div>
-        <span class="legenda-texto-mobile">Intenso</span>
-    </div>
-    <div class="legenda-item-mobile">
-        <div class="legenda-cor-mobile legenda-vermelho-mobile"></div>
-        <span class="legenda-texto-mobile">Lento</span>
-    </div>
-    <div class="legenda-fechar-mobile" onclick="fecharLegenda()">✕</div>
-</div>
-
 <!-- RECENTRALIZAR MOBILE -->
 <div class="recentrar-mobile" id="btnRecentrarMobile">
     <div class="recentrar-btn-mobile" onclick="recentralizar()">
@@ -985,9 +952,9 @@
 
 <!-- PAINEL DE ROTA -->
 <div class="rota-info-panel" id="rotaInfoPanel">
-    <div><i class="fas fa-clock"></i> <span id="rotaTempo">--</span></div>
-    <div><i class="fas fa-road"></i> <span id="rotaDistancia">--</span></div>
-    <div><i class="fas fa-exclamation-triangle"></i> <span id="rotaAtraso">--</span></div>
+    <div><i class="fas fa-clock" style="color:#ffd700;"></i> <span id="rotaTempo">--</span></div>
+    <div><i class="fas fa-road" style="color:#ffd700;"></i> <span id="rotaDistancia">--</span></div>
+    <div><i class="fas fa-exclamation-triangle" style="color:#e53935;"></i> <span id="rotaAtraso">--</span></div>
 </div>
 
 <!-- BOTÃO ENCERRAR ROTA -->
@@ -1166,7 +1133,7 @@ function iniciarMapa() {
         iconCreateFunction: function(cluster) {
             const count = cluster.getChildCount();
             return L.divIcon({
-                html: `<div style="background:#ffd700; color:#000; border:2px solid white; border-radius:50%; width:40px; height:40px; display:flex; align-items:center; justify-content:center; font-weight:700;">${count}</div>`,
+                html: `<div style="background:#ffd700; color:#000; border:2px solid white; border-radius:50%; width:40px; height:40px; display:flex; align-items:center; justify-content:center; font-weight:700; box-shadow:0 0 20px #ffd700;">${count}</div>`,
                 className: '', iconSize: [40,40]
             });
         }
@@ -1184,7 +1151,6 @@ function iniciarGPS() {
     if (!navigator.geolocation) return;
     navigator.geolocation.watchPosition(pos => {
         minhaLocalizacao = L.latLng(pos.coords.latitude, pos.coords.longitude);
-        if (pos.coords.heading) ultimoHeading = pos.coords.heading;
         
         if (pos.coords.speed) {
             const vel = Math.round(pos.coords.speed * 3.6);
@@ -1192,11 +1158,18 @@ function iniciarGPS() {
         }
         
         if (!meuMarcador) {
-            meuMarcador = L.marker(minhaLocalizacao, { icon: criarIconeCarro(true, ultimoHeading) }).addTo(mapa);
+            // Carro estático (não rotaciona)
+            meuMarcador = L.marker(minhaLocalizacao, { 
+                icon: L.divIcon({
+                    html: `<div style="font-size:32px; filter:drop-shadow(0 0 15px #00BFFF);">🚗</div>`,
+                    className: 'carro-estatico',
+                    iconSize: [32, 32],
+                    iconAnchor: [16, 16]
+                })
+            }).addTo(mapa);
             mapa.setView(minhaLocalizacao, 17);
         } else {
             meuMarcador.setLatLng(minhaLocalizacao);
-            meuMarcador.setIcon(criarIconeCarro(true, ultimoHeading));
         }
         
         db.ref('usuarios_ativos/' + usuario).set({
@@ -1211,19 +1184,6 @@ function iniciarGPS() {
     }, null, { enableHighAccuracy: true });
 }
 
-function criarIconeCarro(ehMeu, direcao) {
-    if (ehMeu) {
-        return L.divIcon({
-            html: `<div style="position:relative; width:40px; height:40px;"><div style="width:40px; height:40px; border-radius:50%; animation:pulseAzul 1.5s infinite; background:rgba(0,191,255,0.3); border:3px solid #00BFFF; position:absolute;"></div><div style="font-size:28px; position:absolute; left:6px; top:6px; transform:rotate(${direcao}deg);">🚗</div></div>`,
-            className: '', iconSize: [40,40], iconAnchor: [20,20]
-        });
-    }
-    return L.divIcon({
-        html: `<div style="font-size:24px; transform:rotate(${direcao}deg); filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3));">🚗</div>`,
-        className: '', iconSize: [24,24], iconAnchor: [12,12]
-    });
-}
-
 // ===== USUÁRIOS =====
 function carregarUsuarios() {
     db.ref('usuarios_ativos').on('value', snap => {
@@ -1235,7 +1195,12 @@ function carregarUsuarios() {
             Object.entries(usuarios).forEach(([id, d]) => {
                 if (id !== usuario) {
                     L.marker([d.lat, d.lng], {
-                        icon: L.divIcon({ html: `<div style="font-size:20px;">🚗</div>`, className: '', iconSize: [20,20] })
+                        icon: L.divIcon({ 
+                            html: `<div style="font-size:24px; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3));">🚗</div>`, 
+                            className: '', 
+                            iconSize: [24,24],
+                            iconAnchor: [12,12]
+                        })
                     }).addTo(clusterGroup);
                 }
             });
@@ -1269,6 +1234,20 @@ function ativarAlerta(alerta) {
         confirmacoes: 0 
     };
     alertasMapa[id] = alertaData;
+    
+    // Criar marcador imediatamente (feedback visual instantâneo)
+    const marcadorTemp = L.marker([minhaLocalizacao.lat, minhaLocalizacao.lng], {
+        icon: L.divIcon({
+            html: `<div style="background:${alerta.cor}; width:35px; height:35px; border-radius:50%; border:3px solid white; display:flex; align-items:center; justify-content:center; font-size:18px; box-shadow:0 0 20px ${alerta.cor};">${alerta.icone}</div>`,
+            className: '',
+            iconSize: [35,35],
+            iconAnchor: [17,17]
+        })
+    }).addTo(clusterGroup);
+    
+    pulsantesAlertas[id] = marcadorTemp;
+    
+    // Salvar no Firebase
     db.ref('alertas_fixos/' + id).set(alertaData);
     mostrarNotificacao('✅ Alerta enviado!');
 }
@@ -1277,6 +1256,12 @@ function carregarAlertas() {
     db.ref('alertas_fixos').on('child_added', snap => {
         const a = snap.val();
         const id = snap.key;
+        
+        // Se já existe um marcador temporário, substituir
+        if (pulsantesAlertas[id]) {
+            clusterGroup.removeLayer(pulsantesAlertas[id]);
+        }
+        
         alertasMapa[id] = a;
         
         const temImagem = a.imagem && a.imagem.thumbnail;
@@ -1330,14 +1315,14 @@ function abrirPopupAlerta(alerta, id) {
         </div>
         ${imagemHTML}
         <div class="popup-stats-mobile">
-            <span><i class="far fa-thumbs-up"></i> ${alerta.confirmacoes||0}</span>
-            <span><i class="far fa-clock"></i> ${new Date(alerta.timestamp).toLocaleTimeString()}</span>
-            <span><i class="far fa-calendar"></i> ${new Date(alerta.timestamp).toLocaleDateString()}</span>
+            <span class="likes"><i class="fas fa-thumbs-up"></i> ${alerta.confirmacoes||0}</span>
+            <span class="dislikes"><i class="fas fa-thumbs-down"></i> 0</span>
+            <span><i class="fas fa-clock"></i> ${new Date(alerta.timestamp).toLocaleTimeString()}</span>
         </div>
         <div style="padding:10px; max-height:150px; overflow-y:auto; background:#f9f9f9;" id="chat-${id}"></div>
         <div style="display:flex; padding:10px; gap:5px; background:#f0f0f0;">
             <input type="text" id="input-${id}" style="flex:1; padding:8px; border-radius:20px; border:1px solid #ccc; background:white; font-size:12px;" placeholder="Digite...">
-            <button onclick="enviarMsgAlerta('${id}')" style="width:36px; height:36px; border-radius:50%; background:${alerta.cor}; border:none; color:white;">➔</button>
+            <button onclick="enviarMsgAlerta('${id}')" style="width:36px; height:36px; border-radius:50%; background:${alerta.cor}; border:none; color:white; cursor:pointer;">➔</button>
         </div>
     `;
     L.popup({ maxWidth: 280 }).setLatLng([alerta.lat, alerta.lng]).setContent(popup).openOn(mapa);
@@ -1350,10 +1335,10 @@ function carregarChatAlerta(id) {
         const chatDiv = document.getElementById(`chat-${id}`);
         if (!chatDiv) return;
         const msgs = snap.val();
-        if (!msgs) { chatDiv.innerHTML = '<div style="text-align:center; color:#999;">Nenhuma mensagem</div>'; return; }
+        if (!msgs) { chatDiv.innerHTML = '<div style="text-align:center; color:#999; padding:5px;">Nenhuma mensagem</div>'; return; }
         let html = '';
         Object.values(msgs).forEach(m => {
-            html += `<div style="background:${m.usuario===usuario?'#dcf8c6':'white'}; margin:4px 0; padding:6px; border-radius:10px; font-size:11px; border:1px solid #ddd;">
+            html += `<div style="background:${m.usuario===usuario?'#dcf8c6':'white'}; margin:5px 0; padding:6px; border-radius:10px; font-size:12px; border:1px solid #eee;">
                 <b>${m.usuario}</b><br>${m.texto}<br><small style="color:#999;">${m.hora}</small>
             </div>`;
         });
@@ -1383,7 +1368,11 @@ function verificarAlertasProximos() {
         if (dist < 0.3) {
             alertaAtual = { id, ...a };
             document.getElementById('confirmacaoPopup').style.display = 'flex';
-            setTimeout(() => document.getElementById('confirmacaoPopup').style.display = 'none', 8000);
+            if (popupTimeout) clearTimeout(popupTimeout);
+            popupTimeout = setTimeout(() => {
+                document.getElementById('confirmacaoPopup').style.display = 'none';
+                alertaAtual = null;
+            }, 8000);
         }
     });
 }
@@ -1395,12 +1384,15 @@ function confirmarAlerta() {
     localStorage.setItem('br277_confirmacoes', JSON.stringify(alertasConfirmados));
     db.ref('alertas_fixos/' + alertaAtual.id + '/confirmacoes').transaction(c => (c||0)+1);
     document.getElementById('confirmacaoPopup').style.display = 'none';
+    if (popupTimeout) clearTimeout(popupTimeout);
     alertaAtual = null;
+    mostrarNotificacao('👍 Obrigado pela confirmação!');
 }
 
 function negarAlerta() {
     alertaAtual = null;
     document.getElementById('confirmacaoPopup').style.display = 'none';
+    if (popupTimeout) clearTimeout(popupTimeout);
 }
 
 function calcularDistancia(lat1, lon1, lat2, lon2) {
@@ -1548,13 +1540,9 @@ function recentralizar() {
     if (minhaLocalizacao) mapa.flyTo(minhaLocalizacao, 17);
 }
 
-function fecharLegenda() {
-    document.getElementById('legendaMobile').style.display = 'none';
-}
-
 function mostrarNotificacao(texto) {
     const notif = document.createElement('div');
-    notif.style.cssText = 'position:fixed; bottom:180px; left:50%; transform:translateX(-50%); background:#ffd700; color:#000; padding:6px 15px; border-radius:30px; z-index:100000; font-size:12px; font-weight:600;';
+    notif.style.cssText = 'position:fixed; bottom:200px; left:50%; transform:translateX(-50%); background:linear-gradient(145deg, #ffd700, #ffaa00); color:#000; padding:8px 20px; border-radius:40px; z-index:100000; font-size:13px; font-weight:700; border:2px solid white; box-shadow:0 0 20px #ffd700;';
     notif.textContent = texto;
     document.body.appendChild(notif);
     setTimeout(() => notif.remove(), 2000);
@@ -1583,7 +1571,7 @@ function buscarRota() {
             if (rotaAtual) mapa.removeControl(rotaAtual);
             rotaAtual = L.Routing.control({
                 waypoints: [minhaLocalizacao, dest],
-                lineOptions: { styles: [{ color: '#4169E1', weight: 4, opacity: 0.7 }] },
+                lineOptions: { styles: [{ color: '#4169E1', weight: 5, opacity: 0.7 }] },
                 createMarker: () => null,
                 show: false
             }).addTo(mapa);
@@ -1638,7 +1626,7 @@ if (userSalvo) {
     criarIconesAlertas();
 }
 
-// ===== ANIMAÇÕES =====
+// ===== ANIMAÇÕES ADICIONAIS =====
 const styleAnim = document.createElement('style');
 styleAnim.textContent = `
     @keyframes pulseAzul {
