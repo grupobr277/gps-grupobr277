@@ -31,41 +31,43 @@
         body.tema-laranja { --cor-primaria: #ff9800; --cor-secundaria: #f57c00; --cor-texto: #ff9800; --cor-borda: #ff9800; --cor-carro: #ff9800; }
         body.tema-rosa { --cor-primaria: #e91e63; --cor-secundaria: #c2185b; --cor-texto: #e91e63; --cor-borda: #e91e63; --cor-carro: #e91e63; }
         body.tema-roxo { --cor-primaria: #9c27b0; --cor-secundaria: #7b1fa2; --cor-texto: #9c27b0; --cor-borda: #9c27b0; --cor-carro: #9c27b0; }
-        body.tema-amarelo { --cor-primaria: #ffeb3b; --cor-secundaria: #fbc02d; --cor-texto: #000; --cor-borda: #ffeb3b; --cor-carro: #ffeb3b; }
+        body.tema-amarelo { --cor-primaria: #ffc107; --cor-secundaria: #ffa000; --cor-texto: #333; --cor-borda: #ffc107; --cor-carro: #ffc107; }
         body.tema-cyan { --cor-primaria: #00bcd4; --cor-secundaria: #0097a7; --cor-texto: #00bcd4; --cor-borda: #00bcd4; --cor-carro: #00bcd4; }
         body.tema-roxo-escuro { --cor-primaria: #673ab7; --cor-secundaria: #512da8; --cor-texto: #673ab7; --cor-borda: #673ab7; --cor-carro: #673ab7; }
-        body.tema-verde-limao { --cor-primaria: #cddc39; --cor-secundaria: #afb42b; --cor-texto: #333; --cor-borda: #cddc39; --cor-carro: #cddc39; }
+        body.tema-preto { --cor-primaria: #000000; --cor-secundaria: #333333; --cor-texto: #ffffff; --cor-borda: #000000; --cor-carro: #000000; }
         
         /* ===== 10 CORES DE FUNDO ===== */
         body.fundo-preto { --cor-fundo: #1a1a1a; }
         body.fundo-branco { --cor-fundo: #ffffff; }
         body.fundo-cinza { --cor-fundo: #808080; }
         body.fundo-cinza-claro { --cor-fundo: #d3d3d3; }
-        body.fundo-azul-claro { --cor-fundo: #87CEEB; }
-        body.fundo-beje { --cor-fundo: #f5f5dc; }
-        body.fundo-azul-escuro { --cor-fundo: #1a237e; }
-        body.fundo-verde-claro { --cor-fundo: #c8e6c9; }
-        body.fundo-roxo-claro { --cor-fundo: #e1bee7; }
-        body.fundo-amarelo-claro { --cor-fundo: #fff9c4; }
+        body.fundo-azul { --cor-fundo: #00BFFF; }
+        body.fundo-verde { --cor-fundo: #4caf50; }
+        body.fundo-vermelho { --cor-fundo: #e53935; }
+        body.fundo-laranja { --cor-fundo: #ff9800; }
+        body.fundo-roxo { --cor-fundo: #9c27b0; }
+        body.fundo-amarelo { --cor-fundo: #ffc107; }
         
         /* Ajuste de cor do texto baseado no fundo */
         body.fundo-branco .btn-barra,
         body.fundo-cinza-claro .btn-barra,
-        body.fundo-azul-claro .btn-barra,
-        body.fundo-beje .btn-barra,
-        body.fundo-verde-claro .btn-barra,
-        body.fundo-roxo-claro .btn-barra,
-        body.fundo-amarelo-claro .btn-barra {
+        body.fundo-azul .btn-barra,
+        body.fundo-verde .btn-barra,
+        body.fundo-vermelho .btn-barra,
+        body.fundo-laranja .btn-barra,
+        body.fundo-roxo .btn-barra,
+        body.fundo-amarelo .btn-barra {
             color: #333 !important;
         }
         
         body.fundo-branco .legenda-texto,
         body.fundo-cinza-claro .legenda-texto,
-        body.fundo-azul-claro .legenda-texto,
-        body.fundo-beje .legenda-texto,
-        body.fundo-verde-claro .legenda-texto,
-        body.fundo-roxo-claro .legenda-texto,
-        body.fundo-amarelo-claro .legenda-texto {
+        body.fundo-azul .legenda-texto,
+        body.fundo-verde .legenda-texto,
+        body.fundo-vermelho .legenda-texto,
+        body.fundo-laranja .legenda-texto,
+        body.fundo-roxo .legenda-texto,
+        body.fundo-amarelo .legenda-texto {
             color: #333 !important;
         }
         
@@ -176,22 +178,22 @@
         .cor-laranja { background: #ff9800; }
         .cor-rosa { background: #e91e63; }
         .cor-roxo { background: #9c27b0; }
-        .cor-amarelo { background: #ffeb3b; color: #333; }
+        .cor-amarelo { background: #ffc107; color: #333; }
         .cor-cyan { background: #00bcd4; }
         .cor-roxo-escuro { background: #673ab7; }
-        .cor-verde-limao { background: #cddc39; color: #333; }
+        .cor-preto { background: #000000; color: white; }
         
         /* Cores de fundo */
         .fundo-preto { background: #1a1a1a; color: white; }
         .fundo-branco { background: #ffffff; color: #333; border: 1px solid #333; }
         .fundo-cinza { background: #808080; color: white; }
         .fundo-cinza-claro { background: #d3d3d3; color: #333; }
-        .fundo-azul-claro { background: #87CEEB; color: #333; }
-        .fundo-beje { background: #f5f5dc; color: #333; }
-        .fundo-azul-escuro { background: #1a237e; color: white; }
-        .fundo-verde-claro { background: #c8e6c9; color: #333; }
-        .fundo-roxo-claro { background: #e1bee7; color: #333; }
-        .fundo-amarelo-claro { background: #fff9c4; color: #333; }
+        .fundo-azul { background: #00BFFF; color: white; }
+        .fundo-verde { background: #4caf50; color: white; }
+        .fundo-vermelho { background: #e53935; color: white; }
+        .fundo-laranja { background: #ff9800; color: white; }
+        .fundo-roxo { background: #9c27b0; color: white; }
+        .fundo-amarelo { background: #ffc107; color: #333; }
         
         /* ===== PERMISSÕES ===== */
         .permissoes-container {
@@ -296,7 +298,7 @@
             cursor: pointer;
         }
         
-        /* ===== LUPA - CORRIGIDA ===== */
+        /* ===== LUPA ===== */
         .lupa-mobile {
             position: fixed;
             top: 8px;
@@ -1203,7 +1205,7 @@
             <div class="cor-opcao cor-amarelo" onclick="selecionarCor('amarelo')" id="cor-amarelo">AMAR</div>
             <div class="cor-opcao cor-cyan" onclick="selecionarCor('cyan')" id="cor-cyan">CYAN</div>
             <div class="cor-opcao cor-roxo-escuro" onclick="selecionarCor('roxo-escuro')" id="cor-roxo-escuro">RXE</div>
-            <div class="cor-opcao cor-verde-limao" onclick="selecionarCor('verde-limao')" id="cor-verde-limao">VLIM</div>
+            <div class="cor-opcao cor-preto" onclick="selecionarCor('preto')" id="cor-preto">PRETO</div>
         </div>
         
         <!-- COR DE FUNDO - 10 CORES -->
@@ -1213,12 +1215,12 @@
             <div class="cor-opcao fundo-branco" onclick="selecionarFundo('branco')" id="fundo-branco">BRANCO</div>
             <div class="cor-opcao fundo-cinza" onclick="selecionarFundo('cinza')" id="fundo-cinza">CINZA</div>
             <div class="cor-opcao fundo-cinza-claro" onclick="selecionarFundo('cinza-claro')" id="fundo-cinza-claro">C.CLARO</div>
-            <div class="cor-opcao fundo-azul-claro" onclick="selecionarFundo('azul-claro')" id="fundo-azul-claro">AZ.CLARO</div>
-            <div class="cor-opcao fundo-beje" onclick="selecionarFundo('beje')" id="fundo-beje">BEJE</div>
-            <div class="cor-opcao fundo-azul-escuro" onclick="selecionarFundo('azul-escuro')" id="fundo-azul-escuro">AZ.ESC</div>
-            <div class="cor-opcao fundo-verde-claro" onclick="selecionarFundo('verde-claro')" id="fundo-verde-claro">VD.CLARO</div>
-            <div class="cor-opcao fundo-roxo-claro" onclick="selecionarFundo('roxo-claro')" id="fundo-roxo-claro">RX.CLARO</div>
-            <div class="cor-opcao fundo-amarelo-claro" onclick="selecionarFundo('amarelo-claro')" id="fundo-amarelo-claro">AM.CLARO</div>
+            <div class="cor-opcao fundo-azul" onclick="selecionarFundo('azul')" id="fundo-azul">AZUL</div>
+            <div class="cor-opcao fundo-verde" onclick="selecionarFundo('verde')" id="fundo-verde">VERDE</div>
+            <div class="cor-opcao fundo-vermelho" onclick="selecionarFundo('vermelho')" id="fundo-vermelho">VERM</div>
+            <div class="cor-opcao fundo-laranja" onclick="selecionarFundo('laranja')" id="fundo-laranja">LARA</div>
+            <div class="cor-opcao fundo-roxo" onclick="selecionarFundo('roxo')" id="fundo-roxo">ROXO</div>
+            <div class="cor-opcao fundo-amarelo" onclick="selecionarFundo('amarelo')" id="fundo-amarelo">AMAR</div>
         </div>
         
         <!-- PERMISSÕES -->
@@ -1262,7 +1264,7 @@
     </div>
 </div>
 
-<!-- LUPA - CORRIGIDA -->
+<!-- LUPA -->
 <div class="lupa-mobile">
     <input type="text" id="buscaDestino" placeholder="Digite seu destino...">
     <button onclick="buscarRota()"><i class="fas fa-search"></i></button>
@@ -1285,8 +1287,8 @@
     <div class="btn-barra" id="btn-luz-mobile" onclick="toggleModoNoturno()" title="Modo Noturno">
         💡
     </div>
-    <div class="btn-ptt" id="btn-ptt-mobile" title="Push To Talk">
-        <span>PTT</span>
+    <div class="btn-ptt" id="btn-px-mobile" title="Push To Talk">
+        <span>PX</span>
     </div>
     <div class="btn-barra" id="btn-mudo-mobile" onclick="toggleMudo()" title="Mudo">
         <i class="fas fa-volume-up"></i>
@@ -1356,7 +1358,7 @@
             <div class="config-cor cor-amarelo" onclick="mudarCor('amarelo')" id="config-amarelo"></div>
             <div class="config-cor cor-cyan" onclick="mudarCor('cyan')" id="config-cyan"></div>
             <div class="config-cor cor-roxo-escuro" onclick="mudarCor('roxo-escuro')" id="config-roxo-escuro"></div>
-            <div class="config-cor cor-verde-limao" onclick="mudarCor('verde-limao')" id="config-verde-limao"></div>
+            <div class="config-cor cor-preto" onclick="mudarCor('preto')" id="config-preto"></div>
         </div>
     </div>
     
@@ -1367,12 +1369,12 @@
             <div class="config-fundo fundo-branco" onclick="mudarFundo('branco')" id="fundo-config-branco"></div>
             <div class="config-fundo fundo-cinza" onclick="mudarFundo('cinza')" id="fundo-config-cinza"></div>
             <div class="config-fundo fundo-cinza-claro" onclick="mudarFundo('cinza-claro')" id="fundo-config-cinza-claro"></div>
-            <div class="config-fundo fundo-azul-claro" onclick="mudarFundo('azul-claro')" id="fundo-config-azul-claro"></div>
-            <div class="config-fundo fundo-beje" onclick="mudarFundo('beje')" id="fundo-config-beje"></div>
-            <div class="config-fundo fundo-azul-escuro" onclick="mudarFundo('azul-escuro')" id="fundo-config-azul-escuro"></div>
-            <div class="config-fundo fundo-verde-claro" onclick="mudarFundo('verde-claro')" id="fundo-config-verde-claro"></div>
-            <div class="config-fundo fundo-roxo-claro" onclick="mudarFundo('roxo-claro')" id="fundo-config-roxo-claro"></div>
-            <div class="config-fundo fundo-amarelo-claro" onclick="mudarFundo('amarelo-claro')" id="fundo-config-amarelo-claro"></div>
+            <div class="config-fundo fundo-azul" onclick="mudarFundo('azul')" id="fundo-config-azul"></div>
+            <div class="config-fundo fundo-verde" onclick="mudarFundo('verde')" id="fundo-config-verde"></div>
+            <div class="config-fundo fundo-vermelho" onclick="mudarFundo('vermelho')" id="fundo-config-vermelho"></div>
+            <div class="config-fundo fundo-laranja" onclick="mudarFundo('laranja')" id="fundo-config-laranja"></div>
+            <div class="config-fundo fundo-roxo" onclick="mudarFundo('roxo')" id="fundo-config-roxo"></div>
+            <div class="config-fundo fundo-amarelo" onclick="mudarFundo('amarelo')" id="fundo-config-amarelo"></div>
         </div>
     </div>
     
@@ -1969,11 +1971,12 @@ function carregarChatAlerta(id) {
         let html = '';
         Object.values(msgs).forEach(m => {
             const isMinha = m.usuario === usuario;
+            const hora = new Date(m.timestamp).toLocaleTimeString().slice(0,5);
             html += `
                 <div style="display:flex; flex-direction:column; align-items:${isMinha ? 'flex-end' : 'flex-start'}; margin:4px 0;">
                     <div style="background:${isMinha?'#dcf8c6':'white'}; padding:5px; border-radius:8px; max-width:100%; font-size:12px;">
                         <b>${m.usuario}</b><br>${m.texto}<br>
-                        <small>${new Date(m.timestamp).toLocaleTimeString().slice(0,5)}</small>
+                        <div style="text-align:right; font-size:8px; color:#999;">${hora}</div>
                     </div>
                 </div>
             `;
@@ -2077,11 +2080,11 @@ function enviarMsgGeral() {
     input.value = '';
 }
 
-// ===== RÁDIO PTT =====
+// ===== RÁDIO PX =====
 let gravador, pedacosAudio, streamAudio, timerInterval, tempoRestante = 20;
 let timeoutAutoEnvio = null;
 
-document.getElementById('btn-ptt-mobile').addEventListener('click', async function() {
+document.getElementById('btn-px-mobile').addEventListener('click', async function() {
     if (gravador && gravador.state === 'recording') { 
         pararGravacao(); 
         return; 
@@ -2118,11 +2121,11 @@ document.getElementById('btn-ptt-mobile').addEventListener('click', async functi
             document.getElementById('gravandoIndicator').style.display = 'none';
             if (timerInterval) clearInterval(timerInterval);
             if (timeoutAutoEnvio) clearTimeout(timeoutAutoEnvio);
-            document.getElementById('btn-ptt-mobile').classList.remove('ativo');
+            document.getElementById('btn-px-mobile').classList.remove('ativo');
         };
         
         gravador.start();
-        document.getElementById('btn-ptt-mobile').classList.add('ativo');
+        document.getElementById('btn-px-mobile').classList.add('ativo');
         document.getElementById('gravandoIndicator').style.display = 'flex';
         const timer = document.getElementById('gravandoTimer');
         
