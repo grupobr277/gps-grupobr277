@@ -104,10 +104,10 @@
         .lupa-mobile {
             position: fixed;
             top: 10px;
-            left: 140px;
+            left: 130px;
             right: 10px;
             width: auto;
-            max-width: 220px;
+            max-width: 240px;
             z-index: 9000;
             background: white;
             border-radius: 40px;
@@ -125,6 +125,7 @@
             outline: none;
             color: #333;
             background: white;
+            min-width: 120px;
         }
         
         .lupa-mobile input::placeholder {
@@ -136,8 +137,8 @@
             background: #075e54;
             color: white;
             border: none;
-            width: 45px;
-            height: 45px;
+            width: 48px;
+            height: 48px;
             cursor: pointer;
             font-size: 18px;
             display: flex;
@@ -149,10 +150,6 @@
         
         .lupa-mobile button i {
             font-size: 20px;
-        }
-        
-        .lupa-mobile button:hover {
-            background: #054a40;
         }
         
         /* ===== BARRA INFERIOR ===== */
@@ -272,7 +269,7 @@
             100% { box-shadow: 0 0 0 0 rgba(229,57,53,0); }
         }
         
-        /* ===== REPORTE E LEGENDA COMPACTA ===== */
+        /* ===== REPORTE E LEGENDA ===== */
         .info-container {
             position: fixed;
             bottom: 100px;
@@ -313,7 +310,6 @@
             50% { opacity: 0.5; }
         }
         
-        /* Legenda compacta */
         .legenda-container {
             display: flex;
             align-items: center;
@@ -594,16 +590,44 @@
             text-align: right;
         }
         
+        /* Resposta preview */
+        .resposta-preview {
+            background: rgba(0,0,0,0.05);
+            border-left: 3px solid #075e54;
+            padding: 6px 10px;
+            margin-bottom: 4px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        /* Reações */
+        .reacoes {
+            display: flex;
+            gap: 4px;
+            margin-top: 2px;
+            font-size: 12px;
+        }
+        
+        .reacao-item {
+            background: rgba(0,0,0,0.05);
+            border-radius: 20px;
+            padding: 2px 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+        }
+        
         /* Ações da mensagem */
         .mensagem-acoes {
             position: absolute;
-            top: -20px;
+            top: -25px;
             right: 0;
             background: white;
-            border-radius: 20px;
-            padding: 4px 8px;
+            border-radius: 30px;
+            padding: 4px 10px;
             display: none;
-            gap: 8px;
+            gap: 10px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             border: 1px solid #075e54;
             z-index: 10;
@@ -618,10 +642,25 @@
             font-size: 14px;
             color: #075e54;
             transition: transform 0.2s;
+            position: relative;
         }
         
         .acao:hover {
             transform: scale(1.2);
+        }
+        
+        .acao[data-tooltip]:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            white-space: nowrap;
         }
         
         .data-divider {
@@ -908,7 +947,7 @@
             box-shadow: 0 0 20px rgba(0,191,255,0.3);
         }
         
-        /* ===== CARRO SIMPLES E FUNCIONAL ===== */
+        /* ===== CARRO SIMPLES ===== */
         .carro-simples {
             font-size: 32px;
             filter: drop-shadow(0 0 10px #00BFFF);
@@ -931,7 +970,7 @@
             100% { transform: scale(1); opacity: 1; }
         }
         
-        /* ===== ÍCONE ALERTA COM FOTO - FORA DO CLUSTER ===== */
+        /* ===== ÍCONE ALERTA COM FOTO ===== */
         .alerta-com-foto {
             position: relative;
             width: 50px;
@@ -996,9 +1035,6 @@
         
         /* ===== LINHA DA ROTA ===== */
         .leaflet-routing-container { display: none !important; }
-        
-        /* ===== CLUSTER DESATIVADO PARA ALERTAS ===== */
-        .leaflet-marker-icon { z-index: 1000 !important; }
         
         /* ===== OCULTAR INTERFACE ===== */
         .interface-oculta .header-mobile,
@@ -1084,7 +1120,7 @@
     </div>
 </div>
 
-<!-- LUPA MOBILE -->
+<!-- LUPA MOBILE - CORRIGIDA -->
 <div class="lupa-mobile">
     <input type="text" id="buscaDestino" placeholder="Digite seu destino...">
     <button onclick="buscarRota()"><i class="fas fa-search"></i></button>
@@ -1092,33 +1128,27 @@
 
 <!-- BARRA INFERIOR -->
 <div class="barra-inferior-mobile">
-    <!-- Velocímetro -->
     <div class="velocimetro-barra">
         <span class="vel-numero-barra" id="velocimetroDisplay">0</span>
         <span class="vel-unidade-barra">KM/H</span>
     </div>
     
-    <!-- Chat -->
     <div class="btn-barra" onclick="toggleChatGeral()" title="Chat">
         <i class="fas fa-comment"></i>
     </div>
     
-    <!-- Luz Noturna -->
     <div class="btn-barra" id="btn-luz-mobile" onclick="toggleModoNoturno()" title="Modo Noturno">
         💡
     </div>
     
-    <!-- Rádio PTT -->
     <div class="btn-ptt" id="btn-ptt-mobile" title="Push To Talk">
         <i class="fas fa-microphone-alt"></i>
     </div>
     
-    <!-- Mudo -->
     <div class="btn-barra" id="btn-mudo-mobile" onclick="toggleMudo()" title="Mudo">
         <i class="fas fa-volume-up"></i>
     </div>
     
-    <!-- Ocultar -->
     <div class="btn-barra" onclick="toggleInterface()" title="Ocultar">
         <i class="fas fa-chevron-up" id="iconeSeta"></i>
     </div>
@@ -1138,7 +1168,6 @@
         <span>REPORTE</span>
     </div>
     
-    <!-- Legenda compacta -->
     <div class="legenda-container" id="legendaContainer">
         <div class="legenda-item">
             <div class="legenda-cor legenda-verde"></div>
@@ -1193,12 +1222,25 @@
 <div class="chat-mobile" id="chatGeralMobile">
     <div class="chat-header-mobile">
         <span><i class="fas fa-comments"></i> GRUPO BR 277</span>
-        <span onclick="fecharChatGeral()" style="cursor:pointer;">✕</span>
+        <div>
+            <span style="margin-right:15px; cursor:pointer; font-size:14px;" onclick="mostrarAdminPanel()">👑</span>
+            <span onclick="fecharChatGeral()" style="cursor:pointer;">✕</span>
+        </div>
     </div>
     <div class="chat-mensagens-mobile" id="chatMensagensMobile"></div>
     <div class="chat-input-mobile">
         <input type="text" id="chatInputMobile" placeholder="Digite sua mensagem...">
         <button onclick="enviarMsgGeral()"><i class="fas fa-paper-plane"></i></button>
+    </div>
+</div>
+
+<!-- PAINEL ADMIN -->
+<div class="confirmacao-popup" id="adminPanel" style="display:none; max-width:300px;">
+    <div class="confirmacao-texto">👑 ADMIN</div>
+    <input type="password" id="adminSenha" placeholder="Senha" style="padding:10px; border-radius:20px; border:2px solid #00BFFF; background:#333; color:white; width:100%;">
+    <div style="display:flex; gap:10px; margin-top:10px;">
+        <button class="btn-confirmar" onclick="verificarAdmin()">ENTRAR</button>
+        <button class="btn-negar" onclick="fecharAdminPanel()">CANCELAR</button>
     </div>
 </div>
 
@@ -1226,6 +1268,10 @@ const SCALABLE_CONFIG = {
     CLUSTER_MAX_ZOOM: 16,
     MAX_ALERTAS_POR_HORA: 5
 };
+
+// ===== ADMIN =====
+const ADMIN_PASSWORD = 'br277admin2024';
+let isAdmin = false;
 
 // ===== FIREBASE =====
 const firebaseConfig = {
@@ -1345,12 +1391,32 @@ function salvarCadastro() {
     criarIconesAlertas();
 }
 
+// ===== FUNÇÕES ADMIN =====
+function mostrarAdminPanel() {
+    document.getElementById('adminPanel').style.display = 'flex';
+}
+
+function fecharAdminPanel() {
+    document.getElementById('adminPanel').style.display = 'none';
+}
+
+function verificarAdmin() {
+    const senha = document.getElementById('adminSenha').value;
+    if (senha === ADMIN_PASSWORD) {
+        isAdmin = true;
+        fecharAdminPanel();
+        alert('✅ Modo admin ativado!');
+        carregarChat(); // Recarrega o chat com opções admin
+    } else {
+        alert('❌ Senha incorreta!');
+    }
+}
+
 // ===== MAPA =====
 function iniciarMapa() {
     mapa = L.map('map', { zoomControl: false }).setView([-25.4284, -49.2733], 13);
     L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(mapa);
     
-    // Cluster APENAS para usuários, NÃO para alertas
     clusterGroup = L.markerClusterGroup({
         maxClusterRadius: 50,
         showCoverageOnHover: false,
@@ -1660,7 +1726,6 @@ async function abrirCameraParaAlerta(alerta, id) {
                     alertasMapa[id] = alertaData;
                     await db.ref('alertas_fixos/' + id).set(alertaData);
                     
-                    // Adicionar DIRETAMENTE ao mapa (não ao cluster)
                     const novoMarcador = criarMarcadorAlerta(alertaData, id);
                     novoMarcador.addTo(mapa);
                     pulsantesAlertas[id] = novoMarcador;
@@ -1688,7 +1753,6 @@ async function abrirCameraParaAlerta(alerta, id) {
             alertasMapa[id] = alertaData;
             db.ref('alertas_fixos/' + id).set(alertaData);
             
-            // Adicionar DIRETAMENTE ao mapa
             const novoMarcador = criarMarcadorAlerta(alertaData, id);
             novoMarcador.addTo(mapa);
             pulsantesAlertas[id] = novoMarcador;
@@ -1775,7 +1839,7 @@ function carregarAlertas() {
         alertasMapa[id] = a;
         
         const marcador = criarMarcadorAlerta(a, id);
-        marcador.addTo(mapa); // Direto no mapa, não no cluster
+        marcador.addTo(mapa);
         pulsantesAlertas[id] = marcador;
     });
 }
@@ -1832,11 +1896,35 @@ function carregarChatAlerta(id) {
         if (!msgs) { chatDiv.innerHTML = '<div style="text-align:center; color:#999; padding:5px;">Nenhuma mensagem</div>'; return; }
         let html = '';
         Object.values(msgs).forEach(m => {
-            html += `<div style="background:${m.usuario===usuario?'#dcf8c6':'white'}; margin:5px 0; padding:6px; border-radius:10px; font-size:12px; border:1px solid #ddd; color:#333;">
-                <b>${m.usuario}</b><br>${m.texto}<br><small style="color:#999;">${formatarHora(m.timestamp)}</small>
-            </div>`;
+            const isMinha = m.usuario === usuario;
+            
+            // Processar reações
+            let reacoesHtml = '';
+            if (m.reacoes) {
+                reacoesHtml = '<div class="reacoes">';
+                Object.entries(m.reacoes).forEach(([reacao, usuarios]) => {
+                    if (usuarios && usuarios.length) {
+                        reacoesHtml += `<span class="reacao-item">${reacao} ${usuarios.length}</span>`;
+                    }
+                });
+                reacoesHtml += '</div>';
+            }
+            
+            html += `
+                <div style="display:flex; flex-direction:column; align-items:${isMinha ? 'flex-end' : 'flex-start'}; margin:5px 0; position:relative;">
+                    <div style="background:${isMinha?'#dcf8c6':'white'}; padding:6px 10px; border-radius:10px; font-size:12px; border:1px solid #ddd; max-width:100%;">
+                        <b style="color:${isMinha?'#075e54':'#075e54'}">${m.usuario}</b><br>
+                        ${m.texto}
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:2px;">
+                            <div>${reacoesHtml}</div>
+                            <small style="color:#999;">${formatarHora(m.timestamp)}</small>
+                        </div>
+                    </div>
+                </div>
+            `;
         });
         chatDiv.innerHTML = html;
+        chatDiv.scrollTop = chatDiv.scrollHeight;
     });
 }
 
@@ -1901,6 +1989,13 @@ function calcularDistancia(lat1, lon1, lat2, lon2) {
 function toggleChatGeral() {
     const chat = document.getElementById('chatGeralMobile');
     chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
+    if (chat.style.display === 'flex') {
+        // Rolar para o final quando abrir
+        setTimeout(() => {
+            const msgs = document.getElementById('chatMensagensMobile');
+            msgs.scrollTop = msgs.scrollHeight;
+        }, 100);
+    }
 }
 
 function fecharChatGeral() { document.getElementById('chatGeralMobile').style.display = 'none'; }
@@ -1933,24 +2028,51 @@ function carregarChat() {
             const isMinha = msg.usuario === usuario;
             const corUsuario = gerarCorUsuario(msg.usuario);
             
+            // Preview de resposta
+            let respostaPreview = '';
+            if (msg.resposta) {
+                respostaPreview = `
+                    <div class="resposta-preview">
+                        <strong style="color:${gerarCorUsuario(msg.resposta.usuario)}">${msg.resposta.usuario}:</strong> ${msg.resposta.texto}
+                    </div>
+                `;
+            }
+            
+            // Reações
+            let reacoesHtml = '';
+            if (msg.reacoes) {
+                reacoesHtml = '<div class="reacoes">';
+                Object.entries(msg.reacoes).forEach(([reacao, usuarios]) => {
+                    if (usuarios && usuarios.length) {
+                        reacoesHtml += `<span class="reacao-item">${reacao} ${usuarios.length}</span>`;
+                    }
+                });
+                reacoesHtml += '</div>';
+            }
+            
             html += `
-                <div class="mensagem-wrapper ${isMinha ? 'minha' : 'outra'}">
+                <div class="mensagem-wrapper ${isMinha ? 'minha' : 'outra'}" data-msg-id="${msg.timestamp}">
+                    ${respostaPreview}
                     <div class="mensagem ${isMinha ? 'minha' : 'outra'}">
                         <div class="mensagem-remetente" style="color:${corUsuario}">${msg.usuario}</div>
                         ${msg.texto}
+                        ${reacoesHtml}
                         <div class="mensagem-hora">${formatarHora(msg.timestamp)}</div>
                     </div>
                     <div class="mensagem-acoes">
-                        <span class="acao" onclick="responderMsg('${msg.usuario}', '${msg.texto.replace(/'/g, "\\'")}')">↩️</span>
-                        <span class="acao" onclick="reagirMsg('${msg.timestamp}', '👍')">👍</span>
-                        <span class="acao" onclick="reagirMsg('${msg.timestamp}', '❤️')">❤️</span>
-                        ${isMinha ? `<span class="acao" onclick="apagarMsg('${msg.timestamp}')">🗑️</span>` : ''}
+                        <span class="acao" data-tooltip="Responder" onclick="responderMsg('${msg.usuario}', '${msg.texto.replace(/'/g, "\\'")}')">↩️</span>
+                        <span class="acao" data-tooltip="Curtir" onclick="reagirMsg('${msg.timestamp}', '👍')">👍</span>
+                        <span class="acao" data-tooltip="Amei" onclick="reagirMsg('${msg.timestamp}', '❤️')">❤️</span>
+                        <span class="acao" data-tooltip="Riso" onclick="reagirMsg('${msg.timestamp}', '😂')">😂</span>
+                        <span class="acao" data-tooltip="Surpreso" onclick="reagirMsg('${msg.timestamp}', '😮')">😮</span>
+                        ${isMinha || isAdmin ? `<span class="acao" data-tooltip="Apagar" onclick="apagarMsg('${msg.timestamp}')">🗑️</span>` : ''}
                     </div>
                 </div>
             `;
         });
         
         chatDiv.innerHTML = html;
+        // Rolar para o final
         chatDiv.scrollTop = chatDiv.scrollHeight;
     });
 }
@@ -1962,6 +2084,20 @@ function responderMsg(user, txt) {
 }
 
 function reagirMsg(timestamp, reacao) {
+    const msgRef = db.ref('chat_geral').orderByChild('timestamp').equalTo(parseInt(timestamp));
+    msgRef.once('value', snap => {
+        snap.forEach(child => {
+            const msg = child.val();
+            const reacoes = msg.reacoes || {};
+            const usuarios = reacoes[reacao] || [];
+            
+            if (!usuarios.includes(usuario)) {
+                usuarios.push(usuario);
+                reacoes[reacao] = usuarios;
+                child.ref.update({ reacoes: reacoes });
+            }
+        });
+    });
     mostrarNotificacao(`${reacao} Reação enviada!`);
 }
 
