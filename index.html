@@ -259,50 +259,65 @@
             cursor: pointer;
         }
         
-        /* ===== HEADER ===== */
-        .header-mobile {
+        /* ===== HEADER UNIFICADO ===== */
+        .header-unificado {
             position: fixed;
             top: 8px;
             left: 8px;
             z-index: 9000;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-        
-        .contador-mobile {
             background: var(--cor-fundo);
             backdrop-filter: blur(5px);
             color: var(--cor-texto);
-            padding: 3px 8px;
-            border-radius: 25px;
-            font-size: 9px;
-            font-weight: 600;
+            padding: 5px 15px;
+            border-radius: 30px;
             display: flex;
             align-items: center;
-            gap: 4px;
-            border: 1px solid var(--cor-borda);
+            gap: 12px;
+            border: 2px solid var(--cor-borda);
+            box-shadow: 0 0 15px var(--cor-primaria);
         }
         
-        .logo-mobile {
-            background: var(--cor-fundo);
-            backdrop-filter: blur(5px);
-            color: var(--cor-texto);
-            padding: 3px 10px;
-            border-radius: 25px;
-            font-size: 10px;
+        .header-logo {
             display: flex;
             align-items: center;
-            gap: 6px;
-            border: 1px solid var(--cor-borda);
+            gap: 5px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        
+        .header-logo i {
+            font-size: 14px;
             cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .header-logo i:hover {
+            transform: scale(1.1);
+        }
+        
+        .header-divider {
+            width: 1px;
+            height: 20px;
+            background: var(--cor-borda);
+            opacity: 0.5;
+        }
+        
+        .header-contador {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+        }
+        
+        .header-contador i {
+            font-size: 12px;
         }
         
         /* ===== LUPA ===== */
         .lupa-mobile {
             position: fixed;
             top: 8px;
-            left: 120px;
+            left: 160px;
             right: 45px;
             width: auto;
             z-index: 9000;
@@ -472,38 +487,38 @@
         .legenda-container {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 10px;
             background: var(--cor-fundo);
             border: 2px solid var(--cor-borda);
             border-radius: 30px;
-            padding: 5px 12px;
+            padding: 6px 16px;
         }
         
         .legenda-item {
             display: flex;
             align-items: center;
-            gap: 3px;
+            gap: 5px;
         }
         
         .legenda-cor {
-            width: 7px;
-            height: 7px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
         }
         
-        .legenda-verde { background: #00ff00; box-shadow: 0 0 6px #00ff00; }
-        .legenda-amarelo { background: #ffff00; box-shadow: 0 0 6px #ffff00; }
-        .legenda-vermelho { background: #ff0000; box-shadow: 0 0 6px #ff0000; }
+        .legenda-verde { background: #00ff00; box-shadow: 0 0 8px #00ff00; }
+        .legenda-amarelo { background: #ffff00; box-shadow: 0 0 8px #ffff00; }
+        .legenda-vermelho { background: #ff0000; box-shadow: 0 0 8px #ff0000; }
         
         .legenda-texto {
             color: var(--cor-texto);
-            font-size: 9px;
+            font-size: 12px;
             font-weight: 600;
         }
         
         .legenda-fechar {
-            width: 14px;
-            height: 14px;
+            width: 18px;
+            height: 18px;
             background: #e53935;
             border: 1px solid var(--cor-borda);
             border-radius: 50%;
@@ -512,8 +527,8 @@
             justify-content: center;
             cursor: pointer;
             color: white;
-            font-size: 9px;
-            margin-left: 3px;
+            font-size: 10px;
+            margin-left: 5px;
         }
         
         /* ===== PAINEL DE CONFIGURAÇÕES ===== */
@@ -1118,6 +1133,57 @@
         .btn-confirmar { background: #4caf50; color: white; }
         .btn-negar { background: #e53935; color: white; }
         
+        /* ===== PAINEL DE ROTA - MAIOR E MAIS VISÍVEL ===== */
+        .rota-info-panel {
+            position: fixed;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--cor-fundo);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 40px;
+            display: none;
+            align-items: center;
+            gap: 25px;
+            border: 3px solid var(--cor-borda);
+            z-index: 9400;
+            font-size: 15px;
+            font-weight: 700;
+            box-shadow: 0 0 25px var(--cor-primaria);
+        }
+        
+        .rota-info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .rota-info-item i {
+            font-size: 16px;
+            color: var(--cor-primaria);
+        }
+        
+        .btn-encerrar-rota {
+            position: fixed;
+            top: 60px;
+            right: 10px;
+            background: #e53935;
+            color: white;
+            border: 2px solid var(--cor-borda);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 9400;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 0 20px #e53935;
+        }
+        
         /* ===== ANIMAÇÕES ===== */
         @keyframes ledPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
         @keyframes pulse-ponto { 0% { transform: scale(1); } 50% { transform: scale(1.2); } }
@@ -1128,7 +1194,7 @@
         .mapa-noturno { filter: invert(100%) hue-rotate(180deg) brightness(95%); }
         
         /* ===== OCULTAR INTERFACE ===== */
-        .interface-oculta .header-mobile,
+        .interface-oculta .header-unificado,
         .interface-oculta .lupa-mobile,
         .interface-oculta .barra-inferior-mobile,
         .interface-oculta .info-container,
@@ -1145,40 +1211,6 @@
         
         .interface-oculta .recentrar-mobile { display: flex !important; }
         .interface-oculta .seta-voltar { display: flex !important; }
-        
-        .btn-encerrar-rota {
-            position: fixed;
-            top: 55px;
-            right: 8px;
-            background: #e53935;
-            color: white;
-            border: 2px solid var(--cor-borda);
-            border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 9400;
-        }
-        
-        .rota-info-panel {
-            position: fixed;
-            top: 55px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--cor-fundo);
-            color: white;
-            padding: 6px 15px;
-            border-radius: 30px;
-            display: none;
-            align-items: center;
-            gap: 15px;
-            border: 2px solid var(--cor-borda);
-            z-index: 9400;
-            font-size: 11px;
-        }
     </style>
 </head>
 <body class="tema-azul fundo-preto">
@@ -1252,15 +1284,16 @@
     </div>
 </div>
 
-<!-- HEADER -->
-<div class="header-mobile">
-    <div class="contador-mobile" id="contadorUsuarios">
+<!-- HEADER UNIFICADO -->
+<div class="header-unificado" id="headerUnificado">
+    <div class="header-logo">
+        <span>GRUPO BR 277</span>
+        <i class="fab fa-instagram" onclick="window.open('https://instagram.com/grupobr277', '_blank')"></i>
+    </div>
+    <div class="header-divider"></div>
+    <div class="header-contador">
         <i class="fas fa-users"></i>
         <span id="numUsuarios">0</span> online
-    </div>
-    <div class="logo-mobile" onclick="window.open('https://instagram.com/grupobr277', '_blank')">
-        <span>GRUPO BR 277</span>
-        <i class="fab fa-instagram"></i>
     </div>
 </div>
 
@@ -1395,11 +1428,20 @@
     </div>
 </div>
 
-<!-- PAINEL DE ROTA -->
+<!-- PAINEL DE ROTA - MAIOR E MAIS VISÍVEL -->
 <div class="rota-info-panel" id="rotaInfoPanel">
-    <div><i class="fas fa-clock"></i> <span id="rotaTempo">--</span></div>
-    <div><i class="fas fa-road"></i> <span id="rotaDistancia">--</span></div>
-    <div><i class="fas fa-exclamation-triangle"></i> <span id="rotaAtraso">--</span></div>
+    <div class="rota-info-item">
+        <i class="fas fa-clock"></i>
+        <span id="rotaTempo">--</span>
+    </div>
+    <div class="rota-info-item">
+        <i class="fas fa-road"></i>
+        <span id="rotaDistancia">--</span>
+    </div>
+    <div class="rota-info-item">
+        <i class="fas fa-exclamation-triangle" style="color:#e53935;"></i>
+        <span id="rotaAtraso">--</span>
+    </div>
 </div>
 
 <!-- BOTÃO ENCERRAR ROTA -->
