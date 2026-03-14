@@ -100,7 +100,7 @@
             color: #ffd700;
         }
         
-        /* ===== LUPA MOBILE - CORRIGIDA ===== */
+        /* ===== LUPA MOBILE ===== */
         .lupa-mobile {
             position: fixed;
             top: 10px;
@@ -153,7 +153,7 @@
             font-size: 18px;
         }
         
-        /* ===== BARRA INFERIOR COMPLETA ===== */
+        /* ===== BARRA INFERIOR ===== */
         .barra-inferior-mobile {
             position: fixed;
             bottom: 20px;
@@ -190,7 +190,7 @@
         .btn-barra.ativo { border-color: #00BFFF; background: #00BFFF22; color: #00BFFF; }
         .btn-barra.mudo { border-color: #e53935; color: #e53935; }
         
-        /* Velocímetro dentro da barra */
+        /* Velocímetro */
         .velocimetro-barra {
             display: flex;
             align-items: center;
@@ -217,12 +217,12 @@
             font-weight: 600;
         }
         
-        /* Botão PTT - NOVO ÍCONE E COR */
+        /* Botão PTT */
         .btn-ptt {
             width: 52px;
             height: 52px;
             border-radius: 50%;
-            background: #4a4a4a;
+            background: #2a2a2a;
             border: 3px solid #ffd700;
             display: flex;
             align-items: center;
@@ -270,7 +270,7 @@
             100% { box-shadow: 0 0 0 0 rgba(229,57,53,0); }
         }
         
-        /* ===== REPORTE MOBILE ===== */
+        /* ===== REPORTE ===== */
         .reporte-mobile {
             position: fixed;
             bottom: 100px;
@@ -306,30 +306,6 @@
         @keyframes ledPulse {
             0%,100% { opacity: 1; }
             50% { opacity: 0.5; }
-        }
-        
-        /* ===== BOTÃO FECHAR RETANGULAR ===== */
-        .btn-fechar-retangular {
-            background: #e53935;
-            border: 2px solid #ffd700;
-            border-radius: 12px;
-            color: white;
-            font-size: 18px;
-            font-weight: 700;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            margin: 0 auto;
-            transition: all 0.2s;
-            box-shadow: 0 0 15px rgba(229,57,53,0.5);
-        }
-        
-        .btn-fechar-retangular:hover {
-            transform: scale(1.1);
-            background: #c62828;
         }
         
         /* ===== PAINEL DE ALERTAS ===== */
@@ -393,7 +369,30 @@
             letter-spacing: 0.5px;
         }
         
-        /* ===== RECENTRALIZAR MOBILE ===== */
+        .btn-fechar-retangular {
+            background: #e53935;
+            border: 2px solid #ffd700;
+            border-radius: 12px;
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin: 0 auto;
+            transition: all 0.2s;
+            box-shadow: 0 0 15px rgba(229,57,53,0.5);
+        }
+        
+        .btn-fechar-retangular:hover {
+            transform: scale(1.1);
+            background: #c62828;
+        }
+        
+        /* ===== RECENTRALIZAR ===== */
         .recentrar-mobile {
             position: fixed;
             bottom: 100px;
@@ -425,7 +424,7 @@
             100% { box-shadow: 0 0 0 0 rgba(0,191,255,0); }
         }
         
-        /* ===== SETA PARA VOLTAR ===== */
+        /* ===== SETA VOLTAR ===== */
         .seta-voltar {
             position: fixed;
             bottom: 20px;
@@ -457,7 +456,7 @@
             100% { transform: scale(1); }
         }
         
-        /* ===== CHAT MOBILE - ESTILO WHATSAPP ===== */
+        /* ===== CHAT WHATSAPP ===== */
         .chat-mobile {
             position: fixed;
             top: 5%;
@@ -588,7 +587,7 @@
             transform: scale(1.05);
         }
         
-        /* ===== POPUP ALERTA COM DESIGN BONITO ===== */
+        /* ===== POPUP ALERTA ===== */
         .popup-mobile {
             background: #2a2a2a;
             border: 2px solid #ffd700;
@@ -606,7 +605,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: linear-gradient(145deg, #e53935, #b71c1c);
         }
         
         .popup-header-mobile span:last-child {
@@ -699,7 +697,7 @@
             transform: scale(1.1);
         }
         
-        /* ===== BOTÕES SIM/NÃO BONITOS ===== */
+        /* ===== CONFIRMAÇÃO ===== */
         .confirmacao-popup {
             position: fixed;
             top: 50%;
@@ -854,11 +852,8 @@
             box-shadow: 0 0 20px rgba(255,215,0,0.3);
         }
         
-        /* ===== MAPA NOTURNO ===== */
-        .mapa-noturno { filter: invert(100%) hue-rotate(180deg) brightness(95%); }
-        
-        /* ===== CARRO COM PULSANTE AZUL ===== */
-        .carro-container {
+        /* ===== CARRO AZUL PULSANTE ===== */
+        .carro-azul-container {
             position: relative;
             width: 48px;
             height: 48px;
@@ -877,7 +872,7 @@
             box-shadow: 0 0 20px #00BFFF;
         }
         
-        .carro-icone {
+        .carro-icone-azul {
             font-size: 36px;
             position: absolute;
             left: 6px;
@@ -892,7 +887,7 @@
             100% { transform: scale(0.9); opacity: 1; }
         }
         
-        /* ===== ÍCONE DE ALERTA COM FOTO ===== */
+        /* ===== ÍCONE ALERTA COM FOTO ===== */
         .alerta-com-foto {
             position: relative;
             width: 50px;
@@ -950,6 +945,12 @@
             70% { transform: scale(1.4); opacity: 0.5; }
             100% { transform: scale(0.9); opacity: 1; }
         }
+        
+        /* ===== MAPA NOTURNO ===== */
+        .mapa-noturno { filter: invert(100%) hue-rotate(180deg) brightness(95%); }
+        
+        /* ===== LINHA DA ROTA TRANSPARENTE ===== */
+        .leaflet-routing-container { display: none !important; }
         
         /* ===== OCULTAR INTERFACE ===== */
         .interface-oculta .header-mobile,
@@ -1041,9 +1042,9 @@
     <button onclick="buscarRota()"><i class="fas fa-search"></i></button>
 </div>
 
-<!-- BARRA INFERIOR COMPLETA -->
+<!-- BARRA INFERIOR -->
 <div class="barra-inferior-mobile">
-    <!-- Velocímetro integrado -->
+    <!-- Velocímetro -->
     <div class="velocimetro-barra">
         <span class="vel-numero-barra" id="velocimetroDisplay">0</span>
         <span class="vel-unidade-barra">KM/H</span>
@@ -1059,7 +1060,7 @@
         💡
     </div>
     
-    <!-- Rádio PTT - NOVO ÍCONE (microfone com ondas) -->
+    <!-- Rádio PTT -->
     <div class="btn-ptt" id="btn-ptt-mobile" title="Push To Talk">
         <i class="fas fa-microphone-alt"></i>
     </div>
@@ -1069,20 +1070,20 @@
         <i class="fas fa-volume-up"></i>
     </div>
     
-    <!-- Ocultar/Mostrar -->
+    <!-- Ocultar -->
     <div class="btn-barra" onclick="toggleInterface()" title="Ocultar">
         <i class="fas fa-chevron-up" id="iconeSeta"></i>
     </div>
 </div>
 
-<!-- SETA PARA VOLTAR -->
+<!-- SETA VOLTAR -->
 <div class="seta-voltar" id="setaVoltar" onclick="toggleInterface()">
     <div class="seta-voltar-btn">
         <i class="fas fa-chevron-down"></i>
     </div>
 </div>
 
-<!-- REPORTE MOBILE -->
+<!-- REPORTE -->
 <div class="reporte-mobile">
     <div class="reporte-btn-mobile" onclick="toggleReporteMobile()">
         <span class="reporte-led"></span>
@@ -1094,7 +1095,7 @@
     </div>
 </div>
 
-<!-- RECENTRALIZAR MOBILE -->
+<!-- RECENTRALIZAR -->
 <div class="recentrar-mobile" id="btnRecentrarMobile">
     <div class="recentrar-btn-mobile" onclick="recentralizar()">
         <i class="fas fa-location-arrow"></i>
@@ -1191,6 +1192,7 @@ let interfaceVisivel = true;
 let permissoes = { localizacao: false, microfone: false };
 let clusterGroup = null;
 let tileSystem = null;
+let cameraStream = null;
 
 alertasConfirmados = { ...confirmacoesStorage };
 
@@ -1212,7 +1214,8 @@ const alertasMobile = [
 function selecionarVeiculo(tipo) {
     veiculoUsuario = tipo;
     document.querySelectorAll('[id^="veiculo-"]').forEach(el => el.style.borderColor = 'transparent');
-    document.getElementById(`veiculo-${tipo}`).style.borderColor = '#ffd700';
+    document.getElementById(`veiculo-${tipo}`).style.borderColor = '#00BFFF';
+    document.getElementById(`veiculo-${tipo}`).style.boxShadow = '0 0 20px #00BFFF';
 }
 
 async function solicitarPermissoes() {
@@ -1249,8 +1252,8 @@ function verificarPermissoes() {
     const aceite = document.getElementById('aceitePrivacidade').checked;
     if (permissoes.localizacao && permissoes.microfone && aceite) {
         btn.disabled = false;
-        btn.style.background = '#ffd700';
-        btn.style.color = '#000';
+        btn.style.background = '#00BFFF';
+        btn.style.color = '#fff';
         btn.textContent = '🚀 ENTRAR';
     }
 }
@@ -1284,7 +1287,7 @@ function iniciarMapa() {
         iconCreateFunction: function(cluster) {
             const count = cluster.getChildCount();
             return L.divIcon({
-                html: `<div style="background:#ffd700; color:#000; border:2px solid white; border-radius:50%; width:40px; height:40px; display:flex; align-items:center; justify-content:center; font-weight:700; box-shadow:0 0 20px #ffd700;">${count}</div>`,
+                html: `<div style="background:#00BFFF; color:white; border:2px solid white; border-radius:50%; width:40px; height:40px; display:flex; align-items:center; justify-content:center; font-weight:700; box-shadow:0 0 20px #00BFFF;">${count}</div>`,
                 className: '', iconSize: [40,40]
             });
         }
@@ -1309,13 +1312,13 @@ function iniciarGPS() {
         }
         
         if (!meuMarcador) {
-            // Carro com pulsante azul
+            // Carro azul pulsante
             meuMarcador = L.marker(minhaLocalizacao, { 
                 icon: L.divIcon({
                     html: `
-                        <div class="carro-container">
+                        <div class="carro-azul-container">
                             <div class="pulsante-azul"></div>
-                            <div class="carro-icone">🚗</div>
+                            <div class="carro-icone-azul">🚗</div>
                         </div>
                     `,
                     className: '',
@@ -1352,7 +1355,7 @@ function carregarUsuarios() {
                 if (id !== usuario) {
                     L.marker([d.lat, d.lng], {
                         icon: L.divIcon({ 
-                            html: `<div style="font-size:24px; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3));">🚗</div>`, 
+                            html: `<div style="font-size:24px; filter:drop-shadow(0 0 8px #00BFFF); color:#00BFFF;">🚗</div>`, 
                             className: '', 
                             iconSize: [24,24],
                             iconAnchor: [12,12]
@@ -1365,34 +1368,231 @@ function carregarUsuarios() {
     });
 }
 
-// ===== ALERTAS =====
-function criarIconesAlertas() {
-    const grid = document.getElementById('alertasGridMobile');
-    alertasMobile.forEach(a => {
-        const div = document.createElement('div');
-        div.className = 'alerta-item-mobile';
-        div.style.background = a.bg;
-        div.innerHTML = `<div>${a.icone}</div><span>${a.nome}</span>`;
-        div.onclick = () => ativarAlerta(a);
-        grid.appendChild(div);
+// ===== FUNÇÃO PARA COMPRIMIR IMAGEM =====
+function comprimirImagemParaBase64(blob, maxWidth) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        const url = URL.createObjectURL(blob);
+        img.src = url;
+        
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            let width = img.width;
+            let height = img.height;
+            
+            if (width > maxWidth) {
+                height *= maxWidth / width;
+                width = maxWidth;
+            }
+            
+            canvas.width = width;
+            canvas.height = height;
+            
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            
+            const base64 = canvas.toDataURL('image/jpeg', 0.6);
+            URL.revokeObjectURL(url);
+            resolve(base64);
+        };
+        
+        img.onerror = () => {
+            URL.revokeObjectURL(url);
+            resolve(null);
+        };
     });
 }
 
-function ativarAlerta(alerta) {
-    if (!minhaLocalizacao) return;
-    const id = Date.now();
-    const alertaData = { 
-        ...alerta, 
-        lat: minhaLocalizacao.lat, 
-        lng: minhaLocalizacao.lng, 
-        timestamp: id, 
-        criador: usuario, 
-        confirmacoes: 0 
-    };
-    alertasMapa[id] = alertaData;
-    
-    // Criar marcador com foto se tiver (simulado por enquanto)
-    const temImagem = false; // Será substituído pelo Firebase depois
+// ===== FUNÇÃO PARA ABRIR CÂMERA =====
+async function abrirCameraParaAlerta(alerta, id) {
+    try {
+        cameraStream = await navigator.mediaDevices.getUserMedia({ 
+            video: { facingMode: 'environment' }, 
+            audio: false 
+        });
+        
+        const overlay = document.createElement('div');
+        overlay.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 100000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        `;
+        
+        const video = document.createElement('video');
+        video.style.cssText = `
+            width: 90%;
+            max-width: 400px;
+            border-radius: 30px;
+            border: 4px solid #ffd700;
+            box-shadow: 0 0 30px #ffd700;
+        `;
+        video.autoplay = true;
+        video.playsInline = true;
+        video.srcObject = cameraStream;
+        
+        const btnContainer = document.createElement('div');
+        btnContainer.style.cssText = `
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        `;
+        
+        const btnFoto = document.createElement('button');
+        btnFoto.style.cssText = `
+            padding: 12px 25px;
+            background: #ffd700;
+            border: none;
+            border-radius: 40px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+        `;
+        btnFoto.innerHTML = '📷 TIRAR FOTO';
+        
+        const btnPular = document.createElement('button');
+        btnPular.style.cssText = `
+            padding: 12px 25px;
+            background: #444;
+            color: white;
+            border: none;
+            border-radius: 40px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+        `;
+        btnPular.innerHTML = '⏭️ PULAR';
+        
+        btnContainer.appendChild(btnFoto);
+        btnContainer.appendChild(btnPular);
+        overlay.appendChild(video);
+        overlay.appendChild(btnContainer);
+        
+        const btnFechar = document.createElement('div');
+        btnFechar.style.cssText = `
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: #e53935;
+            border: 2px solid #ffd700;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        `;
+        btnFechar.innerHTML = '✕';
+        btnFechar.onclick = () => {
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(t => t.stop());
+            }
+            document.body.removeChild(overlay);
+        };
+        overlay.appendChild(btnFechar);
+        
+        document.body.appendChild(overlay);
+        
+        btnFoto.onclick = async () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            
+            canvas.toBlob(async (blob) => {
+                if (cameraStream) {
+                    cameraStream.getTracks().forEach(t => t.stop());
+                }
+                document.body.removeChild(overlay);
+                
+                mostrarNotificacao('📤 Processando imagem...');
+                const thumbnailBase64 = await comprimirImagemParaBase64(blob, 400);
+                
+                if (thumbnailBase64) {
+                    const alertaData = { 
+                        ...alerta, 
+                        lat: minhaLocalizacao.lat, 
+                        lng: minhaLocalizacao.lng, 
+                        timestamp: id, 
+                        criador: usuario, 
+                        confirmacoes: 0,
+                        imagem: { thumbnail: thumbnailBase64 }
+                    };
+                    
+                    alertasMapa[id] = alertaData;
+                    await db.ref('alertas_fixos/' + id).set(alertaData);
+                    
+                    // Adicionar ao cluster imediatamente
+                    const novoMarcador = criarMarcadorAlerta(alertaData, id);
+                    clusterGroup.addLayer(novoMarcador);
+                    pulsantesAlertas[id] = novoMarcador;
+                    
+                    mostrarNotificacao('✅ Alerta com foto criado!');
+                }
+            }, 'image/jpeg', 0.6);
+        };
+        
+        btnPular.onclick = () => {
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(t => t.stop());
+            }
+            document.body.removeChild(overlay);
+            
+            const alertaData = { 
+                ...alerta, 
+                lat: minhaLocalizacao.lat, 
+                lng: minhaLocalizacao.lng, 
+                timestamp: id, 
+                criador: usuario, 
+                confirmacoes: 0
+            };
+            
+            alertasMapa[id] = alertaData;
+            db.ref('alertas_fixos/' + id).set(alertaData);
+            
+            // Adicionar ao cluster imediatamente
+            const novoMarcador = criarMarcadorAlerta(alertaData, id);
+            clusterGroup.addLayer(novoMarcador);
+            pulsantesAlertas[id] = novoMarcador;
+            
+            mostrarNotificacao('Alerta criado');
+        };
+        
+    } catch(e) {
+        console.log('Erro na câmera:', e);
+        mostrarNotificacao('📷 Câmera indisponível');
+        
+        const alertaData = { 
+            ...alerta, 
+            lat: minhaLocalizacao.lat, 
+            lng: minhaLocalizacao.lng, 
+            timestamp: id, 
+            criador: usuario, 
+            confirmacoes: 0
+        };
+        
+        alertasMapa[id] = alertaData;
+        db.ref('alertas_fixos/' + id).set(alertaData);
+        
+        const novoMarcador = criarMarcadorAlerta(alertaData, id);
+        clusterGroup.addLayer(novoMarcador);
+        pulsantesAlertas[id] = novoMarcador;
+    }
+}
+
+// ===== FUNÇÃO PARA CRIAR MARCADOR DE ALERTA =====
+function criarMarcadorAlerta(alerta, id) {
+    const temImagem = alerta.imagem && alerta.imagem.thumbnail;
     
     let htmlIcone;
     if (temImagem) {
@@ -1400,7 +1600,7 @@ function ativarAlerta(alerta) {
             <div class="alerta-com-foto">
                 <div class="alerta-pulsante" style="border-color: ${alerta.cor};"></div>
                 <div class="alerta-foto">
-                    <img src="temp.jpg" onerror="this.style.display='none'">
+                    <img src="${alerta.imagem.thumbnail}">
                 </div>
                 <div class="alerta-icone-pequeno" style="background: ${alerta.cor};">${alerta.icone}</div>
             </div>
@@ -1409,65 +1609,50 @@ function ativarAlerta(alerta) {
         htmlIcone = `<div style="background:${alerta.cor}; width:40px; height:40px; border-radius:50%; border:3px solid white; display:flex; align-items:center; justify-content:center; font-size:20px; box-shadow:0 0 20px ${alerta.cor};">${alerta.icone}</div>`;
     }
     
-    const marcadorTemp = L.marker([minhaLocalizacao.lat, minhaLocalizacao.lng], {
+    return L.marker([alerta.lat, alerta.lng], {
         icon: L.divIcon({
             html: htmlIcone,
             className: '',
-            iconSize: [40,40],
-            iconAnchor: [20,20]
+            iconSize: temImagem ? [50,50] : [40,40],
+            iconAnchor: temImagem ? [25,25] : [20,20]
         })
-    }).addTo(clusterGroup);
-    
-    pulsantesAlertas[id] = marcadorTemp;
-    
-    // Salvar no Firebase
-    db.ref('alertas_fixos/' + id).set(alertaData);
-    mostrarNotificacao('✅ Alerta enviado!');
+    }).on('click', () => abrirPopupAlerta(alerta, id));
 }
 
+// ===== CRIAR ÍCONES DE ALERTA =====
+function criarIconesAlertas() {
+    const grid = document.getElementById('alertasGridMobile');
+    alertasMobile.forEach(a => {
+        const div = document.createElement('div');
+        div.className = 'alerta-item-mobile';
+        div.style.background = a.bg;
+        div.innerHTML = `<div>${a.icone}</div><span>${a.nome}</span>`;
+        div.onclick = () => {
+            if (!minhaLocalizacao) return;
+            const id = Date.now();
+            abrirCameraParaAlerta(a, id);
+        };
+        grid.appendChild(div);
+    });
+}
+
+// ===== CARREGAR ALERTAS DO FIREBASE =====
 function carregarAlertas() {
     db.ref('alertas_fixos').on('child_added', snap => {
         const a = snap.val();
         const id = snap.key;
         
-        // Se já existe um marcador temporário, substituir
-        if (pulsantesAlertas[id]) {
-            clusterGroup.removeLayer(pulsantesAlertas[id]);
-        }
+        if (!a) return;
         
         alertasMapa[id] = a;
         
-        const temImagem = a.imagem && a.imagem.thumbnail;
-        let htmlIcone;
-        
-        if (temImagem) {
-            htmlIcone = `
-                <div class="alerta-com-foto">
-                    <div class="alerta-pulsante" style="border-color: ${a.cor};"></div>
-                    <div class="alerta-foto">
-                        <img src="${a.imagem.thumbnail}" onerror="this.style.display='none'">
-                    </div>
-                    <div class="alerta-icone-pequeno" style="background: ${a.cor};">${a.icone}</div>
-                </div>
-            `;
-        } else {
-            htmlIcone = `<div style="background:${a.cor}; width:40px; height:40px; border-radius:50%; border:3px solid white; display:flex; align-items:center; justify-content:center; font-size:20px; box-shadow:0 0 15px ${a.cor};">${a.icone}</div>`;
-        }
-        
-        const marcador = L.marker([a.lat, a.lng], {
-            icon: L.divIcon({
-                html: htmlIcone,
-                className: '',
-                iconSize: temImagem ? [50,50] : [40,40],
-                iconAnchor: temImagem ? [25,25] : [20,20]
-            })
-        });
-        marcador.on('click', () => abrirPopupAlerta(a, id));
+        const marcador = criarMarcadorAlerta(a, id);
         marcador.addTo(clusterGroup);
         pulsantesAlertas[id] = marcador;
     });
 }
 
+// ===== POPUP DO ALERTA =====
 function abrirPopupAlerta(alerta, id) {
     const popup = document.createElement('div');
     popup.className = 'popup-mobile';
@@ -1559,7 +1744,7 @@ function confirmarAlerta() {
     document.getElementById('confirmacaoPopup').style.display = 'none';
     if (popupTimeout) clearTimeout(popupTimeout);
     alertaAtual = null;
-    mostrarNotificacao('👍 Obrigado pela confirmação!');
+    mostrarNotificacao('👍 Confirmado!');
 }
 
 function negarAlerta() {
@@ -1715,7 +1900,7 @@ function recentralizar() {
 
 function mostrarNotificacao(texto) {
     const notif = document.createElement('div');
-    notif.style.cssText = 'position:fixed; bottom:200px; left:50%; transform:translateX(-50%); background:linear-gradient(145deg, #ffd700, #ffaa00); color:#000; padding:8px 20px; border-radius:40px; z-index:100000; font-size:13px; font-weight:700; border:2px solid white; box-shadow:0 0 20px #ffd700;';
+    notif.style.cssText = 'position:fixed; bottom:200px; left:50%; transform:translateX(-50%); background:linear-gradient(145deg, #00BFFF, #0066cc); color:white; padding:8px 20px; border-radius:40px; z-index:100000; font-size:13px; font-weight:700; border:2px solid white; box-shadow:0 0 20px #00BFFF;';
     notif.textContent = texto;
     document.body.appendChild(notif);
     setTimeout(() => notif.remove(), 2000);
@@ -1744,9 +1929,18 @@ function buscarRota() {
             if (rotaAtual) mapa.removeControl(rotaAtual);
             rotaAtual = L.Routing.control({
                 waypoints: [minhaLocalizacao, dest],
-                lineOptions: { styles: [{ color: '#4169E1', weight: 5, opacity: 0.7 }] },
+                lineOptions: { 
+                    styles: [{ 
+                        color: '#4169E1', 
+                        weight: 6, 
+                        opacity: 0.4
+                    }] 
+                },
                 createMarker: () => null,
-                show: false
+                show: false,
+                routeWhileDragging: true,
+                addWaypoints: false,
+                fitSelectedRoutes: true
             }).addTo(mapa);
             
             mapa.flyToBounds(L.latLngBounds([minhaLocalizacao, dest]));
