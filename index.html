@@ -137,16 +137,22 @@
             color: white;
             border: none;
             width: 45px;
+            height: 45px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: background 0.2s;
+            flex-shrink: 0;
         }
         
         .lupa-mobile button i {
-            font-size: 18px;
+            font-size: 20px;
+        }
+        
+        .lupa-mobile button:hover {
+            background: #054a40;
         }
         
         /* ===== BARRA INFERIOR ===== */
@@ -266,7 +272,7 @@
             100% { box-shadow: 0 0 0 0 rgba(229,57,53,0); }
         }
         
-        /* ===== REPORTE E LEGENDA NA MESMA LINHA ===== */
+        /* ===== REPORTE E LEGENDA COMPACTA ===== */
         .info-container {
             position: fixed;
             bottom: 100px;
@@ -274,7 +280,7 @@
             z-index: 9300;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
         
         .reporte-btn-mobile {
@@ -282,23 +288,23 @@
             backdrop-filter: blur(5px);
             border: 2px solid #00BFFF;
             border-radius: 30px;
-            padding: 8px 18px;
+            padding: 6px 14px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 700;
             color: #00BFFF;
             box-shadow: 0 0 15px rgba(0,191,255,0.3);
         }
         
         .reporte-led {
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             background: #4caf50;
-            box-shadow: 0 0 15px #4caf50;
+            box-shadow: 0 0 10px #4caf50;
             animation: ledPulse 1.5s infinite;
         }
         
@@ -307,27 +313,27 @@
             50% { opacity: 0.5; }
         }
         
-        /* Legenda na mesma linha */
+        /* Legenda compacta */
         .legenda-container {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
             background: rgba(40,40,40,0.9);
             backdrop-filter: blur(5px);
             border: 2px solid #00BFFF;
             border-radius: 30px;
-            padding: 8px 18px;
+            padding: 6px 14px;
         }
         
         .legenda-item {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
         }
         
         .legenda-cor {
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
         }
         
@@ -337,13 +343,13 @@
         
         .legenda-texto {
             color: white;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 600;
         }
         
         .legenda-fechar {
-            width: 20px;
-            height: 20px;
+            width: 16px;
+            height: 16px;
             background: #e53935;
             border: 1px solid #00BFFF;
             border-radius: 50%;
@@ -352,14 +358,14 @@
             justify-content: center;
             cursor: pointer;
             color: white;
-            font-size: 12px;
-            margin-left: 5px;
+            font-size: 10px;
+            margin-left: 4px;
         }
         
         /* ===== PAINEL DE ALERTAS ===== */
         .alertas-panel-mobile {
             position: fixed;
-            bottom: 200px;
+            bottom: 160px;
             left: 15px;
             background: rgba(40,40,40,0.95);
             backdrop-filter: blur(10px);
@@ -450,8 +456,8 @@
         }
         
         .recentrar-btn-mobile {
-            width: 48px;
-            height: 48px;
+            width: 45px;
+            height: 45px;
             background: rgba(40,40,40,0.9);
             backdrop-filter: blur(5px);
             border: 3px solid #00BFFF;
@@ -461,7 +467,7 @@
             justify-content: center;
             cursor: pointer;
             color: #00BFFF;
-            font-size: 22px;
+            font-size: 20px;
             box-shadow: 0 0 20px rgba(0,191,255,0.5);
             animation: pulseBlue 2s infinite;
         }
@@ -902,36 +908,13 @@
             box-shadow: 0 0 20px rgba(0,191,255,0.3);
         }
         
-        /* ===== CARRO VISTA SUPERIOR ===== */
-        .carro-topo-container {
-            position: relative;
-            width: 48px;
-            height: 48px;
-        }
-        
-        .pulsante-azul {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: rgba(0, 191, 255, 0.3);
-            border: 4px solid #00BFFF;
-            position: absolute;
-            left: 0;
-            top: 0;
-            animation: pulseAzul 1.5s infinite;
-            box-shadow: 0 0 20px #00BFFF;
-        }
-        
-        .carro-icone-topo {
-            font-size: 36px;
-            position: absolute;
-            left: 6px;
-            top: 6px;
-            z-index: 2;
+        /* ===== CARRO SIMPLES E FUNCIONAL ===== */
+        .carro-simples {
+            font-size: 32px;
             filter: drop-shadow(0 0 10px #00BFFF);
+            color: #00BFFF;
         }
         
-        /* Ponto azul para zoom afastado */
         .ponto-azul {
             width: 20px;
             height: 20px;
@@ -948,17 +931,12 @@
             100% { transform: scale(1); opacity: 1; }
         }
         
-        @keyframes pulseAzul {
-            0% { transform: scale(0.9); opacity: 1; }
-            50% { transform: scale(1.3); opacity: 0.6; }
-            100% { transform: scale(0.9); opacity: 1; }
-        }
-        
-        /* ===== ÍCONE ALERTA COM FOTO ===== */
+        /* ===== ÍCONE ALERTA COM FOTO - FORA DO CLUSTER ===== */
         .alerta-com-foto {
             position: relative;
             width: 50px;
             height: 50px;
+            z-index: 10000 !important;
         }
         
         .alerta-pulsante {
@@ -1019,21 +997,8 @@
         /* ===== LINHA DA ROTA ===== */
         .leaflet-routing-container { display: none !important; }
         
-        /* ===== CLUSTER ===== */
-        .cluster-azul {
-            background: #00BFFF;
-            color: white;
-            border: 3px solid white;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 14px;
-            box-shadow: 0 0 20px #00BFFF;
-        }
+        /* ===== CLUSTER DESATIVADO PARA ALERTAS ===== */
+        .leaflet-marker-icon { z-index: 1000 !important; }
         
         /* ===== OCULTAR INTERFACE ===== */
         .interface-oculta .header-mobile,
@@ -1166,14 +1131,14 @@
     </div>
 </div>
 
-<!-- REPORTE E LEGENDA NA MESMA LINHA -->
+<!-- REPORTE E LEGENDA -->
 <div class="info-container">
     <div class="reporte-btn-mobile" onclick="toggleReporteMobile()">
         <span class="reporte-led"></span>
         <span>REPORTE</span>
     </div>
     
-    <!-- Legenda compacta na mesma linha -->
+    <!-- Legenda compacta -->
     <div class="legenda-container" id="legendaContainer">
         <div class="legenda-item">
             <div class="legenda-cor legenda-verde"></div>
@@ -1385,14 +1350,17 @@ function iniciarMapa() {
     mapa = L.map('map', { zoomControl: false }).setView([-25.4284, -49.2733], 13);
     L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(mapa);
     
+    // Cluster APENAS para usuários, NÃO para alertas
     clusterGroup = L.markerClusterGroup({
         maxClusterRadius: 50,
+        showCoverageOnHover: false,
+        zoomToBoundsOnClick: true,
         iconCreateFunction: function(cluster) {
             const count = cluster.getChildCount();
             return L.divIcon({
-                html: `<div class="cluster-azul">${count}</div>`,
+                html: `<div style="background:#00BFFF; color:white; border:2px solid white; border-radius:50%; width:35px; height:35px; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px; box-shadow:0 0 15px #00BFFF;">${count}</div>`,
                 className: '',
-                iconSize: [40,40]
+                iconSize: [35,35]
             });
         }
     });
@@ -1418,15 +1386,10 @@ function atualizarIconeCarro() {
     if (zoomAtual >= 15) {
         meuMarcador = L.marker(minhaLocalizacao, { 
             icon: L.divIcon({
-                html: `
-                    <div class="carro-topo-container">
-                        <div class="pulsante-azul"></div>
-                        <div class="carro-icone-topo">⬆️</div>
-                    </div>
-                `,
+                html: `<div class="carro-simples">🚗</div>`,
                 className: '',
-                iconSize: [48, 48],
-                iconAnchor: [24, 24]
+                iconSize: [32, 32],
+                iconAnchor: [16, 16]
             })
         }).addTo(mapa);
     } else {
@@ -1456,15 +1419,10 @@ function iniciarGPS() {
             if (zoomAtual >= 15) {
                 meuMarcador = L.marker(minhaLocalizacao, { 
                     icon: L.divIcon({
-                        html: `
-                            <div class="carro-topo-container">
-                                <div class="pulsante-azul"></div>
-                                <div class="carro-icone-topo">⬆️</div>
-                            </div>
-                        `,
+                        html: `<div class="carro-simples">🚗</div>`,
                         className: '',
-                        iconSize: [48, 48],
-                        iconAnchor: [24, 24]
+                        iconSize: [32, 32],
+                        iconAnchor: [16, 16]
                     })
                 }).addTo(mapa);
             } else {
@@ -1507,7 +1465,7 @@ function carregarUsuarios() {
                 if (id !== usuario) {
                     L.marker([d.lat, d.lng], {
                         icon: L.divIcon({ 
-                            html: `<div style="font-size:24px; filter:drop-shadow(0 0 8px #00BFFF); color:#00BFFF;">⬆️</div>`, 
+                            html: `<div style="font-size:24px; filter:drop-shadow(0 0 8px #00BFFF); color:#00BFFF;">🚗</div>`, 
                             className: '', 
                             iconSize: [24,24],
                             iconAnchor: [12,12]
@@ -1555,7 +1513,13 @@ function comprimirImagemParaBase64(blob, maxWidth) {
     });
 }
 
-// ===== FUNÇÃO PARA FORMATAR TEMPO (ex: 4h26min) =====
+// ===== FUNÇÃO PARA FORMATAR HORA =====
+function formatarHora(timestamp) {
+    const data = new Date(timestamp);
+    return data.getHours().toString().padStart(2, '0') + ':' + data.getMinutes().toString().padStart(2, '0');
+}
+
+// ===== FUNÇÃO PARA FORMATAR TEMPO =====
 function formatarTempo(minutos) {
     if (minutos < 60) {
         return minutos + 'min';
@@ -1564,12 +1528,6 @@ function formatarTempo(minutos) {
         const mins = minutos % 60;
         return horas + 'h' + (mins < 10 ? '0' : '') + mins + 'min';
     }
-}
-
-// ===== FUNÇÃO PARA FORMATAR HORA (sem segundos) =====
-function formatarHora(timestamp) {
-    const data = new Date(timestamp);
-    return data.getHours().toString().padStart(2, '0') + ':' + data.getMinutes().toString().padStart(2, '0');
 }
 
 // ===== FUNÇÃO PARA ABRIR CÂMERA =====
@@ -1702,9 +1660,9 @@ async function abrirCameraParaAlerta(alerta, id) {
                     alertasMapa[id] = alertaData;
                     await db.ref('alertas_fixos/' + id).set(alertaData);
                     
-                    // Adicionar ao cluster imediatamente
+                    // Adicionar DIRETAMENTE ao mapa (não ao cluster)
                     const novoMarcador = criarMarcadorAlerta(alertaData, id);
-                    clusterGroup.addLayer(novoMarcador);
+                    novoMarcador.addTo(mapa);
                     pulsantesAlertas[id] = novoMarcador;
                     
                     mostrarNotificacao('✅ Alerta com foto criado!');
@@ -1730,9 +1688,9 @@ async function abrirCameraParaAlerta(alerta, id) {
             alertasMapa[id] = alertaData;
             db.ref('alertas_fixos/' + id).set(alertaData);
             
-            // Adicionar ao cluster imediatamente
+            // Adicionar DIRETAMENTE ao mapa
             const novoMarcador = criarMarcadorAlerta(alertaData, id);
-            clusterGroup.addLayer(novoMarcador);
+            novoMarcador.addTo(mapa);
             pulsantesAlertas[id] = novoMarcador;
             
             mostrarNotificacao('Alerta criado');
@@ -1755,7 +1713,7 @@ async function abrirCameraParaAlerta(alerta, id) {
         db.ref('alertas_fixos/' + id).set(alertaData);
         
         const novoMarcador = criarMarcadorAlerta(alertaData, id);
-        clusterGroup.addLayer(novoMarcador);
+        novoMarcador.addTo(mapa);
         pulsantesAlertas[id] = novoMarcador;
     }
 }
@@ -1817,7 +1775,7 @@ function carregarAlertas() {
         alertasMapa[id] = a;
         
         const marcador = criarMarcadorAlerta(a, id);
-        marcador.addTo(clusterGroup);
+        marcador.addTo(mapa); // Direto no mapa, não no cluster
         pulsantesAlertas[id] = marcador;
     });
 }
@@ -1947,6 +1905,14 @@ function toggleChatGeral() {
 
 function fecharChatGeral() { document.getElementById('chatGeralMobile').style.display = 'none'; }
 
+function gerarCorUsuario(nome) {
+    let hash = 0;
+    for (let i = 0; i < nome.length; i++) {
+        hash = nome.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return `hsl(${hash % 360}, 70%, 40%)`;
+}
+
 function carregarChat() {
     db.ref('chat_geral').orderByChild('timestamp').on('value', snap => {
         const msgs = snap.val();
@@ -1987,14 +1953,6 @@ function carregarChat() {
         chatDiv.innerHTML = html;
         chatDiv.scrollTop = chatDiv.scrollHeight;
     });
-}
-
-function gerarCorUsuario(nome) {
-    let hash = 0;
-    for (let i = 0; i < nome.length; i++) {
-        hash = nome.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    return `hsl(${hash % 360}, 70%, 40%)`;
 }
 
 function responderMsg(user, txt) {
