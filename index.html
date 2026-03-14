@@ -100,7 +100,7 @@
             color: #00BFFF;
         }
         
-        /* ===== LUPA MOBILE ===== */
+        /* ===== LUPA MOBILE - CORRIGIDA ===== */
         .lupa-mobile {
             position: fixed;
             top: 10px;
@@ -266,15 +266,15 @@
             100% { box-shadow: 0 0 0 0 rgba(229,57,53,0); }
         }
         
-        /* ===== REPORTE ===== */
-        .reporte-container {
+        /* ===== REPORTE E LEGENDA NA MESMA LINHA ===== */
+        .info-container {
             position: fixed;
             bottom: 100px;
             left: 15px;
             z-index: 9300;
             display: flex;
-            flex-direction: column;
-            gap: 8px;
+            align-items: center;
+            gap: 10px;
         }
         
         .reporte-btn-mobile {
@@ -307,22 +307,22 @@
             50% { opacity: 0.5; }
         }
         
-        /* ===== LEGENDA COMPACTA ===== */
+        /* Legenda na mesma linha */
         .legenda-container {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
             background: rgba(40,40,40,0.9);
             backdrop-filter: blur(5px);
             border: 2px solid #00BFFF;
             border-radius: 30px;
-            padding: 5px 12px;
+            padding: 8px 18px;
         }
         
         .legenda-item {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
         }
         
         .legenda-cor {
@@ -337,13 +337,13 @@
         
         .legenda-texto {
             color: white;
-            font-size: 10px;
+            font-size: 11px;
             font-weight: 600;
         }
         
         .legenda-fechar {
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
             background: #e53935;
             border: 1px solid #00BFFF;
             border-radius: 50%;
@@ -353,7 +353,7 @@
             cursor: pointer;
             color: white;
             font-size: 12px;
-            margin-left: 4px;
+            margin-left: 5px;
         }
         
         /* ===== PAINEL DE ALERTAS ===== */
@@ -582,7 +582,7 @@
         }
         
         .mensagem-hora {
-            font-size: 9px;
+            font-size: 10px;
             color: #999;
             margin-top: 3px;
             text-align: right;
@@ -902,19 +902,11 @@
             box-shadow: 0 0 20px rgba(0,191,255,0.3);
         }
         
-        /* ===== CARRO AZUL (VISTA SUPERIOR) ===== */
+        /* ===== CARRO VISTA SUPERIOR ===== */
         .carro-topo-container {
             position: relative;
             width: 48px;
             height: 48px;
-        }
-        
-        .carro-topo {
-            font-size: 40px;
-            line-height: 1;
-            transform: rotate(0deg);
-            filter: drop-shadow(0 0 15px #00BFFF);
-            color: #00BFFF;
         }
         
         .pulsante-azul {
@@ -931,10 +923,12 @@
         }
         
         .carro-icone-topo {
+            font-size: 36px;
             position: absolute;
-            left: 4px;
-            top: 4px;
+            left: 6px;
+            top: 6px;
             z-index: 2;
+            filter: drop-shadow(0 0 10px #00BFFF);
         }
         
         /* Ponto azul para zoom afastado */
@@ -1045,7 +1039,7 @@
         .interface-oculta .header-mobile,
         .interface-oculta .lupa-mobile,
         .interface-oculta .barra-inferior-mobile,
-        .interface-oculta .reporte-container,
+        .interface-oculta .info-container,
         .interface-oculta .btn-encerrar-rota,
         .interface-oculta .rota-info-panel,
         .interface-oculta .gravando-indicator,
@@ -1172,26 +1166,26 @@
     </div>
 </div>
 
-<!-- REPORTE E LEGENDA -->
-<div class="reporte-container">
+<!-- REPORTE E LEGENDA NA MESMA LINHA -->
+<div class="info-container">
     <div class="reporte-btn-mobile" onclick="toggleReporteMobile()">
         <span class="reporte-led"></span>
         <span>REPORTE</span>
     </div>
     
-    <!-- Legenda compacta -->
+    <!-- Legenda compacta na mesma linha -->
     <div class="legenda-container" id="legendaContainer">
         <div class="legenda-item">
             <div class="legenda-cor legenda-verde"></div>
-            <span class="legenda-texto">N</span>
+            <span class="legenda-texto">Normal</span>
         </div>
         <div class="legenda-item">
             <div class="legenda-cor legenda-amarelo"></div>
-            <span class="legenda-texto">I</span>
+            <span class="legenda-texto">Intenso</span>
         </div>
         <div class="legenda-item">
             <div class="legenda-cor legenda-vermelho"></div>
-            <span class="legenda-texto">L</span>
+            <span class="legenda-texto">Lento</span>
         </div>
         <div class="legenda-fechar" onclick="fecharLegenda()">✕</div>
     </div>
@@ -1427,9 +1421,7 @@ function atualizarIconeCarro() {
                 html: `
                     <div class="carro-topo-container">
                         <div class="pulsante-azul"></div>
-                        <div class="carro-icone-topo">
-                            <div class="carro-topo">⬆️</div>
-                        </div>
+                        <div class="carro-icone-topo">⬆️</div>
                     </div>
                 `,
                 className: '',
@@ -1467,9 +1459,7 @@ function iniciarGPS() {
                         html: `
                             <div class="carro-topo-container">
                                 <div class="pulsante-azul"></div>
-                                <div class="carro-icone-topo">
-                                    <div class="carro-topo">⬆️</div>
-                                </div>
+                                <div class="carro-icone-topo">⬆️</div>
                             </div>
                         `,
                         className: '',
@@ -1563,6 +1553,23 @@ function comprimirImagemParaBase64(blob, maxWidth) {
             resolve(null);
         };
     });
+}
+
+// ===== FUNÇÃO PARA FORMATAR TEMPO (ex: 4h26min) =====
+function formatarTempo(minutos) {
+    if (minutos < 60) {
+        return minutos + 'min';
+    } else {
+        const horas = Math.floor(minutos / 60);
+        const mins = minutos % 60;
+        return horas + 'h' + (mins < 10 ? '0' : '') + mins + 'min';
+    }
+}
+
+// ===== FUNÇÃO PARA FORMATAR HORA (sem segundos) =====
+function formatarHora(timestamp) {
+    const data = new Date(timestamp);
+    return data.getHours().toString().padStart(2, '0') + ':' + data.getMinutes().toString().padStart(2, '0');
 }
 
 // ===== FUNÇÃO PARA ABRIR CÂMERA =====
@@ -1838,7 +1845,7 @@ function abrirPopupAlerta(alerta, id) {
         <div class="popup-stats-mobile">
             <span class="likes" onclick="curtirAlerta('${id}')"><i class="fas fa-thumbs-up"></i> ${alerta.confirmacoes||0}</span>
             <span class="dislikes" onclick="descurtirAlerta('${id}')"><i class="fas fa-thumbs-down"></i> 0</span>
-            <span><i class="fas fa-clock"></i> ${new Date(alerta.timestamp).toLocaleTimeString()}</span>
+            <span><i class="fas fa-clock"></i> ${formatarHora(alerta.timestamp)}</span>
         </div>
         <div class="popup-chat-mobile" id="chat-${id}"></div>
         <div class="popup-input-mobile">
@@ -1868,7 +1875,7 @@ function carregarChatAlerta(id) {
         let html = '';
         Object.values(msgs).forEach(m => {
             html += `<div style="background:${m.usuario===usuario?'#dcf8c6':'white'}; margin:5px 0; padding:6px; border-radius:10px; font-size:12px; border:1px solid #ddd; color:#333;">
-                <b>${m.usuario}</b><br>${m.texto}<br><small style="color:#999;">${m.hora}</small>
+                <b>${m.usuario}</b><br>${m.texto}<br><small style="color:#999;">${formatarHora(m.timestamp)}</small>
             </div>`;
         });
         chatDiv.innerHTML = html;
@@ -1879,7 +1886,7 @@ function enviarMsgAlerta(id) {
     const input = document.getElementById(`input-${id}`);
     if (!input.value.trim()) return;
     db.ref(`chats/alerta_${id}`).push({
-        usuario, texto: input.value.trim(), hora: new Date().toLocaleTimeString(), timestamp: Date.now()
+        usuario, texto: input.value.trim(), hora: formatarHora(Date.now()), timestamp: Date.now()
     });
     input.value = '';
 }
@@ -1965,7 +1972,7 @@ function carregarChat() {
                     <div class="mensagem ${isMinha ? 'minha' : 'outra'}">
                         <div class="mensagem-remetente" style="color:${corUsuario}">${msg.usuario}</div>
                         ${msg.texto}
-                        <div class="mensagem-hora">${msg.hora}</div>
+                        <div class="mensagem-hora">${formatarHora(msg.timestamp)}</div>
                     </div>
                     <div class="mensagem-acoes">
                         <span class="acao" onclick="responderMsg('${msg.usuario}', '${msg.texto.replace(/'/g, "\\'")}')">↩️</span>
@@ -2017,7 +2024,7 @@ function enviarMsgGeral() {
         usuario: usuario,
         telefone: telefone,
         texto: texto,
-        hora: new Date().toLocaleTimeString(),
+        hora: formatarHora(Date.now()),
         timestamp: Date.now()
     };
     
@@ -2175,10 +2182,13 @@ function buscarRota() {
             document.getElementById('rotaInfoPanel').style.display = 'flex';
             document.getElementById('btnEncerrarRota').style.display = 'flex';
             
-            const dist = calcularDistancia(minhaLocalizacao.lat, minhaLocalizacao.lng, dest.lat, dest.lng);
-            document.getElementById('rotaTempo').textContent = Math.round(dist * 1.2) + 'min';
+            const dist = parseFloat(calcularDistancia(minhaLocalizacao.lat, minhaLocalizacao.lng, dest.lat, dest.lng));
+            const tempoMin = Math.round(dist * 1.2);
+            const atraso = Math.round(tempoMin * 0.2);
+            
+            document.getElementById('rotaTempo').textContent = formatarTempo(tempoMin);
             document.getElementById('rotaDistancia').textContent = dist + ' km';
-            document.getElementById('rotaAtraso').textContent = '+' + Math.round(dist * 0.24) + 'min';
+            document.getElementById('rotaAtraso').textContent = '+' + formatarTempo(atraso);
         });
 }
 
