@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BR-277 | TRÂNSITO AO VIVO - ULTRA</title>
+    <title>BR-277 | COCKPIT RACING</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
@@ -11,16 +11,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body, #map { height: 100%; width: 100%; font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif; }
+        html, body, #map { height: 100%; width: 100%; font-family: 'Segoe UI', 'Helvetica Neue', 'Courier New', monospace; }
         
-        /* ===== MODAL DE BOAS-VINDAS ULTRA ===== */
+        /* ===== MODAL DE BOAS-VINDAS RACING ===== */
         .welcome-modal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at 20% 30%, #1a1a2e, #0a0a0f);
+            background: linear-gradient(145deg, #0a0a12, #010104);
             z-index: 999999;
             display: flex;
             align-items: center;
@@ -30,122 +30,138 @@
         }
         
         .welcome-content {
-            background: linear-gradient(145deg, #1e1e2f, #13131f);
-            padding: 40px;
-            border-radius: 50px;
+            background: rgba(10, 10, 20, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 35px;
+            border-radius: 40px;
             text-align: center;
-            max-width: 520px;
+            max-width: 480px;
             width: 100%;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.8), 0 0 0 2px rgba(255,215,0,0.3), 0 0 30px rgba(255,215,0,0.2);
-            border: 1px solid rgba(255,215,0,0.4);
-            backdrop-filter: blur(10px);
-            max-height: 90vh;
-            overflow-y: auto;
+            box-shadow: 0 30px 50px rgba(0,0,0,0.8), 0 0 0 2px #ffd700, 0 0 30px #ffd700;
+            border: 1px solid rgba(255,215,0,0.5);
         }
         
         .welcome-content h2 {
             color: #ffd700;
-            margin-bottom: 10px;
-            font-size: 38px;
-            font-weight: 700;
-            text-shadow: 0 0 20px rgba(255,215,0,0.5);
-            letter-spacing: 2px;
+            margin-bottom: 8px;
+            font-size: 36px;
+            font-weight: 800;
+            text-shadow: 0 0 20px #ffd700;
+            letter-spacing: 3px;
         }
         
         .welcome-content input {
             width: 100%;
             padding: 16px 20px;
-            background: rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.05);
             border: 2px solid #ffd700;
-            border-radius: 40px;
+            border-radius: 50px;
             margin: 12px 0;
             font-size: 16px;
             outline: none;
             color: white;
-            transition: all 0.3s;
-            box-shadow: 0 0 20px rgba(255,215,0,0.2);
+            font-weight: 600;
+            letter-spacing: 1px;
         }
         
-        .welcome-content input:focus {
-            border-color: #ffd700;
-            box-shadow: 0 0 30px #ffd700;
-            background: rgba(255,215,0,0.1);
+        /* ===== HEADER SUPERIOR RACING ===== */
+        .header-racing {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 9000;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
         
-        /* ===== PERMISSÕES ULTRA ===== */
-        .permissoes-container {
-            background: rgba(255,215,0,0.08);
-            border-radius: 30px;
-            padding: 20px;
-            margin: 25px 0;
-            text-align: left;
-            border: 1px solid #ffd700;
-            backdrop-filter: blur(5px);
-        }
-        
-        .permissao-item {
+        .contador-racing {
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            color: #ffd700;
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-size: 12px;
+            font-weight: 800;
             display: flex;
             align-items: center;
-            gap: 15px;
-            color: white;
-            margin: 15px 0;
-            font-size: 15px;
+            gap: 8px;
+            border: 2px solid #ffd700;
+            box-shadow: 0 0 20px rgba(255,215,0,0.3);
+            letter-spacing: 1px;
         }
         
-        .permissao-item i {
+        .logo-racing {
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
             color: #ffd700;
-            width: 25px;
-            font-size: 18px;
+            padding: 6px 15px;
+            border-radius: 40px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 2px solid #ffd700;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 700;
         }
         
-        .permissao-status {
-            margin-left: auto;
-            font-size: 12px;
-            padding: 4px 12px;
-            border-radius: 30px;
-            background: rgba(255,255,255,0.1);
+        .logo-racing:hover {
+            background: rgba(255,215,0,0.2);
+            transform: scale(1.02);
+        }
+        
+        /* ===== LUPA RACING ===== */
+        .lupa-racing {
+            position: fixed;
+            top: 15px;
+            left: 200px;
+            width: 260px;
+            z-index: 9000;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 50px;
+            border: 2px solid #ffd700;
+            display: flex;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(255,215,0,0.3);
+        }
+        
+        .lupa-racing input {
+            flex: 1;
+            padding: 12px 18px;
+            border: none;
+            font-size: 14px;
+            background: transparent;
+            color: white;
             font-weight: 600;
             letter-spacing: 0.5px;
         }
         
-        .permissao-status.checked {
-            color: #4caf50;
-            background: rgba(76,175,80,0.15);
+        .lupa-racing input::placeholder {
+            color: rgba(255,215,0,0.6);
+            font-weight: 400;
         }
         
-        .permissao-status.unchecked {
-            color: #e53935;
-            background: rgba(229,57,53,0.15);
+        .lupa-racing button {
+            background: #ffd700;
+            color: #0a0a0a;
+            border: none;
+            width: 50px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 900;
+            transition: all 0.3s;
         }
         
-        /* ===== ÍCONE DO CARRO ULTRA ===== */
-        .carro-marcador {
-            background: transparent !important;
-            border: none !important;
-            filter: drop-shadow(0 0 15px rgba(0,191,255,0.8));
+        .lupa-racing button:hover {
+            background: #00BFFF;
+            color: white;
         }
         
-        .pulsante-azul {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            animation: pulse-ultra 1.8s infinite;
-            background: rgba(0, 191, 255, 0.25);
-            border: 4px solid #00BFFF;
-            position: absolute;
-            left: -2px;
-            top: -2px;
-            box-shadow: 0 0 30px #00BFFF;
-        }
-        
-        @keyframes pulse-ultra {
-            0% { transform: scale(0.9); opacity: 1; }
-            50% { transform: scale(1.3); opacity: 0.6; }
-            100% { transform: scale(0.9); opacity: 1; }
-        }
-        
-        /* ===== BARRA DE CONTROLES ULTRA TECNOLÓGICA ===== */
-        .control-bar {
+        /* ===== BARRA INFERIOR COCKPIT RACING ===== */
+        .cockpit-bar {
             position: fixed;
             bottom: 25px;
             left: 50%;
@@ -153,197 +169,125 @@
             z-index: 9500;
             display: flex;
             align-items: center;
-            gap: 15px;
-            background: rgba(10, 10, 20, 0.85);
+            gap: 12px;
+            background: rgba(5, 5, 10, 0.9);
             backdrop-filter: blur(20px);
             padding: 12px 25px;
-            border-radius: 80px;
+            border-radius: 60px;
             border: 2px solid #ffd700;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 30px rgba(255,215,0,0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 0 30px #ffd700;
         }
         
-        /* LEDs decorativos */
-        .control-bar::before {
-            content: '';
-            position: absolute;
-            top: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60%;
-            height: 4px;
-            background: linear-gradient(90deg, transparent, #ffd700, #00BFFF, #ffd700, transparent);
-            border-radius: 10px;
-            filter: blur(2px);
-        }
-        
-        .control-bar::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 40%;
-            height: 4px;
-            background: linear-gradient(90deg, transparent, #00BFFF, #ffd700, #00BFFF, transparent);
-            border-radius: 10px;
-            filter: blur(2px);
-        }
-        
-        .control-item {
-            position: relative;
+        /* Velocímetro digital na barra */
+        .velocimetro-bar {
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(145deg, #1a1a2a, #0a0a1a);
+            padding: 8px 18px;
+            border-radius: 40px;
+            border: 2px solid #00BFFF;
+            box-shadow: 0 0 20px #00BFFF;
+        }
+        
+        .vel-numero {
+            font-size: 28px;
+            font-weight: 900;
+            color: #00BFFF;
+            text-shadow: 0 0 15px #00BFFF;
+            font-family: 'Courier New', monospace;
+            min-width: 60px;
+            text-align: center;
+        }
+        
+        .vel-unidade {
+            font-size: 12px;
+            color: white;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        
+        /* Botões da barra */
+        .btn-cockpit {
+            position: relative;
+            width: 55px;
+            height: 55px;
+            border-radius: 40px;
+            background: linear-gradient(145deg, #1a1a2a, #0a0a1a);
+            border: 2px solid #ffd700;
+            display: flex;
             align-items: center;
             justify-content: center;
-            width: 65px;
-            height: 65px;
-            border-radius: 30px;
-            background: linear-gradient(145deg, #1e1e2e, #14141f);
-            border: 2px solid #ffd700;
-            color: #ffd700;
             cursor: pointer;
+            color: #ffd700;
+            font-size: 22px;
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.4), inset 0 2px 5px rgba(255,215,0,0.2);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
         }
         
-        /* LED individual */
-        .control-item::before {
-            content: '';
-            position: absolute;
-            top: -5px;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #4caf50;
-            box-shadow: 0 0 15px #4caf50;
-            animation: led-pulse 2s infinite;
-        }
-        
-        .control-item:nth-child(1)::before { left: 10px; background: #00BFFF; box-shadow: 0 0 15px #00BFFF; }
-        .control-item:nth-child(2)::before { left: 25px; background: #ffd700; box-shadow: 0 0 15px #ffd700; }
-        .control-item:nth-child(3)::before { right: 25px; background: #00BFFF; box-shadow: 0 0 15px #00BFFF; }
-        .control-item:nth-child(4)::before { right: 10px; background: #ffd700; box-shadow: 0 0 15px #ffd700; }
-        
-        @keyframes led-pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.3); }
-        }
-        
-        .control-item:hover {
-            transform: translateY(-5px) scale(1.05);
+        .btn-cockpit:hover {
+            transform: translateY(-5px);
             border-color: #00BFFF;
-            box-shadow: 0 15px 30px rgba(0,191,255,0.4), inset 0 0 20px rgba(0,191,255,0.3);
+            box-shadow: 0 0 30px #00BFFF;
         }
         
-        .control-item.ativo {
+        .btn-cockpit.ativo {
             border-color: #00BFFF;
             background: linear-gradient(145deg, #00BFFF22, #00BFFF11);
             box-shadow: 0 0 30px #00BFFF;
         }
         
-        .control-item.mudo {
+        .btn-cockpit.mudo {
             border-color: #e53935;
-            background: linear-gradient(145deg, #e5393522, #e5393511);
             box-shadow: 0 0 30px #e53935;
         }
         
-        .control-icon {
-            font-size: 26px;
-            line-height: 1;
-            margin-bottom: 2px;
-            filter: drop-shadow(0 0 8px currentColor);
-        }
-        
-        .control-label {
-            font-size: 9px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            opacity: 0.9;
-        }
-        
-        .control-value {
+        /* LED em cada botão */
+        .btn-cockpit::before {
+            content: '';
             position: absolute;
-            top: -20px;
-            background: #ffd700;
-            color: #0a0a0a;
-            font-size: 10px;
-            font-weight: 800;
-            padding: 2px 6px;
-            border-radius: 20px;
-            border: 1px solid white;
-            box-shadow: 0 0 15px #ffd700;
-        }
-        
-        /* ===== BOTÃO RECENTRALIZAR ULTRA ===== */
-        .btn-recentrar-ultra {
-            position: fixed;
-            bottom: 120px;
-            right: 25px;
-            z-index: 9400;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        .recentrar-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(145deg, #0a0a1a, #1a1a2a);
-            backdrop-filter: blur(10px);
-            border: 3px solid #00BFFF;
+            top: -4px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: #00BFFF;
-            font-size: 26px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 30px #00BFFF;
-            transition: all 0.3s;
-            animation: pulse-recentrar 2.5s infinite;
+            background: #4caf50;
+            box-shadow: 0 0 15px #4caf50;
+            animation: ledPulse 1.5s infinite;
         }
         
-        @keyframes pulse-recentrar {
-            0% { box-shadow: 0 0 0 0 rgba(0, 191, 255, 0.7); }
-            70% { box-shadow: 0 0 0 20px rgba(0, 191, 255, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(0, 191, 255, 0); }
+        .btn-cockpit:nth-child(2)::before { left: 15px; background: #00BFFF; box-shadow: 0 0 15px #00BFFF; }
+        .btn-cockpit:nth-child(3)::before { right: 15px; background: #ffd700; box-shadow: 0 0 15px #ffd700; }
+        .btn-cockpit:nth-child(4)::before { left: 15px; background: #00BFFF; box-shadow: 0 0 15px #00BFFF; }
+        .btn-cockpit:nth-child(5)::before { right: 15px; background: #ffd700; box-shadow: 0 0 15px #ffd700; }
+        
+        @keyframes ledPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.3); }
         }
         
-        .recentrar-icon:hover {
-            transform: scale(1.1) rotate(90deg);
-            background: #00BFFF;
-            color: white;
-        }
-        
-        /* ===== REPORTE ULTRA ===== */
-        .reporte-container {
+        /* ===== REPORTE RACING ===== */
+        .reporte-racing {
             position: fixed;
-            bottom: 120px;
+            bottom: 110px;
             left: 20px;
             z-index: 9300;
         }
         
-        .reporte-toggle-ultra {
-            background: linear-gradient(145deg, #0a0a1a, #1a1a2a);
+        .reporte-btn {
+            background: linear-gradient(145deg, #1a1a2a, #0a0a1a);
             backdrop-filter: blur(10px);
-            color: #ffd700;
-            border: 3px solid #ffd700;
+            border: 2px solid #ffd700;
             border-radius: 50px;
             padding: 12px 25px;
-            font-size: 14px;
-            font-weight: 800;
-            cursor: pointer;
             display: flex;
             align-items: center;
             gap: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 30px rgba(255,215,0,0.3);
-            letter-spacing: 2px;
-            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.6), 0 0 30px rgba(255,215,0,0.3);
             transition: all 0.3s;
         }
         
-        .reporte-toggle-ultra:hover {
+        .reporte-btn:hover {
             transform: scale(1.05);
             border-color: #00BFFF;
             box-shadow: 0 0 40px #00BFFF;
@@ -355,230 +299,156 @@
             border-radius: 50%;
             background: #4caf50;
             box-shadow: 0 0 20px #4caf50;
-            animation: led-pulse 1.5s infinite;
+            animation: ledPulse 1.5s infinite;
         }
         
-        /* ===== PAINEL DE ALERTAS ULTRA ===== */
-        .alertas-panel-ultra {
+        .reporte-texto {
+            color: #ffd700;
+            font-weight: 800;
+            font-size: 14px;
+            letter-spacing: 2px;
+        }
+        
+        .reporte-icon {
+            color: #ffd700;
+            font-size: 16px;
+        }
+        
+        /* ===== PAINEL DE ALERTAS RACING ===== */
+        .alertas-panel-racing {
             position: fixed;
-            bottom: 200px;
+            bottom: 180px;
             left: 20px;
-            background: rgba(10, 10, 20, 0.95);
+            background: rgba(5, 5, 10, 0.95);
             backdrop-filter: blur(20px);
-            border: 3px solid #ffd700;
+            border: 2px solid #ffd700;
             border-radius: 30px;
-            padding: 20px;
+            padding: 18px;
             display: none;
-            width: 260px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.8), 0 0 50px rgba(255,215,0,0.3);
+            width: 250px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 0 30px #ffd700;
             z-index: 9400;
         }
         
-        .alertas-panel-ultra.visivel {
+        .alertas-panel-racing.visivel {
             display: block;
-            animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: slideIn 0.3s;
         }
         
         @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-50px); }
+            from { opacity: 0; transform: translateX(-30px); }
             to { opacity: 1; transform: translateX(0); }
         }
         
-        .alertas-grid-ultra {
+        .alertas-grid-racing {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 12px;
             margin-bottom: 15px;
         }
         
-        .alerta-item-ultra {
+        .alerta-item-racing {
             aspect-ratio: 1/1;
-            border-radius: 20px;
+            border-radius: 25px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 5px;
             cursor: pointer;
             transition: all 0.3s;
             border: 2px solid transparent;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.6);
+            font-weight: 800;
             position: relative;
             overflow: hidden;
         }
         
-        .alerta-item-ultra:hover {
-            transform: translateY(-5px) scale(1.05);
+        .alerta-item-racing:hover {
+            transform: translateY(-5px);
             border-color: white;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+            box-shadow: 0 0 30px currentColor;
         }
         
-        .alerta-item-ultra::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
-            transform: rotate(45deg);
-            animation: shine 3s infinite;
-        }
-        
-        @keyframes shine {
-            0% { transform: translateX(-100%) rotate(45deg); }
-            20% { transform: translateX(100%) rotate(45deg); }
-            100% { transform: translateX(100%) rotate(45deg); }
-        }
-        
-        .alerta-icone-ultra {
-            font-size: 32px;
+        .alerta-icone-racing {
+            font-size: 30px;
             filter: drop-shadow(0 0 10px currentColor);
         }
         
-        .alerta-nome-ultra {
+        .alerta-nome-racing {
             font-size: 10px;
             font-weight: 800;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
+            color: white;
+            text-shadow: 0 2px 5px black;
         }
         
-        .btn-fechar-painel-ultra {
+        .btn-fechar-racing {
             width: 40px;
             height: 40px;
             background: #e53935;
-            border: 3px solid #ffd700;
+            border: 2px solid #ffd700;
             border-radius: 50%;
-            color: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            font-size: 20px;
             margin: 0 auto;
+            cursor: pointer;
+            color: white;
+            font-size: 20px;
             transition: all 0.3s;
             box-shadow: 0 0 20px #e53935;
         }
         
-        .btn-fechar-painel-ultra:hover {
-            transform: scale(1.1) rotate(90deg);
-            background: #ff0000;
+        .btn-fechar-racing:hover {
+            transform: rotate(90deg) scale(1.1);
         }
         
-        /* ===== VELOCÍMETRO DIGITAL ULTRA ===== */
-        .velocimetro-digital {
-            position: fixed;
-            bottom: 25px;
-            left: 25px;
-            z-index: 9300;
-            background: linear-gradient(145deg, #0a0a1a, #1a1a2a);
-            backdrop-filter: blur(10px);
-            border: 3px solid #ffd700;
-            border-radius: 60px;
-            padding: 10px 25px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 30px rgba(255,215,0,0.3);
-        }
-        
-        .vel-digital-valor {
-            font-size: 42px;
-            font-weight: 800;
-            color: #ffd700;
-            text-shadow: 0 0 20px #ffd700;
-            line-height: 1;
-            font-family: 'Courier New', monospace;
-        }
-        
-        .vel-digital-unidade {
-            font-size: 14px;
-            color: rgba(255,255,255,0.7);
-            font-weight: 600;
-            letter-spacing: 1px;
-        }
-        
-        .vel-digital-icon {
-            font-size: 28px;
-            color: #00BFFF;
-            filter: drop-shadow(0 0 10px #00BFFF);
-        }
-        
-        /* ===== SETA PARA OCULTAR ULTRA ===== */
-        .toggle-ultra {
-            position: fixed;
-            bottom: 25px;
-            left: 150px;
-            z-index: 9300;
-            cursor: pointer;
-        }
-        
-        .seta-ultra {
-            width: 55px;
-            height: 55px;
-            background: linear-gradient(145deg, #0a0a1a, #1a1a2a);
-            backdrop-filter: blur(10px);
-            border: 3px solid #ffd700;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ffd700;
-            font-size: 24px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 30px rgba(255,215,0,0.3);
-            transition: all 0.3s;
-        }
-        
-        .seta-ultra:hover {
-            transform: scale(1.1);
-            border-color: #00BFFF;
-            box-shadow: 0 0 40px #00BFFF;
-        }
-        
-        .interface-oculta .toggle-ultra .seta-ultra i {
-            transform: rotate(180deg);
-        }
-        
-        /* ===== LEGENDA ULTRA ===== */
-        .legenda-ultra {
+        /* ===== LEGENDA RACING ===== */
+        .legenda-racing {
             position: fixed;
             top: 20px;
             left: 50%;
             transform: translateX(-50%);
-            background: linear-gradient(145deg, #0a0a1a, #1a1a2a);
-            backdrop-filter: blur(10px);
-            border: 3px solid #ffd700;
-            border-radius: 60px;
+            background: rgba(5, 5, 10, 0.9);
+            backdrop-filter: blur(20px);
+            border: 2px solid #ffd700;
+            border-radius: 50px;
             padding: 8px 25px;
-            z-index: 9300;
+            z-index: 9200;
             display: flex;
             align-items: center;
             gap: 25px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 30px rgba(255,215,0,0.3);
         }
         
-        .legenda-item-ultra {
+        .legenda-item {
             display: flex;
             align-items: center;
             gap: 8px;
         }
         
-        .legenda-cor-ultra {
+        .legenda-cor {
             width: 12px;
             height: 12px;
             border-radius: 50%;
             box-shadow: 0 0 15px currentColor;
         }
         
-        .legenda-verde-ultra { background: #00ff00; box-shadow: 0 0 15px #00ff00; }
-        .legenda-amarelo-ultra { background: #ffff00; box-shadow: 0 0 15px #ffff00; }
-        .legenda-vermelho-ultra { background: #ff0000; box-shadow: 0 0 15px #ff0000; }
-        .legenda-roxo-ultra { background: #800080; box-shadow: 0 0 15px #800080; }
+        .legenda-verde { background: #00ff00; box-shadow: 0 0 15px #00ff00; }
+        .legenda-amarelo { background: #ffff00; box-shadow: 0 0 15px #ffff00; }
+        .legenda-vermelho { background: #ff0000; box-shadow: 0 0 15px #ff0000; }
         
-        .legenda-fechar-ultra {
-            width: 28px;
-            height: 28px;
-            background: rgba(229,57,53,0.3);
+        .legenda-texto {
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        
+        .legenda-fechar {
+            width: 24px;
+            height: 24px;
+            background: rgba(255,255,255,0.1);
             border: 2px solid #ffd700;
             border-radius: 50%;
             display: flex;
@@ -586,36 +456,350 @@
             justify-content: center;
             cursor: pointer;
             color: #ffd700;
-            font-size: 16px;
+            font-size: 14px;
             transition: all 0.3s;
         }
         
-        .legenda-fechar-ultra:hover {
+        .legenda-fechar:hover {
             background: #e53935;
             color: white;
-            transform: scale(1.1);
         }
         
-        .legenda-icone-ultra {
+        .legenda-icone {
             position: fixed;
             top: 20px;
             left: 50%;
             transform: translateX(-50%);
-            background: linear-gradient(145deg, #0a0a1a, #1a1a2a);
-            backdrop-filter: blur(10px);
-            border: 3px solid #ffd700;
+            background: rgba(5,5,10,0.9);
+            backdrop-filter: blur(20px);
+            border: 2px solid #ffd700;
             border-radius: 50px;
             padding: 10px 25px;
-            z-index: 9300;
+            z-index: 9200;
             display: none;
             align-items: center;
             gap: 10px;
             cursor: pointer;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
         }
         
-        /* ===== CLUSTER ULTRA ===== */
-        .cluster-marcador-ultra {
+        /* ===== RECENTRALIZAR RACING ===== */
+        .recentrar-racing {
+            position: fixed;
+            bottom: 110px;
+            right: 20px;
+            z-index: 9300;
+            display: none;
+        }
+        
+        .recentrar-btn {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(145deg, #1a1a2a, #0a0a1a);
+            border: 3px solid #00BFFF;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #00BFFF;
+            font-size: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 30px #00BFFF;
+            animation: pulseBlue 2s infinite;
+        }
+        
+        @keyframes pulseBlue {
+            0% { box-shadow: 0 0 0 0 rgba(0, 191, 255, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(0, 191, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 191, 255, 0); }
+        }
+        
+        .recentrar-btn:hover {
+            transform: scale(1.1) rotate(90deg);
+            background: #00BFFF;
+            color: white;
+        }
+        
+        /* ===== BOTÃO ENCERRAR ROTA ===== */
+        .btn-encerrar-rota {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: #e53935;
+            color: white;
+            border: 2px solid #ffd700;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 9400;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 0 30px #e53935;
+        }
+        
+        /* ===== PAINEL DE ROTA ===== */
+        .rota-info-panel {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(5,5,10,0.95);
+            backdrop-filter: blur(20px);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 60px;
+            display: none;
+            align-items: center;
+            gap: 30px;
+            border: 2px solid #ffd700;
+            z-index: 9400;
+            font-size: 14px;
+            font-weight: 700;
+            box-shadow: 0 0 30px #ffd700;
+        }
+        
+        /* ===== CHAT WHATSAPP RACING ===== */
+        .chat-racing {
+            position: fixed;
+            top: 10%;
+            left: 5%;
+            width: 90%;
+            height: 80%;
+            background: #0a0a1a;
+            z-index: 99999;
+            border-radius: 30px;
+            display: none;
+            flex-direction: column;
+            border: 3px solid #ffd700;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.9), 0 0 50px #ffd700;
+        }
+        
+        .chat-header-racing {
+            background: linear-gradient(90deg, #075e54, #0a7e6e);
+            color: white;
+            padding: 18px 20px;
+            border-radius: 27px 27px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #ffd700;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+        
+        .chat-mensagens-racing {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            background: #0f0f1f;
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAAbklEQVQ4jc2UOwrAIAxA38WpU8fq2F2K6GQp/VhLKm0LBYNbeA8egfgEAYCQUkpYXlSEjDHCOWf1QUTQWg8d+whKKUQE5xzGmGOpqqoYYwR3zpVS0FrHGCMAQERgjDnH0lpjjBEA4Jzz7u0fY0fB+u8LjwQAAAAASUVORK5CYII=');
+        }
+        
+        .mensagem-wrapper {
+            display: flex;
+            flex-direction: column;
+            margin: 8px 0;
+            max-width: 80%;
+        }
+        
+        .mensagem-wrapper.minha {
+            align-self: flex-end;
+        }
+        
+        .mensagem-wrapper.outra {
+            align-self: flex-start;
+        }
+        
+        .mensagem {
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            word-wrap: break-word;
+        }
+        
+        .mensagem.minha {
+            background: #075e54;
+            color: white;
+            border-radius: 20px 20px 2px 20px;
+        }
+        
+        .mensagem.outra {
+            background: #2a2a3a;
+            color: white;
+            border-radius: 20px 20px 20px 2px;
+            border: 1px solid #ffd700;
+        }
+        
+        .mensagem-remetente {
+            font-weight: 800;
+            font-size: 12px;
+            margin-bottom: 4px;
+            color: #ffd700;
+        }
+        
+        .mensagem-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 5px;
+            font-size: 10px;
+            color: rgba(255,255,255,0.6);
+        }
+        
+        .data-divider {
+            text-align: center;
+            margin: 15px 0;
+        }
+        
+        .data-divider span {
+            background: #ffd700;
+            color: #0a0a0a;
+            padding: 5px 20px;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 800;
+        }
+        
+        .chat-input-racing {
+            padding: 18px;
+            background: #0a0a1a;
+            display: flex;
+            gap: 12px;
+            border-top: 2px solid #ffd700;
+            border-radius: 0 0 27px 27px;
+        }
+        
+        .chat-input-racing input {
+            flex: 1;
+            padding: 14px 20px;
+            border-radius: 40px;
+            border: 2px solid #ffd700;
+            background: #1a1a2a;
+            color: white;
+            font-size: 14px;
+            outline: none;
+        }
+        
+        .chat-input-racing button {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            border: none;
+            background: #ffd700;
+            color: #0a0a0a;
+            cursor: pointer;
+            font-size: 20px;
+            transition: all 0.3s;
+        }
+        
+        .chat-input-racing button:hover {
+            background: #00BFFF;
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        /* ===== POPUP DE ALERTA RACING ===== */
+        .popup-racing {
+            background: #0f0f1f;
+            border: 3px solid #ffd700;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.9);
+        }
+        
+        .popup-header-racing {
+            padding: 15px;
+            color: white;
+            font-weight: 900;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #ffd700;
+        }
+        
+        .popup-imagem-racing {
+            padding: 15px;
+            background: #0a0a0a;
+            text-align: center;
+            border-bottom: 2px solid #ffd700;
+        }
+        
+        .popup-imagem-racing img {
+            max-width: 100%;
+            max-height: 180px;
+            border-radius: 20px;
+            border: 3px solid #ffd700;
+            cursor: pointer;
+        }
+        
+        .popup-stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 12px;
+            background: #1a1a2a;
+            border-bottom: 2px solid #ffd700;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        
+        .stat-item i {
+            color: #ffd700;
+            font-size: 16px;
+        }
+        
+        .stat-value {
+            color: #00BFFF;
+            font-weight: 900;
+        }
+        
+        .popup-chat {
+            padding: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            background: #0f0f1f;
+        }
+        
+        .popup-input {
+            display: flex;
+            padding: 15px;
+            gap: 8px;
+            background: #0a0a1a;
+            border-top: 2px solid #ffd700;
+        }
+        
+        .popup-input input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 40px;
+            border: 2px solid #ffd700;
+            background: #1a1a2a;
+            color: white;
+        }
+        
+        .popup-input button {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: none;
+            background: #ffd700;
+            color: #0a0a0a;
+            cursor: pointer;
+        }
+        
+        /* ===== CLUSTER RACING ===== */
+        .cluster-racing {
             background: linear-gradient(145deg, #ffd700, #ffaa00);
             color: #0a0a0a;
             border: 4px solid white;
@@ -627,109 +811,123 @@
             justify-content: center;
             font-weight: 900;
             font-size: 18px;
-            box-shadow: 0 0 30px #ffd700;
-            animation: cluster-pulse 2s infinite;
+            box-shadow: 0 0 40px #ffd700;
+            animation: clusterPulse 2s infinite;
         }
         
-        @keyframes cluster-pulse {
-            0% { box-shadow: 0 0 20px #ffd700; }
-            50% { box-shadow: 0 0 40px #ffd700; }
-            100% { box-shadow: 0 0 20px #ffd700; }
+        @keyframes clusterPulse {
+            0% { box-shadow: 0 0 30px #ffd700; }
+            50% { box-shadow: 0 0 50px #ffd700; }
+            100% { box-shadow: 0 0 30px #ffd700; }
         }
         
-        /* ===== POPUP ULTRA ===== */
-        .popup-ultra {
-            background: linear-gradient(145deg, #1a1a2a, #0f0f1a);
-            border: 3px solid #ffd700;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+        /* ===== ALFINETE TECNOLÓGICO ===== */
+        .alfinete-racing {
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.8));
+            animation: float 3s ease-in-out infinite;
         }
         
-        .popup-header-ultra {
-            padding: 15px;
-            color: white;
-            font-weight: 900;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid rgba(255,215,0,0.3);
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
         }
         
-        .popup-imagem-ultra {
-            padding: 15px;
-            background: #0a0a0a;
-            text-align: center;
-            border-bottom: 2px solid #ffd700;
+        .led-verde {
+            width: 14px;
+            height: 14px;
+            background: #00ff00;
+            border-radius: 50%;
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            box-shadow: 0 0 20px #00ff00;
+            animation: ledPulse 1s infinite;
+            border: 2px solid white;
         }
         
-        .popup-imagem-ultra img {
-            max-width: 100%;
-            max-height: 200px;
-            border-radius: 15px;
-            border: 3px solid #ffd700;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .popup-imagem-ultra img:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 30px #ffd700;
-        }
-        
-        /* ===== CHAT ULTRA ===== */
-        .chat-ultra {
+        /* ===== GRAVAÇÃO E NOTIFICAÇÕES ===== */
+        .gravando-indicator {
             position: fixed;
-            top: 10%;
-            left: 5%;
-            width: 90%;
-            height: 80%;
-            background: linear-gradient(145deg, #1a1a2a, #0f0f1a);
-            z-index: 99999;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(145deg, #e53935, #b71c1c);
+            color: white;
+            padding: 15px 35px;
+            border-radius: 60px;
+            z-index: 10000;
+            display: none;
+            border: 3px solid #ffd700;
+            font-weight: 900;
+            letter-spacing: 2px;
+            box-shadow: 0 0 40px #e53935;
+        }
+        
+        .audio-notification {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(145deg, #ffd700, #ffaa00);
+            color: #0a0a0a;
+            padding: 15px 35px;
+            border-radius: 60px;
+            z-index: 10000;
+            display: none;
+            font-weight: 900;
+            letter-spacing: 2px;
+            box-shadow: 0 0 40px #ffd700;
+        }
+        
+        /* ===== CONFIRMAÇÃO POPUP ===== */
+        .confirmacao-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(5,5,10,0.98);
+            backdrop-filter: blur(20px);
+            border: 3px solid #ffd700;
             border-radius: 40px;
+            padding: 25px;
             display: none;
             flex-direction: column;
-            border: 4px solid #ffd700;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.9), 0 0 60px rgba(255,215,0,0.3);
-            backdrop-filter: blur(20px);
-        }
-        
-        .chat-header-ultra {
-            background: linear-gradient(90deg, #075e54, #0a7e6e);
-            color: white;
-            padding: 20px;
-            border-radius: 36px 36px 0 0;
-            display: flex;
-            justify-content: space-between;
             align-items: center;
-            border-bottom: 3px solid #ffd700;
+            gap: 20px;
+            z-index: 100000;
+            color: white;
+            box-shadow: 0 0 60px #ffd700;
+            min-width: 300px;
         }
         
-        /* Classes para ocultar elementos */
-        .interface-oculta .reporte-container,
-        .interface-oculta .velocimetro-digital,
-        .interface-oculta .control-bar,
-        .interface-oculta .lupa-container,
-        .interface-oculta .header-esquerdo,
+        /* ===== MAPA NOTURNO ===== */
+        .mapa-noturno {
+            filter: invert(100%) hue-rotate(180deg) brightness(95%);
+        }
+        
+        /* ===== OCULTAR INTERFACE ===== */
+        .interface-oculta .header-racing,
+        .interface-oculta .lupa-racing,
+        .interface-oculta .cockpit-bar,
+        .interface-oculta .reporte-racing,
+        .interface-oculta .legenda-racing,
+        .interface-oculta .legenda-icone,
         .interface-oculta .btn-encerrar-rota,
         .interface-oculta .rota-info-panel,
         .interface-oculta .gravando-indicator,
         .interface-oculta .audio-notification,
         .interface-oculta .confirmacao-popup,
-        .interface-oculta .legenda-ultra,
-        .interface-oculta .legenda-icone-ultra,
-        .interface-oculta .alertas-panel-ultra {
+        .interface-oculta .alertas-panel-racing {
             display: none !important;
         }
         
-        .btn-recentrar-ultra {
-            transition: opacity 0.3s;
+        .interface-oculta .recentrar-racing {
+            display: flex !important;
         }
         
-        /* Animações globais */
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
+        /* ===== MODO NOTURNO ===== */
+        .mapa-noturno {
+            filter: invert(100%) hue-rotate(180deg) brightness(95%);
         }
     </style>
 </head>
@@ -737,208 +935,166 @@
 
 <div id="map"></div>
 
-<!-- MODAL DE BOAS-VINDAS ULTRA -->
+<!-- MODAL DE BOAS-VINDAS RACING -->
 <div class="welcome-modal" id="welcomeModal">
     <div class="welcome-content">
-        <h2>🚛 BR-277 ULTRA</h2>
-        <p style="color:#ffd700; margin-bottom:20px; letter-spacing:1px;">SISTEMA DE TRÂNSITO PROFISSIONAL</p>
+        <h2>🏁 BR-277</h2>
+        <p style="color:#00BFFF; margin-bottom:20px; font-weight:700;">COCKPIT RACING EDITION</p>
         
-        <input type="text" id="nomeUsuario" placeholder="SEU NOME" value="Motorista">
+        <input type="text" id="nomeUsuario" placeholder="NOME DO PILOTO" value="Piloto">
         <input type="text" id="telefoneUsuario" placeholder="WHATSAPP (opcional)" value="">
         
-        <div style="margin:25px 0; text-align:left; color:#ffd700; font-weight:600;">🚗 ESCOLHA SEU VEÍCULO:</div>
-        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:25px;">
-            <div style="background:rgba(255,255,255,0.05); padding:12px; border-radius:20px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('carro')" id="veiculo-carro">
-                <div style="font-size:34px;">🚗</div>
-                <div style="font-size:11px; color:white;">CARRO</div>
+        <div style="margin:25px 0; text-align:left; color:#ffd700; font-weight:700;">🏎️ VEÍCULO:</div>
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:25px;">
+            <div style="background:rgba(255,255,255,0.05); padding:10px; border-radius:20px; cursor:pointer; border:2px solid transparent;" onclick="selecionarVeiculo('carro')" id="veiculo-carro">
+                <div style="font-size:30px;">🚗</div>
+                <div style="font-size:10px; color:white;">CARRO</div>
             </div>
-            <div style="background:rgba(255,255,255,0.05); padding:12px; border-radius:20px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('caminhao')" id="veiculo-caminhao">
-                <div style="font-size:34px;">🚛</div>
-                <div style="font-size:11px; color:white;">CAMINHÃO</div>
+            <div style="background:rgba(255,255,255,0.05); padding:10px; border-radius:20px; cursor:pointer; border:2px solid transparent;" onclick="selecionarVeiculo('caminhao')" id="veiculo-caminhao">
+                <div style="font-size:30px;">🚛</div>
+                <div style="font-size:10px; color:white;">CAMINHÃO</div>
             </div>
-            <div style="background:rgba(255,255,255,0.05); padding:12px; border-radius:20px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('moto')" id="veiculo-moto">
-                <div style="font-size:34px;">🏍️</div>
-                <div style="font-size:11px; color:white;">MOTO</div>
+            <div style="background:rgba(255,255,255,0.05); padding:10px; border-radius:20px; cursor:pointer; border:2px solid transparent;" onclick="selecionarVeiculo('moto')" id="veiculo-moto">
+                <div style="font-size:30px;">🏍️</div>
+                <div style="font-size:10px; color:white;">MOTO</div>
             </div>
-            <div style="background:rgba(255,255,255,0.05); padding:12px; border-radius:20px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('onibus')" id="veiculo-onibus">
-                <div style="font-size:34px;">🚌</div>
-                <div style="font-size:11px; color:white;">ÔNIBUS</div>
+            <div style="background:rgba(255,255,255,0.05); padding:10px; border-radius:20px; cursor:pointer; border:2px solid transparent;" onclick="selecionarVeiculo('onibus')" id="veiculo-onibus">
+                <div style="font-size:30px;">🚌</div>
+                <div style="font-size:10px; color:white;">ÔNIBUS</div>
             </div>
-            <div style="background:rgba(255,255,255,0.05); padding:12px; border-radius:20px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('van')" id="veiculo-van">
-                <div style="font-size:34px;">🚐</div>
-                <div style="font-size:11px; color:white;">VAN</div>
+            <div style="background:rgba(255,255,255,0.05); padding:10px; border-radius:20px; cursor:pointer; border:2px solid transparent;" onclick="selecionarVeiculo('van')" id="veiculo-van">
+                <div style="font-size:30px;">🚐</div>
+                <div style="font-size:10px; color:white;">VAN</div>
             </div>
-            <div style="background:rgba(255,255,255,0.05); padding:12px; border-radius:20px; cursor:pointer; border:2px solid transparent; text-align:center;" onclick="selecionarVeiculo('pickup')" id="veiculo-pickup">
-                <div style="font-size:34px;">🛻</div>
-                <div style="font-size:11px; color:white;">PICKUP</div>
-            </div>
-        </div>
-        
-        <!-- PERMISSÕES ULTRA -->
-        <div class="permissoes-container">
-            <h3 style="color:#ffd700; margin-bottom:15px;">🔐 PERMISSÕES NECESSÁRIAS</h3>
-            
-            <div class="permissao-item">
-                <i class="fas fa-map-marker-alt"></i>
-                <span>LOCALIZAÇÃO</span>
-                <span class="permissao-status unchecked" id="statusLocalizacao">⏳ AGUARDANDO</span>
-            </div>
-            
-            <div class="permissao-item">
-                <i class="fas fa-microphone"></i>
-                <span>MICROFONE</span>
-                <span class="permissao-status unchecked" id="statusMicrofone">⏳ AGUARDANDO</span>
-            </div>
-            
-            <div class="permissao-item">
-                <i class="fas fa-volume-up"></i>
-                <span>AUTO-FALANTES</span>
-                <span class="permissao-status checked" id="statusAudio">✅ DISPONÍVEL</span>
+            <div style="background:rgba(255,255,255,0.05); padding:10px; border-radius:20px; cursor:pointer; border:2px solid transparent;" onclick="selecionarVeiculo('pickup')" id="veiculo-pickup">
+                <div style="font-size:30px;">🛻</div>
+                <div style="font-size:10px; color:white;">PICKUP</div>
             </div>
         </div>
         
-        <!-- POLÍTICA DE PRIVACIDADE -->
-        <div style="background:rgba(0,0,0,0.4); border-radius:20px; padding:15px; margin:20px 0; border:1px solid #ffd700;">
-            <p style="color:#ffd700; font-size:12px;">AO CONTINUAR, VOCÊ CONCORDA COM O COMPARTILHAMENTO DE SUA LOCALIZAÇÃO E USO DO MICROFONE PARA O RÁDIO PX.</p>
-        </div>
-        
-        <label class="checkbox-container" style="display:flex; align-items:center; gap:10px; color:white; margin:15px 0;">
-            <input type="checkbox" id="aceitePrivacidade">
-            <span style="font-size:13px;">LI E ACEITO OS TERMOS</span>
-        </label>
-        
-        <button onclick="solicitarPermissoes()" style="width:100%; padding:16px; background:#ffd700; border:none; border-radius:50px; font-size:18px; font-weight:900; cursor:pointer; color:#0a0a0a; margin-bottom:12px; letter-spacing:2px;">
-            🔓 SOLICITAR PERMISSÕES
+        <button onclick="solicitarPermissoes()" style="width:100%; padding:16px; background:#ffd700; border:none; border-radius:60px; font-size:16px; font-weight:900; cursor:pointer; color:#0a0a0a; margin-bottom:10px; letter-spacing:2px;">
+            🔓 ATIVAR PERMISSÕES
         </button>
         
-        <button onclick="salvarCadastro()" id="btnEntrar" disabled style="width:100%; padding:16px; background:#444; border:none; border-radius:50px; font-size:18px; font-weight:900; cursor:not-allowed; color:#aaa; letter-spacing:2px;">
+        <button onclick="salvarCadastro()" id="btnEntrar" disabled style="width:100%; padding:16px; background:#444; border:none; border-radius:60px; font-size:16px; font-weight:900; cursor:not-allowed; color:#aaa;">
             🔒 AGUARDANDO PERMISSÕES
         </button>
     </div>
 </div>
 
-<!-- VELOCÍMETRO DIGITAL ULTRA -->
-<div class="velocimetro-digital" id="velocimetroDigital">
-    <span class="vel-digital-icon">⚡</span>
-    <span class="vel-digital-valor" id="velocidadeDigital">0</span>
-    <span class="vel-digital-unidade">KM/H</span>
-</div>
-
-<!-- SETA PARA OCULTAR ULTRA -->
-<div class="toggle-ultra" id="toggleUltra" onclick="toggleInterface()">
-    <div class="seta-ultra">
-        <i class="fas fa-chevron-up" id="iconeSetaUltra"></i>
-    </div>
-</div>
-
-<!-- BARRA DE CONTROLES ULTRA TECNOLÓGICA -->
-<div class="control-bar">
-    <!-- Velocímetro (duplicado na barra) -->
-    <div class="control-item" id="btn-velocimetro" title="Velocímetro">
-        <span class="control-icon">⚡</span>
-        <span class="control-label" id="velocimetroBarra">0</span>
-        <span class="control-value" id="velocimetroValorBarra">0</span>
-    </div>
-    
-    <!-- Mostrar/Ocultar -->
-    <div class="control-item" id="btn-mostrar" onclick="toggleInterface()" title="Ocultar/Mostrar">
-        <span class="control-icon"><i class="fas fa-eye"></i></span>
-        <span class="control-label">OCULTAR</span>
-    </div>
-    
-    <!-- Microfone PX -->
-    <div class="control-item" id="btn-px-ultra" title="Rádio PX">
-        <span class="control-icon">🎤</span>
-        <span class="control-label">P X</span>
-    </div>
-    
-    <!-- Chat -->
-    <div class="control-item" id="btn-chat-ultra" onclick="toggleChatGeral()" title="Chat Geral">
-        <span class="control-icon"><i class="fas fa-comment"></i></span>
-        <span class="control-label">CHAT</span>
-    </div>
-    
-    <!-- Luz Noturna -->
-    <div class="control-item" id="btn-luz-ultra" onclick="toggleModoNoturno()" title="Modo Noturno">
-        <span class="control-icon">💡</span>
-        <span class="control-label">LUZ</span>
-    </div>
-    
-    <!-- Mudo -->
-    <div class="control-item" id="btn-mudo-ultra" onclick="toggleMudo()" title="Mudo">
-        <span class="control-icon"><i class="fas fa-volume-up"></i></span>
-        <span class="control-label">ÁUDIO</span>
-    </div>
-</div>
-
-<!-- REPORTE ULTRA -->
-<div class="reporte-container">
-    <div class="reporte-toggle-ultra" onclick="toggleReporteUltra()">
-        <span class="reporte-led"></span>
-        REPORTE
-        <i class="fas fa-exclamation-triangle" style="color:#ffd700;"></i>
-    </div>
-    <div class="alertas-panel-ultra" id="alertasPanelUltra">
-        <div class="alertas-grid-ultra" id="alertasGridUltra"></div>
-        <div class="btn-fechar-painel-ultra" onclick="toggleReporteUltra()">✕</div>
-    </div>
-</div>
-
-<!-- BOTÃO RECENTRALIZAR ULTRA -->
-<div class="btn-recentrar-ultra" id="btnRecentrarUltra">
-    <div class="recentrar-icon" onclick="recentralizar()">
-        <i class="fas fa-location-arrow"></i>
-    </div>
-</div>
-
-<!-- LEGENDA ULTRA -->
-<div class="legenda-ultra" id="legendaUltra">
-    <div class="legenda-item-ultra">
-        <div class="legenda-cor-ultra legenda-verde-ultra"></div>
-        <span style="color:white;">NORMAL</span>
-    </div>
-    <div class="legenda-item-ultra">
-        <div class="legenda-cor-ultra legenda-amarelo-ultra"></div>
-        <span style="color:white;">INTENSO</span>
-    </div>
-    <div class="legenda-item-ultra">
-        <div class="legenda-cor-ultra legenda-vermelho-ultra"></div>
-        <span style="color:white;">LENTO</span>
-    </div>
-    <div class="legenda-item-ultra">
-        <div class="legenda-cor-ultra legenda-roxo-ultra"></div>
-        <span style="color:white;">PARADO</span>
-    </div>
-    <div class="legenda-fechar-ultra" onclick="fecharLegendaUltra()">✕</div>
-</div>
-
-<!-- ÍCONE LEGENDA (QUANDO FECHADA) -->
-<div class="legenda-icone-ultra" id="legendaIconeUltra" onclick="abrirLegendaUltra()">
-    <i class="fas fa-traffic-light" style="color:#ffd700; font-size:20px;"></i>
-    <span style="color:white; font-weight:700;">TRÂNSITO</span>
-</div>
-
-<!-- LUPA (busca) -->
-<div class="lupa-container">
-    <input type="text" id="buscaDestino" placeholder="DIGITE SEU DESTINO...">
-    <button onclick="buscarRota()"><i class="fas fa-search"></i></button>
-</div>
-
-<!-- HEADER SUPERIOR ESQUERDO -->
-<div class="header-esquerdo" onclick="window.open('https://instagram.com/grupobr277', '_blank')">
-    <div class="contador-usuarios" id="contadorUsuarios">
+<!-- HEADER SUPERIOR RACING -->
+<div class="header-racing">
+    <div class="contador-racing" id="contadorUsuarios">
         <i class="fas fa-users"></i>
         <span id="numUsuarios">0</span> ONLINE
     </div>
     
-    <div class="marca-grupo">
-        <span>GRUPO BR 277 ULTRA</span>
-        <div class="social-icons">
+    <div class="logo-racing" onclick="window.open('https://instagram.com/grupobr277', '_blank')">
+        <span>🏁 BR-277 RACING</span>
+        <div class="social-icons" onclick="event.stopPropagation()">
             <a href="https://instagram.com/grupobr277" target="_blank"><i class="fab fa-instagram"></i></a>
             <a href="#" target="_blank"><i class="fab fa-facebook"></i></a>
             <a href="#" target="_blank"><i class="fab fa-whatsapp"></i></a>
-            <a href="#" target="_blank"><i class="fab fa-telegram"></i></a>
         </div>
+    </div>
+</div>
+
+<!-- LUPA RACING -->
+<div class="lupa-racing">
+    <input type="text" id="buscaDestino" placeholder="DIGITE SEU DESTINO...">
+    <button onclick="buscarRota()"><i class="fas fa-search"></i></button>
+</div>
+
+<!-- BARRA INFERIOR COCKPIT RACING -->
+<div class="cockpit-bar">
+    <!-- Velocímetro integrado -->
+    <div class="velocimetro-bar">
+        <span class="vel-numero" id="velocimetroDisplay">0</span>
+        <span class="vel-unidade">KM/H</span>
+    </div>
+    
+    <!-- Mostrar/Ocultar (seta) -->
+    <div class="btn-cockpit" onclick="toggleInterface()" title="Ocultar/Mostrar">
+        <i class="fas fa-chevron-up" id="iconeSeta"></i>
+    </div>
+    
+    <!-- Rádio PX -->
+    <div class="btn-cockpit" id="btn-px-racing" title="Rádio PX">
+        🎤
+    </div>
+    
+    <!-- Chat -->
+    <div class="btn-cockpit" onclick="toggleChatGeral()" title="Chat">
+        <i class="fas fa-comment"></i>
+    </div>
+    
+    <!-- Luz Noturna -->
+    <div class="btn-cockpit" id="btn-luz-racing" onclick="toggleModoNoturno()" title="Modo Noturno">
+        💡
+    </div>
+    
+    <!-- Mudo -->
+    <div class="btn-cockpit" id="btn-mudo-racing" onclick="toggleMudo()" title="Áudio">
+        <i class="fas fa-volume-up"></i>
+    </div>
+</div>
+
+<!-- REPORTE RACING -->
+<div class="reporte-racing">
+    <div class="reporte-btn" onclick="toggleReporteRacing()">
+        <span class="reporte-led"></span>
+        <span class="reporte-texto">REPORTE</span>
+        <i class="fas fa-exclamation-triangle reporte-icon"></i>
+    </div>
+    <div class="alertas-panel-racing" id="alertasPanelRacing">
+        <div class="alertas-grid-racing" id="alertasGridRacing"></div>
+        <div class="btn-fechar-racing" onclick="toggleReporteRacing()">✕</div>
+    </div>
+</div>
+
+<!-- RECENTRALIZAR RACING -->
+<div class="recentrar-racing" id="btnRecentrarRacing">
+    <div class="recentrar-btn" onclick="recentralizar()">
+        <i class="fas fa-location-arrow"></i>
+    </div>
+</div>
+
+<!-- LEGENDA RACING -->
+<div class="legenda-racing" id="legendaRacing">
+    <div class="legenda-item">
+        <div class="legenda-cor legenda-verde"></div>
+        <span class="legenda-texto">NORMAL</span>
+    </div>
+    <div class="legenda-item">
+        <div class="legenda-cor legenda-amarelo"></div>
+        <span class="legenda-texto">INTENSO</span>
+    </div>
+    <div class="legenda-item">
+        <div class="legenda-cor legenda-vermelho"></div>
+        <span class="legenda-texto">LENTO</span>
+    </div>
+    <div class="legenda-fechar" onclick="fecharLegenda()">✕</div>
+</div>
+
+<!-- ÍCONE LEGENDA (QUANDO FECHADA) -->
+<div class="legenda-icone" id="legendaIcone" onclick="abrirLegenda()">
+    <i class="fas fa-traffic-light" style="color:#ffd700; font-size:20px;"></i>
+    <span style="color:white; font-weight:700;">TRÂNSITO</span>
+</div>
+
+<!-- PAINEL DE ROTA -->
+<div class="rota-info-panel" id="rotaInfoPanel">
+    <div class="rota-info-item">
+        <i class="fas fa-clock" style="color:#ffd700;"></i>
+        <span class="rota-tempo-principal" id="rotaTempo">--</span>
+    </div>
+    <div class="rota-info-item">
+        <i class="fas fa-road" style="color:#ffd700;"></i>
+        <span id="rotaDistancia">--</span>
+    </div>
+    <div class="rota-info-item">
+        <i class="fas fa-exclamation-triangle" style="color:#e53935;"></i>
+        <span id="rotaAtraso" class="rota-atraso">--</span>
     </div>
 </div>
 
@@ -955,19 +1111,19 @@
     </div>
 </div>
 
-<!-- CHAT GERAL ULTRA -->
-<div class="chat-ultra" id="chatGeralUltra">
-    <div class="chat-header-ultra">
+<!-- CHAT RACING -->
+<div class="chat-racing" id="chatGeralRacing">
+    <div class="chat-header-racing">
         <div style="display:flex; align-items:center; gap:15px;">
-            <i class="fas fa-comments" style="font-size:22px;"></i>
-            <span style="font-weight:800; letter-spacing:2px;">CHAT GERAL ULTRA</span>
+            <i class="fas fa-comments"></i>
+            <span>CHAT GERAL RACING</span>
         </div>
-        <span onclick="fecharChatGeral()" style="cursor:pointer; font-size:24px;">✕</span>
+        <span onclick="fecharChatGeral()" style="cursor:pointer;">✕</span>
     </div>
-    <div class="chat-mensagens" id="chatMensagensUltra"></div>
-    <div class="chat-input">
-        <input type="text" id="chatInputUltra" placeholder="DIGITE SUA MENSAGEM...">
-        <button onclick="enviarMsgGeralUltra()"><i class="fas fa-paper-plane"></i></button>
+    <div class="chat-mensagens-racing" id="chatMensagensRacing"></div>
+    <div class="chat-input-racing">
+        <input type="text" id="chatInputRacing" placeholder="DIGITE SUA MENSAGEM...">
+        <button onclick="enviarMsgGeral()"><i class="fas fa-paper-plane"></i></button>
     </div>
 </div>
 
@@ -1018,6 +1174,7 @@ let seguirLocalizacao = true;
 let rotaAtual = null;
 let mapa = null;
 let mudo = false;
+let mensagemRespondendo = null;
 let ultimaAtualizacaoGPS = 0;
 let zoomAtual = 13;
 let alertasMapa = {};
@@ -1036,8 +1193,8 @@ let tileSystem = null;
 
 alertasConfirmados = { ...confirmacoesStorage };
 
-// ===== 10 ALERTAS ULTRA =====
-const alertasUltra = [
+// ===== 10 ALERTAS RACING =====
+const alertasRacing = [
     { tipo: 'acidente', nome: 'ACIDENTE', icone: '💥', cor: '#e53935', bg: 'linear-gradient(145deg, #e53935, #b71c1c)' },
     { tipo: 'obras', nome: 'OBRAS', icone: '🚧', cor: '#ff9800', bg: 'linear-gradient(145deg, #ff9800, #f57c00)' },
     { tipo: 'pane', nome: 'PANE', icone: '🔧', cor: '#795548', bg: 'linear-gradient(145deg, #795548, #5d4037)' },
@@ -1084,14 +1241,14 @@ class TileSystem {
     }
 }
 
-// ===== SISTEMA DE CLUSTER ULTRA =====
-class ClusterSystemUltra {
+// ===== SISTEMA DE CLUSTER RACING =====
+class ClusterSystemRacing {
     constructor(mapa) {
         this.mapa = mapa;
         this.marcadores = new Map();
         this.clusterGroup = L.markerClusterGroup({
             maxClusterRadius: 70,
-            iconCreateFunction: this.criarIconeClusterUltra,
+            iconCreateFunction: this.criarIconeCluster,
             spiderfyOnMaxZoom: true,
             showCoverageOnHover: false,
             zoomToBoundsOnClick: true,
@@ -1100,14 +1257,14 @@ class ClusterSystemUltra {
         this.mapa.addLayer(this.clusterGroup);
     }
     
-    criarIconeClusterUltra(cluster) {
+    criarIconeCluster(cluster) {
         const count = cluster.getChildCount();
         let cor = '#ffd700';
         let tamanho = 50;
         if (count > 50) { cor = '#e53935'; tamanho = 60; }
         else if (count > 20) { cor = '#ff9800'; tamanho = 55; }
         return L.divIcon({
-            html: `<div class="cluster-marcador-ultra" style="background:${cor}; width:${tamanho}px; height:${tamanho}px;">${count}</div>`,
+            html: `<div class="cluster-racing" style="background:${cor}; width:${tamanho}px; height:${tamanho}px;">${count}</div>`,
             className: '',
             iconSize: [tamanho, tamanho]
         });
@@ -1116,25 +1273,25 @@ class ClusterSystemUltra {
     adicionarMarcador(id, lat, lng, dados) {
         if (this.marcadores.has(id)) this.clusterGroup.removeLayer(this.marcadores.get(id));
         const marcador = L.marker([lat, lng], {
-            icon: this.criarIconeVeiculoUltra(dados),
+            icon: this.criarIconeVeiculo(dados),
             zIndexOffset: dados.ehMeu ? 1000 : 0
         });
-        if (!dados.ehMeu) marcador.bindPopup(this.criarPopupVeiculoUltra(dados));
+        if (!dados.ehMeu) marcador.bindPopup(this.criarPopupVeiculo(dados));
         this.clusterGroup.addLayer(marcador);
         this.marcadores.set(id, marcador);
     }
     
-    criarIconeVeiculoUltra(dados) {
+    criarIconeVeiculo(dados) {
         if (dados.ehMeu) {
             return L.divIcon({
-                html: `<div style="position:relative; width:44px; height:44px;"><div class="pulsante-azul"></div><div style="font-size:36px; position:absolute; left:4px; top:2px; transform:rotate(${dados.direcao||0}deg); filter:drop-shadow(0 0 10px #00BFFF);">${this.getIconeUltra(dados.veiculo)}</div></div>`,
+                html: `<div style="position:relative; width:44px; height:44px;"><div class="pulsante-azul"></div><div style="font-size:36px; position:absolute; left:4px; top:2px; transform:rotate(${dados.direcao||0}deg); filter:drop-shadow(0 0 15px #00BFFF);">${this.getIcone(dados.veiculo)}</div></div>`,
                 className: '',
                 iconSize: [44, 44],
                 iconAnchor: [22, 22]
             });
         } else {
             return L.divIcon({
-                html: `<div style="font-size:28px; transform:rotate(${dados.direcao||0}deg); filter:drop-shadow(0 0 8px #ffd700);">${this.getIconeUltra(dados.veiculo)}</div>`,
+                html: `<div style="font-size:28px; transform:rotate(${dados.direcao||0}deg); filter:drop-shadow(0 0 10px #ffd700);">${this.getIcone(dados.veiculo)}</div>`,
                 className: '',
                 iconSize: [28, 28],
                 iconAnchor: [14, 14]
@@ -1142,16 +1299,16 @@ class ClusterSystemUltra {
         }
     }
     
-    getIconeUltra(tipo) {
+    getIcone(tipo) {
         const icones = { carro:'🚗', caminhao:'🚛', moto:'🏍️', onibus:'🚌', van:'🚐', pickup:'🛻' };
         return icones[tipo] || '🚗';
     }
     
-    criarPopupVeiculoUltra(dados) {
+    criarPopupVeiculo(dados) {
         return `
             <div style="background:#1a1a2a; border:2px solid #ffd700; border-radius:15px; padding:10px; color:white;">
                 <div style="font-weight:900; color:#ffd700;">${dados.usuario}</div>
-                <div style="margin-top:5px;">${this.getIconeUltra(dados.veiculo)} ${dados.veiculo.toUpperCase()}</div>
+                <div style="margin-top:5px;">${this.getIcone(dados.veiculo)} ${dados.veiculo.toUpperCase()}</div>
                 <div style="color:#00BFFF;">⚡ ${dados.velocidade||0} KM/H</div>
             </div>
         `;
@@ -1196,11 +1353,6 @@ async function solicitarPermissoes() {
 }
 
 function atualizarStatusPermissoes() {
-    document.getElementById('statusLocalizacao').textContent = permissoes.localizacao ? '✅ CONCEDIDA' : '❌ NEGADA';
-    document.getElementById('statusLocalizacao').className = `permissao-status ${permissoes.localizacao ? 'checked' : 'unchecked'}`;
-    document.getElementById('statusMicrofone').textContent = permissoes.microfone ? '✅ CONCEDIDA' : '❌ NEGADA';
-    document.getElementById('statusMicrofone').className = `permissao-status ${permissoes.microfone ? 'checked' : 'unchecked'}`;
-    
     const btnEntrar = document.getElementById('btnEntrar');
     const aceite = document.getElementById('aceitePrivacidade').checked;
     if (permissoes.localizacao && permissoes.microfone && aceite) {
@@ -1208,7 +1360,7 @@ function atualizarStatusPermissoes() {
         btnEntrar.style.background = '#ffd700';
         btnEntrar.style.color = '#0a0a0a';
         btnEntrar.style.cursor = 'pointer';
-        btnEntrar.textContent = '🚀 ENTRAR NO MAPA ULTRA';
+        btnEntrar.textContent = '🏁 ENTRAR NO COCKPIT';
     }
 }
 
@@ -1224,31 +1376,31 @@ function salvarCadastro() {
     localStorage.setItem('br277_telefone', telefone);
     localStorage.setItem('br277_veiculo', veiculoUsuario);
     document.getElementById('welcomeModal').style.display = 'none';
-    iniciarMapaUltra();
-    iniciarGPSUltra();
-    carregarUsuariosAtivosUltra();
-    carregarAlertasFixosUltra();
-    carregarChatGeralUltra();
-    criarIconesAlertasUltra();
+    iniciarMapaRacing();
+    iniciarGPSRacing();
+    carregarUsuariosAtivosRacing();
+    carregarAlertasFixosRacing();
+    carregarChatGeralRacing();
+    criarIconesAlertasRacing();
 }
 
-// ===== MAPA ULTRA =====
-function iniciarMapaUltra() {
+// ===== MAPA RACING =====
+function iniciarMapaRacing() {
     mapa = L.map('map', { zoomControl: false }).setView([-25.4284, -49.2733], 13);
     L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(mapa);
     
     tileSystem = new TileSystem();
-    clusterSystem = new ClusterSystemUltra(mapa);
+    clusterSystem = new ClusterSystemRacing(mapa);
     
     mapa.on('dragstart', () => { 
         seguirLocalizacao = false; 
-        document.getElementById('btnRecentrarUltra').style.display = 'flex'; 
+        document.getElementById('btnRecentrarRacing').style.display = 'flex'; 
     });
-    mapa.on('zoomend', () => { zoomAtual = mapa.getZoom(); atualizarIconeCarroUltra(); });
+    mapa.on('zoomend', () => { zoomAtual = mapa.getZoom(); atualizarIconeCarroRacing(); });
 }
 
-// ===== GPS ULTRA =====
-function iniciarGPSUltra() {
+// ===== GPS RACING =====
+function iniciarGPSRacing() {
     if (!navigator.geolocation) return;
     let ultimoEnvio = 0;
     
@@ -1262,9 +1414,7 @@ function iniciarGPSUltra() {
         
         if (pos.coords.speed !== null) {
             const velocidadeKmh = Math.round(pos.coords.speed * 3.6);
-            document.getElementById('velocidadeDigital').textContent = velocidadeKmh;
-            document.getElementById('velocimetroBarra').textContent = velocidadeKmh;
-            document.getElementById('velocimetroValorBarra').textContent = velocidadeKmh;
+            document.getElementById('velocimetroDisplay').textContent = velocidadeKmh;
         }
         
         const dadosVeiculo = {
@@ -1280,17 +1430,17 @@ function iniciarGPSUltra() {
         
         if (!meuMarcador) {
             meuMarcador = L.marker(minhaLocalizacao, { 
-                icon: criarIconeCarroUltra(true, ultimoHeading), 
+                icon: criarIconeCarroRacing(true, ultimoHeading), 
                 zIndexOffset: 1000 
             }).addTo(mapa);
             mapa.setView(minhaLocalizacao, 17);
         } else {
             meuMarcador.setLatLng(minhaLocalizacao);
-            meuMarcador.setIcon(criarIconeCarroUltra(true, ultimoHeading));
+            meuMarcador.setIcon(criarIconeCarroRacing(true, ultimoHeading));
         }
         
         if (seguirLocalizacao) mapa.panTo(minhaLocalizacao);
-        verificarProximidadeAlertasUltra();
+        verificarProximidadeAlertasRacing();
         
     }, null, { enableHighAccuracy: true, maximumAge: 0, timeout: 5000 });
     
@@ -1298,7 +1448,7 @@ function iniciarGPSUltra() {
     setTimeout(() => ativarWakeLock(), 3000);
 }
 
-function criarIconeCarroUltra(ehMeu, direcao) {
+function criarIconeCarroRacing(ehMeu, direcao) {
     if (ehMeu) {
         return L.divIcon({
             html: `<div style="position:relative; width:44px; height:44px;"><div class="pulsante-azul"></div><div style="font-size:36px; position:absolute; left:4px; top:2px; transform:rotate(${direcao}deg); filter:drop-shadow(0 0 15px #00BFFF);">🚗</div></div>`,
@@ -1315,17 +1465,17 @@ function criarIconeCarroUltra(ehMeu, direcao) {
     });
 }
 
-function atualizarIconeCarroUltra() {
+function atualizarIconeCarroRacing() {
     if (!meuMarcador || !minhaLocalizacao) return;
     mapa.removeLayer(meuMarcador);
     meuMarcador = L.marker(minhaLocalizacao, { 
-        icon: criarIconeCarroUltra(true, ultimoHeading), 
+        icon: criarIconeCarroRacing(true, ultimoHeading), 
         zIndexOffset: 1000 
     }).addTo(mapa);
 }
 
 // ===== CARREGAR USUÁRIOS ATIVOS =====
-function carregarUsuariosAtivosUltra() {
+function carregarUsuariosAtivosRacing() {
     db.ref('usuarios_ativos').on('value', snap => {
         const usuarios = snap.val();
         if (!usuarios) { document.getElementById('numUsuarios').textContent = '0'; return; }
@@ -1388,7 +1538,7 @@ function comprimirImagemParaBase64(blob, maxWidth) {
 }
 
 // ===== FUNÇÃO PARA CRIAR MARCADOR DE ALERTA COM FOTO =====
-function criarPulsanteUltra(alerta, id) {
+function criarPulsanteRacing(alerta, id) {
     let cor = alerta.cor;
     const temImagem = alerta.imagem && alerta.imagem.thumbnail;
     
@@ -1396,7 +1546,7 @@ function criarPulsanteUltra(alerta, id) {
     if (temImagem) {
         htmlIcone = `
             <div style="position:relative; width: 55px; height: 55px;">
-                <div class="pulsante-alerta" style="background: rgba(255,0,0,0.3); border: 4px solid ${cor}; width: 55px; height: 55px; box-shadow:0 0 30px ${cor};"></div>
+                <div class="pulsante-alerta" style="background: rgba(255,0,0,0.3); border: 4px solid ${cor}; width: 55px; height: 55px; box-shadow:0 0 30px ${cor}; border-radius:50%;"></div>
                 <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 45px; height: 45px; border-radius: 50%; overflow: hidden; border: 3px solid white; box-shadow: 0 0 20px rgba(0,0,0,0.8);">
                     <img src="${alerta.imagem.thumbnail}" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
@@ -1408,7 +1558,7 @@ function criarPulsanteUltra(alerta, id) {
     } else {
         htmlIcone = `
             <div style="position:relative; width: 45px; height: 45px;">
-                <div class="pulsante-alerta" style="background: rgba(255,0,0,0.3); border: 4px solid ${cor}; width: 45px; height: 45px; box-shadow:0 0 30px ${cor};"></div>
+                <div class="pulsante-alerta" style="background: rgba(255,0,0,0.3); border: 4px solid ${cor}; width: 45px; height: 45px; box-shadow:0 0 30px ${cor}; border-radius:50%;"></div>
                 <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-weight: bold; text-shadow: 0 0 10px black; font-size: 22px;">${alerta.icone}</div>
             </div>
         `;
@@ -1425,60 +1575,70 @@ function criarPulsanteUltra(alerta, id) {
     });
     
     marcador.on('click', () => {
-        abrirPopupAlertaUltra(alerta, id);
+        abrirPopupAlertaRacing(alerta, id);
     });
     
     return marcador;
 }
 
-// ===== POPUP DO ALERTA ULTRA =====
-function abrirPopupAlertaUltra(alerta, id) {
+// ===== POPUP DO ALERTA RACING =====
+function abrirPopupAlertaRacing(alerta, id) {
     const conteudo = document.createElement('div');
-    conteudo.className = 'popup-ultra';
+    conteudo.className = 'popup-racing';
     
     const header = document.createElement('div');
-    header.className = 'popup-header-ultra';
+    header.className = 'popup-header-racing';
     header.style.background = alerta.cor;
     header.innerHTML = `
         <span style="font-size:18px;">${alerta.icone} ${alerta.nome}</span>
-        <span style="background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 30px;">✅ ${alerta.confirmacoes || 0}</span>
+        <span style="background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 30px;">${new Date().toLocaleTimeString()}</span>
     `;
     conteudo.appendChild(header);
     
     if (alerta.imagem && alerta.imagem.thumbnail) {
         const quadroFoto = document.createElement('div');
-        quadroFoto.className = 'popup-imagem-ultra';
+        quadroFoto.className = 'popup-imagem-racing';
         quadroFoto.innerHTML = `
-            <div style="color:#ffd700; font-size:12px; margin-bottom:8px; display:flex; align-items:center; gap:8px;">
-                <i class="fas fa-camera" style="font-size:16px;"></i> FOTO DO ALERTA
-            </div>
-            <img src="${alerta.imagem.thumbnail}" onclick="window.open('${alerta.imagem.thumbnail}', '_blank')">
-            <div style="color:#ffd700; font-size:11px; margin-top:8px;">📷 CLIQUE PARA AMPLIAR</div>
+            <img src="${alerta.imagem.thumbnail}" style="max-width:100%; max-height:180px; border-radius:20px; border:3px solid #ffd700; cursor:pointer;" onclick="window.open('${alerta.imagem.thumbnail}', '_blank')">
         `;
         conteudo.appendChild(quadroFoto);
     }
     
+    const stats = document.createElement('div');
+    stats.className = 'popup-stats';
+    stats.innerHTML = `
+        <div class="stat-item"><i class="far fa-thumbs-up"></i> <span class="stat-value" id="likes-${id}">${alerta.confirmacoes || 0}</span></div>
+        <div class="stat-item"><i class="far fa-thumbs-down"></i> <span class="stat-value" id="dislikes-${id}">0</span></div>
+        <div class="stat-item"><i class="far fa-clock"></i> <span class="stat-value">${new Date(alerta.timestamp).toLocaleDateString()}</span></div>
+    `;
+    conteudo.appendChild(stats);
+    
     const chatDiv = document.createElement('div');
+    chatDiv.className = 'popup-chat';
     chatDiv.id = `chatAlerta-${id}`;
-    chatDiv.style.cssText = 'padding:15px; max-height:250px; overflow-y:auto; background:#0f0f1a;';
-    chatDiv.innerHTML = '<div style="text-align:center; color:#ffd700;">CARREGANDO MENSAGENS...</div>';
+    chatDiv.innerHTML = '<div style="text-align:center; color:#ffd700;">CARREGANDO...</div>';
     conteudo.appendChild(chatDiv);
     
     const inputDiv = document.createElement('div');
-    inputDiv.style.cssText = 'display:flex; padding:15px; gap:8px; background:#0a0a0f; border-top:2px solid #ffd700;';
+    inputDiv.className = 'popup-input';
     inputDiv.innerHTML = `
-        <input type="text" id="inputAlerta-${id}" style="flex:1; padding:12px; border-radius:40px; border:2px solid #ffd700; background:#1a1a2a; color:white; font-size:14px;" placeholder="DIGITE...">
-        <button onclick="enviarMsgAlertaUltra('${id}')" style="width:45px; height:45px; border-radius:50%; border:none; background:${alerta.cor}; color:white; cursor:pointer; font-size:18px;">➔</button>
+        <input type="text" id="inputAlerta-${id}" placeholder="DIGITE...">
+        <button onclick="enviarMsgAlerta('${id}')">➔</button>
     `;
     conteudo.appendChild(inputDiv);
     
-    L.popup({ maxWidth: 360, className: 'custom-popup' }).setLatLng([alerta.lat, alerta.lng]).setContent(conteudo).openOn(mapa);
+    L.popup({ maxWidth: 340 }).setLatLng([alerta.lat, alerta.lng]).setContent(conteudo).openOn(mapa);
     
-    carregarMensagensAlertaUltra(id);
+    carregarMensagensAlerta(id);
+    
+    // Botões de like/dislike
+    document.getElementById(`likes-${id}`).onclick = () => {
+        db.ref('alertas_fixos/' + id + '/confirmacoes').transaction(c => (c||0)+1);
+    };
 }
 
 // ===== CARREGAR MENSAGENS DO ALERTA =====
-function carregarMensagensAlertaUltra(id) {
+function carregarMensagensAlerta(id) {
     db.ref(`chats/alerta_${id}`).orderByChild('timestamp').on('value', snap => {
         const chatDiv = document.getElementById(`chatAlerta-${id}`);
         if (!chatDiv) return;
@@ -1497,10 +1657,10 @@ function carregarMensagensAlertaUltra(id) {
                 const isMinha = msg.usuario === usuario;
                 html += `
                     <div style="display:flex; flex-direction:column; align-items:${isMinha ? 'flex-end' : 'flex-start'}; margin:8px 0;">
-                        <div style="max-width:90%; background:${isMinha ? '#075e54' : '#2a2a3a'}; border-radius:15px; padding:10px; border:1px solid #ffd700;">
-                            <div style="color:#ffd700; font-weight:700; margin-bottom:4px;">${msg.usuario}</div>
-                            <div style="color:white;">${msg.texto}</div>
-                            <div style="color:#888; font-size:9px; margin-top:4px; text-align:right;">${msg.hora}</div>
+                        <div style="max-width:90%; background:${isMinha ? '#075e54' : '#2a2a3a'}; border-radius:15px; padding:8px 12px; border:1px solid #ffd700;">
+                            <div style="color:#ffd700; font-weight:700; margin-bottom:2px; font-size:11px;">${msg.usuario}</div>
+                            <div style="color:white; font-size:13px;">${msg.texto}</div>
+                            <div style="color:#888; font-size:8px; margin-top:3px;">${msg.hora}</div>
                         </div>
                     </div>
                 `;
@@ -1512,7 +1672,7 @@ function carregarMensagensAlertaUltra(id) {
     });
 }
 
-function enviarMsgAlertaUltra(id) {
+function enviarMsgAlerta(id) {
     const input = document.getElementById(`inputAlerta-${id}`);
     const texto = input.value.trim();
     if (!texto) return;
@@ -1529,7 +1689,7 @@ function enviarMsgAlertaUltra(id) {
 }
 
 // ===== FUNÇÃO PARA ATIVAR ALERTA COM FOTO =====
-async function ativarAlertaUltra(alerta) {
+async function ativarAlertaRacing(alerta) {
     if (!minhaLocalizacao) return;
     
     const id = Date.now();
@@ -1541,20 +1701,20 @@ async function ativarAlertaUltra(alerta) {
         overlay.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:100000; display:flex; flex-direction:column; align-items:center; justify-content:center;';
         
         const video = document.createElement('video');
-        video.style.cssText = 'width:100%; max-width:450px; border-radius:30px; border:4px solid #ffd700; box-shadow:0 0 50px #ffd700;';
+        video.style.cssText = 'width:90%; max-width:400px; border-radius:30px; border:4px solid #ffd700; box-shadow:0 0 50px #ffd700;';
         video.autoplay = true;
         video.playsInline = true;
         video.srcObject = stream;
         
         const btnContainer = document.createElement('div');
-        btnContainer.style.cssText = 'display:flex; gap:20px; margin-top:30px;';
+        btnContainer.style.cssText = 'display:flex; gap:15px; margin-top:25px;';
         
         const btnFoto = document.createElement('button');
-        btnFoto.style.cssText = 'padding:18px 40px; background:#ffd700; border:none; border-radius:60px; font-size:20px; font-weight:900; cursor:pointer; color:#0a0a0a; letter-spacing:2px;';
+        btnFoto.style.cssText = 'padding:15px 30px; background:#ffd700; border:none; border-radius:50px; font-size:16px; font-weight:900; cursor:pointer;';
         btnFoto.innerHTML = '📷 TIRAR FOTO';
         
         const btnPular = document.createElement('button');
-        btnPular.style.cssText = 'padding:18px 40px; background:#444; color:white; border:none; border-radius:60px; font-size:20px; font-weight:900; cursor:pointer; letter-spacing:2px;';
+        btnPular.style.cssText = 'padding:15px 30px; background:#444; color:white; border:none; border-radius:50px; font-size:16px; font-weight:900; cursor:pointer;';
         btnPular.innerHTML = '⏭️ PULAR';
         
         btnContainer.appendChild(btnFoto);
@@ -1573,7 +1733,7 @@ async function ativarAlertaUltra(alerta) {
                 stream.getTracks().forEach(t => t.stop());
                 document.body.removeChild(overlay);
                 
-                mostrarNotificacaoUltra('📤 PROCESSANDO IMAGEM...', '#ffd700');
+                mostrarNotificacao('📤 PROCESSANDO...', '#ffd700');
                 const thumbnailBase64 = await comprimirImagemParaBase64(blob, 400);
                 
                 if (thumbnailBase64) {
@@ -1590,7 +1750,7 @@ async function ativarAlertaUltra(alerta) {
                     alertasMapa[id] = alertaData;
                     await db.ref('alertas_fixos/' + id).set(alertaData);
                     
-                    mostrarNotificacaoUltra('✅ ALERTA COM FOTO CRIADO!', '#4caf50');
+                    mostrarNotificacao('✅ ALERTA CRIADO!', '#4caf50');
                 }
             }, 'image/jpeg', 0.6);
         };
@@ -1611,12 +1771,12 @@ async function ativarAlertaUltra(alerta) {
             alertasMapa[id] = alertaData;
             db.ref('alertas_fixos/' + id).set(alertaData);
             
-            mostrarNotificacaoUltra('ALERTA CRIADO SEM FOTO');
+            mostrarNotificacao('ALERTA SEM FOTO');
         };
         
     } catch(e) {
         console.log('Erro na câmera:', e);
-        mostrarNotificacaoUltra('📷 CÂMERA INDISPONÍVEL', '#e53935');
+        mostrarNotificacao('📷 CÂMERA INDISPONÍVEL', '#e53935');
         
         const alertaData = { 
             ...alerta, 
@@ -1632,7 +1792,7 @@ async function ativarAlertaUltra(alerta) {
     }
 }
 
-function mostrarNotificacaoUltra(texto, cor = '#ffd700') {
+function mostrarNotificacao(texto, cor = '#ffd700') {
     const notif = document.createElement('div');
     notif.style.cssText = `
         position: fixed;
@@ -1641,14 +1801,13 @@ function mostrarNotificacaoUltra(texto, cor = '#ffd700') {
         transform: translateX(-50%);
         background: #0a0a1a;
         color: ${cor};
-        padding: 15px 30px;
-        border-radius: 60px;
-        border: 3px solid ${cor};
+        padding: 12px 25px;
+        border-radius: 50px;
+        border: 2px solid ${cor};
         z-index: 100000;
-        font-size: 16px;
-        font-weight: 900;
-        letter-spacing: 2px;
-        box-shadow: 0 0 40px ${cor};
+        font-size: 14px;
+        font-weight: 800;
+        box-shadow: 0 0 30px ${cor};
         animation: fadeOut 3s forwards;
     `;
     notif.textContent = texto;
@@ -1659,19 +1818,18 @@ function mostrarNotificacaoUltra(texto, cor = '#ffd700') {
     }, 3000);
 }
 
-// ===== CRIAR ÍCONES DE ALERTA ULTRA =====
-function criarIconesAlertasUltra() {
-    const grid = document.getElementById('alertasGridUltra');
-    alertasUltra.forEach(alerta => {
+// ===== CRIAR ÍCONES DE ALERTA =====
+function criarIconesAlertasRacing() {
+    const grid = document.getElementById('alertasGridRacing');
+    alertasRacing.forEach(alerta => {
         const div = document.createElement('div');
-        div.className = 'alerta-item-ultra';
+        div.className = 'alerta-item-racing';
         div.style.background = alerta.bg;
         div.innerHTML = `
-            <div class="alerta-icone-ultra">${alerta.icone}</div>
-            <div class="alerta-nome-ultra">${alerta.nome}</div>
-            <div style="font-size:10px; color:rgba(255,255,255,0.8); margin-top:2px;">📷 FOTO</div>
+            <div class="alerta-icone-racing">${alerta.icone}</div>
+            <div class="alerta-nome-racing">${alerta.nome}</div>
         `;
-        div.onclick = () => ativarAlertaUltra(alerta);
+        div.onclick = () => ativarAlertaRacing(alerta);
         
         let timer;
         div.addEventListener('mousedown', () => {
@@ -1688,7 +1846,7 @@ function criarIconesAlertasUltra() {
                 };
                 alertasMapa[id] = alertaData;
                 db.ref('alertas_fixos/' + id).set(alertaData);
-                mostrarNotificacaoUltra('ALERTA RÁPIDO');
+                mostrarNotificacao('ALERTA RÁPIDO');
             }, 500);
         });
         div.addEventListener('mouseup', () => clearTimeout(timer));
@@ -1699,7 +1857,7 @@ function criarIconesAlertasUltra() {
 }
 
 // ===== VERIFICAÇÃO DE ALERTAS PRÓXIMOS =====
-function verificarProximidadeAlertasUltra() {
+function verificarProximidadeAlertasRacing() {
     if (!minhaLocalizacao) return;
     Object.keys(alertasMapa).forEach(id => {
         const alerta = alertasMapa[id];
@@ -1718,12 +1876,12 @@ function verificarProximidadeAlertasUltra() {
             if (ultimoAlertaExibido[chave] && agora - ultimoAlertaExibido[chave] < 300000) return;
             ultimoAlertaExibido[chave] = agora;
             alertaAtual = { id, ...alerta };
-            mostrarPopupConfirmacaoUltra(alerta);
+            mostrarPopupConfirmacao(alerta);
         }
     });
 }
 
-function mostrarPopupConfirmacaoUltra(alerta) {
+function mostrarPopupConfirmacao(alerta) {
     const popup = document.getElementById('confirmacaoPopup');
     document.getElementById('confirmacaoTexto').innerHTML = `${alerta.nome} A 300 METROS?`;
     document.getElementById('confirmacaoSubtexto').innerHTML = 'CONFIRME SE AINDA ESTÁ ATIVO';
@@ -1741,7 +1899,7 @@ function confirmarAlerta() {
     document.getElementById('confirmacaoPopup').style.display = 'none';
     if (popupTimeout) clearTimeout(popupTimeout);
     alertaAtual = null;
-    tocarBipUltra();
+    tocarBip();
 }
 
 function negarAlerta() {
@@ -1754,7 +1912,7 @@ function negarAlerta() {
     alertaAtual = null;
 }
 
-function tocarBipUltra() {
+function tocarBip() {
     try {
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         const oscillator = audioCtx.createOscillator();
@@ -1770,13 +1928,13 @@ function tocarBipUltra() {
     } catch(e) {}
 }
 
-function carregarAlertasFixosUltra() {
+function carregarAlertasFixosRacing() {
     db.ref('alertas_fixos').on('child_added', snap => {
         const alerta = snap.val();
         const id = snap.key;
         alertasMapa[id] = alerta;
         
-        const marcador = criarPulsanteUltra(alerta, id);
+        const marcador = criarPulsanteRacing(alerta, id);
         if (clusterSystem) {
             clusterSystem.clusterGroup.addLayer(marcador);
         } else {
@@ -1799,18 +1957,18 @@ function carregarAlertasFixosUltra() {
     });
 }
 
-// ===== CHAT GERAL ULTRA =====
+// ===== CHAT GERAL RACING =====
 function toggleChatGeral() {
-    const chat = document.getElementById('chatGeralUltra');
+    const chat = document.getElementById('chatGeralRacing');
     chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
 }
 
-function fecharChatGeral() { document.getElementById('chatGeralUltra').style.display = 'none'; }
+function fecharChatGeral() { document.getElementById('chatGeralRacing').style.display = 'none'; }
 
-function carregarChatGeralUltra() {
+function carregarChatGeralRacing() {
     db.ref('chat_geral').orderByChild('timestamp').on('value', snap => {
         const msgs = snap.val();
-        const chatDiv = document.getElementById('chatMensagensUltra');
+        const chatDiv = document.getElementById('chatMensagensRacing');
         if (!msgs) { chatDiv.innerHTML = ''; return; }
         
         let html = '';
@@ -1820,23 +1978,23 @@ function carregarChatGeralUltra() {
         msgsArray.forEach(msg => {
             const dataMsg = new Date(msg.timestamp).toLocaleDateString();
             if (dataMsg !== ultimaData) {
-                html += `<div style="text-align:center; margin:15px 0;"><span style="background:#075e54; color:white; padding:5px 15px; border-radius:30px; font-size:11px;">${dataMsg === new Date().toLocaleDateString() ? 'HOJE' : dataMsg}</span></div>`;
+                html += `<div class="data-divider"><span>${dataMsg === new Date().toLocaleDateString() ? 'HOJE' : dataMsg}</span></div>`;
                 ultimaData = dataMsg;
             }
             
             const isMinha = msg.usuario === usuario;
             html += `
-                <div style="display:flex; flex-direction:column; align-items:${isMinha ? 'flex-end' : 'flex-start'}; margin:10px 0;">
-                    <div style="max-width:80%; background:${isMinha ? '#075e54' : '#2a2a3a'}; border-radius:18px; padding:12px; border:2px solid #ffd700;">
-                        <div style="color:#ffd700; font-weight:700; margin-bottom:5px; display:flex; align-items:center; gap:5px;">
-                            🚗 ${msg.usuario}
-                            ${msg.telefone ? `<span style="font-size:9px; color:#888;">📱${msg.telefone}</span>` : ''}
-                        </div>
+                <div class="mensagem-wrapper ${isMinha ? 'minha' : 'outra'}">
+                    <div class="mensagem ${isMinha ? 'minha' : 'outra'}">
+                        <div class="mensagem-remetente">${msg.usuario}</div>
                         ${msg.tipo === 'imagem' 
                             ? `<img src="${msg.imagem}" style="max-width:180px; border-radius:10px; border:2px solid #ffd700; cursor:pointer;" onclick="window.open('${msg.imagem}')">` 
-                            : `<div style="color:white;">${msg.texto}</div>`
+                            : `<div>${msg.texto}</div>`
                         }
-                        <div style="color:#888; font-size:9px; margin-top:5px; text-align:right;">${msg.hora}</div>
+                        <div class="mensagem-info">
+                            <span>${msg.hora}</span>
+                            ${msg.telefone ? `<span>📱${msg.telefone}</span>` : ''}
+                        </div>
                     </div>
                 </div>
             `;
@@ -1847,8 +2005,8 @@ function carregarChatGeralUltra() {
     });
 }
 
-function enviarMsgGeralUltra() {
-    const input = document.getElementById('chatInputUltra');
+function enviarMsgGeral() {
+    const input = document.getElementById('chatInputRacing');
     const texto = input.value.trim();
     if (!texto) return;
     
@@ -1864,10 +2022,10 @@ function enviarMsgGeralUltra() {
     input.value = '';
 }
 
-// ===== RÁDIO PX ULTRA =====
+// ===== RÁDIO PX RACING =====
 let gravador, pedacosAudio, streamAudio, timerInterval, tempoRestante = 20;
-document.getElementById('btn-px-ultra').addEventListener('click', async function() {
-    if (gravador && gravador.state === 'recording') { pararGravacaoUltra(); return; }
+document.getElementById('btn-px-racing').addEventListener('click', async function() {
+    if (gravador && gravador.state === 'recording') { pararGravacao(); return; }
     try {
         streamAudio = await navigator.mediaDevices.getUserMedia({ audio: true });
         gravador = new MediaRecorder(streamAudio);
@@ -1887,29 +2045,29 @@ document.getElementById('btn-px-ultra').addEventListener('click', async function
             streamAudio.getTracks().forEach(t => t.stop());
             document.getElementById('gravandoIndicator').style.display = 'none';
             if (timerInterval) clearInterval(timerInterval);
-            document.getElementById('btn-px-ultra').classList.remove('ativo');
+            document.getElementById('btn-px-racing').classList.remove('ativo');
         };
         
         gravador.start();
-        document.getElementById('btn-px-ultra').classList.add('ativo');
+        document.getElementById('btn-px-racing').classList.add('ativo');
         document.getElementById('gravandoIndicator').style.display = 'flex';
         const timer = document.getElementById('gravandoTimer');
         
         timerInterval = setInterval(() => {
             tempoRestante--;
             timer.textContent = tempoRestante + 's';
-            if (tempoRestante <= 1) pararGravacaoUltra();
+            if (tempoRestante <= 1) pararGravacao();
         }, 1000);
         
-        setTimeout(() => pararGravacaoUltra(), 19500);
+        setTimeout(() => pararGravacao(), 19500);
         
     } catch(e) { alert('❌ PERMITA ACESSO AO MICROFONE'); }
 });
 
-function pararGravacaoUltra() {
+function pararGravacao() {
     if (gravador && gravador.state === 'recording') {
         gravador.stop();
-        document.getElementById('btn-px-ultra').classList.remove('ativo');
+        document.getElementById('btn-px-racing').classList.remove('ativo');
         if (timerInterval) clearInterval(timerInterval);
         document.getElementById('gravandoIndicator').style.display = 'none';
     }
@@ -1925,46 +2083,46 @@ db.ref('radio').orderByChild('timestamp').limitToLast(1).on('child_added', snap 
 });
 
 // ===== FUNÇÕES =====
-function toggleReporteUltra() {
-    document.getElementById('alertasPanelUltra').classList.toggle('visivel');
+function toggleReporteRacing() {
+    document.getElementById('alertasPanelRacing').classList.toggle('visivel');
 }
 
 function toggleModoNoturno() { 
     document.getElementById('map').classList.toggle('mapa-noturno'); 
-    document.getElementById('btn-luz-ultra').classList.toggle('ativo');
+    document.getElementById('btn-luz-racing').classList.toggle('ativo');
 }
 
 function toggleMudo() {
     mudo = !mudo;
-    const btn = document.getElementById('btn-mudo-ultra');
-    btn.innerHTML = mudo ? '<span class="control-icon"><i class="fas fa-volume-mute"></i></span><span class="control-label">MUDO</span>' : '<span class="control-icon"><i class="fas fa-volume-up"></i></span><span class="control-label">ÁUDIO</span>';
+    const btn = document.getElementById('btn-mudo-racing');
+    btn.innerHTML = mudo ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
     btn.classList.toggle('mudo');
 }
 
 function toggleInterface() {
     interfaceVisivel = !interfaceVisivel;
     document.body.classList.toggle('interface-oculta');
-    document.getElementById('iconeSetaUltra').className = interfaceVisivel ? 'fas fa-chevron-up' : 'fas fa-chevron-down';
+    document.getElementById('iconeSeta').className = interfaceVisivel ? 'fas fa-chevron-up' : 'fas fa-chevron-down';
     
     if (!seguirLocalizacao) {
-        document.getElementById('btnRecentrarUltra').style.display = 'flex';
+        document.getElementById('btnRecentrarRacing').style.display = 'flex';
     }
 }
 
 function recentralizar() {
     seguirLocalizacao = true;
-    document.getElementById('btnRecentrarUltra').style.display = 'none';
+    document.getElementById('btnRecentrarRacing').style.display = 'none';
     if (minhaLocalizacao) mapa.flyTo(minhaLocalizacao, 17);
 }
 
-function fecharLegendaUltra() {
-    document.getElementById('legendaUltra').style.display = 'none';
-    document.getElementById('legendaIconeUltra').style.display = 'flex';
+function fecharLegenda() {
+    document.getElementById('legendaRacing').style.display = 'none';
+    document.getElementById('legendaIcone').style.display = 'flex';
 }
 
-function abrirLegendaUltra() {
-    document.getElementById('legendaUltra').style.display = 'flex';
-    document.getElementById('legendaIconeUltra').style.display = 'none';
+function abrirLegenda() {
+    document.getElementById('legendaRacing').style.display = 'flex';
+    document.getElementById('legendaIcone').style.display = 'none';
 }
 
 // ===== ROTA =====
@@ -1982,7 +2140,7 @@ function buscarRota() {
             if (marcadorDestino) mapa.removeLayer(marcadorDestino);
             marcadorDestino = L.marker(dest, { 
                 icon: L.divIcon({
-                    html: `<div class="alfinete-tecnologico" style="position:relative; width:50px; height:50px;"><i class="fas fa-map-pin" style="color:#000; font-size:50px; -webkit-text-stroke:3px #00ff00;"></i><div class="led-verde"></div></div>`,
+                    html: `<div class="alfinete-racing" style="position:relative; width:50px; height:50px;"><i class="fas fa-map-pin" style="color:#000; font-size:50px; -webkit-text-stroke:3px #00ff00;"></i><div class="led-verde"></div></div>`,
                     className: '', iconSize: [50,50], iconAnchor: [25,50]
                 })
             }).addTo(mapa);
@@ -2035,7 +2193,7 @@ document.addEventListener('visibilitychange', () => { if (document.visibilitySta
 
 // ===== ENTER NOS CAMPOS =====
 document.getElementById('buscaDestino').addEventListener('keypress', e => { if (e.key === 'Enter') buscarRota(); });
-document.getElementById('chatInputUltra').addEventListener('keypress', e => { if (e.key === 'Enter') enviarMsgGeralUltra(); });
+document.getElementById('chatInputRacing').addEventListener('keypress', e => { if (e.key === 'Enter') enviarMsgGeral(); });
 
 // ===== VERIFICAR USUÁRIO SALVO =====
 const userSalvo = localStorage.getItem('br277_usuario');
@@ -2045,12 +2203,12 @@ if (userSalvo) {
     veiculoUsuario = localStorage.getItem('br277_veiculo') || 'carro';
     alertasConfirmados = JSON.parse(localStorage.getItem('br277_confirmacoes')) || {};
     document.getElementById('welcomeModal').style.display = 'none';
-    iniciarMapaUltra();
-    iniciarGPSUltra();
-    carregarUsuariosAtivosUltra();
-    carregarAlertasFixosUltra();
-    carregarChatGeralUltra();
-    criarIconesAlertasUltra();
+    iniciarMapaRacing();
+    iniciarGPSRacing();
+    carregarUsuariosAtivosRacing();
+    carregarAlertasFixosRacing();
+    carregarChatGeralRacing();
+    criarIconesAlertasRacing();
 }
 
 // ===== ANIMAÇÃO FADEOUT =====
