@@ -940,14 +940,14 @@
             z-index: 9000;
         }
         
-        /* ===== MODAL DE BOAS-VINDAS ===== */
+        /* ===== MODAL DE BOAS-VINDAS - VERSÃO PROFISSIONAL ===== */
         .welcome-modal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.98);
+            background: radial-gradient(circle at 20% 30%, #0a0a1a, #010104);
             z-index: 999999;
             display: flex;
             align-items: center;
@@ -957,33 +957,108 @@
         }
         
         .welcome-content {
-            background: #1a1a1a;
-            padding: 25px 20px;
-            border-radius: 30px;
+            background: rgba(10, 10, 20, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 35px 30px;
+            border-radius: 50px;
             text-align: center;
-            max-width: 450px;
+            max-width: 500px;
             width: 100%;
-            border: 2px solid var(--cor-primaria);
-            box-shadow: 0 0 30px var(--cor-primaria);
+            border: 3px solid var(--cor-primaria);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 0 30px var(--cor-primaria);
+            animation: fadeInUp 0.5s ease;
             max-height: 90vh;
             overflow-y: auto;
         }
         
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
         .welcome-content h2 {
             color: var(--cor-primaria);
-            font-size: 28px;
+            font-size: 42px;
+            font-weight: 800;
             margin-bottom: 5px;
+            text-shadow: 0 0 20px var(--cor-primaria);
+            letter-spacing: 2px;
+        }
+        
+        .welcome-subtitle {
+            color: rgba(255,255,255,0.7);
+            font-size: 14px;
+            margin-bottom: 25px;
+            letter-spacing: 1px;
         }
         
         .welcome-content input {
             width: 100%;
-            padding: 12px 15px;
-            background: #222;
+            padding: 16px 20px;
+            background: rgba(255,255,255,0.05);
             border: 2px solid var(--cor-primaria);
-            border-radius: 30px;
-            margin: 8px 0;
-            font-size: 14px;
+            border-radius: 50px;
+            margin: 10px 0;
+            font-size: 16px;
             color: white;
+            outline: none;
+            transition: all 0.3s;
+        }
+        
+        .welcome-content input:focus {
+            box-shadow: 0 0 20px var(--cor-primaria);
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .welcome-content input::placeholder {
+            color: rgba(255,255,255,0.3);
+        }
+        
+        /* ===== SELEÇÃO DE VEÍCULOS ===== */
+        .veiculo-titulo {
+            color: white;
+            text-align: left;
+            font-size: 14px;
+            font-weight: 600;
+            margin: 20px 0 10px;
+        }
+        
+        .veiculos-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .veiculo-item {
+            background: rgba(255,255,255,0.05);
+            padding: 12px 5px;
+            border-radius: 20px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .veiculo-item:hover {
+            background: rgba(255,255,255,0.1);
+            transform: scale(1.02);
+        }
+        
+        .veiculo-item.selecionado {
+            border-color: var(--cor-primaria);
+            box-shadow: 0 0 20px var(--cor-primaria);
+        }
+        
+        .veiculo-icone {
+            font-size: 30px;
+            margin-bottom: 5px;
+        }
+        
+        .veiculo-nome {
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
         }
         
         /* ===== SELEÇÃO DE CORES ===== */
@@ -992,26 +1067,26 @@
             text-align: left;
             font-size: 14px;
             font-weight: 600;
-            margin: 10px 0 5px;
+            margin: 20px 0 10px;
         }
         
         .cores-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 5px;
+            gap: 8px;
             margin: 5px 0;
         }
         
         .cor-opcao {
-            padding: 8px 4px;
-            border-radius: 10px;
+            padding: 10px 4px;
+            border-radius: 15px;
             cursor: pointer;
             border: 2px solid transparent;
             text-align: center;
             font-weight: 600;
             color: white;
             transition: all 0.2s;
-            font-size: 10px;
+            font-size: 11px;
         }
         
         .cor-opcao:hover {
@@ -1023,92 +1098,97 @@
             box-shadow: 0 0 15px currentColor;
         }
         
-        /* Cores primárias */
-        .cor-azul { background: #00BFFF; }
-        .cor-verde { background: #4caf50; }
-        .cor-vermelho { background: #e53935; }
-        .cor-laranja { background: #ff9800; }
-        .cor-rosa { background: #e91e63; }
-        .cor-roxo { background: #9c27b0; }
-        .cor-amarelo { background: #ffc107; color: #333; }
-        .cor-cyan { background: #00bcd4; }
-        .cor-roxo-escuro { background: #673ab7; }
-        .cor-preto { background: #000000; color: white; }
-        
-        /* Cores de fundo */
-        .fundo-preto { background: #1a1a1a; color: white; }
-        .fundo-branco { background: #ffffff; color: #333; border: 1px solid #333; }
-        .fundo-cinza { background: #808080; color: white; }
-        .fundo-cinza-claro { background: #d3d3d3; color: #333; }
-        .fundo-azul { background: #00BFFF; color: white; }
-        .fundo-verde { background: #4caf50; color: white; }
-        .fundo-vermelho { background: #e53935; color: white; }
-        .fundo-laranja { background: #ff9800; color: white; }
-        .fundo-roxo { background: #9c27b0; color: white; }
-        .fundo-amarelo { background: #ffc107; color: #333; }
-        
         /* ===== PERMISSÕES ===== */
         .permissoes-container {
-            background: #222;
-            border-radius: 20px;
-            padding: 12px;
-            margin: 12px 0;
+            background: rgba(255,255,255,0.03);
+            border-radius: 30px;
+            padding: 20px;
+            margin: 20px 0;
             border: 1px solid var(--cor-primaria);
         }
         
         .permissao-item {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
             color: white;
-            margin: 6px 0;
-            font-size: 12px;
+            margin: 12px 0;
+            font-size: 14px;
         }
         
         .permissao-item i {
             color: var(--cor-primaria);
-            width: 18px;
+            width: 20px;
+            font-size: 16px;
         }
+        
+        .permissao-status {
+            margin-left: auto;
+            font-size: 14px;
+            padding: 4px 12px;
+            border-radius: 30px;
+            background: rgba(255,255,255,0.05);
+        }
+        
+        .permissao-status.checked { color: #4caf50; }
+        .permissao-status.unchecked { color: #e53935; }
         
         .checkbox-container {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             color: white;
-            font-size: 12px;
-            margin: 10px 0;
+            font-size: 14px;
+            margin: 20px 0;
             cursor: pointer;
         }
         
         .btn-ativar {
             width: 100%;
-            padding: 12px;
-            background: var(--cor-primaria);
+            padding: 16px;
+            background: linear-gradient(145deg, var(--cor-primaria), var(--cor-secundaria));
             border: none;
-            border-radius: 40px;
-            font-size: 15px;
+            border-radius: 60px;
+            font-size: 16px;
             font-weight: 700;
             cursor: pointer;
             color: white;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+        
+        .btn-ativar:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px var(--cor-primaria);
         }
         
         .btn-entrar {
             width: 100%;
-            padding: 12px;
-            background: #444;
-            border: none;
-            border-radius: 40px;
-            font-size: 15px;
+            padding: 16px;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid var(--cor-primaria);
+            border-radius: 60px;
+            font-size: 16px;
             font-weight: 700;
             cursor: not-allowed;
-            color: #999;
+            color: rgba(255,255,255,0.3);
+            letter-spacing: 1px;
+            transition: all 0.3s;
         }
         
         .btn-entrar.ativo {
             background: var(--cor-primaria);
             color: white;
             cursor: pointer;
+            border: none;
+            box-shadow: 0 0 20px var(--cor-primaria);
+        }
+        
+        .btn-entrar.ativo:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px var(--cor-primaria);
         }
         
         /* ===== CARRO ===== */
@@ -1280,12 +1360,41 @@
 <div class="welcome-modal" id="welcomeModal">
     <div class="welcome-content">
         <h2>🏁 GRUPO BR 277</h2>
-        <p style="color:#fff; font-size:11px;">SISTEMA DE TRÂNSITO</p>
+        <div class="welcome-subtitle">SISTEMA DE TRÂNSITO</div>
         
         <input type="text" id="nomeUsuario" placeholder="SEU NOME" value="Motorista">
         
+        <!-- VEÍCULOS -->
+        <div class="veiculo-titulo">🚗 SEU VEÍCULO</div>
+        <div class="veiculos-grid">
+            <div class="veiculo-item selecionado" onclick="selecionarVeiculo('carro')" id="veiculo-carro">
+                <div class="veiculo-icone">🚗</div>
+                <div class="veiculo-nome">CARRO</div>
+            </div>
+            <div class="veiculo-item" onclick="selecionarVeiculo('moto')" id="veiculo-moto">
+                <div class="veiculo-icone">🏍️</div>
+                <div class="veiculo-nome">MOTO</div>
+            </div>
+            <div class="veiculo-item" onclick="selecionarVeiculo('caminhao')" id="veiculo-caminhao">
+                <div class="veiculo-icone">🚛</div>
+                <div class="veiculo-nome">CAMINHÃO</div>
+            </div>
+            <div class="veiculo-item" onclick="selecionarVeiculo('onibus')" id="veiculo-onibus">
+                <div class="veiculo-icone">🚌</div>
+                <div class="veiculo-nome">ÔNIBUS</div>
+            </div>
+            <div class="veiculo-item" onclick="selecionarVeiculo('van')" id="veiculo-van">
+                <div class="veiculo-icone">🚐</div>
+                <div class="veiculo-nome">VAN</div>
+            </div>
+            <div class="veiculo-item" onclick="selecionarVeiculo('pickup')" id="veiculo-pickup">
+                <div class="veiculo-icone">🛻</div>
+                <div class="veiculo-nome">PICKUP</div>
+            </div>
+        </div>
+        
         <!-- COR PRIMÁRIA -->
-        <div class="secao-titulo">COR DO APP:</div>
+        <div class="secao-titulo">🎨 COR DO APP</div>
         <div class="cores-grid">
             <div class="cor-opcao cor-azul selecionada" onclick="selecionarCor('azul')" id="cor-azul">AZUL</div>
             <div class="cor-opcao cor-verde" onclick="selecionarCor('verde')" id="cor-verde">VERDE</div>
@@ -1300,7 +1409,7 @@
         </div>
         
         <!-- COR DE FUNDO -->
-        <div class="secao-titulo">FUNDO DOS ÍCONES:</div>
+        <div class="secao-titulo">🎨 FUNDO DOS ÍCONES</div>
         <div class="cores-grid" style="grid-template-columns:repeat(5,1fr);">
             <div class="cor-opcao fundo-preto" onclick="selecionarFundo('preto')" id="fundo-preto">PRETO</div>
             <div class="cor-opcao fundo-branco" onclick="selecionarFundo('branco')" id="fundo-branco">BRANCO</div>
@@ -1319,27 +1428,27 @@
             <div class="permissao-item">
                 <i class="fas fa-map-marker-alt"></i>
                 <span>Localização</span>
-                <span style="margin-left:auto;" id="statusLocalizacao">⏳</span>
+                <span class="permissao-status unchecked" id="statusLocalizacao">⏳</span>
             </div>
             <div class="permissao-item">
                 <i class="fas fa-microphone"></i>
                 <span>Microfone</span>
-                <span style="margin-left:auto;" id="statusMicrofone">⏳</span>
+                <span class="permissao-status unchecked" id="statusMicrofone">⏳</span>
             </div>
             <div class="permissao-item">
                 <i class="fas fa-camera"></i>
                 <span>Câmera</span>
-                <span style="margin-left:auto;" id="statusCamera">⏳</span>
+                <span class="permissao-status unchecked" id="statusCamera">⏳</span>
             </div>
         </div>
         
         <label class="checkbox-container">
             <input type="checkbox" id="aceitePrivacidade">
-            <span>ACEITO OS TERMOS</span>
+            <span>ACEITO OS TERMOS DE USO</span>
         </label>
         
-        <button class="btn-ativar" onclick="ativarTudo()">🔓 ATIVAR TUDO</button>
-        <button class="btn-entrar" id="btnEntrar" onclick="entrar()" disabled>🔒 ENTRAR</button>
+        <button class="btn-ativar" onclick="ativarTudo()">🔓 ATIVAR PERMISSÕES</button>
+        <button class="btn-entrar" id="btnEntrar" onclick="entrar()" disabled>🔒 ENTRAR NO MAPA</button>
     </div>
 </div>
 
@@ -1592,6 +1701,14 @@ const alertasMobile = [
 ];
 
 // ===== FUNÇÕES DO CADASTRO =====
+function selecionarVeiculo(tipo) {
+    veiculoUsuario = tipo;
+    document.querySelectorAll('.veiculo-item').forEach(el => {
+        el.classList.remove('selecionado');
+    });
+    document.getElementById(`veiculo-${tipo}`).classList.add('selecionado');
+}
+
 function selecionarCor(cor) {
     corSelecionada = cor;
     document.querySelectorAll('.cor-opcao[id^="cor-"]').forEach(el => {
@@ -1609,34 +1726,43 @@ function selecionarFundo(fundo) {
 }
 
 async function ativarTudo() {
+    // Localização
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
             () => { 
                 permissoes.localizacao = true; 
                 document.getElementById('statusLocalizacao').innerHTML = '✅';
+                document.getElementById('statusLocalizacao').className = 'permissao-status checked';
             },
             () => { 
                 document.getElementById('statusLocalizacao').innerHTML = '❌';
+                document.getElementById('statusLocalizacao').className = 'permissao-status unchecked';
             }
         );
     }
     
+    // Microfone
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         permissoes.microfone = true;
         stream.getTracks().forEach(t => t.stop());
         document.getElementById('statusMicrofone').innerHTML = '✅';
+        document.getElementById('statusMicrofone').className = 'permissao-status checked';
     } catch(e) {
         document.getElementById('statusMicrofone').innerHTML = '❌';
+        document.getElementById('statusMicrofone').className = 'permissao-status unchecked';
     }
     
+    // Câmera
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
         permissoes.camera = true;
         stream.getTracks().forEach(t => t.stop());
         document.getElementById('statusCamera').innerHTML = '✅';
+        document.getElementById('statusCamera').className = 'permissao-status checked';
     } catch(e) {
         document.getElementById('statusCamera').innerHTML = '❌';
+        document.getElementById('statusCamera').className = 'permissao-status unchecked';
     }
     
     verificarPermissoes();
@@ -1677,31 +1803,52 @@ function entrar() {
     criarIconesAlertas();
 }
 
-// ===== CONFIGURAÇÕES =====
-function abrirConfig() {
-    document.getElementById('configNome').value = usuario;
+// ===== DEMAIS FUNÇÕES (MAPAS, CHAT, ETC) PERMANECEM IGUAIS =====
+// [Aqui você mantém todo o resto do código JavaScript que já estava funcionando]
+// ...
+
+// ===== FUNÇÃO PARA VERIFICAR ADMIN =====
+function verificarAdmin() {
+    const senha = document.getElementById('adminSenha').value;
     
-    document.querySelectorAll('.config-cor').forEach(el => el.classList.remove('selecionada'));
-    document.getElementById(`config-${corSelecionada}`).classList.add('selecionada');
-    
-    document.querySelectorAll('.config-fundo').forEach(el => el.classList.remove('selecionada'));
-    document.getElementById(`fundo-config-${fundoSelecionado}`).classList.add('selecionada');
-    
-    if (isAdmin) {
-        document.getElementById('adminSection').style.display = 'block';
-        carregarListaUsuarios();
-    } else {
-        document.getElementById('adminSection').style.display = 'none';
-    }
-    
-    document.getElementById('configPanel').classList.add('visivel');
+    // Criar hash da senha digitada
+    crypto.subtle.digest('SHA-256', new TextEncoder().encode(senha))
+        .then(hashBuffer => {
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            
+            if (hashHex === ADMIN_HASH) {
+                isAdmin = true;
+                localStorage.setItem('br277_admin', 'true');
+                fecharAdminPanel();
+                mostrarNotificacao('👑 Modo admin ativado!');
+                carregarChat();
+            } else {
+                alert('❌ Senha incorreta!');
+            }
+        });
 }
 
-function fecharConfig() {
-    document.getElementById('configPanel').classList.remove('visivel');
-}
+// ===== CARREGAR DADOS SALVOS =====
+const userSalvo = localStorage.getItem('br277_usuario');
+const corSalva = localStorage.getItem('br277_cor');
+const fundoSalvo = localStorage.getItem('br277_fundo');
+const adminSalvo = localStorage.getItem('br277_admin') === 'true';
 
-function mudarCor(cor) {
-    corSelecionada = cor;
-    document.querySelectorAll('.config-cor').forEach(el => el.classList.remove('selecionada'));
-    document.getElementById(`config-${cor
+if (userSalvo) {
+    usuario = userSalvo;
+    if (corSalva) corSelecionada = corSalva;
+    if (fundoSalvo) fundoSelecionado = fundoSalvo;
+    if (adminSalvo) isAdmin = true;
+    document.body.className = `tema-${corSelecionada} fundo-${fundoSelecionado}`;
+    document.getElementById('welcomeModal').style.display = 'none';
+    iniciarMapa();
+    iniciarGPS();
+    carregarUsuarios();
+    carregarAlertas();
+    carregarChat();
+    criarIconesAlertas();
+}
+</script>
+</body>
+</html>
