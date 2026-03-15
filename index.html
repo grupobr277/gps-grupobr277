@@ -74,7 +74,7 @@
         /* Aplicação das cores */
         .btn-barra, .btn-ptt, .reporte-btn-mobile, .legenda-container, 
         .velocimetro-barra, .recentrar-btn-mobile, .seta-voltar-btn,
-        .header-unificado, .rota-info-panel {
+        .header-unificado, .rota-info-panel, .popup-mobile {
             background: var(--cor-fundo) !important;
             color: var(--cor-texto) !important;
             border-color: var(--cor-borda) !important;
@@ -82,7 +82,8 @@
         
         .btn-barra i, .btn-ptt span, .reporte-btn-mobile span, 
         .legenda-texto, .vel-numero-barra, .recentrar-btn-mobile i,
-        .header-logo, .header-online, .rota-info-panel span {
+        .header-logo, .header-online, .rota-info-panel span,
+        .popup-header-mobile, .popup-stats-mobile span {
             color: var(--cor-texto) !important;
         }
         
@@ -95,15 +96,15 @@
             position: fixed;
             top: 8px;
             left: 8px;
-            z-index: 10000; /* Acima da lupa */
+            z-index: 10000;
             background: var(--cor-fundo);
             backdrop-filter: blur(5px);
             color: var(--cor-texto);
-            padding: 6px 12px;
+            padding: 6px 15px;
             border-radius: 30px;
             display: flex;
-            flex-direction: column;
-            gap: 2px;
+            align-items: center;
+            gap: 15px;
             border: 2px solid var(--cor-borda);
             box-shadow: 0 0 15px var(--cor-primaria);
         }
@@ -111,13 +112,13 @@
         .header-logo {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 12px;
+            gap: 10px;
+            font-size: 13px;
             font-weight: 700;
         }
         
         .header-logo i {
-            font-size: 14px;
+            font-size: 18px; /* Maior para destacar */
             cursor: pointer;
             transition: transform 0.2s;
         }
@@ -129,23 +130,23 @@
         .header-online {
             display: flex;
             align-items: center;
-            gap: 5px;
-            font-size: 10px;
-            opacity: 0.9;
+            gap: 6px;
+            font-size: 12px; /* Aumentado */
+            font-weight: 600;
         }
         
         .header-online i {
-            font-size: 10px;
+            font-size: 12px;
         }
         
         /* ===== LUPA ===== */
         .lupa-mobile {
             position: fixed;
             top: 8px;
-            left: 140px;
+            left: 160px;
             right: 45px;
             width: auto;
-            z-index: 9000; /* Menor que o header */
+            z-index: 9000;
             background: white;
             border-radius: 40px;
             border: 2px solid var(--cor-borda);
@@ -289,12 +290,12 @@
             background: var(--cor-fundo);
             border: 2px solid var(--cor-borda);
             border-radius: 30px;
-            padding: 6px 14px; /* Aumentado */
+            padding: 6px 14px;
             display: flex;
             align-items: center;
             gap: 5px;
             cursor: pointer;
-            font-size: 13px; /* Aumentado */
+            font-size: 13px;
             font-weight: 700;
             color: var(--cor-texto);
             box-shadow: 0 0 15px var(--cor-primaria);
@@ -356,7 +357,73 @@
             margin-left: 5px;
         }
         
-        /* ===== PAINEL DE ROTA COM X INTEGRADO ===== */
+        /* ===== PAINEL DE ALERTAS ===== */
+        .alertas-panel-mobile {
+            position: fixed;
+            bottom: 150px;
+            left: 10px;
+            background: var(--cor-fundo);
+            border: 2px solid var(--cor-borda);
+            border-radius: 20px;
+            padding: 12px;
+            display: none;
+            width: 220px;
+            z-index: 9400;
+        }
+        
+        .alertas-panel-mobile.visivel { display: block; }
+        
+        .alertas-grid-mobile {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .alerta-item-mobile {
+            aspect-ratio: 1/1;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            color: white;
+            font-weight: 700;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+            padding: 3px;
+        }
+        
+        .alerta-item-mobile:hover {
+            transform: scale(1.05);
+            border-color: white;
+        }
+        
+        .alerta-item-mobile span { 
+            font-size: 7px; 
+            margin-top: 2px;
+            background: rgba(0,0,0,0.6);
+            padding: 2px 4px;
+            border-radius: 10px;
+        }
+        
+        .btn-fechar-retangular {
+            background: #e53935;
+            border: 2px solid var(--cor-borda);
+            border-radius: 10px;
+            color: white;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin: 0 auto;
+        }
+        
+        /* ===== PAINEL DE ROTA ===== */
         .rota-info-panel {
             position: fixed;
             top: 60px;
@@ -408,7 +475,137 @@
             background: #c62828;
         }
         
-        /* ===== CHAT ===== */
+        /* ===== POPUP ALERTA - SEM FUNDO BRANCO ===== */
+        .popup-mobile {
+            background: var(--cor-fundo);
+            border: 2px solid var(--cor-borda);
+            border-radius: 15px;
+            overflow: hidden;
+            max-width: 280px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            position: relative;
+        }
+        
+        .popup-fechar {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 24px;
+            height: 24px;
+            background: #e53935;
+            border: 2px solid var(--cor-borda);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+            font-size: 14px;
+            z-index: 10;
+            transition: all 0.2s;
+        }
+        
+        .popup-fechar:hover {
+            transform: scale(1.1);
+        }
+        
+        .popup-header-mobile {
+            padding: 12px 35px 8px 12px; /* Espaço para o X */
+            color: white;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--cor-secundaria);
+            font-size: 14px;
+        }
+        
+        .popup-imagem-mobile {
+            padding: 10px;
+            background: var(--cor-fundo);
+            text-align: center;
+            border-top: 1px solid var(--cor-borda);
+            border-bottom: 1px solid var(--cor-borda);
+        }
+        
+        .popup-imagem-mobile img {
+            max-width: 100%;
+            max-height: 140px;
+            border-radius: 10px;
+            border: 2px solid var(--cor-borda);
+            cursor: pointer;
+        }
+        
+        .popup-stats-mobile {
+            display: flex;
+            justify-content: space-around;
+            padding: 8px;
+            background: var(--cor-fundo);
+            font-size: 12px;
+        }
+        
+        .popup-stats-mobile span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            color: white;
+        }
+        
+        .popup-stats-mobile i {
+            font-size: 14px;
+        }
+        
+        .popup-stats-mobile .likes i { color: #4caf50; }
+        .popup-stats-mobile .dislikes i { color: #e53935; }
+        
+        .popup-chat-mobile {
+            padding: 8px;
+            max-height: 130px;
+            overflow-y: auto;
+            background: var(--cor-fundo);
+            border-top: 1px solid var(--cor-borda);
+        }
+        
+        .popup-chat-mobile .mensagem {
+            background: #2a2a2a;
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            padding: 5px 8px;
+            margin: 4px 0;
+            color: white;
+        }
+        
+        .popup-input-mobile {
+            display: flex;
+            padding: 8px;
+            gap: 5px;
+            background: var(--cor-fundo);
+            border-top: 1px solid var(--cor-borda);
+        }
+        
+        .popup-input-mobile input {
+            flex: 1;
+            padding: 7px;
+            border-radius: 15px;
+            border: 1px solid var(--cor-borda);
+            background: #333;
+            color: white;
+            font-size: 12px;
+            outline: none;
+        }
+        
+        .popup-input-mobile button {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: var(--cor-primaria);
+            color: white;
+            cursor: pointer;
+        }
+        
+        /* ===== CHAT GERAL ===== */
         .chat-mobile {
             position: fixed;
             top: 5%;
@@ -471,8 +668,8 @@
             background: white;
             color: #000;
             border-bottom-left-radius: 3px;
-            border: 1px solid #ddd; /* Contorno sutil */
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* Sombra suave */
+            border: 1px solid #ddd;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         
         .mensagem-remetente {
@@ -546,87 +743,197 @@
             cursor: pointer;
         }
         
-        /* ===== POPUP ALERTA ===== */
-        .popup-mobile {
-            background: #e5ddd5;
-            border: 2px solid #075e54;
-            border-radius: 20px;
-            overflow: hidden;
-            max-width: 280px;
+        /* ===== PAINEL DE CONFIGURAÇÕES ===== */
+        .config-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #1a1a1a;
+            border: 3px solid var(--cor-borda);
+            border-radius: 30px;
+            padding: 20px;
+            z-index: 100000;
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            min-width: 300px;
+            max-width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 0 50px var(--cor-primaria);
         }
         
-        .popup-header-mobile {
-            padding: 10px;
-            color: white;
-            font-weight: 700;
+        .config-panel.visivel { display: flex; }
+        
+        .config-header {
             display: flex;
             justify-content: space-between;
-            background: #075e54;
-            font-size: 14px;
+            align-items: center;
+            color: var(--cor-texto);
+            font-size: 18px;
+            font-weight: 700;
+            border-bottom: 1px solid var(--cor-borda);
+            padding-bottom: 8px;
         }
         
-        .popup-imagem-mobile {
-            padding: 10px;
-            background: #f5f5f5;
-            text-align: center;
-        }
-        
-        .popup-imagem-mobile img {
-            max-width: 100%;
-            max-height: 140px;
+        .config-section {
+            margin: 3px 0;
+            padding: 8px;
+            background: #222;
             border-radius: 12px;
-            border: 2px solid #075e54;
-            cursor: pointer;
         }
         
-        .popup-stats-mobile {
-            display: flex;
-            justify-content: space-around;
-            padding: 10px;
-            background: #f0f0f0;
-            font-size: 12px;
-        }
-        
-        .popup-stats-mobile span {
-            cursor: pointer;
-        }
-        
-        .popup-chat-mobile {
-            padding: 8px;
-            max-height: 130px;
-            overflow-y: auto;
-            background: #f9f9f9;
-        }
-        
-        .popup-chat-mobile .mensagem {
-            border: 1px solid #ddd; /* Mesmo estilo do chat geral */
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        
-        .popup-input-mobile {
-            display: flex;
-            padding: 8px;
-            gap: 5px;
-            background: #f0f0f0;
-        }
-        
-        .popup-input-mobile input {
-            flex: 1;
-            padding: 7px;
-            border-radius: 18px;
-            border: 1px solid #075e54;
-            background: white;
-            font-size: 12px;
-        }
-        
-        .popup-input-mobile button {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: none;
-            background: #075e54;
+        .config-section h3 {
             color: white;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+        
+        .config-cores, .config-fundos {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 5px;
+        }
+        
+        .config-cor, .config-fundo {
+            aspect-ratio: 1/1;
+            border-radius: 10px;
             cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .config-cor:hover, .config-fundo:hover { transform: scale(1.1); }
+        .config-cor.selecionada, .config-fundo.selecionada { border-color: white; }
+        
+        .config-input {
+            width: 100%;
+            padding: 10px;
+            background: #333;
+            border: 2px solid var(--cor-borda);
+            border-radius: 30px;
+            color: white;
+            font-size: 13px;
+        }
+        
+        .config-botao {
+            background: var(--cor-primaria);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            margin: 3px 0;
+        }
+        
+        .config-botao.perigo {
+            background: #e53935;
+        }
+        
+        /* ===== PAINEL DE BANIMENTO ===== */
+        .usuario-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px;
+            background: #333;
+            border-radius: 8px;
+            margin: 4px 0;
+        }
+        
+        .usuario-nome {
+            color: white;
+            font-size: 12px;
+        }
+        
+        .usuario-status {
+            font-size: 9px;
+            padding: 2px 5px;
+            border-radius: 8px;
+        }
+        
+        .status-online { background: #4caf50; color: white; }
+        .status-banido { background: #e53935; color: white; }
+        
+        .btn-banir {
+            background: #e53935;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 3px 8px;
+            font-size: 10px;
+            cursor: pointer;
+        }
+        
+        /* ===== RECENTRALIZAR ===== */
+        .recentrar-mobile {
+            position: fixed;
+            bottom: 90px;
+            right: 10px;
+            z-index: 9300;
+            display: none;
+        }
+        
+        .recentrar-btn-mobile {
+            width: 42px;
+            height: 42px;
+            background: var(--cor-fundo);
+            border: 3px solid var(--cor-borda);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--cor-texto);
+            font-size: 18px;
+            box-shadow: 0 0 20px var(--cor-primaria);
+            animation: pulseBlue 2s infinite;
+        }
+        
+        /* ===== SETA VOLTAR ===== */
+        .seta-voltar {
+            position: fixed;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9600;
+            display: none;
+        }
+        
+        .seta-voltar-btn {
+            width: 45px;
+            height: 45px;
+            background: var(--cor-fundo);
+            border: 2px solid var(--cor-borda);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--cor-texto);
+            font-size: 20px;
+            animation: pulseSeta 1.5s infinite;
+        }
+        
+        /* ===== BOTÃO CONFIG ===== */
+        .btn-config {
+            position: fixed;
+            top: 8px;
+            right: 8px;
+            width: 36px;
+            height: 36px;
+            background: var(--cor-fundo);
+            border: 2px solid var(--cor-borda);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--cor-texto);
+            font-size: 16px;
+            z-index: 9000;
         }
         
         /* ===== MODAL DE BOAS-VINDAS ===== */
@@ -798,264 +1105,6 @@
             background: var(--cor-primaria);
             color: white;
             cursor: pointer;
-        }
-        
-        /* ===== PAINEL DE CONFIGURAÇÕES ===== */
-        .config-panel {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #1a1a1a;
-            border: 3px solid var(--cor-borda);
-            border-radius: 30px;
-            padding: 20px;
-            z-index: 100000;
-            display: none;
-            flex-direction: column;
-            gap: 12px;
-            min-width: 300px;
-            max-width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-            box-shadow: 0 0 50px var(--cor-primaria);
-        }
-        
-        .config-panel.visivel { display: flex; }
-        
-        .config-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: var(--cor-texto);
-            font-size: 18px;
-            font-weight: 700;
-            border-bottom: 1px solid var(--cor-borda);
-            padding-bottom: 8px;
-        }
-        
-        .config-section {
-            margin: 3px 0;
-            padding: 8px;
-            background: #222;
-            border-radius: 12px;
-        }
-        
-        .config-section h3 {
-            color: white;
-            font-size: 13px;
-            margin-bottom: 6px;
-        }
-        
-        .config-cores, .config-fundos {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 5px;
-        }
-        
-        .config-cor, .config-fundo {
-            aspect-ratio: 1/1;
-            border-radius: 10px;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: all 0.2s;
-        }
-        
-        .config-cor:hover, .config-fundo:hover { transform: scale(1.1); }
-        .config-cor.selecionada, .config-fundo.selecionada { border-color: white; }
-        
-        .config-input {
-            width: 100%;
-            padding: 10px;
-            background: #333;
-            border: 2px solid var(--cor-borda);
-            border-radius: 30px;
-            color: white;
-            font-size: 13px;
-        }
-        
-        .config-botao {
-            background: var(--cor-primaria);
-            color: white;
-            border: none;
-            border-radius: 30px;
-            padding: 10px;
-            font-weight: 700;
-            cursor: pointer;
-            margin: 3px 0;
-        }
-        
-        .config-botao.perigo {
-            background: #e53935;
-        }
-        
-        /* ===== PAINEL DE BANIMENTO ===== */
-        .usuario-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 6px;
-            background: #333;
-            border-radius: 8px;
-            margin: 4px 0;
-        }
-        
-        .usuario-nome {
-            color: white;
-            font-size: 12px;
-        }
-        
-        .usuario-status {
-            font-size: 9px;
-            padding: 2px 5px;
-            border-radius: 8px;
-        }
-        
-        .status-online { background: #4caf50; color: white; }
-        .status-banido { background: #e53935; color: white; }
-        
-        .btn-banir {
-            background: #e53935;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 3px 8px;
-            font-size: 10px;
-            cursor: pointer;
-        }
-        
-        /* ===== PAINEL DE ALERTAS ===== */
-        .alertas-panel-mobile {
-            position: fixed;
-            bottom: 150px;
-            left: 10px;
-            background: var(--cor-fundo);
-            border: 2px solid var(--cor-borda);
-            border-radius: 20px;
-            padding: 12px;
-            display: none;
-            width: 200px;
-            z-index: 9400;
-        }
-        
-        .alertas-panel-mobile.visivel { display: block; }
-        
-        .alertas-grid-mobile {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 6px;
-            margin-bottom: 10px;
-        }
-        
-        .alerta-item-mobile {
-            aspect-ratio: 1/1;
-            border-radius: 12px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 20px;
-            color: white;
-            font-weight: 700;
-            border: 2px solid transparent;
-            transition: all 0.2s;
-        }
-        
-        .alerta-item-mobile:hover {
-            transform: scale(1.05);
-            border-color: white;
-        }
-        
-        .alerta-item-mobile span { 
-            font-size: 8px; 
-            margin-top: 2px;
-            background: rgba(0,0,0,0.6);
-            padding: 2px 6px;
-            border-radius: 15px;
-        }
-        
-        .btn-fechar-retangular {
-            background: #e53935;
-            border: 2px solid var(--cor-borda);
-            border-radius: 10px;
-            color: white;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            margin: 0 auto;
-        }
-        
-        /* ===== RECENTRALIZAR ===== */
-        .recentrar-mobile {
-            position: fixed;
-            bottom: 90px;
-            right: 10px;
-            z-index: 9300;
-            display: none;
-        }
-        
-        .recentrar-btn-mobile {
-            width: 42px;
-            height: 42px;
-            background: var(--cor-fundo);
-            border: 3px solid var(--cor-borda);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: var(--cor-texto);
-            font-size: 18px;
-            box-shadow: 0 0 20px var(--cor-primaria);
-            animation: pulseBlue 2s infinite;
-        }
-        
-        /* ===== SETA VOLTAR ===== */
-        .seta-voltar {
-            position: fixed;
-            bottom: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 9600;
-            display: none;
-        }
-        
-        .seta-voltar-btn {
-            width: 45px;
-            height: 45px;
-            background: var(--cor-fundo);
-            border: 2px solid var(--cor-borda);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: var(--cor-texto);
-            font-size: 20px;
-            animation: pulseSeta 1.5s infinite;
-        }
-        
-        /* ===== BOTÃO CONFIG ===== */
-        .btn-config {
-            position: fixed;
-            top: 8px;
-            right: 8px;
-            width: 36px;
-            height: 36px;
-            background: var(--cor-fundo);
-            border: 2px solid var(--cor-borda);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: var(--cor-texto);
-            font-size: 16px;
-            z-index: 9000;
         }
         
         /* ===== CARRO ===== */
@@ -1366,7 +1415,7 @@
     </div>
 </div>
 
-<!-- PAINEL DE ALERTAS -->
+<!-- PAINEL DE ALERTAS - 15 ITENS -->
 <div class="alertas-panel-mobile" id="alertasPanelMobile">
     <div class="alertas-grid-mobile" id="alertasGridMobile"></div>
     <div class="btn-fechar-retangular" onclick="toggleReporteMobile()">✕</div>
@@ -1433,7 +1482,7 @@
     </div>
 </div>
 
-<!-- PAINEL DE ROTA COM X INTEGRADO -->
+<!-- PAINEL DE ROTA -->
 <div class="rota-info-panel" id="rotaInfoPanel">
     <div class="rota-info-item">
         <i class="fas fa-clock"></i>
@@ -1460,7 +1509,7 @@
     </div>
 </div>
 
-<!-- CHAT -->
+<!-- CHAT GERAL -->
 <div class="chat-mobile" id="chatGeralMobile">
     <div class="chat-header-mobile">
         <span><i class="fas fa-comments"></i> GRUPO BR 277</span>
@@ -1517,6 +1566,25 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
+
+// ===== 15 ALERTAS =====
+const alertasMobile = [
+    { nome: 'ACIDENTE', icone: '💥', cor: '#e53935', bg: 'linear-gradient(145deg, #e53935, #b71c1c)' },
+    { nome: 'OBRAS', icone: '🚧', cor: '#ff9800', bg: 'linear-gradient(145deg, #ff9800, #f57c00)' },
+    { nome: 'PANE', icone: '🔧', cor: '#795548', bg: 'linear-gradient(145deg, #795548, #5d4037)' },
+    { nome: 'ANIMAL', icone: '🐂', cor: '#9c27b0', bg: 'linear-gradient(145deg, #9c27b0, #7b1fa2)' },
+    { nome: 'RADAR', icone: '📷', cor: '#607d8b', bg: 'linear-gradient(145deg, #607d8b, #455a64)' },
+    { nome: 'BARREIRA', icone: '⛰️', cor: '#8b4513', bg: 'linear-gradient(145deg, #8b4513, #5d3a1a)' },
+    { nome: 'NEBLINA', icone: '🌫️', cor: '#00acc1', bg: 'linear-gradient(145deg, #00acc1, #0097a7)' },
+    { nome: 'CONGEST', icone: '🔴', cor: '#f44336', bg: 'linear-gradient(145deg, #f44336, #d32f2f)' },
+    { nome: 'ALAGAM', icone: '💧', cor: '#2196f3', bg: 'linear-gradient(145deg, #2196f3, #1976d2)' },
+    { nome: 'BLOQ', icone: '⛔', cor: '#b71c1c', bg: 'linear-gradient(145deg, #b71c1c, #8B0000)' },
+    { nome: 'PERIGO', icone: '⚠️', cor: '#ff5722', bg: 'linear-gradient(145deg, #ff5722, #e64a19)' },
+    { nome: 'DESVIO', icone: '🔄', cor: '#3f51b5', bg: 'linear-gradient(145deg, #3f51b5, #303f9f)' },
+    { nome: 'CARGA', icone: '📦', cor: '#8bc34a', bg: 'linear-gradient(145deg, #8bc34a, #689f38)' },
+    { nome: 'GRANIZO', icone: '🧊', cor: '#00bcd4', bg: 'linear-gradient(145deg, #00bcd4, #0097a7)' },
+    { nome: 'MANIFEST', icone: '📢', cor: '#ff4081', bg: 'linear-gradient(145deg, #ff4081, #f50057)' }
+];
 
 // ===== FUNÇÕES DO CADASTRO =====
 function selecionarCor(cor) {
@@ -1816,19 +1884,6 @@ function carregarUsuarios() {
 }
 
 // ===== ALERTAS =====
-const alertasMobile = [
-    { nome: 'ACIDENTE', icone: '💥', cor: '#e53935', bg: 'linear-gradient(145deg, #e53935, #b71c1c)' },
-    { nome: 'OBRAS', icone: '🚧', cor: '#ff9800', bg: 'linear-gradient(145deg, #ff9800, #f57c00)' },
-    { nome: 'PANE', icone: '🔧', cor: '#795548', bg: 'linear-gradient(145deg, #795548, #5d4037)' },
-    { nome: 'ANIMAL', icone: '🐂', cor: '#9c27b0', bg: 'linear-gradient(145deg, #9c27b0, #7b1fa2)' },
-    { nome: 'RADAR', icone: '📷', cor: '#607d8b', bg: 'linear-gradient(145deg, #607d8b, #455a64)' },
-    { nome: 'BARREIRA', icone: '⛰️', cor: '#8b4513', bg: 'linear-gradient(145deg, #8b4513, #5d3a1a)' },
-    { nome: 'NEBLINA', icone: '🌫️', cor: '#00acc1', bg: 'linear-gradient(145deg, #00acc1, #0097a7)' },
-    { nome: 'CONGEST', icone: '🔴', cor: '#f44336', bg: 'linear-gradient(145deg, #f44336, #d32f2f)' },
-    { nome: 'ALAGAM', icone: '💧', cor: '#2196f3', bg: 'linear-gradient(145deg, #2196f3, #1976d2)' },
-    { nome: 'BLOQ', icone: '⛔', cor: '#b71c1c', bg: 'linear-gradient(145deg, #b71c1c, #8B0000)' }
-];
-
 function criarIconesAlertas() {
     const grid = document.getElementById('alertasGridMobile');
     alertasMobile.forEach(a => {
@@ -1873,12 +1928,17 @@ async function abrirCameraParaAlerta(alerta, id) {
         btnFoto.style.cssText = 'margin:15px; padding:12px 25px; background:#ffd700; border:none; border-radius:40px; font-size:16px; font-weight:700; cursor:pointer;';
         btnFoto.innerHTML = '📷 TIRAR FOTO';
         
+        const btnPular = document.createElement('button');
+        btnPular.style.cssText = 'margin:15px; padding:12px 25px; background:#444; border:none; border-radius:40px; font-size:16px; font-weight:700; cursor:pointer; color:white;';
+        btnPular.innerHTML = '⏭️ PULAR';
+        
         const btnFechar = document.createElement('button');
         btnFechar.style.cssText = 'position:absolute; top:15px; right:15px; width:40px; height:40px; background:#e53935; border:none; border-radius:50%; color:white; font-size:18px; cursor:pointer;';
         btnFechar.innerHTML = '✕';
         
         overlay.appendChild(video);
         overlay.appendChild(btnFoto);
+        overlay.appendChild(btnPular);
         overlay.appendChild(btnFechar);
         document.body.appendChild(overlay);
         
@@ -1909,6 +1969,21 @@ async function abrirCameraParaAlerta(alerta, id) {
                 };
                 reader.readAsDataURL(blob);
             }, 'image/jpeg', 0.6);
+        };
+        
+        btnPular.onclick = () => {
+            const alertaData = {
+                ...alerta,
+                lat: minhaLocalizacao.lat,
+                lng: minhaLocalizacao.lng,
+                timestamp: id,
+                criador: usuario,
+                confirmacoes: 0
+            };
+            db.ref('alertas_fixos/' + id).set(alertaData);
+            stream.getTracks().forEach(t => t.stop());
+            document.body.removeChild(overlay);
+            mostrarNotificacao('Alerta criado (sem foto)');
         };
         
         btnFechar.onclick = () => {
@@ -1978,14 +2053,16 @@ function abrirPopupAlerta(alerta, id) {
     }
     
     popup.innerHTML = `
+        <div class="popup-fechar" onclick="fecharPopupAlerta('${id}')">✕</div>
         <div class="popup-header-mobile">
             <span>${alerta.icone} ${alerta.nome}</span>
             <span>${alerta.confirmacoes||0}</span>
         </div>
         ${imagemHTML}
         <div class="popup-stats-mobile">
-            <span onclick="curtirAlerta('${id}')"><i class="fas fa-thumbs-up"></i> ${alerta.confirmacoes||0}</span>
-            <span onclick="descurtirAlerta('${id}')"><i class="fas fa-thumbs-down"></i> 0</span>
+            <span class="likes" onclick="curtirAlerta('${id}')"><i class="fas fa-thumbs-up"></i> ${alerta.confirmacoes||0}</span>
+            <span class="dislikes" onclick="descurtirAlerta('${id}')"><i class="fas fa-thumbs-down"></i> 0</span>
+            <span><i class="fas fa-clock"></i> ${new Date(alerta.timestamp).toLocaleTimeString().slice(0,5)}</span>
         </div>
         <div class="popup-chat-mobile" id="chat-${id}"></div>
         <div class="popup-input-mobile">
@@ -1996,6 +2073,10 @@ function abrirPopupAlerta(alerta, id) {
     
     L.popup({ maxWidth: 260 }).setLatLng([alerta.lat, alerta.lng]).setContent(popup).openOn(mapa);
     carregarChatAlerta(id);
+}
+
+function fecharPopupAlerta(id) {
+    mapa.closePopup();
 }
 
 function curtirAlerta(id) {
@@ -2019,7 +2100,7 @@ function carregarChatAlerta(id) {
             const hora = new Date(m.timestamp).toLocaleTimeString().slice(0,5);
             html += `
                 <div style="display:flex; flex-direction:column; align-items:${isMinha ? 'flex-end' : 'flex-start'}; margin:4px 0;">
-                    <div style="background:${isMinha?'#dcf8c6':'white'}; padding:5px; border-radius:8px; max-width:100%; font-size:12px; border:1px solid #ddd; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+                    <div class="mensagem" style="background:${isMinha?'#dcf8c6':'#2a2a2a'}; color:${isMinha?'#000':'#fff'}; max-width:100%;">
                         <b>${m.usuario}</b><br>${m.texto}<br>
                         <div style="text-align:right; font-size:8px; color:#999;">${hora}</div>
                     </div>
