@@ -1590,6 +1590,13 @@ const alertasMobile = [
     { nome: 'MANIFEST', icone: '📢', cor: '#ff4081', bg: 'linear-gradient(145deg, #ff4081, #f50057)' }
 ];
 
+// ===== MAPA E VARIÁVEIS GLOBAIS =====
+let mapa, minhaLocalizacao, meuMarcador, seguirLocalizacao = true, clusterGroup;
+let rotaAtual = null;
+let marcadorDestino = null;
+let alertasNoMapa = {}; // Para controlar os marcadores de alerta
+let timersExpiracao = {}; // Timers para expirar alertas
+
 // ===== FUNÇÕES DO CADASTRO =====
 function selecionarCor(cor) {
     corSelecionada = cor;
@@ -1597,6 +1604,8 @@ function selecionarCor(cor) {
         el.classList.remove('selecionada');
     });
     document.getElementById(`cor-${cor}`).classList.add('selecionada');
+    // Aplicar cor imediatamente
+    document.body.className = `tema-${corSelecionada} fundo-${fundoSelecionado}`;
 }
 
 function selecionarFundo(fundo) {
@@ -1605,6 +1614,8 @@ function selecionarFundo(fundo) {
         el.classList.remove('selecionada');
     });
     document.getElementById(`fundo-${fundo}`).classList.add('selecionada');
+    // Aplicar fundo imediatamente
+    document.body.className = `tema-${corSelecionada} fundo-${fundoSelecionado}`;
 }
 
 async function ativarTudo() {
@@ -1677,6 +1688,9 @@ function entrar() {
     carregarAlertas();
     carregarChat();
     criarIconesAlertas();
+    
+    // Iniciar verificação de expiração de alertas
+    setInterval(verificarExpiracaoAlertas, 60000); // Verificar a cada minuto
 }
 
 // ===== CONFIGURAÇÕES =====
@@ -1824,10 +1838,6 @@ const adminSalvo = localStorage.getItem('br277_admin') === 'true';
 if (adminSalvo) { isAdmin = true; }
 
 // ===== MAPA =====
-let mapa, minhaLocalizacao, meuMarcador, seguirLocalizacao = true, clusterGroup;
-let rotaAtual = null;
-let marcadorDestino = null;
-
 function iniciarMapa() {
     mapa = L.map('map', { zoomControl: false }).setView([-25.4284, -49.2733], 13);
     L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(mapa);
@@ -1887,6 +1897,40 @@ function carregarUsuarios() {
     });
 }
 
+// ===== FUNÇÃO PARA VERIFICAR ALERTA DUPLICADO =====
+async function verificarAlertaDuplicado(lat, lng, tipoAlerta) {
+    return new Promise((resolve) => {
+        // Raio de 100 metros para considerar como mesmo local
+        const raio = 0.001; // Aproximadamente 100 metros
+        
+        db.ref('alertas_fixos').once('value', snap => {
+            const alertas = snap.val();
+            if (!alertas) {
+                resolve(null);
+                return;
+            }
+            
+            // Procurar alerta próximo do mesmo tipo
+            for (let id in alertas) {
+                const a = alertas[id];
+                if (a.nome === tipoAlerta) {
+                    const distancia = Math.sqrt(
+                        Math.pow(a.lat - lat, 2) + 
+                        Math.pow(a.lng - lng, 2)
+                    );
+                    
+                    if (distancia < raio) {
+                        resolve(id); // Retorna o ID do alerta existente
+                        return;
+                    }
+                }
+            }
+            
+            resolve(null); // Nenhum alerta duplicado encontrado
+        });
+    });
+}
+
 // ===== ALERTAS =====
 function criarIconesAlertas() {
     const grid = document.getElementById('alertasGridMobile');
@@ -1897,14 +1941,28 @@ function criarIconesAlertas() {
         div.innerHTML = `<div>${a.icone}</div><span>${a.nome}</span>`;
         div.onclick = () => {
             if (!minhaLocalizacao) return;
-            const id = Date.now();
-            abrirCameraParaAlerta(a, id);
+            abrirCameraParaAlerta(a);
         };
         grid.appendChild(div);
     });
 }
 
-async function abrirCameraParaAlerta(alerta, id) {
+async function abrirCameraParaAlerta(alerta) {
+    // Primeiro verificar se já existe alerta duplicado
+    const alertaExistenteId = await verificarAlertaDuplicado(
+        minhaLocalizacao.lat, 
+        minhaLocalizacao.lng, 
+        alerta.nome
+    );
+    
+    if (alertaExistenteId) {
+        // Se já existe, apenas confirmar o alerta existente
+        db.ref('alertas_fixos/' + alertaExistenteId + '/confirmacoes').transaction(c => (c||0)+1);
+        mostrarNotificacao('✅ Alerta já existe! Sua confirmação foi adicionada.');
+        return;
+    }
+    
+    // Se não existe, criar novo alerta com câmera
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
         
@@ -1955,13 +2013,15 @@ async function abrirCameraParaAlerta(alerta, id) {
             canvas.toBlob(async (blob) => {
                 const reader = new FileReader();
                 reader.onloadend = async () => {
+                    const id = Date.now();
                     const alertaData = {
                         ...alerta,
                         lat: minhaLocalizacao.lat,
                         lng: minhaLocalizacao.lng,
                         timestamp: id,
                         criador: usuario,
-                        confirmacoes: 0,
+                        confirmacoes: 1,
+                        ultimaAtividade: Date.now(),
                         imagem: { thumbnail: reader.result }
                     };
                     
@@ -1975,16 +2035,18 @@ async function abrirCameraParaAlerta(alerta, id) {
             }, 'image/jpeg', 0.6);
         };
         
-        btnPular.onclick = () => {
+        btnPular.onclick = async () => {
+            const id = Date.now();
             const alertaData = {
                 ...alerta,
                 lat: minhaLocalizacao.lat,
                 lng: minhaLocalizacao.lng,
                 timestamp: id,
                 criador: usuario,
-                confirmacoes: 0
+                confirmacoes: 1,
+                ultimaAtividade: Date.now()
             };
-            db.ref('alertas_fixos/' + id).set(alertaData);
+            await db.ref('alertas_fixos/' + id).set(alertaData);
             stream.getTracks().forEach(t => t.stop());
             document.body.removeChild(overlay);
             mostrarNotificacao('Alerta criado (sem foto)');
@@ -1997,13 +2059,15 @@ async function abrirCameraParaAlerta(alerta, id) {
         
     } catch(e) {
         console.log('Erro na câmera:', e);
+        const id = Date.now();
         const alertaData = {
             ...alerta,
             lat: minhaLocalizacao.lat,
             lng: minhaLocalizacao.lng,
             timestamp: id,
             criador: usuario,
-            confirmacoes: 0
+            confirmacoes: 1,
+            ultimaAtividade: Date.now()
         };
         await db.ref('alertas_fixos/' + id).set(alertaData);
         mostrarNotificacao('Alerta criado (sem foto)');
@@ -2014,6 +2078,11 @@ function carregarAlertas() {
     db.ref('alertas_fixos').on('child_added', snap => {
         const a = snap.val();
         if (!a) return;
+        
+        const id = snap.key;
+        
+        // Se já existe marcador para este alerta, não criar outro
+        if (alertasNoMapa[id]) return;
         
         const temImagem = a.imagem && a.imagem.thumbnail;
         let htmlIcone;
@@ -2039,7 +2108,63 @@ function carregarAlertas() {
             })
         }).addTo(mapa);
         
-        marcador.on('click', () => abrirPopupAlerta(a, snap.key));
+        marcador.on('click', () => abrirPopupAlerta(a, id));
+        
+        // Armazenar referência ao marcador
+        alertasNoMapa[id] = marcador;
+        
+        // Atualizar última atividade quando alguém interage
+        db.ref('alertas_fixos/' + id + '/ultimaAtividade').set(Date.now());
+    });
+    
+    db.ref('alertas_fixos').on('child_changed', snap => {
+        const a = snap.val();
+        const id = snap.key;
+        
+        if (alertasNoMapa[id]) {
+            // Atualizar popup se estiver aberto
+            const popupAtual = mapa._popup;
+            if (popupAtual && popupAtual._source === alertasNoMapa[id]) {
+                abrirPopupAlerta(a, id);
+            }
+        }
+    });
+    
+    db.ref('alertas_fixos').on('child_removed', snap => {
+        const id = snap.key;
+        if (alertasNoMapa[id]) {
+            mapa.removeLayer(alertasNoMapa[id]);
+            delete alertasNoMapa[id];
+        }
+    });
+}
+
+// ===== VERIFICAÇÃO DE EXPIRAÇÃO DE ALERTAS =====
+function verificarExpiracaoAlertas() {
+    const agora = Date.now();
+    const tempoMaximoInatividade = 20 * 60 * 1000; // 20 minutos em milissegundos
+    
+    db.ref('alertas_fixos').once('value', snap => {
+        const alertas = snap.val();
+        if (!alertas) return;
+        
+        Object.entries(alertas).forEach(([id, alerta]) => {
+            // Verificar última atividade
+            const ultimaAtividade = alerta.ultimaAtividade || alerta.timestamp;
+            
+            if (agora - ultimaAtividade > tempoMaximoInatividade) {
+                // Verificar se tem comentários no chat
+                db.ref(`chats/alerta_${id}`).once('value', chatSnap => {
+                    const temComentarios = chatSnap.exists() && chatSnap.numChildren() > 0;
+                    
+                    // Se não tem comentários OU tem poucas confirmações (menos de 3), remover
+                    if (!temComentarios || (alerta.confirmacoes || 0) < 3) {
+                        db.ref('alertas_fixos/' + id).remove();
+                        mostrarNotificacao(`⚠️ Alerta ${alerta.nome} expirou por inatividade`);
+                    }
+                });
+            }
+        });
     });
 }
 
@@ -2077,6 +2202,9 @@ function abrirPopupAlerta(alerta, id) {
     
     L.popup({ maxWidth: 260 }).setLatLng([alerta.lat, alerta.lng]).setContent(popup).openOn(mapa);
     carregarChatAlerta(id);
+    
+    // Atualizar última atividade
+    db.ref('alertas_fixos/' + id + '/ultimaAtividade').set(Date.now());
 }
 
 function fecharPopupAlerta(id) {
@@ -2085,10 +2213,12 @@ function fecharPopupAlerta(id) {
 
 function curtirAlerta(id) {
     db.ref('alertas_fixos/' + id + '/confirmacoes').transaction(c => (c||0)+1);
+    db.ref('alertas_fixos/' + id + '/ultimaAtividade').set(Date.now());
 }
 
 function descurtirAlerta(id) {
     mostrarNotificacao('👎 Obrigado!');
+    db.ref('alertas_fixos/' + id + '/ultimaAtividade').set(Date.now());
 }
 
 function carregarChatAlerta(id) {
@@ -2112,6 +2242,9 @@ function carregarChatAlerta(id) {
             `;
         });
         chatDiv.innerHTML = html;
+        
+        // Atualizar última atividade quando há mensagens novas
+        db.ref('alertas_fixos/' + id + '/ultimaAtividade').set(Date.now());
     });
 }
 
@@ -2122,6 +2255,9 @@ function enviarMsgAlerta(id) {
         usuario, texto: input.value.trim(), timestamp: Date.now()
     });
     input.value = '';
+    
+    // Atualizar última atividade
+    db.ref('alertas_fixos/' + id + '/ultimaAtividade').set(Date.now());
 }
 
 // ===== CHAT GERAL =====
@@ -2410,12 +2546,13 @@ let alertaAtual = null;
 let popupTimeout = null;
 
 function verificarAlertasProximos() {
-    // Função simplificada
+    // Função simplificada - pode ser implementada depois
 }
 
 function confirmarAlerta() {
     if (alertaAtual) {
         db.ref('alertas_fixos/' + alertaAtual.id + '/confirmacoes').transaction(c => (c||0)+1);
+        db.ref('alertas_fixos/' + alertaAtual.id + '/ultimaAtividade').set(Date.now());
         document.getElementById('confirmacaoPopup').style.display = 'none';
         alertaAtual = null;
     }
