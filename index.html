@@ -1595,7 +1595,6 @@ let mapa, minhaLocalizacao, meuMarcador, seguirLocalizacao = true, clusterGroup;
 let rotaAtual = null;
 let marcadorDestino = null;
 let alertasNoMapa = {}; // Para controlar os marcadores de alerta
-let timersExpiracao = {}; // Timers para expirar alertas
 
 // ===== FUNÇÕES DO CADASTRO =====
 function selecionarCor(cor) {
@@ -1689,8 +1688,12 @@ function entrar() {
     carregarChat();
     criarIconesAlertas();
     
-    // Iniciar verificação de expiração de alertas
-    setInterval(verificarExpiracaoAlertas, 60000); // Verificar a cada minuto
+    // Iniciar verificação de expiração de alertas - verificar a cada 1 minuto
+    console.log('🕒 Iniciando verificação de expiração de alertas...');
+    setInterval(verificarExpiracaoAlertas, 60000); // 1 minuto
+    
+    // Fazer uma verificação inicial após 5 segundos
+    setTimeout(verificarExpiracaoAlertas, 5000);
 }
 
 // ===== CONFIGURAÇÕES =====
@@ -1931,6 +1934,53 @@ async function verificarAlertaDuplicado(lat, lng, tipoAlerta) {
     });
 }
 
+// ===== VERIFICAÇÃO DE EXPIRAÇÃO DE ALERTAS =====
+function verificarExpiracaoAlertas() {
+    console.log('🔍 Verificando expiração de alertas...'); // Para debug
+    
+    const agora = Date.now();
+    const tempoMaximoVida = 60 * 60 * 1000; // 1 HORA em milissegundos
+    
+    db.ref('alertas_fixos').once('value', snap => {
+        const alertas = snap.val();
+        if (!alertas) {
+            console.log('Nenhum alerta para verificar');
+            return;
+        }
+        
+        let alertasExpirados = 0;
+        
+        Object.entries(alertas).forEach(([id, alerta]) => {
+            // Usar o timestamp de criação (quando o alerta foi criado)
+            const timestampCriacao = alerta.timestamp;
+            const tempoExistente = agora - timestampCriacao;
+            
+            console.log(`Alerta ${alerta.nome}: existe há ${Math.round(tempoExistente/60000)} minutos`);
+            
+            // Se existe há mais de 1 hora
+            if (tempoExistente > tempoMaximoVida) {
+                console.log(`⚠️ Alerta ${alerta.nome} expirando (tempo de vida excedido)`);
+                
+                // Remover alerta
+                db.ref('alertas_fixos/' + id).remove()
+                    .then(() => {
+                        alertasExpirados++;
+                        mostrarNotificacao(`⚠️ Alerta ${alerta.nome} removido (atingiu tempo máximo)`);
+                    })
+                    .catch(error => {
+                        console.error('Erro ao remover alerta:', error);
+                    });
+            }
+        });
+        
+        if (alertasExpirados > 0) {
+            console.log(`${alertasExpirados} alertas expirados por tempo de vida`);
+        }
+    }).catch(error => {
+        console.error('Erro ao verificar alertas:', error);
+    });
+}
+
 // ===== ALERTAS =====
 function criarIconesAlertas() {
     const grid = document.getElementById('alertasGridMobile');
@@ -2021,7 +2071,6 @@ async function abrirCameraParaAlerta(alerta) {
                         timestamp: id,
                         criador: usuario,
                         confirmacoes: 1,
-                        ultimaAtividade: Date.now(),
                         imagem: { thumbnail: reader.result }
                     };
                     
@@ -2043,8 +2092,7 @@ async function abrirCameraParaAlerta(alerta) {
                 lng: minhaLocalizacao.lng,
                 timestamp: id,
                 criador: usuario,
-                confirmacoes: 1,
-                ultimaAtividade: Date.now()
+                confirmacoes: 1
             };
             await db.ref('alertas_fixos/' + id).set(alertaData);
             stream.getTracks().forEach(t => t.stop());
@@ -2066,8 +2114,7 @@ async function abrirCameraParaAlerta(alerta) {
             lng: minhaLocalizacao.lng,
             timestamp: id,
             criador: usuario,
-            confirmacoes: 1,
-            ultimaAtividade: Date.now()
+            confirmacoes: 1
         };
         await db.ref('alertas_fixos/' + id).set(alertaData);
         mostrarNotificacao('Alerta criado (sem foto)');
@@ -2112,9 +2159,6 @@ function carregarAlertas() {
         
         // Armazenar referência ao marcador
         alertasNoMapa[id] = marcador;
-        
-        // Atualizar última atividade quando alguém interage
-        db.ref('alertas_fixos/' + id + '/ultimaAtividade').set(Date.now());
     });
     
     db.ref('alertas_fixos').on('child_changed', snap => {
@@ -2136,35 +2180,6 @@ function carregarAlertas() {
             mapa.removeLayer(alertasNoMapa[id]);
             delete alertasNoMapa[id];
         }
-    });
-}
-
-// ===== VERIFICAÇÃO DE EXPIRAÇÃO DE ALERTAS =====
-function verificarExpiracaoAlertas() {
-    const agora = Date.now();
-    const tempoMaximoInatividade = 20 * 60 * 1000; // 20 minutos em milissegundos
-    
-    db.ref('alertas_fixos').once('value', snap => {
-        const alertas = snap.val();
-        if (!alertas) return;
-        
-        Object.entries(alertas).forEach(([id, alerta]) => {
-            // Verificar última atividade
-            const ultimaAtividade = alerta.ultimaAtividade || alerta.timestamp;
-            
-            if (agora - ultimaAtividade > tempoMaximoInatividade) {
-                // Verificar se tem comentários no chat
-                db.ref(`chats/alerta_${id}`).once('value', chatSnap => {
-                    const temComentarios = chatSnap.exists() && chatSnap.numChildren() > 0;
-                    
-                    // Se não tem comentários OU tem poucas confirmações (menos de 3), remover
-                    if (!temComentarios || (alerta.confirmacoes || 0) < 3) {
-                        db.ref('alertas_fixos/' + id).remove();
-                        mostrarNotificacao(`⚠️ Alerta ${alerta.nome} expirou por inatividade`);
-                    }
-                });
-            }
-        });
     });
 }
 
@@ -2202,9 +2217,6 @@ function abrirPopupAlerta(alerta, id) {
     
     L.popup({ maxWidth: 260 }).setLatLng([alerta.lat, alerta.lng]).setContent(popup).openOn(mapa);
     carregarChatAlerta(id);
-    
-    // Atualizar última atividade
-    db.ref('alertas_fixos/' + id + '/ultimaAtividade').set(Date.now());
 }
 
 function fecharPopupAlerta(id) {
@@ -2213,12 +2225,10 @@ function fecharPopupAlerta(id) {
 
 function curtirAlerta(id) {
     db.ref('alertas_fixos/' + id + '/confirmacoes').transaction(c => (c||0)+1);
-    db.ref('alertas_fixos/' + id + '/ultimaAtividade').set(Date.now());
 }
 
 function descurtirAlerta(id) {
     mostrarNotificacao('👎 Obrigado!');
-    db.ref('alertas_fixos/' + id + '/ultimaAtividade').set(Date.now());
 }
 
 function carregarChatAlerta(id) {
@@ -2242,9 +2252,6 @@ function carregarChatAlerta(id) {
             `;
         });
         chatDiv.innerHTML = html;
-        
-        // Atualizar última atividade quando há mensagens novas
-        db.ref('alertas_fixos/' + id + '/ultimaAtividade').set(Date.now());
     });
 }
 
@@ -2255,9 +2262,6 @@ function enviarMsgAlerta(id) {
         usuario, texto: input.value.trim(), timestamp: Date.now()
     });
     input.value = '';
-    
-    // Atualizar última atividade
-    db.ref('alertas_fixos/' + id + '/ultimaAtividade').set(Date.now());
 }
 
 // ===== CHAT GERAL =====
@@ -2552,7 +2556,6 @@ function verificarAlertasProximos() {
 function confirmarAlerta() {
     if (alertaAtual) {
         db.ref('alertas_fixos/' + alertaAtual.id + '/confirmacoes').transaction(c => (c||0)+1);
-        db.ref('alertas_fixos/' + alertaAtual.id + '/ultimaAtividade').set(Date.now());
         document.getElementById('confirmacaoPopup').style.display = 'none';
         alertaAtual = null;
     }
@@ -2580,6 +2583,9 @@ if (userSalvo) {
     carregarAlertas();
     carregarChat();
     criarIconesAlertas();
+    
+    // Iniciar verificação de expiração de alertas
+    setInterval(verificarExpiracaoAlertas, 60000);
 }
 </script>
 </body>
