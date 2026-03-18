@@ -1118,6 +1118,12 @@
             color: var(--cor-carro);
         }
         
+        .carro-outro {
+            font-size: 30px;
+            filter: drop-shadow(0 0 5px #888);
+            color: #888;
+        }
+        
         .ponto-azul {
             width: 18px;
             height: 18px;
@@ -1595,6 +1601,7 @@ let mapa, minhaLocalizacao, meuMarcador, seguirLocalizacao = true, clusterGroup;
 let rotaAtual = null;
 let marcadorDestino = null;
 let alertasNoMapa = {}; // Para controlar os marcadores de alerta
+let marcadoresUsuarios = {}; // Para controlar os marcadores de outros usuários
 
 // ===== FUNÇÕES DO CADASTRO =====
 function selecionarCor(cor) {
@@ -1684,6 +1691,7 @@ function entrar() {
     iniciarMapa();
     iniciarGPS();
     carregarUsuarios();
+    carregarOutrosUsuarios(); // MOSTRAR OUTROS USUÁRIOS NO MAPA
     carregarAlertas();
     carregarChat();
     criarIconesAlertas();
@@ -1694,6 +1702,69 @@ function entrar() {
     
     // Fazer uma verificação inicial após 5 segundos
     setTimeout(verificarExpiracaoAlertas, 5000);
+}
+
+// ===== MOSTRAR OUTROS USUÁRIOS NO MAPA =====
+function carregarOutrosUsuarios() {
+    db.ref('usuarios_ativos').on('value', snap => {
+        const usuarios = snap.val();
+        const banidos = JSON.parse(localStorage.getItem('br277_banidos')) || {};
+        
+        if (!usuarios) {
+            // Remover todos os marcadores se não houver usuários
+            Object.values(marcadoresUsuarios).forEach(m => {
+                if (m) mapa.removeLayer(m);
+            });
+            marcadoresUsuarios = {};
+            return;
+        }
+        
+        // Para cada usuário no banco
+        Object.entries(usuarios).forEach(([id, dados]) => {
+            // Pular se for o próprio usuário ou se estiver banido
+            if (id === usuario || banidos[id]) return;
+            
+            const pos = L.latLng(dados.lat, dados.lng);
+            
+            // Se já existe marcador para este usuário, apenas atualiza posição
+            if (marcadoresUsuarios[id]) {
+                marcadoresUsuarios[id].setLatLng(pos);
+            } else {
+                // Criar novo marcador para outros usuários (carro cinza)
+                const marcador = L.marker(pos, {
+                    icon: L.divIcon({
+                        html: `<div class="carro-outro">🚗</div>`,
+                        className: '',
+                        iconSize: [30, 30],
+                        iconAnchor: [15, 15]
+                    })
+                }).addTo(mapa);
+                
+                // Adicionar popup com nome do usuário e tempo online
+                const tempoOnline = Math.round((Date.now() - dados.timestamp) / 60000);
+                marcador.bindPopup(`
+                    <div style="text-align:center; font-weight:bold; min-width:150px;">
+                        <div style="font-size:16px; margin-bottom:5px;">👤 ${id}</div>
+                        <div style="font-size:11px; color:#666;">
+                            <i class="fas fa-clock"></i> ${tempoOnline} min atrás
+                        </div>
+                    </div>
+                `);
+                
+                marcadoresUsuarios[id] = marcador;
+            }
+        });
+        
+        // Remover marcadores de usuários que saíram
+        Object.keys(marcadoresUsuarios).forEach(id => {
+            if (!usuarios[id] || id === usuario) {
+                if (marcadoresUsuarios[id]) {
+                    mapa.removeLayer(marcadoresUsuarios[id]);
+                    delete marcadoresUsuarios[id];
+                }
+            }
+        });
+    });
 }
 
 // ===== CONFIGURAÇÕES =====
@@ -2580,6 +2651,7 @@ if (userSalvo) {
     iniciarMapa();
     iniciarGPS();
     carregarUsuarios();
+    carregarOutrosUsuarios(); // MOSTRAR OUTROS USUÁRIOS NO MAPA
     carregarAlertas();
     carregarChat();
     criarIconesAlertas();
