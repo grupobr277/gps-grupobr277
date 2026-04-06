@@ -10,10 +10,10 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        /* ===== ESTILO VINTAGE ===== */
+        /* ===== ESTILO RÁDIO TRADICIONAL ===== */
         body {
-            background: #2c1e0f;
-            font-family: 'Courier New', 'Segoe UI', monospace;
+            background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%);
+            font-family: 'Poppins', 'Segoe UI', Roboto, sans-serif;
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -21,175 +21,187 @@
             padding: 15px;
         }
         
-        /* RÁDIO VINTAGE */
-        .radio-vintage {
-            max-width: 500px;
+        /* RÁDIO PRINCIPAL */
+        .radio-container {
+            max-width: 550px;
             width: 100%;
-            background: linear-gradient(145deg, #5D4037 0%, #3E2723 100%);
-            border-radius: 40px 40px 30px 30px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
-            padding: 15px;
-            position: relative;
-            border: 1px solid #8B6914;
+            background: linear-gradient(145deg, #2d2d44 0%, #1a1a2e 100%);
+            border-radius: 35px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+            padding: 20px;
+            border: 1px solid #4a4a6a;
         }
         
-        /* Mostrador do rádio */
-        .mostrador {
-            background: linear-gradient(145deg, #F9A825, #F57F17);
-            border-radius: 20px;
+        /* PAINEL SUPERIOR */
+        .painel-superior {
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+            border-radius: 25px;
             padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.3), 0 2px 5px rgba(255,255,255,0.2);
-            border: 2px solid #8B6914;
-        }
-        
-        .mostrador-header {
+            margin-bottom: 20px;
             text-align: center;
-            border-bottom: 2px solid #5D4037;
-            padding-bottom: 8px;
-            margin-bottom: 10px;
+            border-bottom: 3px solid #00BFFF;
         }
         
-        .mostrador-header h1 {
-            font-size: 18px;
-            color: #1a1a1a;
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+        
+        .logo i {
+            font-size: 28px;
+            color: #00BFFF;
+            text-shadow: 0 0 10px #00BFFF;
+        }
+        
+        .logo h1 {
+            font-size: 22px;
+            color: #fff;
             letter-spacing: 2px;
-        }
-        
-        .mostrador-header p {
-            font-size: 10px;
-            color: #2c2c2c;
+            font-weight: 600;
         }
         
         .frequencia {
-            text-align: center;
-            background: #1a1a1a;
-            border-radius: 10px;
-            padding: 8px;
-            margin: 10px 0;
+            background: #0a0a15;
+            border-radius: 40px;
+            padding: 8px 15px;
+            display: inline-block;
+            margin-top: 8px;
         }
         
         .frequencia span {
-            color: #00ff00;
+            color: #00ff88;
             font-family: monospace;
-            font-size: 24px;
+            font-size: 20px;
             font-weight: bold;
-            text-shadow: 0 0 5px #00ff00;
+            letter-spacing: 2px;
         }
         
-        .luz-ligado {
+        .luz-status {
             display: inline-block;
             width: 10px;
             height: 10px;
             border-radius: 50%;
-            background: #4caf50;
-            box-shadow: 0 0 5px #4caf50;
-            animation: piscar 2s infinite;
+            background: #00ff88;
+            box-shadow: 0 0 8px #00ff88;
+            margin-left: 10px;
+            animation: piscar 1.5s infinite;
         }
         
         @keyframes piscar {
             0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+            50% { opacity: 0.4; }
         }
         
-        /* GRADE DE ESTAÇÕES */
-        .estacoes-grade {
+        /* GRADE DE ESTAÇÕES - 7x3 = 21 */
+        .estacoes-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(7, 1fr);
             gap: 8px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            max-height: 280px;
+            overflow-y: auto;
+            padding: 5px;
         }
         
-        .estacao-btn {
-            background: #2c2c2c;
-            border: 2px solid #8B6914;
+        .estacao-card {
+            background: linear-gradient(145deg, #252542, #1a1a30);
             border-radius: 12px;
-            padding: 8px 4px;
+            padding: 10px 4px;
             text-align: center;
             cursor: pointer;
             transition: all 0.2s;
-            color: #ccc;
+            border: 1px solid #4a4a6a;
         }
         
-        .estacao-btn.ativa {
+        .estacao-card.ativa {
             background: linear-gradient(145deg, #00BFFF, #0066cc);
             border-color: #ffd700;
-            color: white;
-            box-shadow: 0 0 10px #00BFFF;
+            box-shadow: 0 0 15px #00BFFF;
         }
         
-        .estacao-btn:hover {
-            transform: scale(1.02);
+        .estacao-card.ativa .estacao-nome {
+            color: #fff;
+        }
+        
+        .estacao-card:hover {
+            transform: translateY(-2px);
             border-color: #ffd700;
         }
         
         .estacao-nome {
-            font-size: 9px;
-            font-weight: bold;
+            font-size: 10px;
+            font-weight: 600;
+            color: #ccc;
             display: block;
-        }
-        
-        .estacao-km {
-            font-size: 7px;
-            color: #aaa;
+            line-height: 1.3;
         }
         
         .estacao-online {
-            font-size: 10px;
-            font-weight: bold;
-            background: #1a1a1a;
-            border-radius: 10px;
+            font-size: 9px;
+            background: #00BFFF22;
+            border-radius: 20px;
             padding: 2px 5px;
-            margin-top: 4px;
+            margin-top: 5px;
             display: inline-block;
+            color: #aaa;
         }
         
-        .estacao-btn.ativa .estacao-online {
+        .estacao-card.ativa .estacao-online {
             background: #ffd700;
-            color: #1a1a1a;
+            color: #1a1a2e;
+            font-weight: bold;
         }
         
         /* ESTAÇÃO ATUAL */
-        .estacao-atual {
-            background: #1a1a1a;
-            border-radius: 30px;
-            padding: 8px 15px;
-            margin-bottom: 15px;
+        .estacao-atual-card {
+            background: linear-gradient(135deg, #0f0f23, #1a1a2e);
+            border-radius: 20px;
+            padding: 12px 18px;
+            margin-bottom: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border: 1px solid #8B6914;
+            border-left: 4px solid #00BFFF;
         }
         
         .estacao-atual-info {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+        }
+        
+        .estacao-atual-info i {
+            font-size: 24px;
+            color: #00BFFF;
         }
         
         .estacao-atual-nome {
-            color: #ffd700;
-            font-weight: bold;
-            font-size: 14px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
         }
         
         .estacao-atual-pessoas {
             background: #00BFFF;
-            border-radius: 20px;
-            padding: 2px 8px;
-            font-size: 10px;
-            color: white;
+            border-radius: 30px;
+            padding: 5px 12px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #1a1a2e;
         }
         
-        /* PUSH TO TALK */
-        .ptt-container {
+        /* PTT - BOTÃO DE FALAR */
+        .ptt-area {
             text-align: center;
-            margin: 15px 0;
+            margin: 20px 0;
         }
         
-        .btn-ptt-vintage {
-            width: 120px;
-            height: 120px;
+        .btn-falar {
+            width: 130px;
+            height: 130px;
             border-radius: 50%;
             background: radial-gradient(circle at 30% 30%, #e53935, #8B0000);
             border: 4px solid #ffd700;
@@ -198,61 +210,72 @@
             font-weight: bold;
             cursor: pointer;
             transition: all 0.1s;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-            font-family: monospace;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.4);
+            font-family: 'Poppins', sans-serif;
         }
         
-        .btn-ptt-vintage:active {
-            transform: scale(0.95);
-            background: radial-gradient(circle at 30% 30%, #ff0000, #e53935);
+        .btn-falar:active {
+            transform: scale(0.96);
         }
         
-        .btn-ptt-vintage.gravando {
-            animation: pulse-ptt 0.5s infinite;
+        .btn-falar.gravando {
+            animation: pulse-vermelho 0.8s infinite;
             background: radial-gradient(circle at 30% 30%, #ff0000, #ff4444);
         }
         
-        @keyframes pulse-ptt {
+        @keyframes pulse-vermelho {
             0%, 100% { box-shadow: 0 0 0 0 rgba(229,57,53,0.7); }
-            50% { box-shadow: 0 0 0 15px rgba(229,57,53,0); }
+            50% { box-shadow: 0 0 0 20px rgba(229,57,53,0); }
         }
         
         .timer-gravacao {
-            margin-top: 10px;
-            font-size: 20px;
+            margin-top: 12px;
+            font-size: 22px;
             font-weight: bold;
             color: #ffd700;
             font-family: monospace;
+            background: #0a0a15;
+            display: inline-block;
+            padding: 5px 20px;
+            border-radius: 40px;
         }
         
-        /* CONTROLES */
-        .controles {
+        /* MENU INFERIOR */
+        .menu-inferior {
             display: flex;
             justify-content: space-around;
-            margin: 15px 0;
-            gap: 8px;
+            gap: 12px;
+            margin-top: 20px;
         }
         
-        .btn-controle {
+        .menu-btn {
             flex: 1;
-            background: #2c2c2c;
-            border: 1px solid #8B6914;
-            border-radius: 25px;
-            padding: 8px;
+            background: linear-gradient(145deg, #252542, #1a1a30);
+            border: 1px solid #4a4a6a;
+            border-radius: 30px;
+            padding: 12px 8px;
             text-align: center;
             cursor: pointer;
-            color: #ccc;
-            font-size: 11px;
             transition: all 0.2s;
+            color: #ccc;
+            font-size: 13px;
+            font-weight: 500;
         }
         
-        .btn-controle:hover {
-            background: #3c3c3c;
-            border-color: #ffd700;
+        .menu-btn i {
+            font-size: 18px;
+            margin-right: 8px;
+            color: #00BFFF;
         }
         
-        /* MAPA (POPUP) */
-        .mapa-overlay {
+        .menu-btn:hover {
+            background: #2d2d44;
+            border-color: #00BFFF;
+            transform: translateY(-2px);
+        }
+        
+        /* MODAL MAPA */
+        .modal-mapa {
             position: fixed;
             top: 0;
             left: 0;
@@ -264,22 +287,33 @@
             flex-direction: column;
         }
         
-        .mapa-overlay.visivel {
+        .modal-mapa.visivel {
             display: flex;
         }
         
-        .mapa-header {
-            background: #2c1e0f;
-            padding: 12px;
+        .modal-header {
+            background: #1a1a2e;
+            padding: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             color: white;
+            border-bottom: 2px solid #00BFFF;
+        }
+        
+        .fechar-modal {
+            background: #e53935;
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
         }
         
         .mapa-container {
             flex: 1;
-            position: relative;
         }
         
         #mapa-completo {
@@ -287,211 +321,226 @@
             width: 100%;
         }
         
-        .fechar-mapa {
-            background: #e53935;
-            border: none;
-            color: white;
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 18px;
-        }
-        
-        /* CHAT */
-        .chat-overlay {
+        /* MODAL CHAT */
+        .modal-chat {
             position: fixed;
             bottom: 20px;
             left: 20px;
             right: 20px;
-            background: #1a1a1a;
-            border-radius: 20px;
+            background: #1a1a2e;
+            border-radius: 25px;
             z-index: 20001;
             display: none;
             flex-direction: column;
-            max-height: 400px;
-            border: 2px solid #8B6914;
+            max-height: 450px;
+            border: 1px solid #00BFFF;
         }
         
-        .chat-overlay.visivel {
+        .modal-chat.visivel {
             display: flex;
         }
         
         .chat-header {
-            background: #2c1e0f;
-            padding: 10px;
-            border-radius: 18px 18px 0 0;
+            background: #0f0f23;
+            padding: 12px;
+            border-radius: 24px 24px 0 0;
             display: flex;
             justify-content: space-between;
             color: white;
+            border-bottom: 1px solid #00BFFF;
         }
         
-        .chat-mensagens {
+        .chat-mensagens-area {
             flex: 1;
             overflow-y: auto;
-            padding: 10px;
-            max-height: 300px;
+            padding: 12px;
+            max-height: 320px;
         }
         
         .chat-input-area {
             display: flex;
-            padding: 8px;
-            gap: 5px;
-            border-top: 1px solid #8B6914;
+            padding: 10px;
+            gap: 8px;
+            border-top: 1px solid #4a4a6a;
         }
         
         .chat-input-area input {
             flex: 1;
-            padding: 8px;
-            border-radius: 20px;
+            padding: 12px;
+            border-radius: 30px;
             border: none;
-            background: #2c2c2c;
+            background: #252542;
             color: white;
+            font-family: 'Poppins', sans-serif;
         }
         
         .chat-input-area button {
             background: #00BFFF;
             border: none;
             border-radius: 50%;
-            width: 35px;
-            height: 35px;
+            width: 45px;
+            height: 45px;
             cursor: pointer;
+            font-size: 18px;
         }
         
-        .mensagem-chat {
-            margin: 5px 0;
-            padding: 5px 10px;
-            border-radius: 15px;
+        .msg-chat {
+            margin: 8px 0;
+            padding: 8px 14px;
+            border-radius: 18px;
             max-width: 80%;
+            font-size: 13px;
         }
         
-        .mensagem-chat.minha {
+        .msg-chat.minha {
             background: #00BFFF;
             color: white;
-            align-self: flex-end;
             margin-left: auto;
         }
         
-        .mensagem-chat.outra {
-            background: #2c2c2c;
+        .msg-chat.outra {
+            background: #252542;
             color: #ccc;
         }
         
         /* NOTIFICAÇÃO */
-        .notificacao-audio {
+        .notif-audio {
             position: fixed;
-            bottom: 150px;
+            bottom: 180px;
             left: 50%;
             transform: translateX(-50%);
             background: #00BFFF;
             color: white;
-            padding: 8px 20px;
-            border-radius: 30px;
+            padding: 10px 24px;
+            border-radius: 40px;
             z-index: 20002;
             display: none;
-            font-size: 12px;
+            font-size: 13px;
+            font-weight: bold;
             border: 2px solid #ffd700;
+            white-space: nowrap;
         }
         
         /* RESPONSIVO */
-        @media (max-width: 500px) {
-            .estacoes-grade {
-                grid-template-columns: repeat(4, 1fr);
-                gap: 5px;
+        @media (max-width: 550px) {
+            .estacoes-grid {
+                grid-template-columns: repeat(5, 1fr);
+                gap: 6px;
             }
             .estacao-nome {
-                font-size: 8px;
+                font-size: 9px;
             }
-            .btn-ptt-vintage {
-                width: 100px;
-                height: 100px;
-                font-size: 14px;
+            .btn-falar {
+                width: 110px;
+                height: 110px;
+                font-size: 15px;
             }
+        }
+        
+        @media (max-width: 400px) {
+            .estacoes-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        /* SCROLLBAR */
+        .estacoes-grid::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .estacoes-grid::-webkit-scrollbar-track {
+            background: #1a1a2e;
+            border-radius: 10px;
+        }
+        
+        .estacoes-grid::-webkit-scrollbar-thumb {
+            background: #00BFFF;
+            border-radius: 10px;
         }
     </style>
 </head>
 <body>
 
-<div class="radio-vintage">
-    <!-- MOSTRADOR -->
-    <div class="mostrador">
-        <div class="mostrador-header">
-            <h1>📻 RÁDIO BR-277</h1>
-            <p>COMUNICAÇÃO DOS MOTORISTAS</p>
+<div class="radio-container">
+    <!-- PAINEL SUPERIOR -->
+    <div class="painel-superior">
+        <div class="logo">
+            <i class="fas fa-broadcast-tower"></i>
+            <h1>RÁDIO BR-277</h1>
+            <i class="fas fa-microphone-alt"></i>
         </div>
         <div class="frequencia">
             <span>27.7 MHz</span>
-            <span class="luz-ligado"></span>
+            <span class="luz-status"></span>
         </div>
     </div>
     
-    <!-- GRADE DE ESTAÇÕES (16) -->
-    <div class="estacoes-grade" id="estacoesGrade"></div>
+    <!-- GRADE DE ESTAÇÕES (21) -->
+    <div class="estacoes-grid" id="estacoesGrid"></div>
     
     <!-- ESTAÇÃO ATUAL -->
-    <div class="estacao-atual" id="estacaoAtual">
+    <div class="estacao-atual-card" id="estacaoAtualCard">
         <div class="estacao-atual-info">
-            <i class="fas fa-broadcast-tower" style="color:#ffd700;"></i>
+            <i class="fas fa-radio"></i>
             <span class="estacao-atual-nome" id="estacaoAtualNome">Carregando...</span>
         </div>
         <div class="estacao-atual-pessoas" id="estacaoAtualPessoas">0 online</div>
     </div>
     
-    <!-- PUSH TO TALK -->
-    <div class="ptt-container">
-        <button class="btn-ptt-vintage" id="btnPttVintage">
-            🎤<br>PTT
+    <!-- PTT - BOTÃO DE FALAR -->
+    <div class="ptt-area">
+        <button class="btn-falar" id="btnFalar">
+            🎤<br>FALAR
         </button>
         <div class="timer-gravacao" id="timerGravacao" style="display: none;">20s</div>
     </div>
     
-    <!-- CONTROLES -->
-    <div class="controles">
-        <div class="btn-controle" onclick="abrirMapa()">
-            <i class="fas fa-map"></i> MAPA
+    <!-- MENU INFERIOR -->
+    <div class="menu-inferior">
+        <div class="menu-btn" onclick="abrirMapa()">
+            <i class="fas fa-map-marked-alt"></i> MAPA
         </div>
-        <div class="btn-controle" onclick="abrirChat()">
-            <i class="fas fa-comments"></i> CHAT
+        <div class="menu-btn" onclick="abrirChat()">
+            <i class="fas fa-comment-dots"></i> CHAT
         </div>
-        <div class="btn-controle" onclick="abrirConfig()">
-            <i class="fas fa-user"></i> PERFIL
+        <div class="menu-btn" onclick="abrirPerfil()">
+            <i class="fas fa-user-circle"></i> PERFIL
         </div>
     </div>
 </div>
 
-<!-- MAPA OVERLAY -->
-<div class="mapa-overlay" id="mapaOverlay">
-    <div class="mapa-header">
-        <span>🗺️ MAPA BR-277 - TRÂNSITO EM TEMPO REAL</span>
-        <button class="fechar-mapa" onclick="fecharMapa()">✕</button>
+<!-- MODAL MAPA -->
+<div class="modal-mapa" id="modalMapa">
+    <div class="modal-header">
+        <span><i class="fas fa-map"></i> MAPA BR-277 - TRÂNSITO</span>
+        <button class="fechar-modal" onclick="fecharMapa()">✕</button>
     </div>
     <div class="mapa-container">
         <div id="mapa-completo"></div>
     </div>
 </div>
 
-<!-- CHAT OVERLAY -->
-<div class="chat-overlay" id="chatOverlay">
+<!-- MODAL CHAT -->
+<div class="modal-chat" id="modalChat">
     <div class="chat-header">
-        <span><i class="fas fa-comments"></i> CHAT GERAL BR-277</span>
-        <button style="background:none; border:none; color:white; font-size:20px; cursor:pointer;" onclick="fecharChat()">✕</button>
+        <span><i class="fas fa-comments"></i> CHAT GERAL</span>
+        <button style="background:none; border:none; color:#00BFFF; font-size:22px; cursor:pointer;" onclick="fecharChat()">✕</button>
     </div>
-    <div class="chat-mensagens" id="chatMensagens"></div>
+    <div class="chat-mensagens-area" id="chatMensagensArea"></div>
     <div class="chat-input-area">
         <input type="text" id="chatInput" placeholder="Digite sua mensagem...">
-        <button onclick="enviarMensagemChat()"><i class="fas fa-paper-plane"></i></button>
+        <button onclick="enviarMsgChat()"><i class="fas fa-paper-plane"></i></button>
     </div>
 </div>
 
 <!-- NOTIFICAÇÃO -->
-<div class="notificacao-audio" id="notificacaoAudio">
-    🎙️ NOVA MENSAGEM DE ÁUDIO
+<div class="notif-audio" id="notifAudio">
+    🎙️ NOVA MENSAGEM RECEBIDA
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
 
 <script>
 // ===== FIREBASE =====
@@ -501,82 +550,75 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// ===== LISTA DAS 16 ESTAÇÕES =====
+// ===== LISTA DAS 21 ESTAÇÕES (SEM KM) =====
 const estacoes = [
-    { id: 'guarapuava', nome: 'GUARAPUAVA', km: 'KM 0', lat: -25.3951, lng: -51.4620 },
-    { id: 'palmeira', nome: 'PALMEIRA', km: 'KM 80', lat: -25.4290, lng: -50.0000 },
-    { id: 'porto_amazonas', nome: 'PORTO AMAZONAS', km: 'KM 110', lat: -25.5400, lng: -49.8900 },
-    { id: 'ponta_grossa', nome: 'PONTA GROSSA', km: 'KM 150', lat: -25.0950, lng: -50.1619 },
-    { id: 'sao_luiz_puruna', nome: 'SÃO LUIZ', km: 'KM 180', lat: -25.4000, lng: -49.9000 },
-    { id: 'campo_largo', nome: 'CAMPO LARGO', km: 'KM 220', lat: -25.4591, lng: -49.5290 },
-    { id: 'curitiba', nome: 'CURITIBA', km: 'KM 250', lat: -25.4284, lng: -49.2733 },
-    { id: 'almirante_tamandare', nome: 'ALMIRANTE', km: 'KM 265', lat: -25.3180, lng: -49.3100 },
-    { id: 'fazenda_rio_grande', nome: 'FAZENDA R.G.', km: 'KM 280', lat: -25.6620, lng: -49.3070 },
-    { id: 'tijucas_sul', nome: 'TIJUCAS SUL', km: 'KM 310', lat: -25.9310, lng: -49.1950 },
-    { id: 'guaratuba', nome: 'GUARATUBA', km: 'KM 340', lat: -25.8820, lng: -48.5750 },
-    { id: 'morretes', nome: 'MORRETES', km: 'KM 370', lat: -25.4770, lng: -48.8330 },
-    { id: 'paranagua', nome: 'PARANAGUÁ', km: 'KM 400', lat: -25.5160, lng: -48.5250 },
-    { id: 'sao_jose_pinhais', nome: 'SÃO JOSÉ', km: 'KM 260', lat: -25.5350, lng: -49.2060 },
-    { id: 'colombo', nome: 'COLOMBO', km: 'KM 275', lat: -25.2920, lng: -49.2240 },
-    { id: 'araucaria', nome: 'ARAUCÁRIA', km: 'KM 290', lat: -25.5930, lng: -49.4100 }
+    { id: 'guarapuava', nome: 'GUARAPUAVA', lat: -25.3951, lng: -51.4620 },
+    { id: 'palmeira', nome: 'PALMEIRA', lat: -25.4290, lng: -50.0000 },
+    { id: 'porto_amazonas', nome: 'PORTO AMAZONAS', lat: -25.5400, lng: -49.8900 },
+    { id: 'ponta_grossa', nome: 'PONTA GROSSA', lat: -25.0950, lng: -50.1619 },
+    { id: 'sao_luiz_puruna', nome: 'SÃO LUIZ DO PURUNÃ', lat: -25.4000, lng: -49.9000 },
+    { id: 'campo_largo', nome: 'CAMPO LARGO', lat: -25.4591, lng: -49.5290 },
+    { id: 'curitiba', nome: 'CURITIBA', lat: -25.4284, lng: -49.2733 },
+    { id: 'almirante_tamandare', nome: 'ALMIRANTE TAMANDARÉ', lat: -25.3180, lng: -49.3100 },
+    { id: 'fazenda_rio_grande', nome: 'FAZENDA RIO GRANDE', lat: -25.6620, lng: -49.3070 },
+    { id: 'tijucas_sul', nome: 'TIJUCAS DO SUL', lat: -25.9310, lng: -49.1950 },
+    { id: 'guaratuba', nome: 'GUARATUBA', lat: -25.8820, lng: -48.5750 },
+    { id: 'morretes', nome: 'MORRETES', lat: -25.4770, lng: -48.8330 },
+    { id: 'paranagua', nome: 'PARANAGUÁ', lat: -25.5160, lng: -48.5250 },
+    { id: 'sao_jose_pinhais', nome: 'SÃO JOSÉ DOS PINHAIS', lat: -25.5350, lng: -49.2060 },
+    { id: 'colombo', nome: 'COLOMBO', lat: -25.2920, lng: -49.2240 },
+    { id: 'araucaria', nome: 'ARAUCÁRIA', lat: -25.5930, lng: -49.4100 },
+    { id: 'piraquara', nome: 'PIRAQUARA', lat: -25.4420, lng: -49.0630 },
+    { id: 'campina_grande_sul', nome: 'CAMPINA GRANDE DO SUL', lat: -25.3050, lng: -49.0550 },
+    { id: 'quatro_barras', nome: 'QUATRO BARRAS', lat: -25.3670, lng: -49.0800 },
+    { id: 'barra_turvo', nome: 'BARRA DO TURVO', lat: -24.7560, lng: -48.5050 },
+    { id: 'cajati', nome: 'CAJATI', lat: -24.7360, lng: -48.1220 }
 ];
 
-// ===== VARIÁVEIS GLOBAIS =====
-let usuario = null;
+// ===== VARIÁVEIS =====
+let usuario = localStorage.getItem('usuario_radio') || 'Motorista';
 let estacaoAtual = localStorage.getItem('estacao_radio') || 'curitiba';
 let gravador = null;
 let gravando = false;
-let tempoRestante = 20;
 let timerInterval = null;
+let tempoRestante = 20;
 let mapa = null;
 let minhaLocalizacao = null;
 let meuMarcador = null;
 
-// ===== INICIALIZAR =====
+// ===== INICIAR =====
 function iniciar() {
-    // Perguntar nome do usuário
-    usuario = localStorage.getItem('usuario_radio');
-    if (!usuario) {
-        usuario = prompt('Digite seu nome para entrar no Rádio BR-277:', 'Motorista');
-        if (usuario) localStorage.setItem('usuario_radio', usuario);
-        else usuario = 'Motorista';
+    if (!localStorage.getItem('usuario_radio')) {
+        const nome = prompt('Digite seu nome para entrar no Rádio BR-277:', 'Motorista');
+        if (nome) {
+            usuario = nome;
+            localStorage.setItem('usuario_radio', usuario);
+        }
     }
     
-    // Criar botões das estações
     criarBotoesEstacoes();
-    
-    // Selecionar estação atual
     selecionarEstacao(estacaoAtual);
-    
-    // Iniciar listeners
-    iniciarListenersAudio();
-    
-    // Iniciar contagem de usuários por estação
+    iniciarAudioListener();
     iniciarContagemUsuarios();
-    
-    // Iniciar chat
     iniciarChat();
-    
-    // Iniciar GPS para mapa
     iniciarGPS();
 }
 
-// ===== CRIAR BOTÕES DAS 16 ESTAÇÕES =====
+// ===== CRIAR BOTÕES DAS 21 ESTAÇÕES =====
 function criarBotoesEstacoes() {
-    const container = document.getElementById('estacoesGrade');
-    container.innerHTML = '';
+    const grid = document.getElementById('estacoesGrid');
+    grid.innerHTML = '';
     
     estacoes.forEach(est => {
         const btn = document.createElement('div');
-        btn.className = 'estacao-btn';
+        btn.className = 'estacao-card';
         btn.dataset.id = est.id;
         btn.innerHTML = `
             <span class="estacao-nome">${est.nome}</span>
-            <span class="estacao-km">${est.km}</span>
             <span class="estacao-online" id="online-${est.id}">0</span>
         `;
         btn.onclick = () => selecionarEstacao(est.id);
-        container.appendChild(btn);
+        grid.appendChild(btn);
     });
 }
 
@@ -585,8 +627,7 @@ function selecionarEstacao(id) {
     estacaoAtual = id;
     localStorage.setItem('estacao_radio', id);
     
-    // Atualizar visual dos botões
-    document.querySelectorAll('.estacao-btn').forEach(btn => {
+    document.querySelectorAll('.estacao-card').forEach(btn => {
         if (btn.dataset.id === id) {
             btn.classList.add('ativa');
         } else {
@@ -594,44 +635,42 @@ function selecionarEstacao(id) {
         }
     });
     
-    // Atualizar nome da estação atual
     const estacao = estacoes.find(e => e.id === id);
-    document.getElementById('estacaoAtualNome').innerHTML = `${estacao.nome} ${estacao.km}`;
+    document.getElementById('estacaoAtualNome').textContent = estacao.nome;
     
-    // Registrar presença na nova estação
+    // Registrar presença
     db.ref(`estacoes/${id}/usuarios/${usuario}`).set({
         nome: usuario,
         timestamp: Date.now()
     });
     
-    // Remover de outras estações
+    // Remover de outras
     estacoes.forEach(est => {
         if (est.id !== id) {
             db.ref(`estacoes/${est.id}/usuarios/${usuario}`).remove();
         }
     });
     
-    mostrarNotificacao(`📻 Você sintonizou ${estacao.nome} - ${estacao.km}`, '#4caf50');
+    mostrarNotificacao(`📻 Você sintonizou ${estacao.nome}`);
 }
 
-// ===== INICIAR LISTENERS DE ÁUDIO =====
-function iniciarListenersAudio() {
-    // Escutar áudio da estação atual
+// ===== LISTENER DE ÁUDIO =====
+function iniciarAudioListener() {
     db.ref(`estacoes/${estacaoAtual}/audio`).on('child_added', (snap) => {
         const audio = snap.val();
         if (audio.usuario !== usuario) {
-            const audioElement = new Audio(audio.data);
-            audioElement.play().catch(e => console.log('Erro ao tocar áudio'));
+            const audioElem = new Audio(audio.data);
+            audioElem.play().catch(e => console.log('Erro ao tocar áudio'));
             
-            const notif = document.getElementById('notificacaoAudio');
-            notif.style.display = 'flex';
+            const notif = document.getElementById('notifAudio');
+            notif.style.display = 'block';
             notif.innerHTML = `🎙️ ${audio.usuario} falou em ${audio.estacao}`;
             setTimeout(() => notif.style.display = 'none', 3000);
         }
     });
 }
 
-// ===== CONTAGEM DE USUÁRIOS POR ESTAÇÃO =====
+// ===== CONTAGEM DE USUÁRIOS =====
 function iniciarContagemUsuarios() {
     estacoes.forEach(est => {
         db.ref(`estacoes/${est.id}/usuarios`).on('value', (snap) => {
@@ -640,23 +679,22 @@ function iniciarContagemUsuarios() {
             const span = document.getElementById(`online-${est.id}`);
             if (span) span.textContent = count;
             
-            // Atualizar contagem da estação atual
             if (est.id === estacaoAtual) {
-                document.getElementById('estacaoAtualPessoas').innerHTML = `${count} online`;
+                document.getElementById('estacaoAtualPessoas').textContent = `${count} online`;
             }
         });
     });
 }
 
 // ===== PTT - GRAVAR ÁUDIO =====
-const btnPtt = document.getElementById('btnPttVintage');
+const btnFalar = document.getElementById('btnFalar');
 const timerDiv = document.getElementById('timerGravacao');
 
-btnPtt.addEventListener('mousedown', iniciarGravacao);
-btnPtt.addEventListener('mouseup', pararGravacao);
-btnPtt.addEventListener('mouseleave', pararGravacao);
-btnPtt.addEventListener('touchstart', iniciarGravacao);
-btnPtt.addEventListener('touchend', pararGravacao);
+btnFalar.addEventListener('mousedown', iniciarGravacao);
+btnFalar.addEventListener('mouseup', pararGravacao);
+btnFalar.addEventListener('mouseleave', pararGravacao);
+btnFalar.addEventListener('touchstart', iniciarGravacao);
+btnFalar.addEventListener('touchend', pararGravacao);
 
 async function iniciarGravacao() {
     if (gravando) return;
@@ -681,14 +719,13 @@ async function iniciarGravacao() {
                     timestamp: Date.now()
                 });
                 
-                // Limpar áudios antigos (últimos 50)
+                // Limpar áudios antigos (manter últimos 30)
                 const snapshot = await db.ref(`estacoes/${estacaoAtual}/audio`).once('value');
                 const audios = snapshot.val();
                 if (audios) {
                     const keys = Object.keys(audios);
-                    if (keys.length > 50) {
-                        const toRemove = keys.slice(0, keys.length - 50);
-                        toRemove.forEach(key => {
+                    if (keys.length > 30) {
+                        keys.slice(0, keys.length - 30).forEach(key => {
                             db.ref(`estacoes/${estacaoAtual}/audio/${key}`).remove();
                         });
                     }
@@ -700,8 +737,8 @@ async function iniciarGravacao() {
         
         gravador.start();
         gravando = true;
-        btnPtt.classList.add('gravando');
-        timerDiv.style.display = 'block';
+        btnFalar.classList.add('gravando');
+        timerDiv.style.display = 'inline-block';
         
         timerInterval = setInterval(() => {
             tempoRestante--;
@@ -711,8 +748,12 @@ async function iniciarGravacao() {
             }
         }, 1000);
         
+        setTimeout(() => {
+            if (gravador && gravador.state === 'recording') pararGravacao();
+        }, 19500);
+        
     } catch(e) {
-        alert('Permita acesso ao microfone para usar o PTT');
+        alert('⚠️ Permita acesso ao microfone para usar o rádio!');
     }
 }
 
@@ -722,7 +763,7 @@ function pararGravacao() {
     }
     if (timerInterval) clearInterval(timerInterval);
     gravando = false;
-    btnPtt.classList.remove('gravando');
+    btnFalar.classList.remove('gravando');
     timerDiv.style.display = 'none';
 }
 
@@ -730,7 +771,7 @@ function pararGravacao() {
 function iniciarChat() {
     db.ref('chat_geral').on('value', (snap) => {
         const msgs = snap.val();
-        const container = document.getElementById('chatMensagens');
+        const container = document.getElementById('chatMensagensArea');
         if (!msgs) {
             container.innerHTML = '';
             return;
@@ -740,10 +781,10 @@ function iniciarChat() {
         Object.values(msgs).sort((a,b) => a.timestamp - b.timestamp).forEach(msg => {
             const isMinha = msg.usuario === usuario;
             html += `
-                <div class="mensagem-chat ${isMinha ? 'minha' : 'outra'}" style="max-width:80%; ${isMinha ? 'margin-left:auto;' : ''}">
+                <div class="msg-chat ${isMinha ? 'minha' : 'outra'}">
                     <strong>${msg.usuario}</strong><br>
                     ${msg.texto}<br>
-                    <small style="font-size:9px;">${new Date(msg.timestamp).toLocaleTimeString()}</small>
+                    <small style="font-size:9px; opacity:0.7;">${new Date(msg.timestamp).toLocaleTimeString()}</small>
                 </div>
             `;
         });
@@ -752,7 +793,7 @@ function iniciarChat() {
     });
 }
 
-function enviarMensagemChat() {
+function enviarMsgChat() {
     const input = document.getElementById('chatInput');
     if (!input.value.trim()) return;
     
@@ -765,11 +806,11 @@ function enviarMensagemChat() {
 }
 
 function abrirChat() {
-    document.getElementById('chatOverlay').classList.add('visivel');
+    document.getElementById('modalChat').classList.add('visivel');
 }
 
 function fecharChat() {
-    document.getElementById('chatOverlay').classList.remove('visivel');
+    document.getElementById('modalChat').classList.remove('visivel');
 }
 
 // ===== MAPA =====
@@ -784,19 +825,18 @@ function iniciarGPS() {
         if (!meuMarcador) {
             meuMarcador = L.marker(minhaLocalizacao, {
                 icon: L.divIcon({
-                    html: `<div style="font-size:30px;">🚗</div>`,
+                    html: `<div style="font-size:32px;">🚗</div>`,
                     className: '',
-                    iconSize: [30,30],
-                    iconAnchor: [15,15]
+                    iconSize: [32,32],
+                    iconAnchor: [16,16]
                 })
             }).addTo(mapa);
-            mapa.setView(minhaLocalizacao, 13);
+            mapa.setView(minhaLocalizacao, 12);
         } else {
             meuMarcador.setLatLng(minhaLocalizacao);
         }
         
-        // Atualizar localização no Firebase
-        db.ref('usuarios_localizacao/' + usuario).set({
+        db.ref('localizacoes/' + usuario).set({
             lat: minhaLocalizacao[0],
             lng: minhaLocalizacao[1],
             estacao: estacaoAtual,
@@ -806,67 +846,65 @@ function iniciarGPS() {
 }
 
 function abrirMapa() {
-    const overlay = document.getElementById('mapaOverlay');
-    overlay.classList.add('visivel');
+    const modal = document.getElementById('modalMapa');
+    modal.classList.add('visivel');
     
     setTimeout(() => {
         if (!mapa) {
-            mapa = L.map('mapa-completo').setView([-25.4284, -49.2733], 13);
+            mapa = L.map('mapa-completo').setView([-25.4284, -49.2733], 12);
             L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(mapa);
             
             // Adicionar marcadores das estações
             estacoes.forEach(est => {
                 L.marker([est.lat, est.lng], {
                     icon: L.divIcon({
-                        html: `<div style="background:#ffd700; width:12px; height:12px; border-radius:50%; border:2px solid #fff;"></div>`,
+                        html: `<div style="background:#00BFFF; width:10px; height:10px; border-radius:50%; border:2px solid #fff;"></div>`,
                         className: '',
-                        iconSize: [12,12]
+                        iconSize: [10,10]
                     })
-                }).addTo(mapa).bindPopup(`<b>${est.nome}</b><br>${est.km}`);
+                }).addTo(mapa).bindPopup(`<b>${est.nome}</b>`);
             });
             
-            if (minhaLocalizacao) {
-                mapa.setView(minhaLocalizacao, 13);
-            }
+            if (minhaLocalizacao) mapa.setView(minhaLocalizacao, 12);
         } else {
             mapa.invalidateSize();
-            if (minhaLocalizacao) mapa.setView(minhaLocalizacao, 13);
+            if (minhaLocalizacao) mapa.setView(minhaLocalizacao, 12);
         }
     }, 100);
 }
 
 function fecharMapa() {
-    document.getElementById('mapaOverlay').classList.remove('visivel');
+    document.getElementById('modalMapa').classList.remove('visivel');
 }
 
-// ===== CONFIGURAÇÕES =====
-function abrirConfig() {
+// ===== PERFIL =====
+function abrirPerfil() {
     const novoNome = prompt('Digite seu nome:', usuario);
     if (novoNome && novoNome.trim()) {
         usuario = novoNome.trim();
         localStorage.setItem('usuario_radio', usuario);
-        mostrarNotificacao(`✅ Nome alterado para ${usuario}`, '#4caf50');
+        mostrarNotificacao(`✅ Nome alterado para ${usuario}`);
     }
 }
 
 // ===== NOTIFICAÇÃO =====
-function mostrarNotificacao(msg, cor) {
+function mostrarNotificacao(msg) {
     const notif = document.createElement('div');
-    notif.style.cssText = `position:fixed; bottom:200px; left:50%; transform:translateX(-50%); background:${cor || '#00BFFF'}; color:white; padding:8px 20px; border-radius:30px; z-index:20003; font-size:12px; border:2px solid #ffd700;`;
+    notif.style.cssText = 'position:fixed; bottom:200px; left:50%; transform:translateX(-50%); background:#00BFFF; color:white; padding:8px 20px; border-radius:30px; z-index:20003; font-size:13px; border:2px solid #ffd700;';
     notif.textContent = msg;
     document.body.appendChild(notif);
     setTimeout(() => notif.remove(), 2000);
 }
 
-// ===== LIMPAR PRESENÇA AO SAIR =====
+// ===== LIMPAR AO SAIR =====
 window.addEventListener('beforeunload', () => {
     if (usuario) {
         db.ref(`estacoes/${estacaoAtual}/usuarios/${usuario}`).remove();
-        db.ref('usuarios_localizacao/' + usuario).remove();
+        db.ref('localizacoes/' + usuario).remove();
     }
 });
 
-// ===== INICIAR TUDO =====
+// ===== INICIAR =====
 iniciar();
 </script>
 </body>
