@@ -5,455 +5,426 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>RÁDIO BR-277 - Comunicação dos Motoristas</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        /* ===== ESTILO RÁDIO TRADICIONAL ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%);
-            font-family: 'Poppins', 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 15px;
+            padding: 16px;
         }
-        
-        /* RÁDIO PRINCIPAL */
+
+        /* CONTAINER PRINCIPAL */
         .radio-container {
             max-width: 550px;
             width: 100%;
-            background: linear-gradient(145deg, #2d2d44 0%, #1a1a2e 100%);
-            border-radius: 35px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
-            padding: 20px;
-            border: 1px solid #4a4a6a;
+            background: rgba(18, 18, 35, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 48px;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            padding: 20px 16px;
+            border: 1px solid rgba(0, 191, 255, 0.3);
         }
-        
-        /* PAINEL SUPERIOR */
-        .painel-superior {
-            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
-            border-radius: 25px;
-            padding: 15px;
-            margin-bottom: 20px;
+
+        /* CABEÇALHO */
+        .radio-header {
             text-align: center;
-            border-bottom: 3px solid #00BFFF;
+            margin-bottom: 20px;
         }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            margin-bottom: 8px;
-        }
-        
-        .logo i {
-            font-size: 28px;
-            color: #00BFFF;
-            text-shadow: 0 0 10px #00BFFF;
-        }
-        
-        .logo h1 {
+
+        .radio-header h1 {
             font-size: 22px;
             color: #fff;
             letter-spacing: 2px;
-            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
-        
-        .frequencia {
+
+        .radio-header h1 i {
+            color: #00BFFF;
+            font-size: 24px;
+        }
+
+        .freq {
             background: #0a0a15;
-            border-radius: 40px;
-            padding: 8px 15px;
             display: inline-block;
+            padding: 4px 16px;
+            border-radius: 40px;
             margin-top: 8px;
         }
-        
-        .frequencia span {
+
+        .freq span {
             color: #00ff88;
             font-family: monospace;
-            font-size: 20px;
+            font-size: 14px;
             font-weight: bold;
-            letter-spacing: 2px;
         }
-        
-        .luz-status {
+
+        .online-dot {
             display: inline-block;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
+            width: 8px;
+            height: 8px;
             background: #00ff88;
-            box-shadow: 0 0 8px #00ff88;
-            margin-left: 10px;
-            animation: piscar 1.5s infinite;
+            border-radius: 50%;
+            margin-left: 8px;
+            box-shadow: 0 0 6px #00ff88;
+            animation: pulse 1.2s infinite;
         }
-        
-        @keyframes piscar {
+
+        @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.4; }
         }
-        
-        /* GRADE DE ESTAÇÕES - 7x3 = 21 */
-        .estacoes-grid {
+
+        /* GRADE DE BOTÕES - 5 colunas */
+        .stations-grid {
             display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 8px;
-            margin-bottom: 20px;
-            max-height: 280px;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            max-height: 340px;
             overflow-y: auto;
-            padding: 5px;
+            padding: 6px 4px;
+            margin-bottom: 20px;
         }
-        
-        .estacao-card {
-            background: linear-gradient(145deg, #252542, #1a1a30);
-            border-radius: 12px;
+
+        /* BOTÃO DE CIDADE */
+        .station-btn {
+            background: linear-gradient(145deg, #23233a, #181830);
+            border-radius: 16px;
             padding: 10px 4px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.2s;
-            border: 1px solid #4a4a6a;
+            transition: all 0.2s ease;
+            border: 1px solid #3a3a5a;
+            backdrop-filter: blur(4px);
         }
-        
-        .estacao-card.ativa {
+
+        .station-btn.active {
             background: linear-gradient(145deg, #00BFFF, #0066cc);
             border-color: #ffd700;
-            box-shadow: 0 0 15px #00BFFF;
+            box-shadow: 0 0 16px rgba(0, 191, 255, 0.5);
+            transform: scale(0.98);
         }
-        
-        .estacao-card.ativa .estacao-nome {
-            color: #fff;
+
+        .station-btn.active .city-name {
+            color: white;
+            text-shadow: 0 0 2px rgba(0,0,0,0.3);
         }
-        
-        .estacao-card:hover {
-            transform: translateY(-2px);
-            border-color: #ffd700;
-        }
-        
-        .estacao-nome {
-            font-size: 10px;
+
+        .city-name {
+            font-size: 11px;
             font-weight: 600;
-            color: #ccc;
+            color: #ddd;
             display: block;
             line-height: 1.3;
         }
-        
-        .estacao-online {
+
+        .city-count {
             font-size: 9px;
-            background: #00BFFF22;
+            background: rgba(0, 191, 255, 0.2);
             border-radius: 20px;
-            padding: 2px 5px;
-            margin-top: 5px;
+            padding: 2px 6px;
+            margin-top: 6px;
             display: inline-block;
             color: #aaa;
         }
-        
-        .estacao-card.ativa .estacao-online {
+
+        .station-btn.active .city-count {
             background: #ffd700;
             color: #1a1a2e;
             font-weight: bold;
         }
-        
-        /* ESTAÇÃO ATUAL */
-        .estacao-atual-card {
-            background: linear-gradient(135deg, #0f0f23, #1a1a2e);
-            border-radius: 20px;
-            padding: 12px 18px;
+
+        /* ESTAÇÃO ATIVA */
+        .current-station-card {
+            background: linear-gradient(135deg, #0f0f23, #16162f);
+            border-radius: 60px;
+            padding: 12px 20px;
             margin-bottom: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-left: 4px solid #00BFFF;
+            border-left: 5px solid #00BFFF;
         }
-        
-        .estacao-atual-info {
+
+        .station-info {
             display: flex;
             align-items: center;
             gap: 12px;
         }
-        
-        .estacao-atual-info i {
+
+        .station-info i {
             font-size: 24px;
             color: #00BFFF;
         }
-        
-        .estacao-atual-nome {
+
+        .station-name {
             font-size: 18px;
             font-weight: 700;
             color: #fff;
         }
-        
-        .estacao-atual-pessoas {
+
+        .station-people {
             background: #00BFFF;
-            border-radius: 30px;
-            padding: 5px 12px;
+            border-radius: 40px;
+            padding: 6px 14px;
             font-size: 12px;
             font-weight: bold;
-            color: #1a1a2e;
+            color: #0f0f23;
         }
-        
-        /* PTT - BOTÃO DE FALAR */
+
+        /* PTT */
         .ptt-area {
             text-align: center;
             margin: 20px 0;
         }
-        
-        .btn-falar {
-            width: 130px;
-            height: 130px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #e53935, #8B0000);
+
+        .ptt-button {
+            width: 120px;
+            height: 120px;
+            border-radius: 60px;
+            background: radial-gradient(circle at 35% 35%, #e53935, #8b0000);
             border: 4px solid #ffd700;
             color: white;
             font-size: 18px;
             font-weight: bold;
             cursor: pointer;
-            transition: all 0.1s;
-            box-shadow: 0 5px 25px rgba(0,0,0,0.4);
-            font-family: 'Poppins', sans-serif;
+            transition: 0.07s linear;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
         }
-        
-        .btn-falar:active {
-            transform: scale(0.96);
+
+        .ptt-button:active {
+            transform: scale(0.94);
         }
-        
-        .btn-falar.gravando {
-            animation: pulse-vermelho 0.8s infinite;
-            background: radial-gradient(circle at 30% 30%, #ff0000, #ff4444);
+
+        .ptt-button.recording {
+            animation: recording-pulse 0.7s infinite;
+            background: radial-gradient(circle at 35% 35%, #ff4444, #ff0000);
         }
-        
-        @keyframes pulse-vermelho {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(229,57,53,0.7); }
-            50% { box-shadow: 0 0 0 20px rgba(229,57,53,0); }
+
+        @keyframes recording-pulse {
+            0% { box-shadow: 0 0 0 0 #e53935; }
+            70% { box-shadow: 0 0 0 18px rgba(229, 57, 53, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0); }
         }
-        
-        .timer-gravacao {
+
+        .record-timer {
             margin-top: 12px;
-            font-size: 22px;
+            font-size: 20px;
             font-weight: bold;
             color: #ffd700;
-            font-family: monospace;
             background: #0a0a15;
             display: inline-block;
-            padding: 5px 20px;
+            padding: 4px 20px;
             border-radius: 40px;
+            font-family: monospace;
         }
-        
-        /* MENU INFERIOR */
-        .menu-inferior {
+
+        /* MENU */
+        .bottom-menu {
             display: flex;
-            justify-content: space-around;
+            justify-content: space-between;
             gap: 12px;
             margin-top: 20px;
         }
-        
-        .menu-btn {
+
+        .menu-item {
             flex: 1;
-            background: linear-gradient(145deg, #252542, #1a1a30);
-            border: 1px solid #4a4a6a;
-            border-radius: 30px;
-            padding: 12px 8px;
+            background: #1f1f35;
+            border-radius: 40px;
+            padding: 10px 6px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: 0.2s;
             color: #ccc;
             font-size: 13px;
             font-weight: 500;
+            border: 1px solid #3a3a5a;
         }
-        
-        .menu-btn i {
-            font-size: 18px;
-            margin-right: 8px;
+
+        .menu-item i {
+            margin-right: 6px;
             color: #00BFFF;
         }
-        
-        .menu-btn:hover {
-            background: #2d2d44;
+
+        .menu-item:hover {
+            background: #2a2a45;
             border-color: #00BFFF;
-            transform: translateY(-2px);
         }
-        
-        /* MODAL MAPA */
-        .modal-mapa {
+
+        /* MODAIS */
+        .modal-full {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.95);
+            background: rgba(0,0,0,0.96);
             z-index: 20000;
             display: none;
             flex-direction: column;
         }
-        
-        .modal-mapa.visivel {
+
+        .modal-full.visible {
             display: flex;
         }
-        
+
         .modal-header {
-            background: #1a1a2e;
-            padding: 15px;
+            background: #0f0f23;
+            padding: 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             color: white;
             border-bottom: 2px solid #00BFFF;
         }
-        
-        .fechar-modal {
+
+        .close-modal {
             background: #e53935;
             border: none;
-            color: white;
-            width: 40px;
-            height: 40px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
-            cursor: pointer;
+            color: white;
             font-size: 18px;
+            cursor: pointer;
         }
-        
-        .mapa-container {
+
+        .map-container {
             flex: 1;
         }
-        
-        #mapa-completo {
+
+        #full-map {
             height: 100%;
             width: 100%;
         }
-        
-        /* MODAL CHAT */
-        .modal-chat {
+
+        /* CHAT */
+        .chat-modal {
             position: fixed;
             bottom: 20px;
             left: 20px;
             right: 20px;
-            background: #1a1a2e;
-            border-radius: 25px;
+            background: #111128;
+            border-radius: 28px;
             z-index: 20001;
             display: none;
             flex-direction: column;
-            max-height: 450px;
+            max-height: 460px;
             border: 1px solid #00BFFF;
         }
-        
-        .modal-chat.visivel {
+
+        .chat-modal.visible {
             display: flex;
         }
-        
-        .chat-header {
-            background: #0f0f23;
-            padding: 12px;
-            border-radius: 24px 24px 0 0;
-            display: flex;
-            justify-content: space-between;
-            color: white;
-            border-bottom: 1px solid #00BFFF;
-        }
-        
-        .chat-mensagens-area {
+
+        .chat-messages {
             flex: 1;
             overflow-y: auto;
             padding: 12px;
-            max-height: 320px;
+            max-height: 340px;
         }
-        
+
         .chat-input-area {
             display: flex;
             padding: 10px;
             gap: 8px;
-            border-top: 1px solid #4a4a6a;
+            border-top: 1px solid #2a2a4a;
         }
-        
+
         .chat-input-area input {
             flex: 1;
             padding: 12px;
             border-radius: 30px;
+            background: #1f1f35;
             border: none;
-            background: #252542;
             color: white;
-            font-family: 'Poppins', sans-serif;
         }
-        
+
         .chat-input-area button {
             background: #00BFFF;
             border: none;
+            width: 46px;
             border-radius: 50%;
-            width: 45px;
-            height: 45px;
             cursor: pointer;
-            font-size: 18px;
         }
-        
-        .msg-chat {
+
+        .message-bubble {
             margin: 8px 0;
             padding: 8px 14px;
-            border-radius: 18px;
+            border-radius: 20px;
             max-width: 80%;
             font-size: 13px;
         }
-        
-        .msg-chat.minha {
+
+        .message-bubble.me {
             background: #00BFFF;
             color: white;
             margin-left: auto;
         }
-        
-        .msg-chat.outra {
-            background: #252542;
-            color: #ccc;
+
+        .message-bubble.other {
+            background: #23233a;
+            color: #ddd;
         }
-        
+
         /* NOTIFICAÇÃO */
-        .notif-audio {
+        .audio-toast {
             position: fixed;
             bottom: 180px;
             left: 50%;
             transform: translateX(-50%);
             background: #00BFFF;
             color: white;
-            padding: 10px 24px;
+            padding: 8px 24px;
             border-radius: 40px;
             z-index: 20002;
             display: none;
-            font-size: 13px;
             font-weight: bold;
-            border: 2px solid #ffd700;
+            border: 2px solid gold;
             white-space: nowrap;
         }
-        
+
         /* RESPONSIVO */
-        @media (max-width: 550px) {
-            .estacoes-grid {
-                grid-template-columns: repeat(5, 1fr);
-                gap: 6px;
-            }
-            .estacao-nome {
-                font-size: 9px;
-            }
-            .btn-falar {
-                width: 110px;
-                height: 110px;
-                font-size: 15px;
-            }
-        }
-        
-        @media (max-width: 400px) {
-            .estacoes-grid {
+        @media (max-width: 500px) {
+            .stations-grid {
                 grid-template-columns: repeat(4, 1fr);
+                gap: 8px;
+            }
+            .city-name {
+                font-size: 10px;
+            }
+            .ptt-button {
+                width: 100px;
+                height: 100px;
             }
         }
-        
-        /* SCROLLBAR */
-        .estacoes-grid::-webkit-scrollbar {
-            width: 4px;
+
+        @media (max-width: 380px) {
+            .stations-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
         }
-        
-        .estacoes-grid::-webkit-scrollbar-track {
-            background: #1a1a2e;
-            border-radius: 10px;
+
+        /* SCROLL */
+        .stations-grid::-webkit-scrollbar {
+            width: 3px;
         }
-        
-        .estacoes-grid::-webkit-scrollbar-thumb {
+        .stations-grid::-webkit-scrollbar-track {
+            background: #1a1a30;
+        }
+        .stations-grid::-webkit-scrollbar-thumb {
             background: #00BFFF;
             border-radius: 10px;
         }
@@ -462,450 +433,360 @@
 <body>
 
 <div class="radio-container">
-    <!-- PAINEL SUPERIOR -->
-    <div class="painel-superior">
-        <div class="logo">
-            <i class="fas fa-broadcast-tower"></i>
-            <h1>RÁDIO BR-277</h1>
-            <i class="fas fa-microphone-alt"></i>
-        </div>
-        <div class="frequencia">
-            <span>27.7 MHz</span>
-            <span class="luz-status"></span>
+    <!-- CABEÇALHO -->
+    <div class="radio-header">
+        <h1><i class="fas fa-satellite-dish"></i> RÁDIO BR-277 <i class="fas fa-microphone-alt"></i></h1>
+        <div class="freq">
+            <span>📡 27.7 MHz</span>
+            <span class="online-dot"></span>
         </div>
     </div>
-    
-    <!-- GRADE DE ESTAÇÕES (21) -->
-    <div class="estacoes-grid" id="estacoesGrid"></div>
-    
+
+    <!-- GRADE DE CIDADES -->
+    <div class="stations-grid" id="stationsGrid"></div>
+
     <!-- ESTAÇÃO ATUAL -->
-    <div class="estacao-atual-card" id="estacaoAtualCard">
-        <div class="estacao-atual-info">
-            <i class="fas fa-radio"></i>
-            <span class="estacao-atual-nome" id="estacaoAtualNome">Carregando...</span>
+    <div class="current-station-card">
+        <div class="station-info">
+            <i class="fas fa-broadcast-tower"></i>
+            <span class="station-name" id="currentStationName">Curitiba</span>
         </div>
-        <div class="estacao-atual-pessoas" id="estacaoAtualPessoas">0 online</div>
+        <div class="station-people" id="currentStationPeople">0 online</div>
     </div>
-    
-    <!-- PTT - BOTÃO DE FALAR -->
+
+    <!-- PTT -->
     <div class="ptt-area">
-        <button class="btn-falar" id="btnFalar">
+        <button class="ptt-button" id="pttButton">
             🎤<br>FALAR
         </button>
-        <div class="timer-gravacao" id="timerGravacao" style="display: none;">20s</div>
+        <div class="record-timer" id="recordTimer" style="display: none;">20s</div>
     </div>
-    
-    <!-- MENU INFERIOR -->
-    <div class="menu-inferior">
-        <div class="menu-btn" onclick="abrirMapa()">
-            <i class="fas fa-map-marked-alt"></i> MAPA
-        </div>
-        <div class="menu-btn" onclick="abrirChat()">
-            <i class="fas fa-comment-dots"></i> CHAT
-        </div>
-        <div class="menu-btn" onclick="abrirPerfil()">
-            <i class="fas fa-user-circle"></i> PERFIL
-        </div>
+
+    <!-- MENU -->
+    <div class="bottom-menu">
+        <div class="menu-item" onclick="openMap()"><i class="fas fa-map-marked-alt"></i> MAPA</div>
+        <div class="menu-item" onclick="openChat()"><i class="fas fa-comment-dots"></i> CHAT</div>
+        <div class="menu-item" onclick="changeProfile()"><i class="fas fa-user-astronaut"></i> PERFIL</div>
     </div>
 </div>
 
 <!-- MODAL MAPA -->
-<div class="modal-mapa" id="modalMapa">
+<div class="modal-full" id="mapModal">
     <div class="modal-header">
         <span><i class="fas fa-map"></i> MAPA BR-277 - TRÂNSITO</span>
-        <button class="fechar-modal" onclick="fecharMapa()">✕</button>
+        <button class="close-modal" onclick="closeMap()">✕</button>
     </div>
-    <div class="mapa-container">
-        <div id="mapa-completo"></div>
+    <div class="map-container">
+        <div id="full-map"></div>
     </div>
 </div>
 
 <!-- MODAL CHAT -->
-<div class="modal-chat" id="modalChat">
-    <div class="chat-header">
+<div class="chat-modal" id="chatModal">
+    <div class="modal-header" style="border-radius: 28px 28px 0 0;">
         <span><i class="fas fa-comments"></i> CHAT GERAL</span>
-        <button style="background:none; border:none; color:#00BFFF; font-size:22px; cursor:pointer;" onclick="fecharChat()">✕</button>
+        <button class="close-modal" style="width:32px; height:32px;" onclick="closeChat()">✕</button>
     </div>
-    <div class="chat-mensagens-area" id="chatMensagensArea"></div>
+    <div class="chat-messages" id="chatMessages"></div>
     <div class="chat-input-area">
-        <input type="text" id="chatInput" placeholder="Digite sua mensagem...">
-        <button onclick="enviarMsgChat()"><i class="fas fa-paper-plane"></i></button>
+        <input type="text" id="chatInput" placeholder="Mensagem...">
+        <button onclick="sendChat()"><i class="fas fa-paper-plane"></i></button>
     </div>
 </div>
 
-<!-- NOTIFICAÇÃO -->
-<div class="notif-audio" id="notifAudio">
-    🎙️ NOVA MENSAGEM RECEBIDA
-</div>
+<!-- NOTIFICAÇÃO ÁUDIO -->
+<div class="audio-toast" id="audioToast">🎙️ NOVO ÁUDIO RECEBIDO</div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-// ===== FIREBASE =====
-const firebaseConfig = {
-    databaseURL: "https://gps-br277-default-rtdb.firebaseio.com"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+    // FIREBASE
+    const firebaseConfig = {
+        databaseURL: "https://gps-br277-default-rtdb.firebaseio.com"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-// ===== LISTA DAS 21 ESTAÇÕES (SEM KM) =====
-const estacoes = [
-    { id: 'guarapuava', nome: 'GUARAPUAVA', lat: -25.3951, lng: -51.4620 },
-    { id: 'palmeira', nome: 'PALMEIRA', lat: -25.4290, lng: -50.0000 },
-    { id: 'porto_amazonas', nome: 'PORTO AMAZONAS', lat: -25.5400, lng: -49.8900 },
-    { id: 'ponta_grossa', nome: 'PONTA GROSSA', lat: -25.0950, lng: -50.1619 },
-    { id: 'sao_luiz_puruna', nome: 'SÃO LUIZ DO PURUNÃ', lat: -25.4000, lng: -49.9000 },
-    { id: 'campo_largo', nome: 'CAMPO LARGO', lat: -25.4591, lng: -49.5290 },
-    { id: 'curitiba', nome: 'CURITIBA', lat: -25.4284, lng: -49.2733 },
-    { id: 'almirante_tamandare', nome: 'ALMIRANTE TAMANDARÉ', lat: -25.3180, lng: -49.3100 },
-    { id: 'fazenda_rio_grande', nome: 'FAZENDA RIO GRANDE', lat: -25.6620, lng: -49.3070 },
-    { id: 'tijucas_sul', nome: 'TIJUCAS DO SUL', lat: -25.9310, lng: -49.1950 },
-    { id: 'guaratuba', nome: 'GUARATUBA', lat: -25.8820, lng: -48.5750 },
-    { id: 'morretes', nome: 'MORRETES', lat: -25.4770, lng: -48.8330 },
-    { id: 'paranagua', nome: 'PARANAGUÁ', lat: -25.5160, lng: -48.5250 },
-    { id: 'sao_jose_pinhais', nome: 'SÃO JOSÉ DOS PINHAIS', lat: -25.5350, lng: -49.2060 },
-    { id: 'colombo', nome: 'COLOMBO', lat: -25.2920, lng: -49.2240 },
-    { id: 'araucaria', nome: 'ARAUCÁRIA', lat: -25.5930, lng: -49.4100 },
-    { id: 'piraquara', nome: 'PIRAQUARA', lat: -25.4420, lng: -49.0630 },
-    { id: 'campina_grande_sul', nome: 'CAMPINA GRANDE DO SUL', lat: -25.3050, lng: -49.0550 },
-    { id: 'quatro_barras', nome: 'QUATRO BARRAS', lat: -25.3670, lng: -49.0800 },
-    { id: 'barra_turvo', nome: 'BARRA DO TURVO', lat: -24.7560, lng: -48.5050 },
-    { id: 'cajati', nome: 'CAJATI', lat: -24.7360, lng: -48.1220 }
-];
+    // 21 CIDADES
+    const cities = [
+        "Guarapuava", "Palmeira", "Porto Amazonas", "Ponta Grossa", "São Luiz do Purunã",
+        "Campo Largo", "Curitiba", "Almirante Tamandaré", "Fazenda Rio Grande", "Tijucas do Sul",
+        "Guaratuba", "Morretes", "Paranaguá", "São José dos Pinhais", "Colombo",
+        "Araucária", "Piraquara", "Campina Grande do Sul", "Quatro Barras", "Barra do Turvo",
+        "Cajati"
+    ];
 
-// ===== VARIÁVEIS =====
-let usuario = localStorage.getItem('usuario_radio') || 'Motorista';
-let estacaoAtual = localStorage.getItem('estacao_radio') || 'curitiba';
-let gravador = null;
-let gravando = false;
-let timerInterval = null;
-let tempoRestante = 20;
-let mapa = null;
-let minhaLocalizacao = null;
-let meuMarcador = null;
+    const stations = cities.map((name, idx) => ({
+        id: name.toLowerCase().replace(/ /g, '_').replace(/ç/g, 'c').replace(/ã/g, 'a'),
+        nome: name,
+        lat: -25.4 + (idx * 0.05),
+        lng: -49.2 + (idx * 0.03)
+    }));
 
-// ===== INICIAR =====
-function iniciar() {
-    if (!localStorage.getItem('usuario_radio')) {
-        const nome = prompt('Digite seu nome para entrar no Rádio BR-277:', 'Motorista');
-        if (nome) {
-            usuario = nome;
-            localStorage.setItem('usuario_radio', usuario);
-        }
-    }
-    
-    criarBotoesEstacoes();
-    selecionarEstacao(estacaoAtual);
-    iniciarAudioListener();
-    iniciarContagemUsuarios();
-    iniciarChat();
-    iniciarGPS();
-}
+    let userName = localStorage.getItem('radio_user') || 'Motorista';
+    let currentStationId = localStorage.getItem('current_station') || stations.find(s => s.nome === "Curitiba").id;
+    let mediaRecorder = null;
+    let recording = false;
+    let countdownInterval = null;
+    let secondsLeft = 20;
+    let map = null;
+    let userMarker = null;
 
-// ===== CRIAR BOTÕES DAS 21 ESTAÇÕES =====
-function criarBotoesEstacoes() {
-    const grid = document.getElementById('estacoesGrid');
-    grid.innerHTML = '';
-    
-    estacoes.forEach(est => {
-        const btn = document.createElement('div');
-        btn.className = 'estacao-card';
-        btn.dataset.id = est.id;
-        btn.innerHTML = `
-            <span class="estacao-nome">${est.nome}</span>
-            <span class="estacao-online" id="online-${est.id}">0</span>
-        `;
-        btn.onclick = () => selecionarEstacao(est.id);
-        grid.appendChild(btn);
-    });
-}
-
-// ===== SELECIONAR ESTAÇÃO =====
-function selecionarEstacao(id) {
-    estacaoAtual = id;
-    localStorage.setItem('estacao_radio', id);
-    
-    document.querySelectorAll('.estacao-card').forEach(btn => {
-        if (btn.dataset.id === id) {
-            btn.classList.add('ativa');
-        } else {
-            btn.classList.remove('ativa');
-        }
-    });
-    
-    const estacao = estacoes.find(e => e.id === id);
-    document.getElementById('estacaoAtualNome').textContent = estacao.nome;
-    
-    // Registrar presença
-    db.ref(`estacoes/${id}/usuarios/${usuario}`).set({
-        nome: usuario,
-        timestamp: Date.now()
-    });
-    
-    // Remover de outras
-    estacoes.forEach(est => {
-        if (est.id !== id) {
-            db.ref(`estacoes/${est.id}/usuarios/${usuario}`).remove();
-        }
-    });
-    
-    mostrarNotificacao(`📻 Você sintonizou ${estacao.nome}`);
-}
-
-// ===== LISTENER DE ÁUDIO =====
-function iniciarAudioListener() {
-    db.ref(`estacoes/${estacaoAtual}/audio`).on('child_added', (snap) => {
-        const audio = snap.val();
-        if (audio.usuario !== usuario) {
-            const audioElem = new Audio(audio.data);
-            audioElem.play().catch(e => console.log('Erro ao tocar áudio'));
-            
-            const notif = document.getElementById('notifAudio');
-            notif.style.display = 'block';
-            notif.innerHTML = `🎙️ ${audio.usuario} falou em ${audio.estacao}`;
-            setTimeout(() => notif.style.display = 'none', 3000);
-        }
-    });
-}
-
-// ===== CONTAGEM DE USUÁRIOS =====
-function iniciarContagemUsuarios() {
-    estacoes.forEach(est => {
-        db.ref(`estacoes/${est.id}/usuarios`).on('value', (snap) => {
-            const usuarios = snap.val();
-            const count = usuarios ? Object.keys(usuarios).length : 0;
-            const span = document.getElementById(`online-${est.id}`);
-            if (span) span.textContent = count;
-            
-            if (est.id === estacaoAtual) {
-                document.getElementById('estacaoAtualPessoas').textContent = `${count} online`;
+    // ========== INICIALIZAÇÃO ==========
+    function init() {
+        if (!localStorage.getItem('radio_user')) {
+            let name = prompt("🎙️ SEU NOME PARA O RÁDIO:", "Motorista");
+            if (name) {
+                userName = name.trim();
+                localStorage.setItem('radio_user', userName);
             }
-        });
-    });
-}
-
-// ===== PTT - GRAVAR ÁUDIO =====
-const btnFalar = document.getElementById('btnFalar');
-const timerDiv = document.getElementById('timerGravacao');
-
-btnFalar.addEventListener('mousedown', iniciarGravacao);
-btnFalar.addEventListener('mouseup', pararGravacao);
-btnFalar.addEventListener('mouseleave', pararGravacao);
-btnFalar.addEventListener('touchstart', iniciarGravacao);
-btnFalar.addEventListener('touchend', pararGravacao);
-
-async function iniciarGravacao() {
-    if (gravando) return;
-    
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        gravador = new MediaRecorder(stream);
-        const chunks = [];
-        tempoRestante = 20;
-        
-        gravador.ondataavailable = e => chunks.push(e.data);
-        
-        gravador.onstop = async () => {
-            const blob = new Blob(chunks, { type: 'audio/webm' });
-            const reader = new FileReader();
-            reader.onloadend = async () => {
-                const estacao = estacoes.find(e => e.id === estacaoAtual);
-                await db.ref(`estacoes/${estacaoAtual}/audio`).push({
-                    usuario: usuario,
-                    estacao: estacao.nome,
-                    data: reader.result,
-                    timestamp: Date.now()
-                });
-                
-                // Limpar áudios antigos (manter últimos 30)
-                const snapshot = await db.ref(`estacoes/${estacaoAtual}/audio`).once('value');
-                const audios = snapshot.val();
-                if (audios) {
-                    const keys = Object.keys(audios);
-                    if (keys.length > 30) {
-                        keys.slice(0, keys.length - 30).forEach(key => {
-                            db.ref(`estacoes/${estacaoAtual}/audio/${key}`).remove();
-                        });
-                    }
-                }
-            };
-            reader.readAsDataURL(blob);
-            stream.getTracks().forEach(t => t.stop());
-        };
-        
-        gravador.start();
-        gravando = true;
-        btnFalar.classList.add('gravando');
-        timerDiv.style.display = 'inline-block';
-        
-        timerInterval = setInterval(() => {
-            tempoRestante--;
-            timerDiv.textContent = `${tempoRestante}s`;
-            if (tempoRestante <= 0) {
-                pararGravacao();
-            }
-        }, 1000);
-        
-        setTimeout(() => {
-            if (gravador && gravador.state === 'recording') pararGravacao();
-        }, 19500);
-        
-    } catch(e) {
-        alert('⚠️ Permita acesso ao microfone para usar o rádio!');
-    }
-}
-
-function pararGravacao() {
-    if (gravador && gravador.state === 'recording') {
-        gravador.stop();
-    }
-    if (timerInterval) clearInterval(timerInterval);
-    gravando = false;
-    btnFalar.classList.remove('gravando');
-    timerDiv.style.display = 'none';
-}
-
-// ===== CHAT GERAL =====
-function iniciarChat() {
-    db.ref('chat_geral').on('value', (snap) => {
-        const msgs = snap.val();
-        const container = document.getElementById('chatMensagensArea');
-        if (!msgs) {
-            container.innerHTML = '';
-            return;
         }
-        
-        let html = '';
-        Object.values(msgs).sort((a,b) => a.timestamp - b.timestamp).forEach(msg => {
-            const isMinha = msg.usuario === usuario;
-            html += `
-                <div class="msg-chat ${isMinha ? 'minha' : 'outra'}">
-                    <strong>${msg.usuario}</strong><br>
-                    ${msg.texto}<br>
-                    <small style="font-size:9px; opacity:0.7;">${new Date(msg.timestamp).toLocaleTimeString()}</small>
-                </div>
+        buildStationButtons();
+        selectStation(currentStationId);
+        listenAudio();
+        listenStationUsers();
+        initChat();
+        initGPS();
+    }
+
+    // BOTÕES DAS CIDADES
+    function buildStationButtons() {
+        const grid = document.getElementById('stationsGrid');
+        grid.innerHTML = '';
+        stations.forEach(st => {
+            const btn = document.createElement('div');
+            btn.className = 'station-btn';
+            btn.dataset.id = st.id;
+            btn.innerHTML = `
+                <span class="city-name">${st.nome}</span>
+                <span class="city-count" id="count-${st.id}">0</span>
             `;
+            btn.onclick = () => selectStation(st.id);
+            grid.appendChild(btn);
         });
-        container.innerHTML = html;
-        container.scrollTop = container.scrollHeight;
-    });
-}
+    }
 
-function enviarMsgChat() {
-    const input = document.getElementById('chatInput');
-    if (!input.value.trim()) return;
-    
-    db.ref('chat_geral').push({
-        usuario: usuario,
-        texto: input.value.trim(),
-        timestamp: Date.now()
-    });
-    input.value = '';
-}
+    // SELECIONAR ESTAÇÃO
+    function selectStation(stationId) {
+        currentStationId = stationId;
+        localStorage.setItem('current_station', stationId);
 
-function abrirChat() {
-    document.getElementById('modalChat').classList.add('visivel');
-}
+        document.querySelectorAll('.station-btn').forEach(btn => {
+            if (btn.dataset.id === stationId) btn.classList.add('active');
+            else btn.classList.remove('active');
+        });
 
-function fecharChat() {
-    document.getElementById('modalChat').classList.remove('visivel');
-}
+        const station = stations.find(s => s.id === stationId);
+        document.getElementById('currentStationName').innerText = station.nome;
 
-// ===== MAPA =====
-function iniciarGPS() {
-    if (!navigator.geolocation) return;
-    
-    navigator.geolocation.watchPosition(pos => {
-        minhaLocalizacao = [pos.coords.latitude, pos.coords.longitude];
-        
-        if (!mapa) return;
-        
-        if (!meuMarcador) {
-            meuMarcador = L.marker(minhaLocalizacao, {
-                icon: L.divIcon({
-                    html: `<div style="font-size:32px;">🚗</div>`,
-                    className: '',
-                    iconSize: [32,32],
-                    iconAnchor: [16,16]
-                })
-            }).addTo(mapa);
-            mapa.setView(minhaLocalizacao, 12);
-        } else {
-            meuMarcador.setLatLng(minhaLocalizacao);
-        }
-        
-        db.ref('localizacoes/' + usuario).set({
-            lat: minhaLocalizacao[0],
-            lng: minhaLocalizacao[1],
-            estacao: estacaoAtual,
+        db.ref(`stations/${stationId}/users/${userName}`).set({
+            name: userName,
             timestamp: Date.now()
         });
-    });
-}
 
-function abrirMapa() {
-    const modal = document.getElementById('modalMapa');
-    modal.classList.add('visivel');
-    
-    setTimeout(() => {
-        if (!mapa) {
-            mapa = L.map('mapa-completo').setView([-25.4284, -49.2733], 12);
-            L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(mapa);
-            
-            // Adicionar marcadores das estações
-            estacoes.forEach(est => {
-                L.marker([est.lat, est.lng], {
-                    icon: L.divIcon({
-                        html: `<div style="background:#00BFFF; width:10px; height:10px; border-radius:50%; border:2px solid #fff;"></div>`,
-                        className: '',
-                        iconSize: [10,10]
-                    })
-                }).addTo(mapa).bindPopup(`<b>${est.nome}</b>`);
+        stations.forEach(s => {
+            if (s.id !== stationId) db.ref(`stations/${s.id}/users/${userName}`).remove();
+        });
+    }
+
+    // CONTAGEM DE USUÁRIOS
+    function listenStationUsers() {
+        stations.forEach(st => {
+            db.ref(`stations/${st.id}/users`).on('value', (snap) => {
+                const users = snap.val();
+                const count = users ? Object.keys(users).length : 0;
+                const countSpan = document.getElementById(`count-${st.id}`);
+                if (countSpan) countSpan.innerText = count;
+                if (st.id === currentStationId) {
+                    document.getElementById('currentStationPeople').innerText = `${count} online`;
+                }
             });
-            
-            if (minhaLocalizacao) mapa.setView(minhaLocalizacao, 12);
-        } else {
-            mapa.invalidateSize();
-            if (minhaLocalizacao) mapa.setView(minhaLocalizacao, 12);
+        });
+    }
+
+    // ÁUDIO: ESCUTAR
+    function listenAudio() {
+        db.ref(`stations/${currentStationId}/audios`).on('child_added', (snap) => {
+            const audioData = snap.val();
+            if (audioData.sender !== userName) {
+                const audio = new Audio(audioData.base64);
+                audio.play().catch(e => console.log);
+                const toast = document.getElementById('audioToast');
+                toast.style.display = 'block';
+                toast.innerText = `🎙️ ${audioData.sender} falou em ${audioData.station}`;
+                setTimeout(() => toast.style.display = 'none', 2800);
+            }
+        });
+    }
+
+    // PTT - GRAVAR
+    const pttBtn = document.getElementById('pttButton');
+    const timerDiv = document.getElementById('recordTimer');
+
+    pttBtn.addEventListener('mousedown', startRecording);
+    pttBtn.addEventListener('mouseup', stopRecording);
+    pttBtn.addEventListener('mouseleave', stopRecording);
+    pttBtn.addEventListener('touchstart', startRecording);
+    pttBtn.addEventListener('touchend', stopRecording);
+
+    async function startRecording() {
+        if (recording) return;
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+            const chunks = [];
+            secondsLeft = 20;
+
+            mediaRecorder.ondataavailable = e => chunks.push(e.data);
+            mediaRecorder.onstop = async () => {
+                const blob = new Blob(chunks, { type: 'audio/webm' });
+                const reader = new FileReader();
+                reader.onloadend = async () => {
+                    const stationObj = stations.find(s => s.id === currentStationId);
+                    await db.ref(`stations/${currentStationId}/audios`).push({
+                        sender: userName,
+                        station: stationObj.nome,
+                        base64: reader.result,
+                        timestamp: Date.now()
+                    });
+                    const allAudios = await db.ref(`stations/${currentStationId}/audios`).once('value');
+                    const audioList = allAudios.val();
+                    if (audioList) {
+                        const keys = Object.keys(audioList);
+                        if (keys.length > 30) {
+                            keys.slice(0, keys.length - 30).forEach(k => db.ref(`stations/${currentStationId}/audios/${k}`).remove());
+                        }
+                    }
+                };
+                reader.readAsDataURL(blob);
+                stream.getTracks().forEach(t => t.stop());
+            };
+
+            mediaRecorder.start();
+            recording = true;
+            pttBtn.classList.add('recording');
+            timerDiv.style.display = 'inline-block';
+            timerDiv.innerText = '20s';
+
+            countdownInterval = setInterval(() => {
+                secondsLeft--;
+                timerDiv.innerText = `${secondsLeft}s`;
+                if (secondsLeft <= 0) stopRecording();
+            }, 1000);
+
+            setTimeout(() => {
+                if (mediaRecorder && mediaRecorder.state === 'recording') stopRecording();
+            }, 19500);
+        } catch(e) {
+            alert("🎤 Permita o acesso ao microfone para usar o rádio.");
         }
-    }, 100);
-}
-
-function fecharMapa() {
-    document.getElementById('modalMapa').classList.remove('visivel');
-}
-
-// ===== PERFIL =====
-function abrirPerfil() {
-    const novoNome = prompt('Digite seu nome:', usuario);
-    if (novoNome && novoNome.trim()) {
-        usuario = novoNome.trim();
-        localStorage.setItem('usuario_radio', usuario);
-        mostrarNotificacao(`✅ Nome alterado para ${usuario}`);
     }
-}
 
-// ===== NOTIFICAÇÃO =====
-function mostrarNotificacao(msg) {
-    const notif = document.createElement('div');
-    notif.style.cssText = 'position:fixed; bottom:200px; left:50%; transform:translateX(-50%); background:#00BFFF; color:white; padding:8px 20px; border-radius:30px; z-index:20003; font-size:13px; border:2px solid #ffd700;';
-    notif.textContent = msg;
-    document.body.appendChild(notif);
-    setTimeout(() => notif.remove(), 2000);
-}
-
-// ===== LIMPAR AO SAIR =====
-window.addEventListener('beforeunload', () => {
-    if (usuario) {
-        db.ref(`estacoes/${estacaoAtual}/usuarios/${usuario}`).remove();
-        db.ref('localizacoes/' + usuario).remove();
+    function stopRecording() {
+        if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop();
+        if (countdownInterval) clearInterval(countdownInterval);
+        recording = false;
+        pttBtn.classList.remove('recording');
+        timerDiv.style.display = 'none';
     }
-});
 
-// ===== INICIAR =====
-iniciar();
+    // CHAT
+    function initChat() {
+        db.ref('global_chat').on('value', (snap) => {
+            const messages = snap.val();
+            const container = document.getElementById('chatMessages');
+            if (!messages) { container.innerHTML = ''; return; }
+            let html = '';
+            Object.values(messages).sort((a,b) => a.timestamp - b.timestamp).forEach(msg => {
+                const isMe = msg.sender === userName;
+                html += `
+                    <div class="message-bubble ${isMe ? 'me' : 'other'}">
+                        <strong>${msg.sender}</strong><br>${msg.text}<br>
+                        <small style="font-size:9px;">${new Date(msg.timestamp).toLocaleTimeString()}</small>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+            container.scrollTop = container.scrollHeight;
+        });
+    }
+
+    function sendChat() {
+        const input = document.getElementById('chatInput');
+        if (!input.value.trim()) return;
+        db.ref('global_chat').push({
+            sender: userName,
+            text: input.value.trim(),
+            timestamp: Date.now()
+        });
+        input.value = '';
+    }
+
+    function openChat() {
+        document.getElementById('chatModal').classList.add('visible');
+    }
+    function closeChat() {
+        document.getElementById('chatModal').classList.remove('visible');
+    }
+
+    // MAPA
+    function initGPS() {
+        if (!navigator.geolocation) return;
+        navigator.geolocation.watchPosition(pos => {
+            const userPos = [pos.coords.latitude, pos.coords.longitude];
+            if (!map) return;
+            if (!userMarker) {
+                userMarker = L.marker(userPos, {
+                    icon: L.divIcon({ html: '<div style="font-size:32px;">🚗</div>', iconSize: [32,32], className: '' })
+                }).addTo(map);
+                map.setView(userPos, 12);
+            } else {
+                userMarker.setLatLng(userPos);
+            }
+        });
+    }
+
+    function openMap() {
+        const modal = document.getElementById('mapModal');
+        modal.classList.add('visible');
+        setTimeout(() => {
+            if (!map) {
+                map = L.map('full-map').setView([-25.4284, -49.2733], 11);
+                L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(map);
+                stations.forEach(s => {
+                    L.marker([s.lat, s.lng], {
+                        icon: L.divIcon({ html: `<div style="background:#00BFFF; width:8px; height:8px; border-radius:50%; border:2px solid white;"></div>`, iconSize: [8,8] })
+                    }).addTo(map).bindPopup(`<b>${s.nome}</b>`);
+                });
+            } else {
+                map.invalidateSize();
+            }
+        }, 120);
+    }
+    function closeMap() {
+        document.getElementById('mapModal').classList.remove('visible');
+    }
+
+    // PERFIL
+    function changeProfile() {
+        const newName = prompt("✏️ Alterar nome:", userName);
+        if (newName && newName.trim()) {
+            userName = newName.trim();
+            localStorage.setItem('radio_user', userName);
+            alert(`✅ Nome alterado para ${userName}`);
+        }
+    }
+
+    // SAIR
+    window.addEventListener('beforeunload', () => {
+        if (userName) {
+            db.ref(`stations/${currentStationId}/users/${userName}`).remove();
+        }
+    });
+
+    init();
 </script>
 </body>
 </html>
