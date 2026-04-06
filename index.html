@@ -3,15 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RÁDIO BR-277 | Comunicação dos Motoristas</title>
+    <title>RÁDIO BR-277 | Mapa + Alertas com Foto + Chat</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             background: #0a0a15;
@@ -22,7 +19,6 @@
             align-items: center;
         }
 
-        /* CONTAINER PRINCIPAL */
         .app {
             max-width: 480px;
             width: 100%;
@@ -34,214 +30,122 @@
             position: relative;
         }
 
-        /* ===== CABEÇALHO DO RÁDIO ===== */
+        /* CABEÇALHO DO RÁDIO */
         .radio-header {
             background: linear-gradient(135deg, #1a1a2e, #16213e);
-            padding: 16px 20px;
+            padding: 12px 16px;
             border-bottom: 3px solid #00BFFF;
         }
 
-        .radio-title {
+        .radio-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .radio-title h1 {
-            font-size: 22px;
-            color: #ffd700;
-            letter-spacing: 2px;
-        }
-
-        .radio-title h1 i {
-            color: #00BFFF;
-            margin-right: 8px;
-        }
-
-        .radio-status {
-            background: #0a0a15;
-            padding: 5px 12px;
-            border-radius: 30px;
-        }
-
-        .radio-status span {
-            color: #00ff88;
-            font-family: monospace;
-            font-size: 12px;
-        }
-
-        .radio-status i {
-            font-size: 8px;
-            color: #00ff88;
-            margin-left: 5px;
-            animation: blink 1.5s infinite;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-
-        /* ===== GRADE DE CIDADES (ORGANIZADA) ===== */
-        .cities-section {
-            background: #0f0f23;
-            padding: 12px 16px;
-        }
-
-        .section-label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
             margin-bottom: 12px;
         }
 
-        .section-label i {
+        .radio-top h1 {
+            font-size: 18px;
+            color: #ffd700;
+        }
+
+        .radio-top h1 i {
             color: #00BFFF;
-            font-size: 14px;
+            margin-right: 5px;
         }
 
-        .section-label span {
-            color: #888;
+        .freq-badge {
+            background: #0a0a15;
+            padding: 4px 10px;
+            border-radius: 30px;
+        }
+
+        .freq-badge span {
+            color: #00ff88;
+            font-family: monospace;
             font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
-        .cities-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            max-height: 280px;
-            overflow-y: auto;
-            padding: 4px;
-        }
-
-        .city-card {
-            background: linear-gradient(145deg, #1f1f35, #181830);
-            border-radius: 14px;
-            padding: 10px 6px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 1px solid #2a2a4a;
-            position: relative;
-        }
-
-        .city-card.active {
-            background: linear-gradient(145deg, #00BFFF, #0066cc);
-            border-color: #ffd700;
-            box-shadow: 0 0 12px rgba(0, 191, 255, 0.5);
-        }
-
-        .city-name {
-            font-size: 11px;
-            font-weight: 700;
-            color: #ddd;
-            display: block;
+        /* SCROLL DE CIDADES */
+        .cities-scroll {
+            overflow-x: auto;
             white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            padding: 8px 0;
         }
 
-        .city-card.active .city-name {
-            color: white;
+        .cities-list {
+            display: inline-flex;
+            gap: 8px;
+            padding: 0 5px;
         }
 
-        .city-badge {
-            position: absolute;
-            top: -6px;
-            right: -6px;
-            background: #00BFFF;
+        .city-chip {
+            background: #1f1f35;
+            border: 1px solid #3a3a5a;
+            border-radius: 30px;
+            padding: 6px 14px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #ccc;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .city-chip.active {
+            background: linear-gradient(145deg, #00BFFF, #0066cc);
             color: white;
-            font-size: 9px;
-            font-weight: bold;
+            border-color: #ffd700;
+        }
+
+        .city-count {
+            background: rgba(0,0,0,0.5);
             border-radius: 20px;
             padding: 2px 6px;
-            min-width: 20px;
-            text-align: center;
+            font-size: 9px;
         }
 
-        .city-card.active .city-badge {
+        .city-chip.active .city-count {
             background: #ffd700;
             color: #1a1a2e;
         }
 
-        /* ===== ESTAÇÃO ATUAL ===== */
-        .current-station-card {
-            background: linear-gradient(135deg, #0f0f23, #13132a);
-            margin: 8px 16px;
-            padding: 14px 20px;
-            border-radius: 50px;
+        /* ESTAÇÃO ATUAL */
+        .current-station {
+            background: #0f0f23;
+            margin: 10px 16px;
+            padding: 10px 16px;
+            border-radius: 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-left: 4px solid #00BFFF;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        }
-
-        .current-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .current-info i {
-            font-size: 24px;
-            color: #00BFFF;
         }
 
         .current-name {
-            font-size: 18px;
-            font-weight: 700;
+            font-size: 15px;
+            font-weight: bold;
             color: white;
         }
 
-        .current-count {
+        .current-online {
             background: #00BFFF;
             border-radius: 30px;
-            padding: 5px 14px;
-            font-size: 12px;
+            padding: 4px 12px;
+            font-size: 11px;
             font-weight: bold;
-            color: #0f0f23;
         }
 
-        /* ===== MAPA EXPANSÍVEL ===== */
-        .map-wrapper {
+        /* MAPA */
+        .map-area {
+            flex: 1;
+            position: relative;
             margin: 8px 16px;
-            background: #1a1a2e;
             border-radius: 20px;
             overflow: hidden;
             border: 1px solid #2a2a4a;
-        }
-
-        .map-trigger {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 16px;
-            background: #1f1f35;
-            cursor: pointer;
-        }
-
-        .map-trigger h4 {
-            font-size: 13px;
-            color: #00BFFF;
-        }
-
-        .map-trigger i {
-            color: #ffd700;
-            transition: transform 0.3s;
-        }
-
-        .map-container {
-            height: 0;
-            overflow: hidden;
-            transition: height 0.3s ease;
-        }
-
-        .map-container.open {
-            height: 220px;
+            min-height: 200px;
         }
 
         #map {
@@ -249,55 +153,24 @@
             width: 100%;
         }
 
-        /* ===== BOTÕES DE AÇÃO ===== */
-        .actions-bar {
+        /* BARRA INFERIOR */
+        .action-bar {
             display: flex;
-            gap: 12px;
-            padding: 12px 16px;
+            gap: 10px;
+            padding: 10px 16px;
             background: #0f0f23;
             border-top: 1px solid #2a2a4a;
-            margin-top: auto;
         }
 
-        .ptt-button {
+        .ptt-btn {
             flex: 2;
             background: radial-gradient(circle at 30% 30%, #e53935, #8b0000);
             border: 2px solid #ffd700;
-            border-radius: 60px;
-            padding: 14px;
+            border-radius: 50px;
+            padding: 12px;
             color: white;
             font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: 0.05s linear;
-        }
-
-        .ptt-button:active {
-            transform: scale(0.97);
-        }
-
-        .ptt-button.recording {
-            animation: pulse-red 0.6s infinite;
-        }
-
-        @keyframes pulse-red {
-            0% { box-shadow: 0 0 0 0 #e53935; }
-            70% { box-shadow: 0 0 0 15px rgba(229, 57, 53, 0); }
-        }
-
-        .action-button {
-            flex: 1;
-            background: #1f1f35;
-            border: 1px solid #3a3a5a;
-            border-radius: 60px;
-            padding: 14px;
-            color: #ccc;
             font-size: 14px;
-            font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -305,18 +178,33 @@
             gap: 8px;
         }
 
-        .action-button i {
-            color: #00BFFF;
-            font-size: 16px;
+        .ptt-btn:active { transform: scale(0.97); }
+        .ptt-btn.recording { animation: pulse-red 0.6s infinite; }
+
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 #e53935; }
+            70% { box-shadow: 0 0 0 12px rgba(229,57,53,0); }
         }
 
-        .timer-text {
+        .action-btn {
+            flex: 1;
+            background: #1f1f35;
+            border: 1px solid #3a3a5a;
+            border-radius: 50px;
+            padding: 12px;
+            color: #ccc;
             font-size: 12px;
-            margin-left: 5px;
-            color: #ffd700;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
 
-        /* ===== MODAL ALERTAS ===== */
+        .action-btn i { color: #00BFFF; }
+
+        /* MODAL ALERTAS (15 itens) */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -331,9 +219,7 @@
             padding: 20px;
         }
 
-        .modal-overlay.visible {
-            display: flex;
-        }
+        .modal-overlay.visible { display: flex; }
 
         .modal-card {
             background: #1a1a2e;
@@ -347,7 +233,7 @@
 
         .modal-header {
             background: #00BFFF;
-            padding: 15px 20px;
+            padding: 12px 16px;
             display: flex;
             justify-content: space-between;
             color: white;
@@ -357,38 +243,44 @@
         .alertas-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            padding: 20px;
+            gap: 10px;
+            padding: 16px;
         }
 
-        .alerta-card {
+        .alerta-item {
             background: #252542;
-            border-radius: 16px;
-            padding: 12px 8px;
+            border-radius: 14px;
+            padding: 10px 5px;
             text-align: center;
             cursor: pointer;
             transition: all 0.2s;
             border: 1px solid #3a3a5a;
         }
 
-        .alerta-card:hover {
-            transform: scale(1.05);
-            border-color: #ffd700;
-        }
+        .alerta-item:hover { transform: scale(1.05); border-color: #ffd700; }
+        .alerta-icon { font-size: 28px; }
+        .alerta-nome { font-size: 9px; color: white; margin-top: 4px; font-weight: 600; }
 
-        .alerta-emoji {
-            font-size: 28px;
+        /* POPUP DO ALERTA (COM FOTO E CHAT) */
+        .popup-alerta {
+            background: #1a1a2e;
+            border-radius: 16px;
+            max-width: 280px;
+            overflow: hidden;
+            border: 2px solid #00BFFF;
         }
+        .popup-alerta-img { width: 100%; height: 120px; object-fit: cover; }
+        .popup-header { padding: 8px 12px; background: #00BFFF; color: white; display: flex; justify-content: space-between; }
+        .popup-chat { padding: 10px; max-height: 150px; overflow-y: auto; background: #0f0f23; }
+        .popup-chat-msg { margin: 5px 0; padding: 6px 10px; border-radius: 12px; font-size: 11px; }
+        .popup-chat-msg.me { background: #00BFFF; margin-left: auto; text-align: right; }
+        .popup-chat-msg.other { background: #252542; }
+        .popup-input { display: flex; padding: 8px; gap: 5px; border-top: 1px solid #2a2a4a; }
+        .popup-input input { flex: 1; padding: 8px; border-radius: 20px; border: none; background: #252542; color: white; }
+        .popup-input button { background: #00BFFF; border: none; width: 32px; border-radius: 50%; cursor: pointer; }
 
-        .alerta-nome {
-            font-size: 10px;
-            color: white;
-            margin-top: 5px;
-            font-weight: 600;
-        }
-
-        /* ===== MODAL CHAT ===== */
-        .chat-overlay {
+        /* MODAL CHAT GERAL */
+        .chat-modal {
             position: fixed;
             top: 0;
             left: 0;
@@ -399,70 +291,18 @@
             display: none;
             flex-direction: column;
         }
+        .chat-modal.visible { display: flex; }
+        .chat-header { background: #075e54; padding: 12px; color: white; display: flex; justify-content: space-between; }
+        .chat-messages { flex: 1; overflow-y: auto; padding: 12px; background: #e5ddd5; }
+        .chat-input-area { display: flex; padding: 8px; background: #f0f0f0; gap: 8px; }
+        .chat-input-area input { flex: 1; padding: 10px; border-radius: 25px; border: none; }
+        .chat-input-area button { background: #075e54; border: none; width: 42px; border-radius: 50%; color: white; cursor: pointer; }
+        .msg { margin: 6px 0; padding: 8px 12px; border-radius: 18px; max-width: 80%; font-size: 12px; }
+        .msg.me { background: #dcf8c6; margin-left: auto; }
+        .msg.other { background: white; }
 
-        .chat-overlay.visible {
-            display: flex;
-        }
-
-        .chat-head {
-            background: #075e54;
-            padding: 15px;
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .chat-body {
-            flex: 1;
-            overflow-y: auto;
-            padding: 15px;
-            background: #e5ddd5;
-        }
-
-        .chat-footer {
-            display: flex;
-            padding: 10px;
-            background: #f0f0f0;
-            gap: 8px;
-        }
-
-        .chat-footer input {
-            flex: 1;
-            padding: 12px;
-            border-radius: 25px;
-            border: none;
-            background: white;
-        }
-
-        .chat-footer button {
-            background: #075e54;
-            border: none;
-            width: 45px;
-            border-radius: 50%;
-            color: white;
-            cursor: pointer;
-        }
-
-        .message {
-            margin: 8px 0;
-            padding: 10px 14px;
-            border-radius: 18px;
-            max-width: 80%;
-            font-size: 13px;
-        }
-
-        .message.me {
-            background: #dcf8c6;
-            margin-left: auto;
-        }
-
-        .message.other {
-            background: white;
-        }
-
-        /* ===== NOTIFICAÇÃO ===== */
-        .notification-toast {
+        /* NOTIFICAÇÃO */
+        .toast-audio {
             position: fixed;
             bottom: 100px;
             left: 50%;
@@ -476,81 +316,47 @@
             font-weight: bold;
             border: 2px solid gold;
             font-size: 12px;
-            white-space: nowrap;
         }
 
-        /* SCROLL PERSONALIZADO */
-        .cities-grid::-webkit-scrollbar {
-            width: 3px;
-        }
-        .cities-grid::-webkit-scrollbar-track {
-            background: #1a1a2e;
-        }
-        .cities-grid::-webkit-scrollbar-thumb {
-            background: #00BFFF;
-            border-radius: 10px;
-        }
+        .cities-scroll::-webkit-scrollbar { height: 3px; }
+        .cities-scroll::-webkit-scrollbar-track { background: #1a1a2e; }
+        .cities-scroll::-webkit-scrollbar-thumb { background: #00BFFF; border-radius: 10px; }
     </style>
 </head>
 <body>
 
 <div class="app">
-    <!-- CABEÇALHO -->
+    <!-- RÁDIO HEADER -->
     <div class="radio-header">
-        <div class="radio-title">
+        <div class="radio-top">
             <h1><i class="fas fa-broadcast-tower"></i> RÁDIO BR-277</h1>
-            <div class="radio-status">
-                <span>27.7 MHz</span>
-                <i class="fas fa-circle"></i>
-            </div>
+            <div class="freq-badge"><span>27.7 MHz</span> <i class="fas fa-circle" style="color:#00ff88; font-size:8px;"></i></div>
         </div>
-    </div>
-
-    <!-- CIDADES -->
-    <div class="cities-section">
-        <div class="section-label">
-            <i class="fas fa-map-marker-alt"></i>
-            <span>ESTAÇÕES DISPONÍVEIS</span>
+        <div class="cities-scroll">
+            <div class="cities-list" id="citiesList"></div>
         </div>
-        <div class="cities-grid" id="citiesGrid"></div>
     </div>
 
     <!-- ESTAÇÃO ATUAL -->
-    <div class="current-station-card">
-        <div class="current-info">
-            <i class="fas fa-radio"></i>
-            <span class="current-name" id="currentStationName">Curitiba</span>
-        </div>
-        <div class="current-count" id="currentStationCount">0 online</div>
+    <div class="current-station">
+        <div class="current-name" id="currentStationName">Curitiba</div>
+        <div class="current-online" id="currentStationCount">0 online</div>
     </div>
 
     <!-- MAPA -->
-    <div class="map-wrapper">
-        <div class="map-trigger" onclick="toggleMap()">
-            <h4><i class="fas fa-map-marked-alt"></i> MAPA DE TRÂNSITO</h4>
-            <i class="fas fa-chevron-down" id="mapArrow"></i>
-        </div>
-        <div class="map-container" id="mapContainer">
-            <div id="map"></div>
-        </div>
+    <div class="map-area">
+        <div id="map"></div>
     </div>
 
     <!-- AÇÕES -->
-    <div class="actions-bar">
-        <button class="ptt-button" id="pttBtn">
-            <i class="fas fa-microphone-alt"></i> FALAR
-            <span class="timer-text" id="timerDisplay"></span>
-        </button>
-        <div class="action-button" onclick="openAlertasModal()">
-            <i class="fas fa-exclamation-triangle"></i> ALERTA
-        </div>
-        <div class="action-button" onclick="openChatModal()">
-            <i class="fas fa-comment-dots"></i> CHAT
-        </div>
+    <div class="action-bar">
+        <button class="ptt-btn" id="pttBtn"><i class="fas fa-microphone-alt"></i> FALAR <span id="timerText" style="font-size:11px;"></span></button>
+        <div class="action-btn" onclick="openAlertasModal()"><i class="fas fa-exclamation-triangle"></i> REPORTE</div>
+        <div class="action-btn" onclick="openChatModal()"><i class="fas fa-comment-dots"></i> CHAT</div>
     </div>
 </div>
 
-<!-- MODAL ALERTAS -->
+<!-- MODAL ALERTAS (15 itens) -->
 <div class="modal-overlay" id="alertasModal">
     <div class="modal-card">
         <div class="modal-header">
@@ -561,25 +367,26 @@
     </div>
 </div>
 
-<!-- MODAL CHAT -->
-<div class="chat-overlay" id="chatModal">
-    <div class="chat-head">
+<!-- MODAL CHAT GERAL -->
+<div class="chat-modal" id="chatModal">
+    <div class="chat-header">
         <span><i class="fas fa-comments"></i> GRUPO BR-277</span>
         <span onclick="closeChatModal()" style="cursor:pointer; font-size:22px;">✕</span>
     </div>
-    <div class="chat-body" id="chatBody"></div>
-    <div class="chat-footer">
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="chat-input-area">
         <input type="text" id="chatInput" placeholder="Digite sua mensagem...">
         <button onclick="sendChatMessage()"><i class="fas fa-paper-plane"></i></button>
     </div>
 </div>
 
-<!-- NOTIFICAÇÃO -->
-<div class="notification-toast" id="audioNotif">🎙️ ÁUDIO RECEBIDO</div>
+<!-- NOTIFICAÇÃO ÁUDIO -->
+<div class="toast-audio" id="audioToast">🎙️ ÁUDIO RECEBIDO</div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
 
 <script>
 // ==================== FIREBASE ====================
@@ -590,30 +397,30 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
 // ==================== 21 CIDADES ====================
-const cidadesLista = [
+const cities = [
     "Guarapuava", "Palmeira", "Porto Amazonas", "Ponta Grossa", "São Luiz",
     "Campo Largo", "Curitiba", "Alm. Tamandaré", "Fazenda Rio Grande", "Tijucas do Sul",
     "Guaratuba", "Morretes", "Paranaguá", "São José", "Colombo",
     "Araucária", "Piraquara", "Campina Grande", "Quatro Barras", "Barra do Turvo", "Cajati"
 ];
 
-// ==================== 15 ALERTAS ====================
-const alertasData = [
-    { nome: 'ACIDENTE', emoji: '💥', cor: '#e53935' },
-    { nome: 'OBRAS', emoji: '🚧', cor: '#ff9800' },
-    { nome: 'PANE', emoji: '🔧', cor: '#795548' },
-    { nome: 'ANIMAL', emoji: '🐂', cor: '#9c27b0' },
-    { nome: 'RADAR', emoji: '📷', cor: '#607d8b' },
-    { nome: 'BARREIRA', emoji: '⛰️', cor: '#8b4513' },
-    { nome: 'NEBLINA', emoji: '🌫️', cor: '#00acc1' },
-    { nome: 'CONGEST', emoji: '🔴', cor: '#f44336' },
-    { nome: 'ALAGAMENTO', emoji: '💧', cor: '#2196f3' },
-    { nome: 'BLOQUEIO', emoji: '⛔', cor: '#b71c1c' },
-    { nome: 'PERIGO', emoji: '⚠️', cor: '#ff5722' },
-    { nome: 'DESVIO', emoji: '🔄', cor: '#3f51b5' },
-    { nome: 'CARGA', emoji: '📦', cor: '#8bc34a' },
-    { nome: 'GRANIZO', emoji: '🧊', cor: '#00bcd4' },
-    { nome: 'MANIFEST', emoji: '📢', cor: '#ff4081' }
+// ==================== 15 ALERTAS (COM CORES) ====================
+const alertasLista = [
+    { nome: 'ACIDENTE', icone: '💥', cor: '#e53935', bg: 'linear-gradient(145deg, #e53935, #b71c1c)' },
+    { nome: 'OBRAS', icone: '🚧', cor: '#ff9800', bg: 'linear-gradient(145deg, #ff9800, #f57c00)' },
+    { nome: 'PANE', icone: '🔧', cor: '#795548', bg: 'linear-gradient(145deg, #795548, #5d4037)' },
+    { nome: 'ANIMAL', icone: '🐂', cor: '#9c27b0', bg: 'linear-gradient(145deg, #9c27b0, #7b1fa2)' },
+    { nome: 'RADAR', icone: '📷', cor: '#607d8b', bg: 'linear-gradient(145deg, #607d8b, #455a64)' },
+    { nome: 'BARREIRA', icone: '⛰️', cor: '#8b4513', bg: 'linear-gradient(145deg, #8b4513, #5d3a1a)' },
+    { nome: 'NEBLINA', icone: '🌫️', cor: '#00acc1', bg: 'linear-gradient(145deg, #00acc1, #0097a7)' },
+    { nome: 'CONGEST', icone: '🔴', cor: '#f44336', bg: 'linear-gradient(145deg, #f44336, #d32f2f)' },
+    { nome: 'ALAGAMENTO', icone: '💧', cor: '#2196f3', bg: 'linear-gradient(145deg, #2196f3, #1976d2)' },
+    { nome: 'BLOQUEIO', icone: '⛔', cor: '#b71c1c', bg: 'linear-gradient(145deg, #b71c1c, #8B0000)' },
+    { nome: 'PERIGO', icone: '⚠️', cor: '#ff5722', bg: 'linear-gradient(145deg, #ff5722, #e64a19)' },
+    { nome: 'DESVIO', icone: '🔄', cor: '#3f51b5', bg: 'linear-gradient(145deg, #3f51b5, #303f9f)' },
+    { nome: 'CARGA', icone: '📦', cor: '#8bc34a', bg: 'linear-gradient(145deg, #8bc34a, #689f38)' },
+    { nome: 'GRANIZO', icone: '🧊', cor: '#00bcd4', bg: 'linear-gradient(145deg, #00bcd4, #0097a7)' },
+    { nome: 'MANIFEST', icone: '📢', cor: '#ff4081', bg: 'linear-gradient(145deg, #ff4081, #f50057)' }
 ];
 
 // ==================== VARIÁVEIS ====================
@@ -638,36 +445,17 @@ let audioListenerRef = null;
 
 // ==================== CRIAR BOTÕES DAS CIDADES ====================
 function criarBotoesCidades() {
-    const grid = document.getElementById('citiesGrid');
-    grid.innerHTML = '';
+    const container = document.getElementById('citiesList');
+    container.innerHTML = '';
     
-    cidadesLista.forEach(cidade => {
-        const id = cidade.toLowerCase()
-            .replace(/ /g, '_')
-            .replace(/ã/g, 'a')
-            .replace(/ç/g, 'c')
-            .replace(/á/g, 'a')
-            .replace(/â/g, 'a')
-            .replace(/ä/g, 'a')
-            .replace(/é/g, 'e')
-            .replace(/ê/g, 'e')
-            .replace(/í/g, 'i')
-            .replace(/ó/g, 'o')
-            .replace(/ô/g, 'o')
-            .replace(/ú/g, 'u')
-            .replace(/ü/g, 'u')
-            .replace(/\./g, '')
-            .replace(/ã/g, 'a');
-        
-        const card = document.createElement('div');
-        card.className = 'city-card';
-        if (id === estacaoAtual) card.classList.add('active');
-        card.innerHTML = `
-            <span class="city-name">${cidade}</span>
-            <span class="city-badge" id="badge-${id}">0</span>
-        `;
-        card.onclick = () => trocarEstacao(id, cidade);
-        grid.appendChild(card);
+    cities.forEach(cidade => {
+        const id = cidade.toLowerCase().replace(/ /g, '_').replace(/ã/g, 'a').replace(/ç/g, 'c').replace(/á/g, 'a').replace(/â/g, 'a').replace(/ã/g, 'a');
+        const chip = document.createElement('div');
+        chip.className = 'city-chip';
+        if (id === estacaoAtual) chip.classList.add('active');
+        chip.innerHTML = `${cidade} <span class="city-count" id="count-${id}">0</span>`;
+        chip.onclick = () => trocarEstacao(id, cidade);
+        container.appendChild(chip);
     });
 }
 
@@ -676,28 +464,15 @@ function trocarEstacao(id, nome) {
     estacaoAtual = id;
     localStorage.setItem('current_station', id);
     
-    document.querySelectorAll('.city-card').forEach(card => card.classList.remove('active'));
-    event.target.closest('.city-card').classList.add('active');
+    document.querySelectorAll('.city-chip').forEach(chip => chip.classList.remove('active'));
+    event.target.closest('.city-chip').classList.add('active');
     document.getElementById('currentStationName').innerText = nome;
     
     db.ref(`estacoes/${id}/users/${usuario}`).set({ nome: usuario, timestamp: Date.now() });
     
-    cidadesLista.forEach(c => {
-        const outroId = c.toLowerCase()
-            .replace(/ /g, '_')
-            .replace(/ã/g, 'a')
-            .replace(/ç/g, 'c')
-            .replace(/á/g, 'a')
-            .replace(/â/g, 'a')
-            .replace(/é/g, 'e')
-            .replace(/ê/g, 'e')
-            .replace(/í/g, 'i')
-            .replace(/ó/g, 'o')
-            .replace(/ô/g, 'o')
-            .replace(/ú/g, 'u');
-        if (outroId !== id) {
-            db.ref(`estacoes/${outroId}/users/${usuario}`).remove();
-        }
+    cities.forEach(c => {
+        const outroId = c.toLowerCase().replace(/ /g, '_').replace(/ã/g, 'a').replace(/ç/g, 'c');
+        if (outroId !== id) db.ref(`estacoes/${outroId}/users/${usuario}`).remove();
     });
     
     setupAudioListener();
@@ -706,105 +481,67 @@ function trocarEstacao(id, nome) {
 
 // ==================== CONTAGEM DE USUÁRIOS ====================
 function carregarContagens() {
-    cidadesLista.forEach(cidade => {
-        const id = cidade.toLowerCase()
-            .replace(/ /g, '_')
-            .replace(/ã/g, 'a')
-            .replace(/ç/g, 'c')
-            .replace(/á/g, 'a')
-            .replace(/â/g, 'a')
-            .replace(/é/g, 'e')
-            .replace(/ê/g, 'e')
-            .replace(/í/g, 'i')
-            .replace(/ó/g, 'o')
-            .replace(/ô/g, 'o')
-            .replace(/ú/g, 'u');
-        
+    cities.forEach(cidade => {
+        const id = cidade.toLowerCase().replace(/ /g, '_').replace(/ã/g, 'a').replace(/ç/g, 'c');
         db.ref(`estacoes/${id}/users`).on('value', (snap) => {
             const users = snap.val();
             const count = users ? Object.keys(users).length : 0;
-            const badge = document.getElementById(`badge-${id}`);
-            if (badge) badge.innerText = count;
-            if (id === estacaoAtual) {
-                document.getElementById('currentStationCount').innerText = `${count} online`;
-            }
+            const el = document.getElementById(`count-${id}`);
+            if (el) el.innerText = count;
+            if (id === estacaoAtual) document.getElementById('currentStationCount').innerText = `${count} online`;
         });
     });
 }
 
 // ==================== ÁUDIO ====================
 function setupAudioListener() {
-    if (audioListenerRef) {
-        db.ref(`estacoes/${estacaoAtual}/audios`).off('child_added', audioListenerRef);
-    }
+    if (audioListenerRef) db.ref(`estacoes/${estacaoAtual}/audios`).off('child_added', audioListenerRef);
     
     audioListenerRef = db.ref(`estacoes/${estacaoAtual}/audios`).on('child_added', (snap) => {
         const data = snap.val();
         if (data && data.sender !== usuario) {
             const audio = new Audio(data.audio);
-            audio.play().catch(e => console.log('Erro:', e));
-            
-            const notif = document.getElementById('audioNotif');
-            notif.style.display = 'block';
-            notif.innerHTML = `🎙️ ${data.sender} falou em ${data.station}`;
-            setTimeout(() => notif.style.display = 'none', 3000);
+            audio.play().catch(e => console.log);
+            const toast = document.getElementById('audioToast');
+            toast.style.display = 'block';
+            toast.innerHTML = `🎙️ ${data.sender} falou em ${data.station}`;
+            setTimeout(() => toast.style.display = 'none', 3000);
         }
     });
 }
 
 const pttBtn = document.getElementById('pttBtn');
-const timerDisplay = document.getElementById('timerDisplay');
+const timerText = document.getElementById('timerText');
 
 async function startRecording() {
     if (recording) return;
-    
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         mediaRecorder = new MediaRecorder(stream);
         audioChunks = [];
         secondsLeft = 20;
         
-        mediaRecorder.ondataavailable = e => {
-            if (e.data.size > 0) audioChunks.push(e.data);
-        };
-        
+        mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
         mediaRecorder.onstop = async () => {
-            if (audioChunks.length > 0) {
+            if (audioChunks.length) {
                 const blob = new Blob(audioChunks, { type: 'audio/webm' });
                 const reader = new FileReader();
                 reader.onloadend = async () => {
-                    const cidadeNome = cidadesLista.find(c => {
-                        const id = c.toLowerCase()
-                            .replace(/ /g, '_')
-                            .replace(/ã/g, 'a')
-                            .replace(/ç/g, 'c')
-                            .replace(/á/g, 'a')
-                            .replace(/â/g, 'a')
-                            .replace(/é/g, 'e')
-                            .replace(/ê/g, 'e')
-                            .replace(/í/g, 'i')
-                            .replace(/ó/g, 'o')
-                            .replace(/ô/g, 'o')
-                            .replace(/ú/g, 'u');
+                    const cidadeNome = cities.find(c => {
+                        const id = c.toLowerCase().replace(/ /g, '_').replace(/ã/g, 'a').replace(/ç/g, 'c');
                         return id === estacaoAtual;
                     });
-                    
                     await db.ref(`estacoes/${estacaoAtual}/audios`).push({
                         sender: usuario,
                         station: cidadeNome,
                         audio: reader.result,
                         timestamp: Date.now()
                     });
-                    
-                    const snapshot = await db.ref(`estacoes/${estacaoAtual}/audios`).once('value');
-                    const audios = snapshot.val();
+                    const snap = await db.ref(`estacoes/${estacaoAtual}/audios`).once('value');
+                    const audios = snap.val();
                     if (audios) {
                         const keys = Object.keys(audios);
-                        if (keys.length > 30) {
-                            keys.slice(0, keys.length - 30).forEach(k => {
-                                db.ref(`estacoes/${estacaoAtual}/audios/${k}`).remove();
-                            });
-                        }
+                        if (keys.length > 30) keys.slice(0, keys.length - 30).forEach(k => db.ref(`estacoes/${estacaoAtual}/audios/${k}`).remove());
                     }
                 };
                 reader.readAsDataURL(blob);
@@ -815,31 +552,24 @@ async function startRecording() {
         mediaRecorder.start(100);
         recording = true;
         pttBtn.classList.add('recording');
-        timerDisplay.innerText = '20s';
+        timerText.innerText = '20s';
         
         timerInterval = setInterval(() => {
             secondsLeft--;
-            timerDisplay.innerText = `${secondsLeft}s`;
+            timerText.innerText = `${secondsLeft}s`;
             if (secondsLeft <= 0) stopRecording();
         }, 1000);
         
-        setTimeout(() => {
-            if (recording) stopRecording();
-        }, 20000);
-        
-    } catch(e) {
-        alert("🎤 Permita o acesso ao microfone!");
-    }
+        setTimeout(() => { if (recording) stopRecording(); }, 20000);
+    } catch(e) { alert("🎤 Permita o acesso ao microfone!"); }
 }
 
 function stopRecording() {
-    if (mediaRecorder && mediaRecorder.state === 'recording') {
-        mediaRecorder.stop();
-    }
+    if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop();
     if (timerInterval) clearInterval(timerInterval);
     recording = false;
     pttBtn.classList.remove('recording');
-    timerDisplay.innerText = '';
+    timerText.innerText = '';
 }
 
 pttBtn.addEventListener('mousedown', startRecording);
@@ -849,49 +579,26 @@ pttBtn.addEventListener('touchstart', startRecording);
 pttBtn.addEventListener('touchend', stopRecording);
 
 // ==================== MAPA ====================
-let mapOpen = false;
-
-function toggleMap() {
-    const container = document.getElementById('mapContainer');
-    const arrow = document.getElementById('mapArrow');
-    mapOpen = !mapOpen;
+function initMap() {
+    mapa = L.map('map').setView([-25.4284, -49.2733], 12);
+    L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(mapa);
     
-    if (mapOpen) {
-        container.style.height = '220px';
-        arrow.style.transform = 'rotate(180deg)';
-        setTimeout(() => {
-            if (!mapa) {
-                mapa = L.map('map').setView([-25.4284, -49.2733], 12);
-                L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(mapa);
-                
-                if (navigator.geolocation) {
-                    navigator.geolocation.watchPosition(pos => {
-                        userLocation = [pos.coords.latitude, pos.coords.longitude];
-                        if (!userMarker) {
-                            userMarker = L.marker(userLocation, {
-                                icon: L.divIcon({
-                                    html: '<div style="font-size:28px;">🚗</div>',
-                                    iconSize: [28, 28],
-                                    iconAnchor: [14, 14],
-                                    className: ''
-                                })
-                            }).addTo(mapa);
-                            mapa.setView(userLocation, 13);
-                        } else {
-                            userMarker.setLatLng(userLocation);
-                        }
-                    });
-                }
-                
-                carregarAlertasMapa();
+    if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(pos => {
+            userLocation = [pos.coords.latitude, pos.coords.longitude];
+            if (!userMarker) {
+                userMarker = L.marker(userLocation, {
+                    icon: L.divIcon({ html: '<div style="font-size:28px;">🚗</div>', iconSize: [28, 28], iconAnchor: [14, 14], className: '' })
+                }).addTo(mapa);
+                mapa.setView(userLocation, 13);
             } else {
-                mapa.invalidateSize();
+                userMarker.setLatLng(userLocation);
             }
-        }, 100);
-    } else {
-        container.style.height = '0';
-        arrow.style.transform = 'rotate(0deg)';
+            db.ref(`localizacoes/${usuario}`).set({ lat: userLocation[0], lng: userLocation[1], estacao: estacaoAtual, timestamp: Date.now() });
+        });
     }
+    
+    carregarAlertasMapa();
 }
 
 function carregarAlertasMapa() {
@@ -902,92 +609,187 @@ function carregarAlertasMapa() {
         
         const marker = L.marker([a.lat, a.lng], {
             icon: L.divIcon({
-                html: `<div style="background:${a.cor}; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:18px; border:2px solid white;">${a.emoji}</div>`,
-                iconSize: [32, 32],
-                iconAnchor: [16, 16],
-                className: ''
+                html: `<div style="background:${a.cor}; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; border:2px solid white;">${a.icone}</div>`,
+                iconSize: [36, 36],
+                iconAnchor: [18, 18]
             })
         }).addTo(mapa);
         
-        marker.bindPopup(`<b>${a.emoji} ${a.nome}</b><br><small>${new Date(a.timestamp).toLocaleTimeString()}</small>`);
+        // Criar popup com foto e chat
+        let imgHtml = '';
+        if (a.imagem) imgHtml = `<img src="${a.imagem}" class="popup-alerta-img">`;
+        
+        const popupDiv = document.createElement('div');
+        popupDiv.className = 'popup-alerta';
+        popupDiv.innerHTML = `
+            ${imgHtml}
+            <div class="popup-header">
+                <span>${a.icone} ${a.nome}</span>
+                <span>👍 ${a.confirmacoes || 0}</span>
+            </div>
+            <div class="popup-chat" id="chat-${id}"></div>
+            <div class="popup-input">
+                <input type="text" id="input-${id}" placeholder="Comentar...">
+                <button onclick="sendMsgAlerta('${id}')">➔</button>
+            </div>
+        `;
+        
+        marker.bindPopup(popupDiv);
+        marker.on('popupopen', () => carregarChatAlerta(id));
         alertasMapa[id] = marker;
     });
 }
 
-// ==================== ALERTAS ====================
+function carregarChatAlerta(id) {
+    db.ref(`chats/alerta_${id}`).on('value', (snap) => {
+        const chatDiv = document.getElementById(`chat-${id}`);
+        if (!chatDiv) return;
+        const msgs = snap.val();
+        if (!msgs) { chatDiv.innerHTML = '<div style="text-align:center; color:#888;">Nenhum comentário</div>'; return; }
+        
+        let html = '';
+        Object.values(msgs).sort((a,b) => a.timestamp - b.timestamp).forEach(msg => {
+            const isMe = msg.usuario === usuario;
+            html += `<div class="popup-chat-msg ${isMe ? 'me' : 'other'}"><strong>${msg.usuario}</strong><br>${msg.texto}<br><small>${new Date(msg.timestamp).toLocaleTimeString()}</small></div>`;
+        });
+        chatDiv.innerHTML = html;
+        chatDiv.scrollTop = chatDiv.scrollHeight;
+    });
+}
+
+function sendMsgAlerta(id) {
+    const input = document.getElementById(`input-${id}`);
+    if (!input.value.trim()) return;
+    db.ref(`chats/alerta_${id}`).push({ usuario: usuario, texto: input.value.trim(), timestamp: Date.now() });
+    input.value = '';
+}
+
+// ==================== ALERTAS COM FOTO ====================
 function criarAlertasGrid() {
     const grid = document.getElementById('alertasGrid');
     grid.innerHTML = '';
-    
-    alertasData.forEach(alerta => {
-        const card = document.createElement('div');
-        card.className = 'alerta-card';
-        card.innerHTML = `
-            <div class="alerta-emoji">${alerta.emoji}</div>
-            <div class="alerta-nome">${alerta.nome}</div>
-        `;
-        card.onclick = () => criarAlerta(alerta);
-        grid.appendChild(card);
+    alertasLista.forEach(alerta => {
+        const div = document.createElement('div');
+        div.className = 'alerta-item';
+        div.style.background = alerta.bg;
+        div.innerHTML = `<div class="alerta-icon">${alerta.icone}</div><div class="alerta-nome">${alerta.nome}</div>`;
+        div.onclick = () => abrirCameraParaAlerta(alerta);
+        grid.appendChild(div);
     });
 }
 
-async function criarAlerta(alerta) {
-    if (!userLocation) {
-        showToast("📍 Aguardando localização...");
-        return;
+async function abrirCameraParaAlerta(alerta) {
+    if (!userLocation) { showToast("📍 Aguardando localização..."); return; }
+    
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+        
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:#000; z-index:20000; display:flex; flex-direction:column; align-items:center; justify-content:center;';
+        
+        const video = document.createElement('video');
+        video.style.cssText = 'width:90%; max-width:350px; border-radius:20px;';
+        video.autoplay = true;
+        video.srcObject = stream;
+        
+        const btnFoto = document.createElement('button');
+        btnFoto.style.cssText = 'margin:15px; padding:12px 25px; background:#ffd700; border:none; border-radius:40px; font-size:16px; font-weight:700; cursor:pointer;';
+        btnFoto.innerHTML = '📷 TIRAR FOTO';
+        
+        const btnPular = document.createElement('button');
+        btnPular.style.cssText = 'margin:15px; padding:12px 25px; background:#444; border:none; border-radius:40px; font-size:16px; font-weight:700; cursor:pointer; color:white;';
+        btnPular.innerHTML = '⏭️ PULAR';
+        
+        const btnFechar = document.createElement('button');
+        btnFechar.style.cssText = 'position:absolute; top:15px; right:15px; width:40px; height:40px; background:#e53935; border:none; border-radius:50%; color:white; font-size:18px; cursor:pointer;';
+        btnFechar.innerHTML = '✕';
+        
+        overlay.appendChild(video);
+        overlay.appendChild(btnFoto);
+        overlay.appendChild(btnPular);
+        overlay.appendChild(btnFechar);
+        document.body.appendChild(overlay);
+        
+        btnFoto.onclick = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            
+            canvas.toBlob(async (blob) => {
+                const reader = new FileReader();
+                reader.onloadend = async () => {
+                    const id = Date.now();
+                    await db.ref(`alertas/${id}`).set({
+                        ...alerta,
+                        lat: userLocation[0],
+                        lng: userLocation[1],
+                        timestamp: id,
+                        criador: usuario,
+                        confirmacoes: 1,
+                        imagem: reader.result
+                    });
+                    stream.getTracks().forEach(t => t.stop());
+                    document.body.removeChild(overlay);
+                    showToast('✅ Alerta com foto enviado!');
+                    closeAlertasModal();
+                };
+                reader.readAsDataURL(blob);
+            }, 'image/jpeg', 0.6);
+        };
+        
+        btnPular.onclick = async () => {
+            const id = Date.now();
+            await db.ref(`alertas/${id}`).set({
+                ...alerta,
+                lat: userLocation[0],
+                lng: userLocation[1],
+                timestamp: id,
+                criador: usuario,
+                confirmacoes: 1
+            });
+            stream.getTracks().forEach(t => t.stop());
+            document.body.removeChild(overlay);
+            showToast(`⚠️ ${alerta.nome} reportado!`);
+            closeAlertasModal();
+        };
+        
+        btnFechar.onclick = () => {
+            stream.getTracks().forEach(t => t.stop());
+            document.body.removeChild(overlay);
+        };
+        
+    } catch(e) {
+        const id = Date.now();
+        await db.ref(`alertas/${id}`).set({
+            ...alerta,
+            lat: userLocation[0],
+            lng: userLocation[1],
+            timestamp: id,
+            criador: usuario,
+            confirmacoes: 1
+        });
+        showToast(`⚠️ ${alerta.nome} reportado!`);
+        closeAlertasModal();
     }
-    
-    const id = Date.now();
-    await db.ref(`alertas/${id}`).set({
-        ...alerta,
-        lat: userLocation[0],
-        lng: userLocation[1],
-        timestamp: id,
-        criador: usuario,
-        confirmacoes: 1
-    });
-    
-    showToast(`✅ ${alerta.emoji} ${alerta.nome} reportado!`);
-    closeAlertasModal();
 }
 
-function openAlertasModal() {
-    document.getElementById('alertasModal').classList.add('visible');
-}
+function openAlertasModal() { document.getElementById('alertasModal').classList.add('visible'); }
+function closeAlertasModal() { document.getElementById('alertasModal').classList.remove('visible'); }
 
-function closeAlertasModal() {
-    document.getElementById('alertasModal').classList.remove('visible');
-}
+// ==================== CHAT GERAL ====================
+function openChatModal() { document.getElementById('chatModal').classList.add('visible'); carregarChatGeral(); }
+function closeChatModal() { document.getElementById('chatModal').classList.remove('visible'); }
 
-// ==================== CHAT ====================
-function openChatModal() {
-    document.getElementById('chatModal').classList.add('visible');
-    carregarChat();
-}
-
-function closeChatModal() {
-    document.getElementById('chatModal').classList.remove('visible');
-}
-
-function carregarChat() {
+function carregarChatGeral() {
     db.ref('chat_geral').on('value', (snap) => {
         const msgs = snap.val();
-        const container = document.getElementById('chatBody');
-        if (!msgs) {
-            container.innerHTML = '<div style="text-align:center; color:#888;">Nenhuma mensagem</div>';
-            return;
-        }
-        
+        const container = document.getElementById('chatMessages');
+        if (!msgs) { container.innerHTML = ''; return; }
         let html = '';
-        Object.values(msgs).sort((a, b) => a.timestamp - b.timestamp).forEach(msg => {
+        Object.values(msgs).sort((a,b) => a.timestamp - b.timestamp).forEach(msg => {
             const isMe = msg.usuario === usuario;
-            html += `
-                <div class="message ${isMe ? 'me' : 'other'}">
-                    <strong>${msg.usuario}</strong><br>
-                    ${msg.texto}<br>
-                    <small style="font-size:9px; opacity:0.6;">${new Date(msg.timestamp).toLocaleTimeString()}</small>
-                </div>
-            `;
+            html += `<div class="msg ${isMe ? 'me' : 'other'}"><strong>${msg.usuario}</strong><br>${msg.texto}<br><small>${new Date(msg.timestamp).toLocaleTimeString()}</small></div>`;
         });
         container.innerHTML = html;
         container.scrollTop = container.scrollHeight;
@@ -997,29 +799,22 @@ function carregarChat() {
 function sendChatMessage() {
     const input = document.getElementById('chatInput');
     if (!input.value.trim()) return;
-    
-    db.ref('chat_geral').push({
-        usuario: usuario,
-        texto: input.value.trim(),
-        timestamp: Date.now()
-    });
+    db.ref('chat_geral').push({ usuario: usuario, texto: input.value.trim(), timestamp: Date.now() });
     input.value = '';
 }
 
 // ==================== UTILIDADES ====================
 function showToast(msg) {
     const toast = document.createElement('div');
-    toast.style.cssText = 'position:fixed; bottom:100px; left:50%; transform:translateX(-50%); background:#00BFFF; color:white; padding:8px 20px; border-radius:40px; z-index:13000; font-weight:bold; border:2px solid gold; font-size:12px;';
+    toast.style.cssText = 'position:fixed; bottom:100px; left:50%; transform:translateX(-50%); background:#00BFFF; color:white; padding:8px 20px; border-radius:40px; z-index:13000; font-weight:bold; border:2px solid gold; font-size:12px; white-space:nowrap;';
     toast.innerText = msg;
     document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 2000);
+    setTimeout(() => toast.remove(), 2500);
 }
 
 // ==================== LIMPAR AO SAIR ====================
 window.addEventListener('beforeunload', () => {
-    if (usuario) {
-        db.ref(`estacoes/${estacaoAtual}/users/${usuario}`).remove();
-    }
+    if (usuario) db.ref(`estacoes/${estacaoAtual}/users/${usuario}`).remove();
 });
 
 // ==================== INICIAR ====================
@@ -1027,8 +822,9 @@ function init() {
     criarBotoesCidades();
     carregarContagens();
     setupAudioListener();
+    initMap();
     criarAlertasGrid();
-    carregarChat();
+    carregarChatGeral();
     showToast(`🎙️ Bem-vindo, ${usuario}!`);
 }
 
