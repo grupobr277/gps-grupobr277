@@ -3,1573 +3,497 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GRUPO BR 277</title>
+    <title>RÁDIO BR-277 - Comunicação dos Motoristas</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body, #map { height: 100%; width: 100%; font-family: 'Segoe UI', Roboto, sans-serif; }
         
-        /* ===== VARIÁVEIS DE TEMA ===== */
-        :root {
-            --cor-primaria: #00BFFF;
-            --cor-secundaria: #0066cc;
-            --cor-fundo: #2a2a2a;
-            --cor-texto: #00BFFF;
-            --cor-borda: #00BFFF;
-            --cor-hover: #00BFFF22;
-            --cor-carro: #00BFFF;
-        }
-        
-        /* ===== 10 CORES PRIMÁRIAS ===== */
-        body.tema-azul { --cor-primaria: #00BFFF; --cor-secundaria: #0066cc; --cor-texto: #00BFFF; --cor-borda: #00BFFF; --cor-carro: #00BFFF; }
-        body.tema-verde { --cor-primaria: #4caf50; --cor-secundaria: #2e7d32; --cor-texto: #4caf50; --cor-borda: #4caf50; --cor-carro: #4caf50; }
-        body.tema-vermelho { --cor-primaria: #e53935; --cor-secundaria: #b71c1c; --cor-texto: #e53935; --cor-borda: #e53935; --cor-carro: #e53935; }
-        body.tema-laranja { --cor-primaria: #ff9800; --cor-secundaria: #f57c00; --cor-texto: #ff9800; --cor-borda: #ff9800; --cor-carro: #ff9800; }
-        body.tema-rosa { --cor-primaria: #e91e63; --cor-secundaria: #c2185b; --cor-texto: #e91e63; --cor-borda: #e91e63; --cor-carro: #e91e63; }
-        body.tema-roxo { --cor-primaria: #9c27b0; --cor-secundaria: #7b1fa2; --cor-texto: #9c27b0; --cor-borda: #9c27b0; --cor-carro: #9c27b0; }
-        body.tema-amarelo { --cor-primaria: #ffc107; --cor-secundaria: #ffa000; --cor-texto: #333; --cor-borda: #ffc107; --cor-carro: #ffc107; }
-        body.tema-cyan { --cor-primaria: #00bcd4; --cor-secundaria: #0097a7; --cor-texto: #00bcd4; --cor-borda: #00bcd4; --cor-carro: #00bcd4; }
-        body.tema-roxo-escuro { --cor-primaria: #673ab7; --cor-secundaria: #512da8; --cor-texto: #673ab7; --cor-borda: #673ab7; --cor-carro: #673ab7; }
-        body.tema-preto { --cor-primaria: #000000; --cor-secundaria: #333333; --cor-texto: #ffffff; --cor-borda: #000000; --cor-carro: #000000; }
-        
-        /* ===== 10 CORES DE FUNDO ===== */
-        body.fundo-preto { --cor-fundo: #1a1a1a; }
-        body.fundo-branco { --cor-fundo: #ffffff; }
-        body.fundo-cinza { --cor-fundo: #808080; }
-        body.fundo-cinza-claro { --cor-fundo: #d3d3d3; }
-        body.fundo-azul { --cor-fundo: #00BFFF; }
-        body.fundo-verde { --cor-fundo: #4caf50; }
-        body.fundo-vermelho { --cor-fundo: #e53935; }
-        body.fundo-laranja { --cor-fundo: #ff9800; }
-        body.fundo-roxo { --cor-fundo: #9c27b0; }
-        body.fundo-amarelo { --cor-fundo: #ffc107; }
-        
-        /* Ajuste de cor do texto baseado no fundo */
-        body.fundo-branco .btn-barra,
-        body.fundo-cinza-claro .btn-barra,
-        body.fundo-azul .btn-barra,
-        body.fundo-verde .btn-barra,
-        body.fundo-vermelho .btn-barra,
-        body.fundo-laranja .btn-barra,
-        body.fundo-roxo .btn-barra,
-        body.fundo-amarelo .btn-barra {
-            color: #333 !important;
-        }
-        
-        body.fundo-branco .legenda-texto,
-        body.fundo-cinza-claro .legenda-texto,
-        body.fundo-azul .legenda-texto,
-        body.fundo-verde .legenda-texto,
-        body.fundo-vermelho .legenda-texto,
-        body.fundo-laranja .legenda-texto,
-        body.fundo-roxo .legenda-texto,
-        body.fundo-amarelo .legenda-texto {
-            color: #333 !important;
-        }
-        
-        /* Aplicação das cores */
-        .btn-barra, .btn-ptt, .reporte-btn-mobile, .legenda-container, 
-        .velocimetro-barra, .recentrar-btn-mobile, .seta-voltar-btn,
-        .header-unificado, .rota-info-panel, .popup-mobile {
-            background: var(--cor-fundo) !important;
-            color: var(--cor-texto) !important;
-            border-color: var(--cor-borda) !important;
-        }
-        
-        .btn-barra i, .btn-ptt span, .reporte-btn-mobile span, 
-        .legenda-texto, .vel-numero-barra, .recentrar-btn-mobile i,
-        .header-logo, .header-online, .rota-info-panel span,
-        .popup-header-mobile, .popup-stats-mobile span {
-            color: var(--cor-texto) !important;
-        }
-        
-        .carro-simples {
-            color: var(--cor-carro) !important;
-        }
-        
-        /* ===== HEADER UNIFICADO - CORRETO ===== */
-        .header-unificado {
-            position: fixed;
-            top: 8px;
-            left: 8px;
-            z-index: 10000;
-            background: var(--cor-fundo);
-            backdrop-filter: blur(5px);
-            color: var(--cor-texto);
-            padding: 6px 15px;
-            border-radius: 30px;
+        /* ===== ESTILO VINTAGE ===== */
+        body {
+            background: #2c1e0f;
+            font-family: 'Courier New', 'Segoe UI', monospace;
+            min-height: 100vh;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            border: 2px solid var(--cor-borda);
-            box-shadow: 0 0 15px var(--cor-primaria);
+            padding: 15px;
         }
         
-        .header-logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 13px;
-            font-weight: 700;
+        /* RÁDIO VINTAGE */
+        .radio-vintage {
+            max-width: 500px;
             width: 100%;
-            justify-content: center;
-        }
-        
-        .header-logo i {
-            font-size: 18px;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        
-        .header-logo i:hover {
-            transform: scale(1.1);
-        }
-        
-        .header-online {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 12px;
-            font-weight: 600;
-            width: 100%;
-            justify-content: center;
-        }
-        
-        .header-online i {
-            font-size: 12px;
-        }
-        
-        /* ===== LUPA ===== */
-        .lupa-mobile {
-            position: fixed;
-            top: 8px;
-            left: 160px;
-            right: 45px;
-            width: auto;
-            z-index: 9000;
-            background: white;
-            border-radius: 40px;
-            border: 2px solid var(--cor-borda);
-            display: flex;
-            overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        }
-        
-        .lupa-mobile input {
-            flex: 1;
-            padding: 8px 12px;
-            border: none;
-            font-size: 13px;
-            outline: none;
-            min-width: 100px;
-        }
-        
-        .lupa-mobile button {
-            background: #075e54;
-            color: white;
-            border: none;
-            width: 40px;
-            height: 40px;
-            cursor: pointer;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-        
-        /* ===== BARRA INFERIOR ===== */
-        .barra-inferior-mobile {
-            position: fixed;
-            bottom: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 9500;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: var(--cor-fundo);
-            backdrop-filter: blur(10px);
-            padding: 6px 12px;
-            border-radius: 40px;
-            border: 2px solid var(--cor-borda);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-        }
-        
-        .btn-barra {
-            width: 40px;
-            height: 40px;
-            border-radius: 25px;
-            background: var(--cor-fundo);
-            border: 2px solid var(--cor-borda);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: var(--cor-texto);
-            font-size: 18px;
-            transition: all 0.2s;
-        }
-        
-        .btn-barra:hover { transform: scale(1.05); }
-        .btn-barra.ativo { border-color: #ffd700; color: #ffd700; }
-        .btn-barra.mudo { border-color: #e53935; color: #e53935; background: #e5393522; }
-        
-        .velocimetro-barra {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            background: var(--cor-fundo);
-            padding: 4px 10px;
-            border-radius: 25px;
-            border: 2px solid var(--cor-borda);
-            box-shadow: 0 0 10px var(--cor-primaria);
-        }
-        
-        .vel-numero-barra {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--cor-texto);
-            font-family: 'Courier New', monospace;
-            min-width: 45px;
-            text-align: center;
-        }
-        
-        .vel-unidade-barra {
-            font-size: 8px;
-            color: #ffd700;
-            font-weight: 600;
-        }
-        
-        .btn-ptt {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: var(--cor-fundo);
-            border: 3px solid var(--cor-borda);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: var(--cor-texto);
-            font-size: 16px;
-            box-shadow: 0 0 15px var(--cor-primaria);
+            background: linear-gradient(145deg, #5D4037 0%, #3E2723 100%);
+            border-radius: 40px 40px 30px 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+            padding: 15px;
             position: relative;
-            font-weight: 700;
+            border: 1px solid #8B6914;
         }
         
-        .btn-ptt span {
-            font-size: 16px;
-            font-weight: 700;
-        }
-        
-        .btn-ptt.ativo {
-            background: #e53935;
-            color: white;
-            border-color: white;
-            animation: pulsePTT 1.5s infinite;
-        }
-        
-        @keyframes pulsePTT {
-            0% { box-shadow: 0 0 0 0 #e53935; }
-            70% { box-shadow: 0 0 0 15px transparent; }
-        }
-        
-        /* ===== REPORTE E LEGENDA ===== */
-        .info-container {
-            position: fixed;
-            bottom: 90px;
-            left: 10px;
-            z-index: 9300;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        
-        .reporte-btn-mobile {
-            background: var(--cor-fundo);
-            border: 2px solid var(--cor-borda);
-            border-radius: 30px;
-            padding: 6px 14px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--cor-texto);
-            box-shadow: 0 0 15px var(--cor-primaria);
-        }
-        
-        .reporte-led {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #4caf50;
-            box-shadow: 0 0 10px #4caf50;
-            animation: ledPulse 1.5s infinite;
-        }
-        
-        .legenda-container {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: var(--cor-fundo);
-            border: 2px solid var(--cor-borda);
-            border-radius: 30px;
-            padding: 6px 16px;
-        }
-        
-        .legenda-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        
-        .legenda-cor {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-        }
-        
-        .legenda-verde { background: #00ff00; box-shadow: 0 0 8px #00ff00; }
-        .legenda-amarelo { background: #ffff00; box-shadow: 0 0 8px #ffff00; }
-        .legenda-vermelho { background: #ff0000; box-shadow: 0 0 8px #ff0000; }
-        
-        .legenda-texto {
-            color: var(--cor-texto);
-            font-size: 12px;
-            font-weight: 600;
-        }
-        
-        .legenda-fechar {
-            width: 18px;
-            height: 18px;
-            background: #e53935;
-            border: 1px solid var(--cor-borda);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: white;
-            font-size: 10px;
-            margin-left: 5px;
-        }
-        
-        /* ===== PAINEL DE ALERTAS - 15 ITENS ===== */
-        .alertas-panel-mobile {
-            position: fixed;
-            bottom: 150px;
-            left: 10px;
-            background: var(--cor-fundo);
-            border: 2px solid var(--cor-borda);
+        /* Mostrador do rádio */
+        .mostrador {
+            background: linear-gradient(145deg, #F9A825, #F57F17);
             border-radius: 20px;
-            padding: 12px;
-            display: none;
-            width: 260px;
-            z-index: 9400;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.3), 0 2px 5px rgba(255,255,255,0.2);
+            border: 2px solid #8B6914;
         }
         
-        .alertas-panel-mobile.visivel { display: block; }
-        
-        .alertas-grid-mobile {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 6px;
+        .mostrador-header {
+            text-align: center;
+            border-bottom: 2px solid #5D4037;
+            padding-bottom: 8px;
             margin-bottom: 10px;
         }
         
-        .alerta-item-mobile {
-            aspect-ratio: 1/1;
-            border-radius: 12px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 22px;
-            color: white;
-            font-weight: 700;
-            border: 2px solid transparent;
-            transition: all 0.2s;
-            padding: 4px;
+        .mostrador-header h1 {
+            font-size: 18px;
+            color: #1a1a1a;
+            letter-spacing: 2px;
         }
         
-        .alerta-item-mobile:hover {
-            transform: scale(1.05);
-            border-color: white;
+        .mostrador-header p {
+            font-size: 10px;
+            color: #2c2c2c;
         }
         
-        .alerta-item-mobile span { 
-            font-size: 8px; 
-            margin-top: 2px;
-            background: rgba(0,0,0,0.6);
-            padding: 2px 6px;
+        .frequencia {
+            text-align: center;
+            background: #1a1a1a;
             border-radius: 10px;
+            padding: 8px;
+            margin: 10px 0;
         }
         
-        .btn-fechar-retangular {
-            background: #e53935;
-            border: 2px solid var(--cor-borda);
-            border-radius: 10px;
-            color: white;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            margin: 0 auto;
+        .frequencia span {
+            color: #00ff00;
+            font-family: monospace;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 0 0 5px #00ff00;
         }
         
-        /* ===== PAINEL DE ROTA ===== */
-        .rota-info-panel {
-            position: fixed;
-            top: 60px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--cor-fundo);
-            color: white;
-            padding: 8px 20px 8px 25px;
-            border-radius: 40px;
-            display: none;
-            align-items: center;
-            gap: 20px;
-            border: 3px solid var(--cor-borda);
-            z-index: 9400;
-            font-size: 15px;
-            font-weight: 700;
-            box-shadow: 0 0 25px var(--cor-primaria);
+        .luz-ligado {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #4caf50;
+            box-shadow: 0 0 5px #4caf50;
+            animation: piscar 2s infinite;
         }
         
-        .rota-info-item {
-            display: flex;
-            align-items: center;
+        @keyframes piscar {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* GRADE DE ESTAÇÕES */
+        .estacoes-grade {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
             gap: 8px;
+            margin-bottom: 15px;
         }
         
-        .rota-info-item i {
-            font-size: 16px;
-            color: var(--cor-primaria);
-        }
-        
-        .rota-fechar {
-            width: 28px;
-            height: 28px;
-            background: #e53935;
-            border: 2px solid var(--cor-borda);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .estacao-btn {
+            background: #2c2c2c;
+            border: 2px solid #8B6914;
+            border-radius: 12px;
+            padding: 8px 4px;
+            text-align: center;
             cursor: pointer;
-            color: white;
-            font-size: 16px;
-            margin-left: 5px;
             transition: all 0.2s;
+            color: #ccc;
         }
         
-        .rota-fechar:hover {
-            transform: scale(1.1);
-            background: #c62828;
-        }
-        
-        /* ===== POPUP ALERTA ===== */
-        .popup-mobile {
-            background: var(--cor-fundo);
-            border: 2px solid var(--cor-borda);
-            border-radius: 15px;
-            overflow: hidden;
-            max-width: 280px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-            position: relative;
-        }
-        
-        .popup-fechar {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            width: 24px;
-            height: 24px;
-            background: #e53935;
-            border: 2px solid var(--cor-borda);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
+        .estacao-btn.ativa {
+            background: linear-gradient(145deg, #00BFFF, #0066cc);
+            border-color: #ffd700;
             color: white;
-            font-size: 14px;
-            z-index: 10;
-            transition: all 0.2s;
+            box-shadow: 0 0 10px #00BFFF;
         }
         
-        .popup-fechar:hover {
-            transform: scale(1.1);
+        .estacao-btn:hover {
+            transform: scale(1.02);
+            border-color: #ffd700;
         }
         
-        .popup-header-mobile {
-            padding: 12px 35px 8px 12px;
-            color: white;
-            font-weight: 700;
+        .estacao-nome {
+            font-size: 9px;
+            font-weight: bold;
+            display: block;
+        }
+        
+        .estacao-km {
+            font-size: 7px;
+            color: #aaa;
+        }
+        
+        .estacao-online {
+            font-size: 10px;
+            font-weight: bold;
+            background: #1a1a1a;
+            border-radius: 10px;
+            padding: 2px 5px;
+            margin-top: 4px;
+            display: inline-block;
+        }
+        
+        .estacao-btn.ativa .estacao-online {
+            background: #ffd700;
+            color: #1a1a1a;
+        }
+        
+        /* ESTAÇÃO ATUAL */
+        .estacao-atual {
+            background: #1a1a1a;
+            border-radius: 30px;
+            padding: 8px 15px;
+            margin-bottom: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: var(--cor-secundaria);
+            border: 1px solid #8B6914;
+        }
+        
+        .estacao-atual-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .estacao-atual-nome {
+            color: #ffd700;
+            font-weight: bold;
             font-size: 14px;
         }
         
-        .popup-imagem-mobile {
-            padding: 10px;
-            background: var(--cor-fundo);
+        .estacao-atual-pessoas {
+            background: #00BFFF;
+            border-radius: 20px;
+            padding: 2px 8px;
+            font-size: 10px;
+            color: white;
+        }
+        
+        /* PUSH TO TALK */
+        .ptt-container {
             text-align: center;
-            border-top: 1px solid var(--cor-borda);
-            border-bottom: 1px solid var(--cor-borda);
+            margin: 15px 0;
         }
         
-        .popup-imagem-mobile img {
-            max-width: 100%;
-            max-height: 140px;
-            border-radius: 10px;
-            border: 2px solid var(--cor-borda);
+        .btn-ptt-vintage {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #e53935, #8B0000);
+            border: 4px solid #ffd700;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
             cursor: pointer;
+            transition: all 0.1s;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            font-family: monospace;
         }
         
-        .popup-stats-mobile {
+        .btn-ptt-vintage:active {
+            transform: scale(0.95);
+            background: radial-gradient(circle at 30% 30%, #ff0000, #e53935);
+        }
+        
+        .btn-ptt-vintage.gravando {
+            animation: pulse-ptt 0.5s infinite;
+            background: radial-gradient(circle at 30% 30%, #ff0000, #ff4444);
+        }
+        
+        @keyframes pulse-ptt {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(229,57,53,0.7); }
+            50% { box-shadow: 0 0 0 15px rgba(229,57,53,0); }
+        }
+        
+        .timer-gravacao {
+            margin-top: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #ffd700;
+            font-family: monospace;
+        }
+        
+        /* CONTROLES */
+        .controles {
             display: flex;
             justify-content: space-around;
-            padding: 8px;
-            background: var(--cor-fundo);
-            font-size: 12px;
-        }
-        
-        .popup-stats-mobile span {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            cursor: pointer;
-            color: white;
-        }
-        
-        .popup-stats-mobile i {
-            font-size: 14px;
-        }
-        
-        .popup-stats-mobile .likes i { color: #4caf50; }
-        .popup-stats-mobile .dislikes i { color: #e53935; }
-        
-        .popup-chat-mobile {
-            padding: 8px;
-            max-height: 130px;
-            overflow-y: auto;
-            background: var(--cor-fundo);
-            border-top: 1px solid var(--cor-borda);
-        }
-        
-        .popup-chat-mobile .mensagem {
-            background: #2a2a2a;
-            border: 1px solid var(--cor-borda);
-            border-radius: 8px;
-            padding: 5px 8px;
-            margin: 4px 0;
-            color: white;
-        }
-        
-        .popup-input-mobile {
-            display: flex;
-            padding: 8px;
-            gap: 5px;
-            background: var(--cor-fundo);
-            border-top: 1px solid var(--cor-borda);
-        }
-        
-        .popup-input-mobile input {
-            flex: 1;
-            padding: 7px;
-            border-radius: 15px;
-            border: 1px solid var(--cor-borda);
-            background: #333;
-            color: white;
-            font-size: 12px;
-            outline: none;
-        }
-        
-        .popup-input-mobile button {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: none;
-            background: var(--cor-primaria);
-            color: white;
-            cursor: pointer;
-        }
-        
-        /* ===== CHAT GERAL ===== */
-        .chat-mobile {
-            position: fixed;
-            top: 5%;
-            left: 2.5%;
-            width: 95%;
-            height: 90%;
-            background: #e5ddd5;
-            z-index: 99999;
-            border-radius: 25px;
-            display: none;
-            flex-direction: column;
-            border: 2px solid #075e54;
-        }
-        
-        .chat-header-mobile {
-            background: #075e54;
-            color: white;
-            padding: 12px 15px;
-            border-radius: 23px 23px 0 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 14px;
-        }
-        
-        .chat-mensagens-mobile {
-            flex: 1;
-            overflow-y: auto;
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            background: #e5ddd5;
-        }
-        
-        .mensagem-wrapper {
-            display: flex;
-            flex-direction: column;
-            margin: 4px 0;
-            max-width: 80%;
-            position: relative;
-        }
-        
-        .mensagem-wrapper.minha { align-self: flex-end; }
-        .mensagem-wrapper.outra { align-self: flex-start; }
-        
-        .mensagem {
-            padding: 8px 12px;
-            border-radius: 15px;
-            font-size: 13px;
-            position: relative;
-        }
-        
-        .mensagem.minha {
-            background: #dcf8c6;
-            color: #000;
-            border-bottom-right-radius: 3px;
-        }
-        
-        .mensagem.outra {
-            background: white;
-            color: #000;
-            border-bottom-left-radius: 3px;
-            border: 1px solid #ddd;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        
-        .mensagem-remetente {
-            font-weight: 700;
-            font-size: 11px;
-            margin-bottom: 2px;
-            color: #075e54;
-        }
-        
-        .mensagem-hora {
-            font-size: 9px;
-            color: #999;
-            margin-top: 2px;
-            text-align: right;
-        }
-        
-        .resposta-preview {
-            background: rgba(0,0,0,0.05);
-            border-left: 3px solid #075e54;
-            padding: 5px 8px;
-            margin-bottom: 3px;
-            border-radius: 6px;
-            font-size: 11px;
-            color: #666;
-        }
-        
-        .mensagem-acoes {
-            position: absolute;
-            top: -22px;
-            right: 0;
-            background: white;
-            border-radius: 25px;
-            padding: 3px 8px;
-            display: none;
+            margin: 15px 0;
             gap: 8px;
-            border: 1px solid #075e54;
         }
         
-        .mensagem-wrapper:hover .mensagem-acoes { display: flex; }
-        
-        .acao {
-            cursor: pointer;
-            font-size: 12px;
-            color: #075e54;
-        }
-        
-        .chat-input-mobile {
-            padding: 12px;
-            background: #f0f0f0;
-            display: flex;
-            gap: 8px;
-            border-radius: 0 0 23px 23px;
-        }
-        
-        .chat-input-mobile input {
+        .btn-controle {
             flex: 1;
-            padding: 10px 15px;
-            border-radius: 30px;
-            border: 1px solid #ccc;
-            background: white;
-            font-size: 13px;
-        }
-        
-        .chat-input-mobile button {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            border: none;
-            background: #075e54;
-            color: white;
-            cursor: pointer;
-        }
-        
-        /* ===== PAINEL DE CONFIGURAÇÕES ===== */
-        .config-panel {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #1a1a1a;
-            border: 3px solid var(--cor-borda);
-            border-radius: 30px;
-            padding: 20px;
-            z-index: 100000;
-            display: none;
-            flex-direction: column;
-            gap: 12px;
-            min-width: 300px;
-            max-width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-            box-shadow: 0 0 50px var(--cor-primaria);
-        }
-        
-        .config-panel.visivel { display: flex; }
-        
-        .config-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: var(--cor-texto);
-            font-size: 18px;
-            font-weight: 700;
-            border-bottom: 1px solid var(--cor-borda);
-            padding-bottom: 8px;
-        }
-        
-        .config-section {
-            margin: 3px 0;
+            background: #2c2c2c;
+            border: 1px solid #8B6914;
+            border-radius: 25px;
             padding: 8px;
-            background: #222;
-            border-radius: 12px;
-        }
-        
-        .config-section h3 {
-            color: white;
-            font-size: 13px;
-            margin-bottom: 6px;
-        }
-        
-        .config-cores, .config-fundos {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 5px;
-        }
-        
-        .config-cor, .config-fundo {
-            aspect-ratio: 1/1;
-            border-radius: 10px;
+            text-align: center;
             cursor: pointer;
-            border: 2px solid transparent;
+            color: #ccc;
+            font-size: 11px;
             transition: all 0.2s;
         }
         
-        .config-cor:hover, .config-fundo:hover { transform: scale(1.1); }
-        .config-cor.selecionada, .config-fundo.selecionada { border-color: white; }
-        
-        .config-input {
-            width: 100%;
-            padding: 10px;
-            background: #333;
-            border: 2px solid var(--cor-borda);
-            border-radius: 30px;
-            color: white;
-            font-size: 13px;
+        .btn-controle:hover {
+            background: #3c3c3c;
+            border-color: #ffd700;
         }
         
-        .config-botao {
-            background: var(--cor-primaria);
-            color: white;
-            border: none;
-            border-radius: 30px;
-            padding: 10px;
-            font-weight: 700;
-            cursor: pointer;
-            margin: 3px 0;
-        }
-        
-        .config-botao.perigo {
-            background: #e53935;
-        }
-        
-        /* ===== PAINEL DE BANIMENTO ===== */
-        .usuario-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 6px;
-            background: #333;
-            border-radius: 8px;
-            margin: 4px 0;
-        }
-        
-        .usuario-nome {
-            color: white;
-            font-size: 12px;
-        }
-        
-        .usuario-status {
-            font-size: 9px;
-            padding: 2px 5px;
-            border-radius: 8px;
-        }
-        
-        .status-online { background: #4caf50; color: white; }
-        .status-banido { background: #e53935; color: white; }
-        
-        .btn-banir {
-            background: #e53935;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 3px 8px;
-            font-size: 10px;
-            cursor: pointer;
-        }
-        
-        /* ===== RECENTRALIZAR ===== */
-        .recentrar-mobile {
-            position: fixed;
-            bottom: 90px;
-            right: 10px;
-            z-index: 9300;
-            display: none;
-        }
-        
-        .recentrar-btn-mobile {
-            width: 42px;
-            height: 42px;
-            background: var(--cor-fundo);
-            border: 3px solid var(--cor-borda);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: var(--cor-texto);
-            font-size: 18px;
-            box-shadow: 0 0 20px var(--cor-primaria);
-            animation: pulseBlue 2s infinite;
-        }
-        
-        /* ===== SETA VOLTAR ===== */
-        .seta-voltar {
-            position: fixed;
-            bottom: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 9600;
-            display: none;
-        }
-        
-        .seta-voltar-btn {
-            width: 45px;
-            height: 45px;
-            background: var(--cor-fundo);
-            border: 2px solid var(--cor-borda);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: var(--cor-texto);
-            font-size: 20px;
-            animation: pulseSeta 1.5s infinite;
-        }
-        
-        /* ===== BOTÃO CONFIG ===== */
-        .btn-config {
-            position: fixed;
-            top: 8px;
-            right: 8px;
-            width: 36px;
-            height: 36px;
-            background: var(--cor-fundo);
-            border: 2px solid var(--cor-borda);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: var(--cor-texto);
-            font-size: 16px;
-            z-index: 9000;
-        }
-        
-        /* ===== MODAL DE BOAS-VINDAS ===== */
-        .welcome-modal {
+        /* MAPA (POPUP) */
+        .mapa-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.98);
-            z-index: 999999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 15px;
-            overflow-y: auto;
-        }
-        
-        .welcome-content {
-            background: #1a1a1a;
-            padding: 25px 20px;
-            border-radius: 30px;
-            text-align: center;
-            max-width: 450px;
-            width: 100%;
-            border: 2px solid var(--cor-primaria);
-            box-shadow: 0 0 30px var(--cor-primaria);
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        
-        .welcome-content h2 {
-            color: var(--cor-primaria);
-            font-size: 28px;
-            margin-bottom: 5px;
-        }
-        
-        .welcome-content input {
-            width: 100%;
-            padding: 12px 15px;
-            background: #222;
-            border: 2px solid var(--cor-primaria);
-            border-radius: 30px;
-            margin: 8px 0;
-            font-size: 14px;
-            color: white;
-        }
-        
-        /* ===== SELEÇÃO DE CORES ===== */
-        .secao-titulo {
-            color: white;
-            text-align: left;
-            font-size: 14px;
-            font-weight: 600;
-            margin: 10px 0 5px;
-        }
-        
-        .cores-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 5px;
-            margin: 5px 0;
-        }
-        
-        .cor-opcao {
-            padding: 8px 4px;
-            border-radius: 10px;
-            cursor: pointer;
-            border: 2px solid transparent;
-            text-align: center;
-            font-weight: 600;
-            color: white;
-            transition: all 0.2s;
-            font-size: 10px;
-        }
-        
-        .cor-opcao:hover {
-            transform: scale(1.05);
-        }
-        
-        .cor-opcao.selecionada {
-            border-color: white;
-            box-shadow: 0 0 15px currentColor;
-        }
-        
-        /* Cores primárias */
-        .cor-azul { background: #00BFFF; }
-        .cor-verde { background: #4caf50; }
-        .cor-vermelho { background: #e53935; }
-        .cor-laranja { background: #ff9800; }
-        .cor-rosa { background: #e91e63; }
-        .cor-roxo { background: #9c27b0; }
-        .cor-amarelo { background: #ffc107; color: #333; }
-        .cor-cyan { background: #00bcd4; }
-        .cor-roxo-escuro { background: #673ab7; }
-        .cor-preto { background: #000000; color: white; }
-        
-        /* Cores de fundo */
-        .fundo-preto { background: #1a1a1a; color: white; }
-        .fundo-branco { background: #ffffff; color: #333; border: 1px solid #333; }
-        .fundo-cinza { background: #808080; color: white; }
-        .fundo-cinza-claro { background: #d3d3d3; color: #333; }
-        .fundo-azul { background: #00BFFF; color: white; }
-        .fundo-verde { background: #4caf50; color: white; }
-        .fundo-vermelho { background: #e53935; color: white; }
-        .fundo-laranja { background: #ff9800; color: white; }
-        .fundo-roxo { background: #9c27b0; color: white; }
-        .fundo-amarelo { background: #ffc107; color: #333; }
-        
-        /* ===== PERMISSÕES ===== */
-        .permissoes-container {
-            background: #222;
-            border-radius: 20px;
-            padding: 12px;
-            margin: 12px 0;
-            border: 1px solid var(--cor-primaria);
-        }
-        
-        .permissao-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: white;
-            margin: 6px 0;
-            font-size: 12px;
-        }
-        
-        .permissao-item i {
-            color: var(--cor-primaria);
-            width: 18px;
-        }
-        
-        .checkbox-container {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: white;
-            font-size: 12px;
-            margin: 10px 0;
-            cursor: pointer;
-        }
-        
-        .btn-ativar {
-            width: 100%;
-            padding: 12px;
-            background: var(--cor-primaria);
-            border: none;
-            border-radius: 40px;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            color: white;
-            margin-bottom: 8px;
-        }
-        
-        .btn-entrar {
-            width: 100%;
-            padding: 12px;
-            background: #444;
-            border: none;
-            border-radius: 40px;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: not-allowed;
-            color: #999;
-        }
-        
-        .btn-entrar.ativo {
-            background: var(--cor-primaria);
-            color: white;
-            cursor: pointer;
-        }
-        
-        /* ===== CARRO ===== */
-        .carro-simples {
-            font-size: 30px;
-            filter: drop-shadow(0 0 10px var(--cor-primaria));
-            color: var(--cor-carro);
-        }
-        
-        .carro-outro {
-            font-size: 30px;
-            filter: drop-shadow(0 0 5px #888);
-            color: #888;
-        }
-        
-        .ponto-azul {
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: var(--cor-primaria);
-            border: 2px solid white;
-            box-shadow: 0 0 12px var(--cor-primaria);
-            animation: pulse-ponto 1.5s infinite;
-        }
-        
-        /* ===== ALERTA COM FOTO ===== */
-        .alerta-com-foto {
-            position: relative;
-            width: 48px;
-            height: 48px;
-            z-index: 10000;
-        }
-        
-        .alerta-pulsante {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: rgba(255,0,0,0.3);
-            border: 3px solid;
-            position: absolute;
-            animation: pulseAlerta 1.2s infinite;
-        }
-        
-        .alerta-foto {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            overflow: hidden;
-            border: 2px solid white;
-        }
-        
-        .alerta-foto img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .alerta-icone-pequeno {
-            position: absolute;
-            bottom: -2px;
-            right: -2px;
-            background: inherit;
-            color: white;
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            border: 2px solid white;
-        }
-        
-        /* ===== INDICADORES ===== */
-        .gravando-indicator {
-            position: fixed;
-            bottom: 140px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #e53935;
-            color: white;
-            padding: 8px 20px;
-            border-radius: 40px;
-            z-index: 10000;
-            display: none;
-            border: 2px solid var(--cor-borda);
-            font-size: 13px;
-            font-weight: 700;
-        }
-        
-        .audio-notification {
-            position: fixed;
-            bottom: 140px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--cor-primaria);
-            color: white;
-            padding: 8px 20px;
-            border-radius: 40px;
-            z-index: 10000;
-            display: none;
-            font-size: 13px;
-            font-weight: 700;
-            border: 2px solid white;
-        }
-        
-        /* ===== CONFIRMAÇÃO ===== */
-        .confirmacao-popup {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #1a1a1a;
-            border: 3px solid var(--cor-borda);
-            border-radius: 30px;
-            padding: 20px;
+            background: rgba(0,0,0,0.95);
+            z-index: 20000;
             display: none;
             flex-direction: column;
+        }
+        
+        .mapa-overlay.visivel {
+            display: flex;
+        }
+        
+        .mapa-header {
+            background: #2c1e0f;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 15px;
-            z-index: 100000;
             color: white;
-            min-width: 250px;
         }
         
-        .btn-confirmar, .btn-negar {
+        .mapa-container {
+            flex: 1;
+            position: relative;
+        }
+        
+        #mapa-completo {
+            height: 100%;
+            width: 100%;
+        }
+        
+        .fechar-mapa {
+            background: #e53935;
             border: none;
-            border-radius: 30px;
-            padding: 10px 25px;
-            font-weight: 700;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
             cursor: pointer;
-            border: 2px solid var(--cor-borda);
+            font-size: 18px;
         }
         
-        .btn-confirmar { background: #4caf50; color: white; }
-        .btn-negar { background: #e53935; color: white; }
-        
-        /* ===== ANIMAÇÕES ===== */
-        @keyframes ledPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
-        @keyframes pulse-ponto { 0% { transform: scale(1); } 50% { transform: scale(1.2); } }
-        @keyframes pulseAlerta { 0% { transform: scale(0.9); } 70% { transform: scale(1.3); } }
-        @keyframes pulseBlue { 0% { box-shadow: 0 0 0 0 var(--cor-primaria); } 70% { box-shadow: 0 0 0 12px transparent; } }
-        @keyframes pulseSeta { 0% { transform: scale(1); } 50% { transform: scale(1.1); } }
-        
-        .mapa-noturno { filter: invert(100%) hue-rotate(180deg) brightness(95%); }
-        
-        /* ===== OCULTAR INTERFACE ===== */
-        .interface-oculta .header-unificado,
-        .interface-oculta .lupa-mobile,
-        .interface-oculta .barra-inferior-mobile,
-        .interface-oculta .info-container,
-        .interface-oculta .btn-config,
-        .interface-oculta .rota-info-panel,
-        .interface-oculta .gravando-indicator,
-        .interface-oculta .audio-notification,
-        .interface-oculta .confirmacao-popup,
-        .interface-oculta .alertas-panel-mobile,
-        .interface-oculta .config-panel {
-            display: none !important;
+        /* CHAT */
+        .chat-overlay {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: #1a1a1a;
+            border-radius: 20px;
+            z-index: 20001;
+            display: none;
+            flex-direction: column;
+            max-height: 400px;
+            border: 2px solid #8B6914;
         }
         
-        .interface-oculta .recentrar-mobile { display: flex !important; }
-        .interface-oculta .seta-voltar { display: flex !important; }
+        .chat-overlay.visivel {
+            display: flex;
+        }
+        
+        .chat-header {
+            background: #2c1e0f;
+            padding: 10px;
+            border-radius: 18px 18px 0 0;
+            display: flex;
+            justify-content: space-between;
+            color: white;
+        }
+        
+        .chat-mensagens {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            max-height: 300px;
+        }
+        
+        .chat-input-area {
+            display: flex;
+            padding: 8px;
+            gap: 5px;
+            border-top: 1px solid #8B6914;
+        }
+        
+        .chat-input-area input {
+            flex: 1;
+            padding: 8px;
+            border-radius: 20px;
+            border: none;
+            background: #2c2c2c;
+            color: white;
+        }
+        
+        .chat-input-area button {
+            background: #00BFFF;
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            cursor: pointer;
+        }
+        
+        .mensagem-chat {
+            margin: 5px 0;
+            padding: 5px 10px;
+            border-radius: 15px;
+            max-width: 80%;
+        }
+        
+        .mensagem-chat.minha {
+            background: #00BFFF;
+            color: white;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+        
+        .mensagem-chat.outra {
+            background: #2c2c2c;
+            color: #ccc;
+        }
+        
+        /* NOTIFICAÇÃO */
+        .notificacao-audio {
+            position: fixed;
+            bottom: 150px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #00BFFF;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            z-index: 20002;
+            display: none;
+            font-size: 12px;
+            border: 2px solid #ffd700;
+        }
+        
+        /* RESPONSIVO */
+        @media (max-width: 500px) {
+            .estacoes-grade {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 5px;
+            }
+            .estacao-nome {
+                font-size: 8px;
+            }
+            .btn-ptt-vintage {
+                width: 100px;
+                height: 100px;
+                font-size: 14px;
+            }
+        }
     </style>
 </head>
-<body class="tema-azul fundo-preto">
+<body>
 
-<div id="map"></div>
-
-<!-- MODAL DE BOAS-VINDAS -->
-<div class="welcome-modal" id="welcomeModal">
-    <div class="welcome-content">
-        <h2>🏁 GRUPO BR 277</h2>
-        <p style="color:#fff; font-size:11px;">SISTEMA DE TRÂNSITO</p>
-        
-        <input type="text" id="nomeUsuario" placeholder="SEU NOME" value="Motorista">
-        
-        <!-- COR PRIMÁRIA -->
-        <div class="secao-titulo">COR DO APP:</div>
-        <div class="cores-grid">
-            <div class="cor-opcao cor-azul selecionada" onclick="selecionarCor('azul')" id="cor-azul">AZUL</div>
-            <div class="cor-opcao cor-verde" onclick="selecionarCor('verde')" id="cor-verde">VERDE</div>
-            <div class="cor-opcao cor-vermelho" onclick="selecionarCor('vermelho')" id="cor-vermelho">VERM</div>
-            <div class="cor-opcao cor-laranja" onclick="selecionarCor('laranja')" id="cor-laranja">LARA</div>
-            <div class="cor-opcao cor-rosa" onclick="selecionarCor('rosa')" id="cor-rosa">ROSA</div>
-            <div class="cor-opcao cor-roxo" onclick="selecionarCor('roxo')" id="cor-roxo">ROXO</div>
-            <div class="cor-opcao cor-amarelo" onclick="selecionarCor('amarelo')" id="cor-amarelo">AMAR</div>
-            <div class="cor-opcao cor-cyan" onclick="selecionarCor('cyan')" id="cor-cyan">CYAN</div>
-            <div class="cor-opcao cor-roxo-escuro" onclick="selecionarCor('roxo-escuro')" id="cor-roxo-escuro">RXE</div>
-            <div class="cor-opcao cor-preto" onclick="selecionarCor('preto')" id="cor-preto">PRETO</div>
+<div class="radio-vintage">
+    <!-- MOSTRADOR -->
+    <div class="mostrador">
+        <div class="mostrador-header">
+            <h1>📻 RÁDIO BR-277</h1>
+            <p>COMUNICAÇÃO DOS MOTORISTAS</p>
         </div>
-        
-        <!-- COR DE FUNDO -->
-        <div class="secao-titulo">FUNDO DOS ÍCONES:</div>
-        <div class="cores-grid" style="grid-template-columns:repeat(5,1fr);">
-            <div class="cor-opcao fundo-preto" onclick="selecionarFundo('preto')" id="fundo-preto">PRETO</div>
-            <div class="cor-opcao fundo-branco" onclick="selecionarFundo('branco')" id="fundo-branco">BRANCO</div>
-            <div class="cor-opcao fundo-cinza" onclick="selecionarFundo('cinza')" id="fundo-cinza">CINZA</div>
-            <div class="cor-opcao fundo-cinza-claro" onclick="selecionarFundo('cinza-claro')" id="fundo-cinza-claro">C.CLARO</div>
-            <div class="cor-opcao fundo-azul" onclick="selecionarFundo('azul')" id="fundo-azul">AZUL</div>
-            <div class="cor-opcao fundo-verde" onclick="selecionarFundo('verde')" id="fundo-verde">VERDE</div>
-            <div class="cor-opcao fundo-vermelho" onclick="selecionarFundo('vermelho')" id="fundo-vermelho">VERM</div>
-            <div class="cor-opcao fundo-laranja" onclick="selecionarFundo('laranja')" id="fundo-laranja">LARA</div>
-            <div class="cor-opcao fundo-roxo" onclick="selecionarFundo('roxo')" id="fundo-roxo">ROXO</div>
-            <div class="cor-opcao fundo-amarelo" onclick="selecionarFundo('amarelo')" id="fundo-amarelo">AMAR</div>
-        </div>
-        
-        <!-- PERMISSÕES -->
-        <div class="permissoes-container">
-            <div class="permissao-item">
-                <i class="fas fa-map-marker-alt"></i>
-                <span>Localização</span>
-                <span style="margin-left:auto;" id="statusLocalizacao">⏳</span>
-            </div>
-            <div class="permissao-item">
-                <i class="fas fa-microphone"></i>
-                <span>Microfone</span>
-                <span style="margin-left:auto;" id="statusMicrofone">⏳</span>
-            </div>
-            <div class="permissao-item">
-                <i class="fas fa-camera"></i>
-                <span>Câmera</span>
-                <span style="margin-left:auto;" id="statusCamera">⏳</span>
-            </div>
-        </div>
-        
-        <label class="checkbox-container">
-            <input type="checkbox" id="aceitePrivacidade">
-            <span>ACEITO OS TERMOS</span>
-        </label>
-        
-        <button class="btn-ativar" onclick="ativarTudo()">🔓 ATIVAR TUDO</button>
-        <button class="btn-entrar" id="btnEntrar" onclick="entrar()" disabled>🔒 ENTRAR</button>
-    </div>
-</div>
-
-<!-- HEADER UNIFICADO - CORRETO -->
-<div class="header-unificado" id="headerUnificado">
-    <div class="header-logo">
-        <span>GRUPO BR 277</span>
-        <i class="fab fa-instagram" onclick="window.open('https://instagram.com/grupobr277', '_blank')"></i>
-    </div>
-    <div class="header-online">
-        <i class="fas fa-users"></i>
-        <span id="numUsuarios">0</span> online
-    </div>
-</div>
-
-<!-- LUPA -->
-<div class="lupa-mobile">
-    <input type="text" id="buscaDestino" placeholder="Digite seu destino...">
-    <button onclick="buscarRota()"><i class="fas fa-search"></i></button>
-</div>
-
-<!-- BOTÃO CONFIG -->
-<div class="btn-config" onclick="abrirConfig()">
-    ⚙️
-</div>
-
-<!-- BARRA INFERIOR -->
-<div class="barra-inferior-mobile">
-    <div class="velocimetro-barra">
-        <span class="vel-numero-barra" id="velocimetroDisplay">0</span>
-        <span class="vel-unidade-barra">KM/H</span>
-    </div>
-    <div class="btn-barra" onclick="toggleChatGeral()" title="Chat">
-        <i class="fas fa-comment"></i>
-    </div>
-    <div class="btn-barra" id="btn-luz-mobile" onclick="toggleModoNoturno()" title="Modo Noturno">
-        💡
-    </div>
-    <div class="btn-ptt" id="btn-px-mobile" title="Push To Talk">
-        <span>PX</span>
-    </div>
-    <div class="btn-barra" id="btn-mudo-mobile" onclick="toggleMudo()" title="Mudo">
-        <i class="fas fa-volume-up"></i>
-    </div>
-    <div class="btn-barra" onclick="toggleInterface()" title="Ocultar">
-        <i class="fas fa-chevron-up" id="iconeSeta"></i>
-    </div>
-</div>
-
-<!-- SETA VOLTAR -->
-<div class="seta-voltar" id="setaVoltar" onclick="toggleInterface()">
-    <div class="seta-voltar-btn">
-        <i class="fas fa-chevron-down"></i>
-    </div>
-</div>
-
-<!-- REPORTE E LEGENDA -->
-<div class="info-container">
-    <div class="reporte-btn-mobile" onclick="toggleReporteMobile()">
-        <span class="reporte-led"></span>
-        <span>REPORTE</span>
-    </div>
-    <div class="legenda-container" id="legendaContainer">
-        <div class="legenda-item">
-            <div class="legenda-cor legenda-verde"></div>
-            <span class="legenda-texto">Normal</span>
-        </div>
-        <div class="legenda-item">
-            <div class="legenda-cor legenda-amarelo"></div>
-            <span class="legenda-texto">Intenso</span>
-        </div>
-        <div class="legenda-item">
-            <div class="legenda-cor legenda-vermelho"></div>
-            <span class="legenda-texto">Lento</span>
-        </div>
-        <div class="legenda-fechar" onclick="fecharLegenda()">✕</div>
-    </div>
-</div>
-
-<!-- PAINEL DE ALERTAS - 15 ITENS -->
-<div class="alertas-panel-mobile" id="alertasPanelMobile">
-    <div class="alertas-grid-mobile" id="alertasGridMobile"></div>
-    <div class="btn-fechar-retangular" onclick="toggleReporteMobile()">✕</div>
-</div>
-
-<!-- PAINEL DE CONFIGURAÇÕES -->
-<div class="config-panel" id="configPanel">
-    <div class="config-header">
-        <span>⚙️ CONFIGURAÇÕES</span>
-        <span onclick="fecharConfig()" style="cursor:pointer;">✕</span>
-    </div>
-    
-    <div class="config-section">
-        <h3>SEU NOME</h3>
-        <input type="text" id="configNome" class="config-input" placeholder="Seu nome">
-    </div>
-    
-    <div class="config-section">
-        <h3>COR DO APP</h3>
-        <div class="config-cores">
-            <div class="config-cor cor-azul" onclick="mudarCor('azul')" id="config-azul"></div>
-            <div class="config-cor cor-verde" onclick="mudarCor('verde')" id="config-verde"></div>
-            <div class="config-cor cor-vermelho" onclick="mudarCor('vermelho')" id="config-vermelho"></div>
-            <div class="config-cor cor-laranja" onclick="mudarCor('laranja')" id="config-laranja"></div>
-            <div class="config-cor cor-rosa" onclick="mudarCor('rosa')" id="config-rosa"></div>
-            <div class="config-cor cor-roxo" onclick="mudarCor('roxo')" id="config-roxo"></div>
-            <div class="config-cor cor-amarelo" onclick="mudarCor('amarelo')" id="config-amarelo"></div>
-            <div class="config-cor cor-cyan" onclick="mudarCor('cyan')" id="config-cyan"></div>
-            <div class="config-cor cor-roxo-escuro" onclick="mudarCor('roxo-escuro')" id="config-roxo-escuro"></div>
-            <div class="config-cor cor-preto" onclick="mudarCor('preto')" id="config-preto"></div>
+        <div class="frequencia">
+            <span>27.7 MHz</span>
+            <span class="luz-ligado"></span>
         </div>
     </div>
     
-    <div class="config-section">
-        <h3>FUNDO DOS ÍCONES</h3>
-        <div class="config-fundos">
-            <div class="config-fundo fundo-preto" onclick="mudarFundo('preto')" id="fundo-config-preto"></div>
-            <div class="config-fundo fundo-branco" onclick="mudarFundo('branco')" id="fundo-config-branco"></div>
-            <div class="config-fundo fundo-cinza" onclick="mudarFundo('cinza')" id="fundo-config-cinza"></div>
-            <div class="config-fundo fundo-cinza-claro" onclick="mudarFundo('cinza-claro')" id="fundo-config-cinza-claro"></div>
-            <div class="config-fundo fundo-azul" onclick="mudarFundo('azul')" id="fundo-config-azul"></div>
-            <div class="config-fundo fundo-verde" onclick="mudarFundo('verde')" id="fundo-config-verde"></div>
-            <div class="config-fundo fundo-vermelho" onclick="mudarFundo('vermelho')" id="fundo-config-vermelho"></div>
-            <div class="config-fundo fundo-laranja" onclick="mudarFundo('laranja')" id="fundo-config-laranja"></div>
-            <div class="config-fundo fundo-roxo" onclick="mudarFundo('roxo')" id="fundo-config-roxo"></div>
-            <div class="config-fundo fundo-amarelo" onclick="mudarFundo('amarelo')" id="fundo-config-amarelo"></div>
+    <!-- GRADE DE ESTAÇÕES (16) -->
+    <div class="estacoes-grade" id="estacoesGrade"></div>
+    
+    <!-- ESTAÇÃO ATUAL -->
+    <div class="estacao-atual" id="estacaoAtual">
+        <div class="estacao-atual-info">
+            <i class="fas fa-broadcast-tower" style="color:#ffd700;"></i>
+            <span class="estacao-atual-nome" id="estacaoAtualNome">Carregando...</span>
         </div>
+        <div class="estacao-atual-pessoas" id="estacaoAtualPessoas">0 online</div>
     </div>
     
-    <div class="config-section" id="adminSection" style="display:none;">
-        <h3>👑 ADMIN - GERENCIAR USUÁRIOS</h3>
-        <div id="usuariosLista"></div>
-        <button class="config-botao perigo" onclick="limparTodosAlertas()">LIMPAR TODOS ALERTAS</button>
-        <button class="config-botao perigo" onclick="sairAdmin()">SAIR DO MODO ADMIN</button>
+    <!-- PUSH TO TALK -->
+    <div class="ptt-container">
+        <button class="btn-ptt-vintage" id="btnPttVintage">
+            🎤<br>PTT
+        </button>
+        <div class="timer-gravacao" id="timerGravacao" style="display: none;">20s</div>
     </div>
     
-    <button class="config-botao" onclick="salvarConfig()">SALVAR</button>
-</div>
-
-<!-- RECENTRALIZAR -->
-<div class="recentrar-mobile" id="btnRecentrarMobile">
-    <div class="recentrar-btn-mobile" onclick="recentralizar()">
-        <i class="fas fa-location-arrow"></i>
-    </div>
-</div>
-
-<!-- PAINEL DE ROTA -->
-<div class="rota-info-panel" id="rotaInfoPanel">
-    <div class="rota-info-item">
-        <i class="fas fa-clock"></i>
-        <span id="rotaTempo">--</span>
-    </div>
-    <div class="rota-info-item">
-        <i class="fas fa-road"></i>
-        <span id="rotaDistancia">--</span>
-    </div>
-    <div class="rota-info-item">
-        <i class="fas fa-exclamation-triangle" style="color:#e53935;"></i>
-        <span id="rotaAtraso">--</span>
-    </div>
-    <div class="rota-fechar" onclick="encerrarRota()">✕</div>
-</div>
-
-<!-- POPUP CONFIRMAÇÃO -->
-<div class="confirmacao-popup" id="confirmacaoPopup">
-    <div class="confirmacao-texto" id="confirmacaoTexto">ALERTA A 300 METROS?</div>
-    <div class="confirmacao-subtexto" id="confirmacaoSubtexto">Confirme se ainda está ativo</div>
-    <div style="display:flex; gap:10px;">
-        <button class="btn-confirmar" onclick="confirmarAlerta()">✅ SIM</button>
-        <button class="btn-negar" onclick="negarAlerta()">❌ NÃO</button>
-    </div>
-</div>
-
-<!-- CHAT GERAL -->
-<div class="chat-mobile" id="chatGeralMobile">
-    <div class="chat-header-mobile">
-        <span><i class="fas fa-comments"></i> GRUPO BR 277</span>
-        <div>
-            <span style="margin-right:12px; cursor:pointer;" onclick="mostrarAdminPanel()">👑</span>
-            <span onclick="fecharChatGeral()" style="cursor:pointer;">✕</span>
+    <!-- CONTROLES -->
+    <div class="controles">
+        <div class="btn-controle" onclick="abrirMapa()">
+            <i class="fas fa-map"></i> MAPA
+        </div>
+        <div class="btn-controle" onclick="abrirChat()">
+            <i class="fas fa-comments"></i> CHAT
+        </div>
+        <div class="btn-controle" onclick="abrirConfig()">
+            <i class="fas fa-user"></i> PERFIL
         </div>
     </div>
-    <div class="chat-mensagens-mobile" id="chatMensagensMobile"></div>
-    <div class="chat-input-mobile">
-        <input type="text" id="chatInputMobile" placeholder="Digite sua mensagem...">
-        <button onclick="enviarMsgGeral()"><i class="fas fa-paper-plane"></i></button>
+</div>
+
+<!-- MAPA OVERLAY -->
+<div class="mapa-overlay" id="mapaOverlay">
+    <div class="mapa-header">
+        <span>🗺️ MAPA BR-277 - TRÂNSITO EM TEMPO REAL</span>
+        <button class="fechar-mapa" onclick="fecharMapa()">✕</button>
+    </div>
+    <div class="mapa-container">
+        <div id="mapa-completo"></div>
     </div>
 </div>
 
-<!-- PAINEL ADMIN -->
-<div class="confirmacao-popup" id="adminPanel" style="display:none;">
-    <div class="confirmacao-texto">👑 ADMIN</div>
-    <input type="password" id="adminSenha" placeholder="Senha" style="padding:8px; border-radius:20px; border:2px solid var(--cor-primaria); background:#333; color:white; width:100%;">
-    <div style="display:flex; gap:10px; margin-top:8px;">
-        <button class="btn-confirmar" onclick="verificarAdmin()">ENTRAR</button>
-        <button class="btn-negar" onclick="fecharAdminPanel()">CANCELAR</button>
+<!-- CHAT OVERLAY -->
+<div class="chat-overlay" id="chatOverlay">
+    <div class="chat-header">
+        <span><i class="fas fa-comments"></i> CHAT GERAL BR-277</span>
+        <button style="background:none; border:none; color:white; font-size:20px; cursor:pointer;" onclick="fecharChat()">✕</button>
+    </div>
+    <div class="chat-mensagens" id="chatMensagens"></div>
+    <div class="chat-input-area">
+        <input type="text" id="chatInput" placeholder="Digite sua mensagem...">
+        <button onclick="enviarMensagemChat()"><i class="fas fa-paper-plane"></i></button>
     </div>
 </div>
 
-<!-- INDICADORES -->
-<div class="gravando-indicator" id="gravandoIndicator">
-    <span>🎤 GRAVANDO <span id="gravandoTimer">20s</span></span>
-</div>
-<div class="audio-notification" id="audioNotification">
-    <i class="fas fa-headphones"></i> ÁUDIO RECEBIDO
+<!-- NOTIFICAÇÃO -->
+<div class="notificacao-audio" id="notificacaoAudio">
+    🎙️ NOVA MENSAGEM DE ÁUDIO
 </div>
 
-<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
-<script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
 
 <script>
-// ===== CONFIGURAÇÕES =====
-const ADMIN_PASSWORD = 'br277admin2024';
-let usuario = null;
-let isAdmin = false;
-let corSelecionada = 'azul';
-let fundoSelecionado = 'preto';
-let permissoes = { localizacao: false, microfone: false, camera: false };
-let usuariosBanidos = {};
-
 // ===== FIREBASE =====
 const firebaseConfig = {
     databaseURL: "https://gps-br277-default-rtdb.firebaseio.com"
@@ -1577,1088 +501,373 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// ===== 15 ALERTAS =====
-const alertasMobile = [
-    { nome: 'ACIDENTE', icone: '💥', cor: '#e53935', bg: 'linear-gradient(145deg, #e53935, #b71c1c)' },
-    { nome: 'OBRAS', icone: '🚧', cor: '#ff9800', bg: 'linear-gradient(145deg, #ff9800, #f57c00)' },
-    { nome: 'PANE', icone: '🔧', cor: '#795548', bg: 'linear-gradient(145deg, #795548, #5d4037)' },
-    { nome: 'ANIMAL', icone: '🐂', cor: '#9c27b0', bg: 'linear-gradient(145deg, #9c27b0, #7b1fa2)' },
-    { nome: 'RADAR', icone: '📷', cor: '#607d8b', bg: 'linear-gradient(145deg, #607d8b, #455a64)' },
-    { nome: 'BARREIRA', icone: '⛰️', cor: '#8b4513', bg: 'linear-gradient(145deg, #8b4513, #5d3a1a)' },
-    { nome: 'NEBLINA', icone: '🌫️', cor: '#00acc1', bg: 'linear-gradient(145deg, #00acc1, #0097a7)' },
-    { nome: 'CONGEST', icone: '🔴', cor: '#f44336', bg: 'linear-gradient(145deg, #f44336, #d32f2f)' },
-    { nome: 'ALAGAM', icone: '💧', cor: '#2196f3', bg: 'linear-gradient(145deg, #2196f3, #1976d2)' },
-    { nome: 'BLOQ', icone: '⛔', cor: '#b71c1c', bg: 'linear-gradient(145deg, #b71c1c, #8B0000)' },
-    { nome: 'PERIGO', icone: '⚠️', cor: '#ff5722', bg: 'linear-gradient(145deg, #ff5722, #e64a19)' },
-    { nome: 'DESVIO', icone: '🔄', cor: '#3f51b5', bg: 'linear-gradient(145deg, #3f51b5, #303f9f)' },
-    { nome: 'CARGA', icone: '📦', cor: '#8bc34a', bg: 'linear-gradient(145deg, #8bc34a, #689f38)' },
-    { nome: 'GRANIZO', icone: '🧊', cor: '#00bcd4', bg: 'linear-gradient(145deg, #00bcd4, #0097a7)' },
-    { nome: 'MANIFEST', icone: '📢', cor: '#ff4081', bg: 'linear-gradient(145deg, #ff4081, #f50057)' }
+// ===== LISTA DAS 16 ESTAÇÕES =====
+const estacoes = [
+    { id: 'guarapuava', nome: 'GUARAPUAVA', km: 'KM 0', lat: -25.3951, lng: -51.4620 },
+    { id: 'palmeira', nome: 'PALMEIRA', km: 'KM 80', lat: -25.4290, lng: -50.0000 },
+    { id: 'porto_amazonas', nome: 'PORTO AMAZONAS', km: 'KM 110', lat: -25.5400, lng: -49.8900 },
+    { id: 'ponta_grossa', nome: 'PONTA GROSSA', km: 'KM 150', lat: -25.0950, lng: -50.1619 },
+    { id: 'sao_luiz_puruna', nome: 'SÃO LUIZ', km: 'KM 180', lat: -25.4000, lng: -49.9000 },
+    { id: 'campo_largo', nome: 'CAMPO LARGO', km: 'KM 220', lat: -25.4591, lng: -49.5290 },
+    { id: 'curitiba', nome: 'CURITIBA', km: 'KM 250', lat: -25.4284, lng: -49.2733 },
+    { id: 'almirante_tamandare', nome: 'ALMIRANTE', km: 'KM 265', lat: -25.3180, lng: -49.3100 },
+    { id: 'fazenda_rio_grande', nome: 'FAZENDA R.G.', km: 'KM 280', lat: -25.6620, lng: -49.3070 },
+    { id: 'tijucas_sul', nome: 'TIJUCAS SUL', km: 'KM 310', lat: -25.9310, lng: -49.1950 },
+    { id: 'guaratuba', nome: 'GUARATUBA', km: 'KM 340', lat: -25.8820, lng: -48.5750 },
+    { id: 'morretes', nome: 'MORRETES', km: 'KM 370', lat: -25.4770, lng: -48.8330 },
+    { id: 'paranagua', nome: 'PARANAGUÁ', km: 'KM 400', lat: -25.5160, lng: -48.5250 },
+    { id: 'sao_jose_pinhais', nome: 'SÃO JOSÉ', km: 'KM 260', lat: -25.5350, lng: -49.2060 },
+    { id: 'colombo', nome: 'COLOMBO', km: 'KM 275', lat: -25.2920, lng: -49.2240 },
+    { id: 'araucaria', nome: 'ARAUCÁRIA', km: 'KM 290', lat: -25.5930, lng: -49.4100 }
 ];
 
-// ===== MAPA E VARIÁVEIS GLOBAIS =====
-let mapa, minhaLocalizacao, meuMarcador, seguirLocalizacao = true, clusterGroup;
-let rotaAtual = null;
-let marcadorDestino = null;
-let alertasNoMapa = {}; // Para controlar os marcadores de alerta
-let marcadoresUsuarios = {}; // Para controlar os marcadores de outros usuários
+// ===== VARIÁVEIS GLOBAIS =====
+let usuario = null;
+let estacaoAtual = localStorage.getItem('estacao_radio') || 'curitiba';
+let gravador = null;
+let gravando = false;
+let tempoRestante = 20;
+let timerInterval = null;
+let mapa = null;
+let minhaLocalizacao = null;
+let meuMarcador = null;
 
-// ===== FUNÇÕES DO CADASTRO =====
-function selecionarCor(cor) {
-    corSelecionada = cor;
-    document.querySelectorAll('.cor-opcao[id^="cor-"]').forEach(el => {
-        el.classList.remove('selecionada');
-    });
-    document.getElementById(`cor-${cor}`).classList.add('selecionada');
-    // Aplicar cor imediatamente
-    document.body.className = `tema-${corSelecionada} fundo-${fundoSelecionado}`;
-}
-
-function selecionarFundo(fundo) {
-    fundoSelecionado = fundo;
-    document.querySelectorAll('.cor-opcao[id^="fundo-"]').forEach(el => {
-        el.classList.remove('selecionada');
-    });
-    document.getElementById(`fundo-${fundo}`).classList.add('selecionada');
-    // Aplicar fundo imediatamente
-    document.body.className = `tema-${corSelecionada} fundo-${fundoSelecionado}`;
-}
-
-async function ativarTudo() {
-    // Localização
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            () => { 
-                permissoes.localizacao = true; 
-                document.getElementById('statusLocalizacao').innerHTML = '✅';
-            },
-            () => { 
-                document.getElementById('statusLocalizacao').innerHTML = '❌';
-            }
-        );
+// ===== INICIALIZAR =====
+function iniciar() {
+    // Perguntar nome do usuário
+    usuario = localStorage.getItem('usuario_radio');
+    if (!usuario) {
+        usuario = prompt('Digite seu nome para entrar no Rádio BR-277:', 'Motorista');
+        if (usuario) localStorage.setItem('usuario_radio', usuario);
+        else usuario = 'Motorista';
     }
     
-    // Microfone
+    // Criar botões das estações
+    criarBotoesEstacoes();
+    
+    // Selecionar estação atual
+    selecionarEstacao(estacaoAtual);
+    
+    // Iniciar listeners
+    iniciarListenersAudio();
+    
+    // Iniciar contagem de usuários por estação
+    iniciarContagemUsuarios();
+    
+    // Iniciar chat
+    iniciarChat();
+    
+    // Iniciar GPS para mapa
+    iniciarGPS();
+}
+
+// ===== CRIAR BOTÕES DAS 16 ESTAÇÕES =====
+function criarBotoesEstacoes() {
+    const container = document.getElementById('estacoesGrade');
+    container.innerHTML = '';
+    
+    estacoes.forEach(est => {
+        const btn = document.createElement('div');
+        btn.className = 'estacao-btn';
+        btn.dataset.id = est.id;
+        btn.innerHTML = `
+            <span class="estacao-nome">${est.nome}</span>
+            <span class="estacao-km">${est.km}</span>
+            <span class="estacao-online" id="online-${est.id}">0</span>
+        `;
+        btn.onclick = () => selecionarEstacao(est.id);
+        container.appendChild(btn);
+    });
+}
+
+// ===== SELECIONAR ESTAÇÃO =====
+function selecionarEstacao(id) {
+    estacaoAtual = id;
+    localStorage.setItem('estacao_radio', id);
+    
+    // Atualizar visual dos botões
+    document.querySelectorAll('.estacao-btn').forEach(btn => {
+        if (btn.dataset.id === id) {
+            btn.classList.add('ativa');
+        } else {
+            btn.classList.remove('ativa');
+        }
+    });
+    
+    // Atualizar nome da estação atual
+    const estacao = estacoes.find(e => e.id === id);
+    document.getElementById('estacaoAtualNome').innerHTML = `${estacao.nome} ${estacao.km}`;
+    
+    // Registrar presença na nova estação
+    db.ref(`estacoes/${id}/usuarios/${usuario}`).set({
+        nome: usuario,
+        timestamp: Date.now()
+    });
+    
+    // Remover de outras estações
+    estacoes.forEach(est => {
+        if (est.id !== id) {
+            db.ref(`estacoes/${est.id}/usuarios/${usuario}`).remove();
+        }
+    });
+    
+    mostrarNotificacao(`📻 Você sintonizou ${estacao.nome} - ${estacao.km}`, '#4caf50');
+}
+
+// ===== INICIAR LISTENERS DE ÁUDIO =====
+function iniciarListenersAudio() {
+    // Escutar áudio da estação atual
+    db.ref(`estacoes/${estacaoAtual}/audio`).on('child_added', (snap) => {
+        const audio = snap.val();
+        if (audio.usuario !== usuario) {
+            const audioElement = new Audio(audio.data);
+            audioElement.play().catch(e => console.log('Erro ao tocar áudio'));
+            
+            const notif = document.getElementById('notificacaoAudio');
+            notif.style.display = 'flex';
+            notif.innerHTML = `🎙️ ${audio.usuario} falou em ${audio.estacao}`;
+            setTimeout(() => notif.style.display = 'none', 3000);
+        }
+    });
+}
+
+// ===== CONTAGEM DE USUÁRIOS POR ESTAÇÃO =====
+function iniciarContagemUsuarios() {
+    estacoes.forEach(est => {
+        db.ref(`estacoes/${est.id}/usuarios`).on('value', (snap) => {
+            const usuarios = snap.val();
+            const count = usuarios ? Object.keys(usuarios).length : 0;
+            const span = document.getElementById(`online-${est.id}`);
+            if (span) span.textContent = count;
+            
+            // Atualizar contagem da estação atual
+            if (est.id === estacaoAtual) {
+                document.getElementById('estacaoAtualPessoas').innerHTML = `${count} online`;
+            }
+        });
+    });
+}
+
+// ===== PTT - GRAVAR ÁUDIO =====
+const btnPtt = document.getElementById('btnPttVintage');
+const timerDiv = document.getElementById('timerGravacao');
+
+btnPtt.addEventListener('mousedown', iniciarGravacao);
+btnPtt.addEventListener('mouseup', pararGravacao);
+btnPtt.addEventListener('mouseleave', pararGravacao);
+btnPtt.addEventListener('touchstart', iniciarGravacao);
+btnPtt.addEventListener('touchend', pararGravacao);
+
+async function iniciarGravacao() {
+    if (gravando) return;
+    
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        permissoes.microfone = true;
-        stream.getTracks().forEach(t => t.stop());
-        document.getElementById('statusMicrofone').innerHTML = '✅';
-    } catch(e) {
-        document.getElementById('statusMicrofone').innerHTML = '❌';
-    }
-    
-    // Câmera
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        permissoes.camera = true;
-        stream.getTracks().forEach(t => t.stop());
-        document.getElementById('statusCamera').innerHTML = '✅';
-    } catch(e) {
-        document.getElementById('statusCamera').innerHTML = '❌';
-    }
-    
-    verificarPermissoes();
-}
-
-function verificarPermissoes() {
-    const btnEntrar = document.getElementById('btnEntrar');
-    const aceite = document.getElementById('aceitePrivacidade').checked;
-    
-    if (permissoes.localizacao && permissoes.microfone && aceite) {
-        btnEntrar.disabled = false;
-        btnEntrar.classList.add('ativo');
-        btnEntrar.innerHTML = '🚀 ENTRAR';
-    }
-}
-
-document.getElementById('aceitePrivacidade').addEventListener('change', verificarPermissoes);
-
-function entrar() {
-    const nome = document.getElementById('nomeUsuario').value.trim();
-    if (!nome) { alert('Digite seu nome!'); return; }
-    
-    usuario = nome;
-    
-    localStorage.setItem('br277_usuario', nome);
-    localStorage.setItem('br277_cor', corSelecionada);
-    localStorage.setItem('br277_fundo', fundoSelecionado);
-    
-    document.body.className = `tema-${corSelecionada} fundo-${fundoSelecionado}`;
-    
-    document.getElementById('welcomeModal').style.display = 'none';
-    
-    iniciarMapa();
-    iniciarGPS();
-    carregarUsuarios();
-    carregarOutrosUsuarios(); // MOSTRAR OUTROS USUÁRIOS NO MAPA
-    carregarAlertas();
-    carregarChat();
-    criarIconesAlertas();
-    
-    // Iniciar verificação de expiração de alertas - verificar a cada 1 minuto
-    console.log('🕒 Iniciando verificação de expiração de alertas...');
-    setInterval(verificarExpiracaoAlertas, 60000); // 1 minuto
-    
-    // Fazer uma verificação inicial após 5 segundos
-    setTimeout(verificarExpiracaoAlertas, 5000);
-}
-
-// ===== MOSTRAR OUTROS USUÁRIOS NO MAPA =====
-function carregarOutrosUsuarios() {
-    db.ref('usuarios_ativos').on('value', snap => {
-        const usuarios = snap.val();
-        const banidos = JSON.parse(localStorage.getItem('br277_banidos')) || {};
-        
-        if (!usuarios) {
-            // Remover todos os marcadores se não houver usuários
-            Object.values(marcadoresUsuarios).forEach(m => {
-                if (m) mapa.removeLayer(m);
-            });
-            marcadoresUsuarios = {};
-            return;
-        }
-        
-        // Para cada usuário no banco
-        Object.entries(usuarios).forEach(([id, dados]) => {
-            // Pular se for o próprio usuário ou se estiver banido
-            if (id === usuario || banidos[id]) return;
-            
-            const pos = L.latLng(dados.lat, dados.lng);
-            
-            // Se já existe marcador para este usuário, apenas atualiza posição
-            if (marcadoresUsuarios[id]) {
-                marcadoresUsuarios[id].setLatLng(pos);
-            } else {
-                // Criar novo marcador para outros usuários (carro cinza)
-                const marcador = L.marker(pos, {
-                    icon: L.divIcon({
-                        html: `<div class="carro-outro">🚗</div>`,
-                        className: '',
-                        iconSize: [30, 30],
-                        iconAnchor: [15, 15]
-                    })
-                }).addTo(mapa);
-                
-                // Adicionar popup com nome do usuário e tempo online
-                const tempoOnline = Math.round((Date.now() - dados.timestamp) / 60000);
-                marcador.bindPopup(`
-                    <div style="text-align:center; font-weight:bold; min-width:150px;">
-                        <div style="font-size:16px; margin-bottom:5px;">👤 ${id}</div>
-                        <div style="font-size:11px; color:#666;">
-                            <i class="fas fa-clock"></i> ${tempoOnline} min atrás
-                        </div>
-                    </div>
-                `);
-                
-                marcadoresUsuarios[id] = marcador;
-            }
-        });
-        
-        // Remover marcadores de usuários que saíram
-        Object.keys(marcadoresUsuarios).forEach(id => {
-            if (!usuarios[id] || id === usuario) {
-                if (marcadoresUsuarios[id]) {
-                    mapa.removeLayer(marcadoresUsuarios[id]);
-                    delete marcadoresUsuarios[id];
-                }
-            }
-        });
-    });
-}
-
-// ===== CONFIGURAÇÕES =====
-function abrirConfig() {
-    document.getElementById('configNome').value = usuario;
-    
-    document.querySelectorAll('.config-cor').forEach(el => el.classList.remove('selecionada'));
-    document.getElementById(`config-${corSelecionada}`).classList.add('selecionada');
-    
-    document.querySelectorAll('.config-fundo').forEach(el => el.classList.remove('selecionada'));
-    document.getElementById(`fundo-config-${fundoSelecionado}`).classList.add('selecionada');
-    
-    if (isAdmin) {
-        document.getElementById('adminSection').style.display = 'block';
-        carregarListaUsuarios();
-    } else {
-        document.getElementById('adminSection').style.display = 'none';
-    }
-    
-    document.getElementById('configPanel').classList.add('visivel');
-}
-
-function fecharConfig() {
-    document.getElementById('configPanel').classList.remove('visivel');
-}
-
-function mudarCor(cor) {
-    corSelecionada = cor;
-    document.querySelectorAll('.config-cor').forEach(el => el.classList.remove('selecionada'));
-    document.getElementById(`config-${cor}`).classList.add('selecionada');
-    
-    document.body.className = `tema-${cor} fundo-${fundoSelecionado}`;
-}
-
-function mudarFundo(fundo) {
-    fundoSelecionado = fundo;
-    document.querySelectorAll('.config-fundo').forEach(el => el.classList.remove('selecionada'));
-    document.getElementById(`fundo-config-${fundo}`).classList.add('selecionada');
-    
-    document.body.className = `tema-${corSelecionada} fundo-${fundo}`;
-}
-
-function salvarConfig() {
-    const novoNome = document.getElementById('configNome').value.trim();
-    if (novoNome && novoNome !== usuario) {
-        usuario = novoNome;
-        localStorage.setItem('br277_usuario', novoNome);
-    }
-    
-    localStorage.setItem('br277_cor', corSelecionada);
-    localStorage.setItem('br277_fundo', fundoSelecionado);
-    
-    fecharConfig();
-    mostrarNotificacao('✅ Configurações salvas!');
-}
-
-// ===== ADMIN =====
-function mostrarAdminPanel() {
-    document.getElementById('adminPanel').style.display = 'flex';
-}
-
-function fecharAdminPanel() {
-    document.getElementById('adminPanel').style.display = 'none';
-}
-
-function verificarAdmin() {
-    const senha = document.getElementById('adminSenha').value;
-    if (senha === ADMIN_PASSWORD) {
-        isAdmin = true;
-        localStorage.setItem('br277_admin', 'true');
-        fecharAdminPanel();
-        mostrarNotificacao('👑 Modo admin ativado!');
-        carregarChat();
-    } else {
-        alert('❌ Senha incorreta!');
-    }
-}
-
-function sairAdmin() {
-    isAdmin = false;
-    localStorage.removeItem('br277_admin');
-    fecharConfig();
-    mostrarNotificacao('👋 Modo admin desativado');
-}
-
-function carregarListaUsuarios() {
-    db.ref('usuarios_ativos').once('value', snap => {
-        const usuarios = snap.val();
-        const banidos = JSON.parse(localStorage.getItem('br277_banidos')) || {};
-        let html = '';
-        
-        Object.entries(usuarios || {}).forEach(([id, dados]) => {
-            const isBanido = banidos[id];
-            html += `
-                <div class="usuario-item">
-                    <div class="usuario-info">
-                        <span class="usuario-nome">${id}</span>
-                        <span class="usuario-status ${isBanido ? 'status-banido' : 'status-online'}">
-                            ${isBanido ? 'BANIDO' : 'ONLINE'}
-                        </span>
-                    </div>
-                    ${!isBanido ? `
-                        <button class="btn-banir" onclick="banirUsuario('${id}')">BANIR</button>
-                    ` : `
-                        <button class="btn-banir" style="background:#4caf50;" onclick="desbanirUsuario('${id}')">DESBANIR</button>
-                    `}
-                </div>
-            `;
-        });
-        
-        document.getElementById('usuariosLista').innerHTML = html || '<p style="color:#999;">Nenhum usuário online</p>';
-    });
-}
-
-function banirUsuario(nome) {
-    if (confirm(`Banir ${nome} permanentemente?`)) {
-        const banidos = JSON.parse(localStorage.getItem('br277_banidos')) || {};
-        banidos[nome] = true;
-        localStorage.setItem('br277_banidos', JSON.stringify(banidos));
-        
-        db.ref('usuarios_ativos/' + nome).remove();
-        
-        mostrarNotificacao(`🚫 ${nome} banido!`);
-        carregarListaUsuarios();
-    }
-}
-
-function desbanirUsuario(nome) {
-    const banidos = JSON.parse(localStorage.getItem('br277_banidos')) || {};
-    delete banidos[nome];
-    localStorage.setItem('br277_banidos', JSON.stringify(banidos));
-    mostrarNotificacao(`✅ ${nome} desbanido!`);
-    carregarListaUsuarios();
-}
-
-function limparTodosAlertas() {
-    if (confirm('Tem certeza? Isso apagará TODOS os alertas!')) {
-        db.ref('alertas_fixos').remove();
-        mostrarNotificacao('🗑️ Todos alertas removidos');
-    }
-}
-
-// Verificar admin salvo
-const adminSalvo = localStorage.getItem('br277_admin') === 'true';
-if (adminSalvo) { isAdmin = true; }
-
-// ===== MAPA =====
-function iniciarMapa() {
-    mapa = L.map('map', { zoomControl: false }).setView([-25.4284, -49.2733], 13);
-    L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(mapa);
-    
-    mapa.on('dragstart', () => { 
-        seguirLocalizacao = false; 
-        document.getElementById('btnRecentrarMobile').style.display = 'flex'; 
-    });
-}
-
-function iniciarGPS() {
-    if (!navigator.geolocation) return;
-    navigator.geolocation.watchPosition(pos => {
-        minhaLocalizacao = L.latLng(pos.coords.latitude, pos.coords.longitude);
-        
-        if (pos.coords.speed) {
-            const vel = Math.round(pos.coords.speed * 3.6);
-            document.getElementById('velocimetroDisplay').textContent = vel;
-        }
-        
-        if (!meuMarcador) {
-            meuMarcador = L.marker(minhaLocalizacao, { 
-                icon: L.divIcon({
-                    html: `<div class="carro-simples">🚗</div>`,
-                    className: '',
-                    iconSize: [30, 30],
-                    iconAnchor: [15, 15]
-                })
-            }).addTo(mapa);
-            mapa.setView(minhaLocalizacao, 17);
-        } else {
-            meuMarcador.setLatLng(minhaLocalizacao);
-        }
-        
-        db.ref('usuarios_ativos/' + usuario).set({
-            lat: minhaLocalizacao.lat,
-            lng: minhaLocalizacao.lng,
-            timestamp: Date.now()
-        });
-        
-        if (seguirLocalizacao) mapa.panTo(minhaLocalizacao);
-    });
-}
-
-// ===== USUÁRIOS =====
-function carregarUsuarios() {
-    db.ref('usuarios_ativos').on('value', snap => {
-        const usuarios = snap.val();
-        const banidos = JSON.parse(localStorage.getItem('br277_banidos')) || {};
-        let total = 0;
-        
-        if (usuarios) {
-            total = Object.keys(usuarios).filter(id => !banidos[id]).length;
-        }
-        
-        document.getElementById('numUsuarios').textContent = total;
-    });
-}
-
-// ===== FUNÇÃO PARA VERIFICAR ALERTA DUPLICADO =====
-async function verificarAlertaDuplicado(lat, lng, tipoAlerta) {
-    return new Promise((resolve) => {
-        // Raio de 100 metros para considerar como mesmo local
-        const raio = 0.001; // Aproximadamente 100 metros
-        
-        db.ref('alertas_fixos').once('value', snap => {
-            const alertas = snap.val();
-            if (!alertas) {
-                resolve(null);
-                return;
-            }
-            
-            // Procurar alerta próximo do mesmo tipo
-            for (let id in alertas) {
-                const a = alertas[id];
-                if (a.nome === tipoAlerta) {
-                    const distancia = Math.sqrt(
-                        Math.pow(a.lat - lat, 2) + 
-                        Math.pow(a.lng - lng, 2)
-                    );
-                    
-                    if (distancia < raio) {
-                        resolve(id); // Retorna o ID do alerta existente
-                        return;
-                    }
-                }
-            }
-            
-            resolve(null); // Nenhum alerta duplicado encontrado
-        });
-    });
-}
-
-// ===== VERIFICAÇÃO DE EXPIRAÇÃO DE ALERTAS =====
-function verificarExpiracaoAlertas() {
-    console.log('🔍 Verificando expiração de alertas...'); // Para debug
-    
-    const agora = Date.now();
-    const tempoMaximoVida = 60 * 60 * 1000; // 1 HORA em milissegundos
-    
-    db.ref('alertas_fixos').once('value', snap => {
-        const alertas = snap.val();
-        if (!alertas) {
-            console.log('Nenhum alerta para verificar');
-            return;
-        }
-        
-        let alertasExpirados = 0;
-        
-        Object.entries(alertas).forEach(([id, alerta]) => {
-            // Usar o timestamp de criação (quando o alerta foi criado)
-            const timestampCriacao = alerta.timestamp;
-            const tempoExistente = agora - timestampCriacao;
-            
-            console.log(`Alerta ${alerta.nome}: existe há ${Math.round(tempoExistente/60000)} minutos`);
-            
-            // Se existe há mais de 1 hora
-            if (tempoExistente > tempoMaximoVida) {
-                console.log(`⚠️ Alerta ${alerta.nome} expirando (tempo de vida excedido)`);
-                
-                // Remover alerta
-                db.ref('alertas_fixos/' + id).remove()
-                    .then(() => {
-                        alertasExpirados++;
-                        mostrarNotificacao(`⚠️ Alerta ${alerta.nome} removido (atingiu tempo máximo)`);
-                    })
-                    .catch(error => {
-                        console.error('Erro ao remover alerta:', error);
-                    });
-            }
-        });
-        
-        if (alertasExpirados > 0) {
-            console.log(`${alertasExpirados} alertas expirados por tempo de vida`);
-        }
-    }).catch(error => {
-        console.error('Erro ao verificar alertas:', error);
-    });
-}
-
-// ===== ALERTAS =====
-function criarIconesAlertas() {
-    const grid = document.getElementById('alertasGridMobile');
-    alertasMobile.forEach(a => {
-        const div = document.createElement('div');
-        div.className = 'alerta-item-mobile';
-        div.style.background = a.bg;
-        div.innerHTML = `<div>${a.icone}</div><span>${a.nome}</span>`;
-        div.onclick = () => {
-            if (!minhaLocalizacao) return;
-            abrirCameraParaAlerta(a);
-        };
-        grid.appendChild(div);
-    });
-}
-
-async function abrirCameraParaAlerta(alerta) {
-    // Primeiro verificar se já existe alerta duplicado
-    const alertaExistenteId = await verificarAlertaDuplicado(
-        minhaLocalizacao.lat, 
-        minhaLocalizacao.lng, 
-        alerta.nome
-    );
-    
-    if (alertaExistenteId) {
-        // Se já existe, apenas confirmar o alerta existente
-        db.ref('alertas_fixos/' + alertaExistenteId + '/confirmacoes').transaction(c => (c||0)+1);
-        mostrarNotificacao('✅ Alerta já existe! Sua confirmação foi adicionada.');
-        return;
-    }
-    
-    // Se não existe, criar novo alerta com câmera
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-        
-        const overlay = document.createElement('div');
-        overlay.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #000;
-            z-index: 100000;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        `;
-        
-        const video = document.createElement('video');
-        video.style.cssText = 'width:90%; max-width:350px; border-radius:20px;';
-        video.autoplay = true;
-        video.srcObject = stream;
-        
-        const btnFoto = document.createElement('button');
-        btnFoto.style.cssText = 'margin:15px; padding:12px 25px; background:#ffd700; border:none; border-radius:40px; font-size:16px; font-weight:700; cursor:pointer;';
-        btnFoto.innerHTML = '📷 TIRAR FOTO';
-        
-        const btnPular = document.createElement('button');
-        btnPular.style.cssText = 'margin:15px; padding:12px 25px; background:#444; border:none; border-radius:40px; font-size:16px; font-weight:700; cursor:pointer; color:white;';
-        btnPular.innerHTML = '⏭️ PULAR';
-        
-        const btnFechar = document.createElement('button');
-        btnFechar.style.cssText = 'position:absolute; top:15px; right:15px; width:40px; height:40px; background:#e53935; border:none; border-radius:50%; color:white; font-size:18px; cursor:pointer;';
-        btnFechar.innerHTML = '✕';
-        
-        overlay.appendChild(video);
-        overlay.appendChild(btnFoto);
-        overlay.appendChild(btnPular);
-        overlay.appendChild(btnFechar);
-        document.body.appendChild(overlay);
-        
-        btnFoto.onclick = () => {
-            const canvas = document.createElement('canvas');
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            canvas.getContext('2d').drawImage(video, 0, 0);
-            
-            canvas.toBlob(async (blob) => {
-                const reader = new FileReader();
-                reader.onloadend = async () => {
-                    const id = Date.now();
-                    const alertaData = {
-                        ...alerta,
-                        lat: minhaLocalizacao.lat,
-                        lng: minhaLocalizacao.lng,
-                        timestamp: id,
-                        criador: usuario,
-                        confirmacoes: 1,
-                        imagem: { thumbnail: reader.result }
-                    };
-                    
-                    await db.ref('alertas_fixos/' + id).set(alertaData);
-                    
-                    stream.getTracks().forEach(t => t.stop());
-                    document.body.removeChild(overlay);
-                    mostrarNotificacao('✅ Alerta criado!');
-                };
-                reader.readAsDataURL(blob);
-            }, 'image/jpeg', 0.6);
-        };
-        
-        btnPular.onclick = async () => {
-            const id = Date.now();
-            const alertaData = {
-                ...alerta,
-                lat: minhaLocalizacao.lat,
-                lng: minhaLocalizacao.lng,
-                timestamp: id,
-                criador: usuario,
-                confirmacoes: 1
-            };
-            await db.ref('alertas_fixos/' + id).set(alertaData);
-            stream.getTracks().forEach(t => t.stop());
-            document.body.removeChild(overlay);
-            mostrarNotificacao('Alerta criado (sem foto)');
-        };
-        
-        btnFechar.onclick = () => {
-            stream.getTracks().forEach(t => t.stop());
-            document.body.removeChild(overlay);
-        };
-        
-    } catch(e) {
-        console.log('Erro na câmera:', e);
-        const id = Date.now();
-        const alertaData = {
-            ...alerta,
-            lat: minhaLocalizacao.lat,
-            lng: minhaLocalizacao.lng,
-            timestamp: id,
-            criador: usuario,
-            confirmacoes: 1
-        };
-        await db.ref('alertas_fixos/' + id).set(alertaData);
-        mostrarNotificacao('Alerta criado (sem foto)');
-    }
-}
-
-function carregarAlertas() {
-    db.ref('alertas_fixos').on('child_added', snap => {
-        const a = snap.val();
-        if (!a) return;
-        
-        const id = snap.key;
-        
-        // Se já existe marcador para este alerta, não criar outro
-        if (alertasNoMapa[id]) return;
-        
-        const temImagem = a.imagem && a.imagem.thumbnail;
-        let htmlIcone;
-        
-        if (temImagem) {
-            htmlIcone = `
-                <div class="alerta-com-foto">
-                    <div class="alerta-pulsante" style="border-color: ${a.cor};"></div>
-                    <div class="alerta-foto"><img src="${a.imagem.thumbnail}"></div>
-                    <div class="alerta-icone-pequeno" style="background:${a.cor};">${a.icone}</div>
-                </div>
-            `;
-        } else {
-            htmlIcone = `<div style="background:${a.cor}; width:40px; height:40px; border-radius:50%; border:3px solid white; display:flex; align-items:center; justify-content:center; font-size:20px;">${a.icone}</div>`;
-        }
-        
-        const marcador = L.marker([a.lat, a.lng], {
-            icon: L.divIcon({
-                html: htmlIcone,
-                className: '',
-                iconSize: temImagem ? [48,48] : [40,40],
-                iconAnchor: temImagem ? [24,24] : [20,20]
-            })
-        }).addTo(mapa);
-        
-        marcador.on('click', () => abrirPopupAlerta(a, id));
-        
-        // Armazenar referência ao marcador
-        alertasNoMapa[id] = marcador;
-    });
-    
-    db.ref('alertas_fixos').on('child_changed', snap => {
-        const a = snap.val();
-        const id = snap.key;
-        
-        if (alertasNoMapa[id]) {
-            // Atualizar popup se estiver aberto
-            const popupAtual = mapa._popup;
-            if (popupAtual && popupAtual._source === alertasNoMapa[id]) {
-                abrirPopupAlerta(a, id);
-            }
-        }
-    });
-    
-    db.ref('alertas_fixos').on('child_removed', snap => {
-        const id = snap.key;
-        if (alertasNoMapa[id]) {
-            mapa.removeLayer(alertasNoMapa[id]);
-            delete alertasNoMapa[id];
-        }
-    });
-}
-
-function abrirPopupAlerta(alerta, id) {
-    const popup = document.createElement('div');
-    popup.className = 'popup-mobile';
-    
-    let imagemHTML = '';
-    if (alerta.imagem && alerta.imagem.thumbnail) {
-        imagemHTML = `
-            <div class="popup-imagem-mobile">
-                <img src="${alerta.imagem.thumbnail}" onclick="window.open('${alerta.imagem.thumbnail}', '_blank')">
-            </div>
-        `;
-    }
-    
-    popup.innerHTML = `
-        <div class="popup-fechar" onclick="fecharPopupAlerta('${id}')">✕</div>
-        <div class="popup-header-mobile">
-            <span>${alerta.icone} ${alerta.nome}</span>
-            <span>${alerta.confirmacoes||0}</span>
-        </div>
-        ${imagemHTML}
-        <div class="popup-stats-mobile">
-            <span class="likes" onclick="curtirAlerta('${id}')"><i class="fas fa-thumbs-up"></i> ${alerta.confirmacoes||0}</span>
-            <span class="dislikes" onclick="descurtirAlerta('${id}')"><i class="fas fa-thumbs-down"></i> 0</span>
-            <span><i class="fas fa-clock"></i> ${new Date(alerta.timestamp).toLocaleTimeString().slice(0,5)}</span>
-        </div>
-        <div class="popup-chat-mobile" id="chat-${id}"></div>
-        <div class="popup-input-mobile">
-            <input type="text" id="input-${id}" placeholder="Digite...">
-            <button onclick="enviarMsgAlerta('${id}')">➔</button>
-        </div>
-    `;
-    
-    L.popup({ maxWidth: 260 }).setLatLng([alerta.lat, alerta.lng]).setContent(popup).openOn(mapa);
-    carregarChatAlerta(id);
-}
-
-function fecharPopupAlerta(id) {
-    mapa.closePopup();
-}
-
-function curtirAlerta(id) {
-    db.ref('alertas_fixos/' + id + '/confirmacoes').transaction(c => (c||0)+1);
-}
-
-function descurtirAlerta(id) {
-    mostrarNotificacao('👎 Obrigado!');
-}
-
-function carregarChatAlerta(id) {
-    db.ref(`chats/alerta_${id}`).on('value', snap => {
-        const chatDiv = document.getElementById(`chat-${id}`);
-        if (!chatDiv) return;
-        const msgs = snap.val();
-        if (!msgs) { chatDiv.innerHTML = '<div style="text-align:center; color:#999;">Nenhuma mensagem</div>'; return; }
-        
-        let html = '';
-        Object.values(msgs).sort((a, b) => a.timestamp - b.timestamp).forEach(m => {
-            const isMinha = m.usuario === usuario;
-            const hora = new Date(m.timestamp).toLocaleTimeString().slice(0,5);
-            html += `
-                <div style="display:flex; flex-direction:column; align-items:${isMinha ? 'flex-end' : 'flex-start'}; margin:4px 0;">
-                    <div class="mensagem" style="background:${isMinha?'#dcf8c6':'#2a2a2a'}; color:${isMinha?'#000':'#fff'}; max-width:100%;">
-                        <b>${m.usuario}</b><br>${m.texto}<br>
-                        <div style="text-align:right; font-size:8px; color:#999;">${hora}</div>
-                    </div>
-                </div>
-            `;
-        });
-        chatDiv.innerHTML = html;
-    });
-}
-
-function enviarMsgAlerta(id) {
-    const input = document.getElementById(`input-${id}`);
-    if (!input.value.trim()) return;
-    db.ref(`chats/alerta_${id}`).push({
-        usuario, texto: input.value.trim(), timestamp: Date.now()
-    });
-    input.value = '';
-}
-
-// ===== CHAT GERAL =====
-function toggleChatGeral() {
-    const chat = document.getElementById('chatGeralMobile');
-    chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
-    if (chat.style.display === 'flex') {
-        setTimeout(() => {
-            const msgs = document.getElementById('chatMensagensMobile');
-            msgs.scrollTop = msgs.scrollHeight;
-        }, 100);
-    }
-}
-
-function fecharChatGeral() { document.getElementById('chatGeralMobile').style.display = 'none'; }
-
-function carregarChat() {
-    db.ref('chat_geral').on('value', snap => {
-        const msgs = snap.val();
-        const chatDiv = document.getElementById('chatMensagensMobile');
-        if (!msgs) { chatDiv.innerHTML = ''; return; }
-        
-        let html = '';
-        let ultimaData = '';
-        const msgsArray = Object.values(msgs).sort((a, b) => a.timestamp - b.timestamp);
-        
-        msgsArray.forEach(msg => {
-            const dataMsg = new Date(msg.timestamp).toLocaleDateString();
-            if (dataMsg !== ultimaData) {
-                html += `<div style="text-align:center; margin:10px 0;"><span style="background:rgba(0,0,0,0.5); color:white; padding:3px 12px; border-radius:20px; font-size:10px;">${dataMsg===new Date().toLocaleDateString()?'Hoje':dataMsg}</span></div>`;
-                ultimaData = dataMsg;
-            }
-            
-            const isMinha = msg.usuario === usuario;
-            const hora = new Date(msg.timestamp).toLocaleTimeString().slice(0,5);
-            
-            html += `
-                <div class="mensagem-wrapper ${isMinha ? 'minha' : 'outra'}">
-                    ${msg.resposta ? `
-                        <div class="resposta-preview">
-                            <strong>${msg.resposta.usuario}:</strong> ${msg.resposta.texto}
-                        </div>
-                    ` : ''}
-                    <div class="mensagem ${isMinha ? 'minha' : 'outra'}">
-                        <div class="mensagem-remetente">${msg.usuario}</div>
-                        ${msg.texto}
-                        <div class="mensagem-hora">${hora}</div>
-                    </div>
-                    ${isAdmin || isMinha ? `
-                        <div class="mensagem-acoes">
-                            <span class="acao" onclick="responderMsg('${msg.usuario}', '${msg.texto.replace(/'/g, "\\'")}')">↩️</span>
-                            <span class="acao" onclick="apagarMsg(${msg.timestamp})">🗑️</span>
-                        </div>
-                    ` : ''}
-                </div>
-            `;
-        });
-        
-        chatDiv.innerHTML = html;
-        chatDiv.scrollTop = chatDiv.scrollHeight;
-    });
-}
-
-let mensagemRespondendo = null;
-
-function responderMsg(user, txt) {
-    mensagemRespondendo = { usuario: user, texto: txt };
-    document.getElementById('chatInputMobile').focus();
-    document.getElementById('chatInputMobile').placeholder = `Respondendo ${user}...`;
-}
-
-function apagarMsg(timestamp) {
-    if (confirm('Apagar mensagem?')) {
-        db.ref('chat_geral').orderByChild('timestamp').equalTo(timestamp).once('value', snap => {
-            snap.forEach(child => child.ref.remove());
-        });
-    }
-}
-
-function enviarMsgGeral() {
-    const input = document.getElementById('chatInputMobile');
-    if (!input.value.trim()) return;
-    
-    const msg = {
-        usuario, texto: input.value.trim(), timestamp: Date.now()
-    };
-    
-    if (mensagemRespondendo) {
-        msg.resposta = mensagemRespondendo;
-        mensagemRespondendo = null;
-        document.getElementById('chatInputMobile').placeholder = 'Digite sua mensagem...';
-    }
-    
-    db.ref('chat_geral').push(msg);
-    input.value = '';
-}
-
-// ===== RÁDIO PX =====
-let gravador, pedacosAudio, streamAudio, timerInterval, tempoRestante = 20;
-let timeoutAutoEnvio = null;
-
-document.getElementById('btn-px-mobile').addEventListener('click', async function() {
-    if (gravador && gravador.state === 'recording') { 
-        pararGravacao(); 
-        return; 
-    }
-    
-    try {
-        streamAudio = await navigator.mediaDevices.getUserMedia({ audio: true });
-        gravador = new MediaRecorder(streamAudio);
-        pedacosAudio = [];
+        gravador = new MediaRecorder(stream);
+        const chunks = [];
         tempoRestante = 20;
         
-        gravador.ondataavailable = e => e.data.size > 0 && pedacosAudio.push(e.data);
+        gravador.ondataavailable = e => chunks.push(e.data);
         
-        gravador.onstop = () => {
-            if (pedacosAudio.length > 0) {
-                const reader = new FileReader();
-                reader.onloadend = () => {
-                    db.ref('radio').push({ 
-                        audio: reader.result, 
-                        usuario, 
-                        timestamp: Date.now() 
-                    });
-                    
-                    setTimeout(() => {
-                        db.ref('radio').orderByChild('timestamp').endAt(Date.now() - 20000).once('value', snap => {
-                            snap.forEach(child => child.ref.remove());
+        gravador.onstop = async () => {
+            const blob = new Blob(chunks, { type: 'audio/webm' });
+            const reader = new FileReader();
+            reader.onloadend = async () => {
+                const estacao = estacoes.find(e => e.id === estacaoAtual);
+                await db.ref(`estacoes/${estacaoAtual}/audio`).push({
+                    usuario: usuario,
+                    estacao: estacao.nome,
+                    data: reader.result,
+                    timestamp: Date.now()
+                });
+                
+                // Limpar áudios antigos (últimos 50)
+                const snapshot = await db.ref(`estacoes/${estacaoAtual}/audio`).once('value');
+                const audios = snapshot.val();
+                if (audios) {
+                    const keys = Object.keys(audios);
+                    if (keys.length > 50) {
+                        const toRemove = keys.slice(0, keys.length - 50);
+                        toRemove.forEach(key => {
+                            db.ref(`estacoes/${estacaoAtual}/audio/${key}`).remove();
                         });
-                    }, 20000);
-                };
-                reader.readAsDataURL(new Blob(pedacosAudio, { type: 'audio/webm' }));
-            }
-            
-            streamAudio.getTracks().forEach(t => t.stop());
-            document.getElementById('gravandoIndicator').style.display = 'none';
-            if (timerInterval) clearInterval(timerInterval);
-            if (timeoutAutoEnvio) clearTimeout(timeoutAutoEnvio);
-            document.getElementById('btn-px-mobile').classList.remove('ativo');
+                    }
+                }
+            };
+            reader.readAsDataURL(blob);
+            stream.getTracks().forEach(t => t.stop());
         };
         
         gravador.start();
-        document.getElementById('btn-px-mobile').classList.add('ativo');
-        document.getElementById('gravandoIndicator').style.display = 'flex';
-        const timer = document.getElementById('gravandoTimer');
+        gravando = true;
+        btnPtt.classList.add('gravando');
+        timerDiv.style.display = 'block';
         
         timerInterval = setInterval(() => {
             tempoRestante--;
-            timer.textContent = tempoRestante + 's';
-            if (tempoRestante <= 1) {
+            timerDiv.textContent = `${tempoRestante}s`;
+            if (tempoRestante <= 0) {
                 pararGravacao();
             }
         }, 1000);
         
-        timeoutAutoEnvio = setTimeout(() => {
-            if (gravador && gravador.state === 'recording') {
-                pararGravacao();
-            }
-        }, 19500);
-        
-    } catch(e) { 
-        alert('Permita acesso ao microfone'); 
+    } catch(e) {
+        alert('Permita acesso ao microfone para usar o PTT');
     }
-});
+}
 
 function pararGravacao() {
     if (gravador && gravador.state === 'recording') {
         gravador.stop();
     }
+    if (timerInterval) clearInterval(timerInterval);
+    gravando = false;
+    btnPtt.classList.remove('gravando');
+    timerDiv.style.display = 'none';
 }
 
-db.ref('radio').limitToLast(1).on('child_added', snap => {
-    const d = snap.val();
-    if (d && d.usuario !== usuario) {
-        new Audio(d.audio).play().catch(() => {});
-        document.getElementById('audioNotification').style.display = 'flex';
-        setTimeout(() => document.getElementById('audioNotification').style.display = 'none', 2000);
+// ===== CHAT GERAL =====
+function iniciarChat() {
+    db.ref('chat_geral').on('value', (snap) => {
+        const msgs = snap.val();
+        const container = document.getElementById('chatMensagens');
+        if (!msgs) {
+            container.innerHTML = '';
+            return;
+        }
+        
+        let html = '';
+        Object.values(msgs).sort((a,b) => a.timestamp - b.timestamp).forEach(msg => {
+            const isMinha = msg.usuario === usuario;
+            html += `
+                <div class="mensagem-chat ${isMinha ? 'minha' : 'outra'}" style="max-width:80%; ${isMinha ? 'margin-left:auto;' : ''}">
+                    <strong>${msg.usuario}</strong><br>
+                    ${msg.texto}<br>
+                    <small style="font-size:9px;">${new Date(msg.timestamp).toLocaleTimeString()}</small>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+        container.scrollTop = container.scrollHeight;
+    });
+}
+
+function enviarMensagemChat() {
+    const input = document.getElementById('chatInput');
+    if (!input.value.trim()) return;
+    
+    db.ref('chat_geral').push({
+        usuario: usuario,
+        texto: input.value.trim(),
+        timestamp: Date.now()
+    });
+    input.value = '';
+}
+
+function abrirChat() {
+    document.getElementById('chatOverlay').classList.add('visivel');
+}
+
+function fecharChat() {
+    document.getElementById('chatOverlay').classList.remove('visivel');
+}
+
+// ===== MAPA =====
+function iniciarGPS() {
+    if (!navigator.geolocation) return;
+    
+    navigator.geolocation.watchPosition(pos => {
+        minhaLocalizacao = [pos.coords.latitude, pos.coords.longitude];
+        
+        if (!mapa) return;
+        
+        if (!meuMarcador) {
+            meuMarcador = L.marker(minhaLocalizacao, {
+                icon: L.divIcon({
+                    html: `<div style="font-size:30px;">🚗</div>`,
+                    className: '',
+                    iconSize: [30,30],
+                    iconAnchor: [15,15]
+                })
+            }).addTo(mapa);
+            mapa.setView(minhaLocalizacao, 13);
+        } else {
+            meuMarcador.setLatLng(minhaLocalizacao);
+        }
+        
+        // Atualizar localização no Firebase
+        db.ref('usuarios_localizacao/' + usuario).set({
+            lat: minhaLocalizacao[0],
+            lng: minhaLocalizacao[1],
+            estacao: estacaoAtual,
+            timestamp: Date.now()
+        });
+    });
+}
+
+function abrirMapa() {
+    const overlay = document.getElementById('mapaOverlay');
+    overlay.classList.add('visivel');
+    
+    setTimeout(() => {
+        if (!mapa) {
+            mapa = L.map('mapa-completo').setView([-25.4284, -49.2733], 13);
+            L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(mapa);
+            
+            // Adicionar marcadores das estações
+            estacoes.forEach(est => {
+                L.marker([est.lat, est.lng], {
+                    icon: L.divIcon({
+                        html: `<div style="background:#ffd700; width:12px; height:12px; border-radius:50%; border:2px solid #fff;"></div>`,
+                        className: '',
+                        iconSize: [12,12]
+                    })
+                }).addTo(mapa).bindPopup(`<b>${est.nome}</b><br>${est.km}`);
+            });
+            
+            if (minhaLocalizacao) {
+                mapa.setView(minhaLocalizacao, 13);
+            }
+        } else {
+            mapa.invalidateSize();
+            if (minhaLocalizacao) mapa.setView(minhaLocalizacao, 13);
+        }
+    }, 100);
+}
+
+function fecharMapa() {
+    document.getElementById('mapaOverlay').classList.remove('visivel');
+}
+
+// ===== CONFIGURAÇÕES =====
+function abrirConfig() {
+    const novoNome = prompt('Digite seu nome:', usuario);
+    if (novoNome && novoNome.trim()) {
+        usuario = novoNome.trim();
+        localStorage.setItem('usuario_radio', usuario);
+        mostrarNotificacao(`✅ Nome alterado para ${usuario}`, '#4caf50');
     }
-});
-
-// ===== FUNÇÕES =====
-function toggleReporteMobile() {
-    document.getElementById('alertasPanelMobile').classList.toggle('visivel');
 }
 
-function fecharLegenda() {
-    document.getElementById('legendaContainer').style.display = 'none';
-}
-
-function toggleModoNoturno() { 
-    document.getElementById('map').classList.toggle('mapa-noturno'); 
-    document.getElementById('btn-luz-mobile').classList.toggle('ativo');
-}
-
-function toggleMudo() {
-    const btn = document.getElementById('btn-mudo-mobile');
-    btn.classList.toggle('mudo');
-    if (btn.classList.contains('mudo')) {
-        btn.innerHTML = '<i class="fas fa-volume-mute"></i>';
-    } else {
-        btn.innerHTML = '<i class="fas fa-volume-up"></i>';
-    }
-}
-
-function toggleInterface() {
-    document.body.classList.toggle('interface-oculta');
-    const seta = document.getElementById('iconeSeta');
-    seta.className = document.body.classList.contains('interface-oculta') ? 'fas fa-chevron-down' : 'fas fa-chevron-up';
-    if (!document.body.classList.contains('interface-oculta') && !seguirLocalizacao) {
-        document.getElementById('btnRecentrarMobile').style.display = 'flex';
-    }
-}
-
-function recentralizar() {
-    seguirLocalizacao = true;
-    document.getElementById('btnRecentrarMobile').style.display = 'none';
-    if (minhaLocalizacao) mapa.flyTo(minhaLocalizacao, 17);
-}
-
-function mostrarNotificacao(texto) {
+// ===== NOTIFICAÇÃO =====
+function mostrarNotificacao(msg, cor) {
     const notif = document.createElement('div');
-    notif.style.cssText = 'position:fixed; bottom:180px; left:50%; transform:translateX(-50%); background:var(--cor-primaria); color:white; padding:6px 16px; border-radius:30px; z-index:100000; font-size:12px; font-weight:700; border:2px solid white;';
-    notif.textContent = texto;
+    notif.style.cssText = `position:fixed; bottom:200px; left:50%; transform:translateX(-50%); background:${cor || '#00BFFF'}; color:white; padding:8px 20px; border-radius:30px; z-index:20003; font-size:12px; border:2px solid #ffd700;`;
+    notif.textContent = msg;
     document.body.appendChild(notif);
     setTimeout(() => notif.remove(), 2000);
 }
 
-// ===== ROTA =====
-function buscarRota() {
-    const destino = document.getElementById('buscaDestino').value;
-    if (!destino || !minhaLocalizacao) return;
-    
-    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(destino)},Brasil&limit=1`)
-        .then(r => r.json())
-        .then(data => {
-            if (!data.length) { alert('Não encontrado'); return; }
-            
-            const dest = L.latLng(data[0].lat, data[0].lon);
-            
-            if (marcadorDestino) mapa.removeLayer(marcadorDestino);
-            marcadorDestino = L.marker(dest, { 
-                icon: L.divIcon({
-                    html: `<div style="font-size:28px;">📍</div>`,
-                    className: '', iconSize: [28,28], iconAnchor: [14,28]
-                })
-            }).addTo(mapa);
-            
-            if (rotaAtual) mapa.removeControl(rotaAtual);
-            rotaAtual = L.Routing.control({
-                waypoints: [minhaLocalizacao, dest],
-                lineOptions: { styles: [{ color: '#4169E1', weight: 5, opacity: 0.6 }] },
-                createMarker: () => null,
-                show: false
-            }).addTo(mapa);
-            
-            mapa.flyToBounds(L.latLngBounds([minhaLocalizacao, dest]));
-            document.getElementById('rotaInfoPanel').style.display = 'flex';
-            
-            const dist = calcularDistancia(minhaLocalizacao.lat, minhaLocalizacao.lng, dest.lat, dest.lng);
-            const tempoMin = Math.round(dist * 1.2);
-            const horas = Math.floor(tempoMin / 60);
-            const mins = tempoMin % 60;
-            
-            document.getElementById('rotaTempo').textContent = horas > 0 ? `${horas}h${mins}min` : `${tempoMin}min`;
-            document.getElementById('rotaDistancia').textContent = dist + ' km';
-            document.getElementById('rotaAtraso').textContent = '+' + (horas > 0 ? `${horas}h${mins}min` : `${tempoMin}min`);
-        });
-}
-
-function calcularDistancia(lat1, lon1, lat2, lon2) {
-    const R = 6371;
-    const dLat = (lat2-lat1)*Math.PI/180;
-    const dLon = (lon2-lon1)*Math.PI/180;
-    const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
-    return (R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))).toFixed(1);
-}
-
-function encerrarRota() {
-    if (rotaAtual) { mapa.removeControl(rotaAtual); rotaAtual = null; }
-    if (marcadorDestino) { mapa.removeLayer(marcadorDestino); marcadorDestino = null; }
-    document.getElementById('rotaInfoPanel').style.display = 'none';
-}
-
-// ===== VERIFICAÇÃO DE ALERTAS PRÓXIMOS =====
-let alertaAtual = null;
-let popupTimeout = null;
-
-function verificarAlertasProximos() {
-    // Função simplificada - pode ser implementada depois
-}
-
-function confirmarAlerta() {
-    if (alertaAtual) {
-        db.ref('alertas_fixos/' + alertaAtual.id + '/confirmacoes').transaction(c => (c||0)+1);
-        document.getElementById('confirmacaoPopup').style.display = 'none';
-        alertaAtual = null;
+// ===== LIMPAR PRESENÇA AO SAIR =====
+window.addEventListener('beforeunload', () => {
+    if (usuario) {
+        db.ref(`estacoes/${estacaoAtual}/usuarios/${usuario}`).remove();
+        db.ref('usuarios_localizacao/' + usuario).remove();
     }
-}
+});
 
-function negarAlerta() {
-    document.getElementById('confirmacaoPopup').style.display = 'none';
-    alertaAtual = null;
-}
-
-// ===== CARREGAR DADOS SALVOS =====
-const userSalvo = localStorage.getItem('br277_usuario');
-const corSalva = localStorage.getItem('br277_cor');
-const fundoSalvo = localStorage.getItem('br277_fundo');
-
-if (userSalvo) {
-    usuario = userSalvo;
-    if (corSalva) corSelecionada = corSalva;
-    if (fundoSalvo) fundoSelecionado = fundoSalvo;
-    document.body.className = `tema-${corSelecionada} fundo-${fundoSelecionado}`;
-    document.getElementById('welcomeModal').style.display = 'none';
-    iniciarMapa();
-    iniciarGPS();
-    carregarUsuarios();
-    carregarOutrosUsuarios(); // MOSTRAR OUTROS USUÁRIOS NO MAPA
-    carregarAlertas();
-    carregarChat();
-    criarIconesAlertas();
-    
-    // Iniciar verificação de expiração de alertas
-    setInterval(verificarExpiracaoAlertas, 60000);
-}
+// ===== INICIAR TUDO =====
+iniciar();
 </script>
 </body>
 </html>
