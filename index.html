@@ -3,247 +3,1036 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RÁDIO BR-277</title>
+    <title>RÁDIO BR-277 | Comunicação dos Motoristas</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        *{margin:0;padding:0;box-sizing:border-box;}
-        body{background:#0a0a15;font-family:'Segoe UI',sans-serif;height:100vh;display:flex;justify-content:center;align-items:center;}
-        .app{max-width:450px;width:100%;height:100vh;background:#0f0f23;display:flex;flex-direction:column;overflow:hidden;}
-        .radio-header{background:linear-gradient(135deg,#1a1a2e,#16213e);padding:15px;border-bottom:2px solid #00BFFF;}
-        .radio-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
-        .radio-top h1{font-size:20px;color:#ffd700;}
-        .radio-top h1 i{color:#00BFFF;}
-        .freq-badge{background:#0a0a15;padding:5px12px;border-radius:30px;}
-        .freq-badge span{color:#00ff88;font-family:monospace;font-size:12px;}
-        .cities-wrapper{overflow-x:auto;white-space:nowrap;padding:8px0;scrollbar-width:thin;}
-        .cities-grid{display:inline-flex;gap:8px;padding:0 5px;}
-        .city-btn{background:#1f1f35;border:1px solid #3a3a5a;border-radius:30px;padding:8px16px;font-size:12px;font-weight:600;color:#ccc;cursor:pointer;}
-        .city-btn.active{background:linear-gradient(145deg,#00BFFF,#0066cc);color:white;border-color:#ffd700;}
-        .city-count{background:rgba(0,0,0,0.5);border-radius:20px;padding:2px6px;font-size:9px;margin-left:6px;}
-        .current-station{background:#0f0f23;margin:10px15px;padding:12px18px;border-radius:40px;display:flex;justify-content:space-between;border-left:4px solid #00BFFF;}
-        .station-name{font-size:16px;font-weight:bold;color:white;}
-        .station-online{background:#00BFFF;border-radius:30px;padding:4px12px;font-size:11px;color:#0f0f23;}
-        .map-section{margin:10px15px;background:#1a1a2e;border-radius:20px;overflow:hidden;border:1px solid #2a2a4a;}
-        .map-header{display:flex;justify-content:space-between;padding:12px15px;background:#1f1f35;cursor:pointer;}
-        .map-header h3{font-size:14px;color:#00BFFF;}
-        .map-container{height:0;overflow:hidden;transition:height 0.3s;}
-        .map-container.open{height:280px;}
-        #map{height:100%;width:100%;}
-        .action-bar{display:flex;gap:12px;padding:12px15px;background:#0f0f23;border-top:1px solid #2a2a4a;margin-top:auto;}
-        .ptt-btn{flex:2;background:radial-gradient(circle at 35%35%,#e53935,#8b0000);border:2px solid #ffd700;border-radius:50px;padding:12px;color:white;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;}
-        .ptt-btn.recording{animation:pulse 0.6s infinite;}
-        @keyframes pulse{0%{box-shadow:0 0 0 0 #e53935;}70%{box-shadow:0 0 0 12px rgba(229,57,53,0);}}
-        .action-icon{flex:1;background:#1f1f35;border:1px solid #3a3a5a;border-radius:50px;padding:12px;color:#ccc;text-align:center;cursor:pointer;}
-        .action-icon i{color:#00BFFF;}
-        .modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.95);z-index:10000;display:none;align-items:center;justify-content:center;}
-        .modal.visible{display:flex;}
-        .modal-content{background:#1a1a2e;border-radius:30px;width:100%;max-width:380px;max-height:80vh;overflow-y:auto;border:2px solid #00BFFF;}
-        .modal-header{padding:15px;background:#00BFFF;border-radius:28px 28px 0 0;display:flex;justify-content:space-between;color:white;}
-        .alertas-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:20px;}
-        .alerta-item{background:#2a2a4a;border-radius:16px;padding:12px;text-align:center;cursor:pointer;}
-        .alerta-icon{font-size:28px;}
-        .alerta-nome{font-size:10px;color:white;margin-top:5px;}
-        .chat-modal{position:fixed;top:0;left:0;right:0;bottom:0;background:#0a0a15;z-index:11000;display:none;flex-direction:column;}
-        .chat-modal.visible{display:flex;}
-        .chat-header{background:#075e54;padding:15px;color:white;display:flex;justify-content:space-between;}
-        .chat-messages{flex:1;overflow-y:auto;padding:15px;background:#e5ddd5;}
-        .chat-input-area{display:flex;padding:10px;background:#f0f0f0;gap:8px;}
-        .chat-input-area input{flex:1;padding:12px;border-radius:25px;border:none;}
-        .chat-input-area button{background:#075e54;border:none;width:45px;border-radius:50%;color:white;cursor:pointer;}
-        .msg{margin:8px0;padding:10px14px;border-radius:18px;max-width:80%;font-size:13px;}
-        .msg.me{background:#dcf8c6;margin-left:auto;}
-        .msg.other{background:white;}
-        .toast-audio{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#00BFFF;color:white;padding:8px20px;border-radius:40px;z-index:12000;display:none;border:2px solid gold;}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a15;
+            font-family: 'Segoe UI', 'Poppins', sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* CONTAINER PRINCIPAL */
+        .app {
+            max-width: 480px;
+            width: 100%;
+            height: 100vh;
+            background: #0f0f23;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* ===== CABEÇALHO DO RÁDIO ===== */
+        .radio-header {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            padding: 16px 20px;
+            border-bottom: 3px solid #00BFFF;
+        }
+
+        .radio-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .radio-title h1 {
+            font-size: 22px;
+            color: #ffd700;
+            letter-spacing: 2px;
+        }
+
+        .radio-title h1 i {
+            color: #00BFFF;
+            margin-right: 8px;
+        }
+
+        .radio-status {
+            background: #0a0a15;
+            padding: 5px 12px;
+            border-radius: 30px;
+        }
+
+        .radio-status span {
+            color: #00ff88;
+            font-family: monospace;
+            font-size: 12px;
+        }
+
+        .radio-status i {
+            font-size: 8px;
+            color: #00ff88;
+            margin-left: 5px;
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* ===== GRADE DE CIDADES (ORGANIZADA) ===== */
+        .cities-section {
+            background: #0f0f23;
+            padding: 12px 16px;
+        }
+
+        .section-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .section-label i {
+            color: #00BFFF;
+            font-size: 14px;
+        }
+
+        .section-label span {
+            color: #888;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .cities-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            max-height: 280px;
+            overflow-y: auto;
+            padding: 4px;
+        }
+
+        .city-card {
+            background: linear-gradient(145deg, #1f1f35, #181830);
+            border-radius: 14px;
+            padding: 10px 6px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #2a2a4a;
+            position: relative;
+        }
+
+        .city-card.active {
+            background: linear-gradient(145deg, #00BFFF, #0066cc);
+            border-color: #ffd700;
+            box-shadow: 0 0 12px rgba(0, 191, 255, 0.5);
+        }
+
+        .city-name {
+            font-size: 11px;
+            font-weight: 700;
+            color: #ddd;
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .city-card.active .city-name {
+            color: white;
+        }
+
+        .city-badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: #00BFFF;
+            color: white;
+            font-size: 9px;
+            font-weight: bold;
+            border-radius: 20px;
+            padding: 2px 6px;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .city-card.active .city-badge {
+            background: #ffd700;
+            color: #1a1a2e;
+        }
+
+        /* ===== ESTAÇÃO ATUAL ===== */
+        .current-station-card {
+            background: linear-gradient(135deg, #0f0f23, #13132a);
+            margin: 8px 16px;
+            padding: 14px 20px;
+            border-radius: 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid #00BFFF;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .current-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .current-info i {
+            font-size: 24px;
+            color: #00BFFF;
+        }
+
+        .current-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .current-count {
+            background: #00BFFF;
+            border-radius: 30px;
+            padding: 5px 14px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #0f0f23;
+        }
+
+        /* ===== MAPA EXPANSÍVEL ===== */
+        .map-wrapper {
+            margin: 8px 16px;
+            background: #1a1a2e;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid #2a2a4a;
+        }
+
+        .map-trigger {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: #1f1f35;
+            cursor: pointer;
+        }
+
+        .map-trigger h4 {
+            font-size: 13px;
+            color: #00BFFF;
+        }
+
+        .map-trigger i {
+            color: #ffd700;
+            transition: transform 0.3s;
+        }
+
+        .map-container {
+            height: 0;
+            overflow: hidden;
+            transition: height 0.3s ease;
+        }
+
+        .map-container.open {
+            height: 220px;
+        }
+
+        #map {
+            height: 100%;
+            width: 100%;
+        }
+
+        /* ===== BOTÕES DE AÇÃO ===== */
+        .actions-bar {
+            display: flex;
+            gap: 12px;
+            padding: 12px 16px;
+            background: #0f0f23;
+            border-top: 1px solid #2a2a4a;
+            margin-top: auto;
+        }
+
+        .ptt-button {
+            flex: 2;
+            background: radial-gradient(circle at 30% 30%, #e53935, #8b0000);
+            border: 2px solid #ffd700;
+            border-radius: 60px;
+            padding: 14px;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: 0.05s linear;
+        }
+
+        .ptt-button:active {
+            transform: scale(0.97);
+        }
+
+        .ptt-button.recording {
+            animation: pulse-red 0.6s infinite;
+        }
+
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 #e53935; }
+            70% { box-shadow: 0 0 0 15px rgba(229, 57, 53, 0); }
+        }
+
+        .action-button {
+            flex: 1;
+            background: #1f1f35;
+            border: 1px solid #3a3a5a;
+            border-radius: 60px;
+            padding: 14px;
+            color: #ccc;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .action-button i {
+            color: #00BFFF;
+            font-size: 16px;
+        }
+
+        .timer-text {
+            font-size: 12px;
+            margin-left: 5px;
+            color: #ffd700;
+        }
+
+        /* ===== MODAL ALERTAS ===== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.95);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.visible {
+            display: flex;
+        }
+
+        .modal-card {
+            background: #1a1a2e;
+            border-radius: 30px;
+            width: 100%;
+            max-width: 380px;
+            max-height: 80vh;
+            overflow: hidden;
+            border: 2px solid #00BFFF;
+        }
+
+        .modal-header {
+            background: #00BFFF;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            color: white;
+            font-weight: bold;
+        }
+
+        .alertas-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            padding: 20px;
+        }
+
+        .alerta-card {
+            background: #252542;
+            border-radius: 16px;
+            padding: 12px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #3a3a5a;
+        }
+
+        .alerta-card:hover {
+            transform: scale(1.05);
+            border-color: #ffd700;
+        }
+
+        .alerta-emoji {
+            font-size: 28px;
+        }
+
+        .alerta-nome {
+            font-size: 10px;
+            color: white;
+            margin-top: 5px;
+            font-weight: 600;
+        }
+
+        /* ===== MODAL CHAT ===== */
+        .chat-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #0a0a15;
+            z-index: 11000;
+            display: none;
+            flex-direction: column;
+        }
+
+        .chat-overlay.visible {
+            display: flex;
+        }
+
+        .chat-head {
+            background: #075e54;
+            padding: 15px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            background: #e5ddd5;
+        }
+
+        .chat-footer {
+            display: flex;
+            padding: 10px;
+            background: #f0f0f0;
+            gap: 8px;
+        }
+
+        .chat-footer input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 25px;
+            border: none;
+            background: white;
+        }
+
+        .chat-footer button {
+            background: #075e54;
+            border: none;
+            width: 45px;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+        }
+
+        .message {
+            margin: 8px 0;
+            padding: 10px 14px;
+            border-radius: 18px;
+            max-width: 80%;
+            font-size: 13px;
+        }
+
+        .message.me {
+            background: #dcf8c6;
+            margin-left: auto;
+        }
+
+        .message.other {
+            background: white;
+        }
+
+        /* ===== NOTIFICAÇÃO ===== */
+        .notification-toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #00BFFF;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            z-index: 12000;
+            display: none;
+            font-weight: bold;
+            border: 2px solid gold;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        /* SCROLL PERSONALIZADO */
+        .cities-grid::-webkit-scrollbar {
+            width: 3px;
+        }
+        .cities-grid::-webkit-scrollbar-track {
+            background: #1a1a2e;
+        }
+        .cities-grid::-webkit-scrollbar-thumb {
+            background: #00BFFF;
+            border-radius: 10px;
+        }
     </style>
 </head>
 <body>
+
 <div class="app">
+    <!-- CABEÇALHO -->
     <div class="radio-header">
-        <div class="radio-top">
+        <div class="radio-title">
             <h1><i class="fas fa-broadcast-tower"></i> RÁDIO BR-277</h1>
-            <div class="freq-badge"><span>27.7 MHz</span><i class="fas fa-circle"></i></div>
+            <div class="radio-status">
+                <span>27.7 MHz</span>
+                <i class="fas fa-circle"></i>
+            </div>
         </div>
-        <div class="cities-wrapper"><div class="cities-grid" id="citiesGrid"></div></div>
     </div>
-    <div class="current-station">
-        <div class="station-name" id="currentStationName">Curitiba</div>
-        <div class="station-online" id="currentStationOnline">0 online</div>
+
+    <!-- CIDADES -->
+    <div class="cities-section">
+        <div class="section-label">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>ESTAÇÕES DISPONÍVEIS</span>
+        </div>
+        <div class="cities-grid" id="citiesGrid"></div>
     </div>
-    <div class="map-section">
-        <div class="map-header" onclick="toggleMap()"><h3><i class="fas fa-map-marked-alt"></i> MAPA DE TRÂNSITO</h3><i class="fas fa-chevron-down" id="mapIcon"></i></div>
-        <div class="map-container" id="mapContainer"><div id="map"></div></div>
+
+    <!-- ESTAÇÃO ATUAL -->
+    <div class="current-station-card">
+        <div class="current-info">
+            <i class="fas fa-radio"></i>
+            <span class="current-name" id="currentStationName">Curitiba</span>
+        </div>
+        <div class="current-count" id="currentStationCount">0 online</div>
     </div>
-    <div class="action-bar">
-        <button class="ptt-btn" id="pttBtn"><i class="fas fa-microphone-alt"></i> FALAR</button>
-        <div class="action-icon" onclick="openAlertas()"><i class="fas fa-exclamation-triangle"></i> ⚠️</div>
-        <div class="action-icon" onclick="openChat()"><i class="fas fa-comment-dots"></i> 💬</div>
+
+    <!-- MAPA -->
+    <div class="map-wrapper">
+        <div class="map-trigger" onclick="toggleMap()">
+            <h4><i class="fas fa-map-marked-alt"></i> MAPA DE TRÂNSITO</h4>
+            <i class="fas fa-chevron-down" id="mapArrow"></i>
+        </div>
+        <div class="map-container" id="mapContainer">
+            <div id="map"></div>
+        </div>
+    </div>
+
+    <!-- AÇÕES -->
+    <div class="actions-bar">
+        <button class="ptt-button" id="pttBtn">
+            <i class="fas fa-microphone-alt"></i> FALAR
+            <span class="timer-text" id="timerDisplay"></span>
+        </button>
+        <div class="action-button" onclick="openAlertasModal()">
+            <i class="fas fa-exclamation-triangle"></i> ALERTA
+        </div>
+        <div class="action-button" onclick="openChatModal()">
+            <i class="fas fa-comment-dots"></i> CHAT
+        </div>
     </div>
 </div>
-<div class="modal" id="alertasModal"><div class="modal-content"><div class="modal-header"><span>REPORTAR OCORRÊNCIA</span><span onclick="closeAlertas()">✕</span></div><div class="alertas-grid" id="alertasGrid"></div></div></div>
-<div class="chat-modal" id="chatModal"><div class="chat-header"><span>GRUPO BR-277</span><span onclick="closeChat()">✕</span></div><div class="chat-messages" id="chatMessages"></div><div class="chat-input-area"><input type="text" id="chatInput" placeholder="Digite sua mensagem..."><button onclick="sendChat()"><i class="fas fa-paper-plane"></i></button></div></div>
-<div class="toast-audio" id="audioToast">🎙️ ÁUDIO RECEBIDO</div>
+
+<!-- MODAL ALERTAS -->
+<div class="modal-overlay" id="alertasModal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <span><i class="fas fa-exclamation-triangle"></i> REPORTAR OCORRÊNCIA</span>
+            <span onclick="closeAlertasModal()" style="cursor:pointer;">✕</span>
+        </div>
+        <div class="alertas-grid" id="alertasGrid"></div>
+    </div>
+</div>
+
+<!-- MODAL CHAT -->
+<div class="chat-overlay" id="chatModal">
+    <div class="chat-head">
+        <span><i class="fas fa-comments"></i> GRUPO BR-277</span>
+        <span onclick="closeChatModal()" style="cursor:pointer; font-size:22px;">✕</span>
+    </div>
+    <div class="chat-body" id="chatBody"></div>
+    <div class="chat-footer">
+        <input type="text" id="chatInput" placeholder="Digite sua mensagem...">
+        <button onclick="sendChatMessage()"><i class="fas fa-paper-plane"></i></button>
+    </div>
+</div>
+
+<!-- NOTIFICAÇÃO -->
+<div class="notification-toast" id="audioNotif">🎙️ ÁUDIO RECEBIDO</div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-const firebaseConfig = { databaseURL: "https://gps-br277-default-rtdb.firebaseio.com" };
+// ==================== FIREBASE ====================
+const firebaseConfig = {
+    databaseURL: "https://gps-br277-default-rtdb.firebaseio.com"
+};
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-const cities = ["Guarapuava","Palmeira","Porto Amazonas","Ponta Grossa","Sao Luiz","Campo Largo","Curitiba","Almirante Tamandare","Fazenda Rio Grande","Tijucas do Sul","Guaratuba","Morretes","Paranagua","Sao Jose","Colombo","Araucaria","Piraquara","Campina Grande","Quatro Barras","Barra do Turvo","Cajati"];
-
-const alertasLista = [
-    {nome:'ACIDENTE',icone:'💥',cor:'#e53935'},{nome:'OBRAS',icone:'🚧',cor:'#ff9800'},{nome:'PANE',icone:'🔧',cor:'#795548'},
-    {nome:'ANIMAL',icone:'🐂',cor:'#9c27b0'},{nome:'RADAR',icone:'📷',cor:'#607d8b'},{nome:'BARREIRA',icone:'⛰️',cor:'#8b4513'},
-    {nome:'NEBLINA',icone:'🌫️',cor:'#00acc1'},{nome:'CONGEST',icone:'🔴',cor:'#f44336'},{nome:'ALAGAM',icone:'💧',cor:'#2196f3'},
-    {nome:'BLOQ',icone:'⛔',cor:'#b71c1c'},{nome:'PERIGO',icone:'⚠️',cor:'#ff5722'},{nome:'DESVIO',icone:'🔄',cor:'#3f51b5'},
-    {nome:'CARGA',icone:'📦',cor:'#8bc34a'},{nome:'GRANIZO',icone:'🧊',cor:'#00bcd4'},{nome:'MANIFEST',icone:'📢',cor:'#ff4081'}
+// ==================== 21 CIDADES ====================
+const cidadesLista = [
+    "Guarapuava", "Palmeira", "Porto Amazonas", "Ponta Grossa", "São Luiz",
+    "Campo Largo", "Curitiba", "Alm. Tamandaré", "Fazenda Rio Grande", "Tijucas do Sul",
+    "Guaratuba", "Morretes", "Paranaguá", "São José", "Colombo",
+    "Araucária", "Piraquara", "Campina Grande", "Quatro Barras", "Barra do Turvo", "Cajati"
 ];
 
-let usuario = localStorage.getItem('radio_user');
-if(!usuario){usuario=prompt("Digite seu nome:","Motorista");if(!usuario)usuario="Motorista";localStorage.setItem('radio_user',usuario);}
-let estacaoAtual = localStorage.getItem('current_station')||'curitiba';
-let mediaRecorder=null,recording=false,audioChunks=[],timerInterval=null,secondsLeft=20;
-let mapa=null,userMarker=null,minhaLocalizacao=null,alertasNoMapa={};
+// ==================== 15 ALERTAS ====================
+const alertasData = [
+    { nome: 'ACIDENTE', emoji: '💥', cor: '#e53935' },
+    { nome: 'OBRAS', emoji: '🚧', cor: '#ff9800' },
+    { nome: 'PANE', emoji: '🔧', cor: '#795548' },
+    { nome: 'ANIMAL', emoji: '🐂', cor: '#9c27b0' },
+    { nome: 'RADAR', emoji: '📷', cor: '#607d8b' },
+    { nome: 'BARREIRA', emoji: '⛰️', cor: '#8b4513' },
+    { nome: 'NEBLINA', emoji: '🌫️', cor: '#00acc1' },
+    { nome: 'CONGEST', emoji: '🔴', cor: '#f44336' },
+    { nome: 'ALAGAMENTO', emoji: '💧', cor: '#2196f3' },
+    { nome: 'BLOQUEIO', emoji: '⛔', cor: '#b71c1c' },
+    { nome: 'PERIGO', emoji: '⚠️', cor: '#ff5722' },
+    { nome: 'DESVIO', emoji: '🔄', cor: '#3f51b5' },
+    { nome: 'CARGA', emoji: '📦', cor: '#8bc34a' },
+    { nome: 'GRANIZO', emoji: '🧊', cor: '#00bcd4' },
+    { nome: 'MANIFEST', emoji: '📢', cor: '#ff4081' }
+];
 
-function criarCidades(){
-    const grid=document.getElementById('citiesGrid');
-    grid.innerHTML='';
-    cities.forEach(cidade=>{
-        const id=cidade.toLowerCase().replace(/ /g,'_').replace(/ã/g,'a').replace(/ç/g,'c');
-        const btn=document.createElement('div');
-        btn.className='city-btn'+(id===estacaoAtual?' active':'');
-        btn.innerHTML=`${cidade.substring(0,8)}<span class="city-count" id="count-${id}">0</span>`;
-        btn.onclick=()=>trocarEstacao(id,cidade);
-        grid.appendChild(btn);
+// ==================== VARIÁVEIS ====================
+let usuario = localStorage.getItem('radio_user');
+if (!usuario) {
+    usuario = prompt("🎙️ Digite seu nome:", "Motorista");
+    if (!usuario) usuario = "Motorista";
+    localStorage.setItem('radio_user', usuario);
+}
+
+let estacaoAtual = localStorage.getItem('current_station') || 'curitiba';
+let mediaRecorder = null;
+let recording = false;
+let audioChunks = [];
+let timerInterval = null;
+let secondsLeft = 20;
+let mapa = null;
+let userLocation = null;
+let userMarker = null;
+let alertasMapa = {};
+let audioListenerRef = null;
+
+// ==================== CRIAR BOTÕES DAS CIDADES ====================
+function criarBotoesCidades() {
+    const grid = document.getElementById('citiesGrid');
+    grid.innerHTML = '';
+    
+    cidadesLista.forEach(cidade => {
+        const id = cidade.toLowerCase()
+            .replace(/ /g, '_')
+            .replace(/ã/g, 'a')
+            .replace(/ç/g, 'c')
+            .replace(/á/g, 'a')
+            .replace(/â/g, 'a')
+            .replace(/ä/g, 'a')
+            .replace(/é/g, 'e')
+            .replace(/ê/g, 'e')
+            .replace(/í/g, 'i')
+            .replace(/ó/g, 'o')
+            .replace(/ô/g, 'o')
+            .replace(/ú/g, 'u')
+            .replace(/ü/g, 'u')
+            .replace(/\./g, '')
+            .replace(/ã/g, 'a');
+        
+        const card = document.createElement('div');
+        card.className = 'city-card';
+        if (id === estacaoAtual) card.classList.add('active');
+        card.innerHTML = `
+            <span class="city-name">${cidade}</span>
+            <span class="city-badge" id="badge-${id}">0</span>
+        `;
+        card.onclick = () => trocarEstacao(id, cidade);
+        grid.appendChild(card);
     });
 }
 
-function trocarEstacao(id,nome){
-    estacaoAtual=id;
-    localStorage.setItem('current_station',id);
-    document.querySelectorAll('.city-btn').forEach(b=>b.classList.remove('active'));
-    event.target.closest('.city-btn').classList.add('active');
-    document.getElementById('currentStationName').innerText=nome;
-    db.ref(`estacoes/${id}/users/${usuario}`).set({nome:usuario,timestamp:Date.now()});
-    cities.forEach(c=>{const o=c.toLowerCase().replace(/ /g,'_').replace(/ã/g,'a').replace(/ç/g,'c');if(o!==id)db.ref(`estacoes/${o}/users/${usuario}`).remove();});
+// ==================== TROCAR ESTAÇÃO ====================
+function trocarEstacao(id, nome) {
+    estacaoAtual = id;
+    localStorage.setItem('current_station', id);
+    
+    document.querySelectorAll('.city-card').forEach(card => card.classList.remove('active'));
+    event.target.closest('.city-card').classList.add('active');
+    document.getElementById('currentStationName').innerText = nome;
+    
+    db.ref(`estacoes/${id}/users/${usuario}`).set({ nome: usuario, timestamp: Date.now() });
+    
+    cidadesLista.forEach(c => {
+        const outroId = c.toLowerCase()
+            .replace(/ /g, '_')
+            .replace(/ã/g, 'a')
+            .replace(/ç/g, 'c')
+            .replace(/á/g, 'a')
+            .replace(/â/g, 'a')
+            .replace(/é/g, 'e')
+            .replace(/ê/g, 'e')
+            .replace(/í/g, 'i')
+            .replace(/ó/g, 'o')
+            .replace(/ô/g, 'o')
+            .replace(/ú/g, 'u');
+        if (outroId !== id) {
+            db.ref(`estacoes/${outroId}/users/${usuario}`).remove();
+        }
+    });
+    
     setupAudioListener();
-    mostrarToast(`📻 Entrou em ${nome}`);
+    showToast(`📻 Você entrou em ${nome}`);
 }
 
-function carregarContagens(){
-    cities.forEach(cidade=>{
-        const id=cidade.toLowerCase().replace(/ /g,'_').replace(/ã/g,'a').replace(/ç/g,'c');
-        db.ref(`estacoes/${id}/users`).on('value',snap=>{
-            const u=snap.val(),c=u?Object.keys(u).length:0;
-            const el=document.getElementById(`count-${id}`);if(el)el.innerText=c;
-            if(id===estacaoAtual)document.getElementById('currentStationOnline').innerText=`${c} online`;
+// ==================== CONTAGEM DE USUÁRIOS ====================
+function carregarContagens() {
+    cidadesLista.forEach(cidade => {
+        const id = cidade.toLowerCase()
+            .replace(/ /g, '_')
+            .replace(/ã/g, 'a')
+            .replace(/ç/g, 'c')
+            .replace(/á/g, 'a')
+            .replace(/â/g, 'a')
+            .replace(/é/g, 'e')
+            .replace(/ê/g, 'e')
+            .replace(/í/g, 'i')
+            .replace(/ó/g, 'o')
+            .replace(/ô/g, 'o')
+            .replace(/ú/g, 'u');
+        
+        db.ref(`estacoes/${id}/users`).on('value', (snap) => {
+            const users = snap.val();
+            const count = users ? Object.keys(users).length : 0;
+            const badge = document.getElementById(`badge-${id}`);
+            if (badge) badge.innerText = count;
+            if (id === estacaoAtual) {
+                document.getElementById('currentStationCount').innerText = `${count} online`;
+            }
         });
     });
 }
 
-let audioListenerRef=null;
-function setupAudioListener(){
-    if(audioListenerRef)db.ref(`estacoes/${estacaoAtual}/audios`).off('child_added',audioListenerRef);
-    audioListenerRef=db.ref(`estacoes/${estacaoAtual}/audios`).on('child_added',snap=>{
-        const d=snap.val();
-        if(d&&d.sender!==usuario){
-            new Audio(d.audio).play().catch(e=>console.log);
-            const t=document.getElementById('audioToast');
-            t.style.display='block';t.innerHTML=`🎙️ ${d.sender} falou em ${d.station}`;
-            setTimeout(()=>t.style.display='none',3000);
+// ==================== ÁUDIO ====================
+function setupAudioListener() {
+    if (audioListenerRef) {
+        db.ref(`estacoes/${estacaoAtual}/audios`).off('child_added', audioListenerRef);
+    }
+    
+    audioListenerRef = db.ref(`estacoes/${estacaoAtual}/audios`).on('child_added', (snap) => {
+        const data = snap.val();
+        if (data && data.sender !== usuario) {
+            const audio = new Audio(data.audio);
+            audio.play().catch(e => console.log('Erro:', e));
+            
+            const notif = document.getElementById('audioNotif');
+            notif.style.display = 'block';
+            notif.innerHTML = `🎙️ ${data.sender} falou em ${data.station}`;
+            setTimeout(() => notif.style.display = 'none', 3000);
         }
     });
 }
 
-const pttBtn=document.getElementById('pttBtn');
-async function startRecording(){
-    if(recording)return;
-    try{
-        const s=await navigator.mediaDevices.getUserMedia({audio:true});
-        mediaRecorder=new MediaRecorder(s);
-        audioChunks=[];secondsLeft=20;
-        mediaRecorder.ondataavailable=e=>{if(e.data.size>0)audioChunks.push(e.data);};
-        mediaRecorder.onstop=async()=>{
-            if(audioChunks.length){
-                const b=new Blob(audioChunks,{type:'audio/webm'});
-                const r=new FileReader();
-                r.onloadend=async()=>{
-                    const cn=cities.find(c=>{const id=c.toLowerCase().replace(/ /g,'_').replace(/ã/g,'a').replace(/ç/g,'c');return id===estacaoAtual;});
-                    await db.ref(`estacoes/${estacaoAtual}/audios`).push({sender:usuario,station:cn,audio:r.result,timestamp:Date.now()});
-                    const snap=await db.ref(`estacoes/${estacaoAtual}/audios`).once('value');
-                    const a=snap.val();if(a){const k=Object.keys(a);if(k.length>30)k.slice(0,k.length-30).forEach(k=>db.ref(`estacoes/${estacaoAtual}/audios/${k}`).remove());}
-                };
-                r.readAsDataURL(b);
-            }
-            s.getTracks().forEach(t=>t.stop());
-        };
-        mediaRecorder.start(100);
-        recording=true;
-        pttBtn.classList.add('recording');
-        timerInterval=setInterval(()=>{secondsLeft--;if(secondsLeft<=0)stopRecording();},1000);
-        setTimeout(()=>{if(recording)stopRecording();},20000);
-    }catch(e){alert("Permita o microfone!");}
-}
-function stopRecording(){
-    if(mediaRecorder&&mediaRecorder.state==='recording')mediaRecorder.stop();
-    if(timerInterval)clearInterval(timerInterval);
-    recording=false;
-    pttBtn.classList.remove('recording');
-}
-pttBtn.addEventListener('mousedown',startRecording);
-pttBtn.addEventListener('mouseup',stopRecording);
-pttBtn.addEventListener('mouseleave',stopRecording);
+const pttBtn = document.getElementById('pttBtn');
+const timerDisplay = document.getElementById('timerDisplay');
 
-let mapOpen=false;
-function toggleMap(){
-    const c=document.getElementById('mapContainer'),i=document.getElementById('mapIcon');
-    mapOpen=!mapOpen;
-    if(mapOpen){
-        c.style.height='280px';i.style.transform='rotate(180deg)';
-        setTimeout(()=>{
-            if(!mapa){
-                mapa=L.map('map').setView([-25.4284,-49.2733],12);
+async function startRecording() {
+    if (recording) return;
+    
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+        secondsLeft = 20;
+        
+        mediaRecorder.ondataavailable = e => {
+            if (e.data.size > 0) audioChunks.push(e.data);
+        };
+        
+        mediaRecorder.onstop = async () => {
+            if (audioChunks.length > 0) {
+                const blob = new Blob(audioChunks, { type: 'audio/webm' });
+                const reader = new FileReader();
+                reader.onloadend = async () => {
+                    const cidadeNome = cidadesLista.find(c => {
+                        const id = c.toLowerCase()
+                            .replace(/ /g, '_')
+                            .replace(/ã/g, 'a')
+                            .replace(/ç/g, 'c')
+                            .replace(/á/g, 'a')
+                            .replace(/â/g, 'a')
+                            .replace(/é/g, 'e')
+                            .replace(/ê/g, 'e')
+                            .replace(/í/g, 'i')
+                            .replace(/ó/g, 'o')
+                            .replace(/ô/g, 'o')
+                            .replace(/ú/g, 'u');
+                        return id === estacaoAtual;
+                    });
+                    
+                    await db.ref(`estacoes/${estacaoAtual}/audios`).push({
+                        sender: usuario,
+                        station: cidadeNome,
+                        audio: reader.result,
+                        timestamp: Date.now()
+                    });
+                    
+                    const snapshot = await db.ref(`estacoes/${estacaoAtual}/audios`).once('value');
+                    const audios = snapshot.val();
+                    if (audios) {
+                        const keys = Object.keys(audios);
+                        if (keys.length > 30) {
+                            keys.slice(0, keys.length - 30).forEach(k => {
+                                db.ref(`estacoes/${estacaoAtual}/audios/${k}`).remove();
+                            });
+                        }
+                    }
+                };
+                reader.readAsDataURL(blob);
+            }
+            stream.getTracks().forEach(t => t.stop());
+        };
+        
+        mediaRecorder.start(100);
+        recording = true;
+        pttBtn.classList.add('recording');
+        timerDisplay.innerText = '20s';
+        
+        timerInterval = setInterval(() => {
+            secondsLeft--;
+            timerDisplay.innerText = `${secondsLeft}s`;
+            if (secondsLeft <= 0) stopRecording();
+        }, 1000);
+        
+        setTimeout(() => {
+            if (recording) stopRecording();
+        }, 20000);
+        
+    } catch(e) {
+        alert("🎤 Permita o acesso ao microfone!");
+    }
+}
+
+function stopRecording() {
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+        mediaRecorder.stop();
+    }
+    if (timerInterval) clearInterval(timerInterval);
+    recording = false;
+    pttBtn.classList.remove('recording');
+    timerDisplay.innerText = '';
+}
+
+pttBtn.addEventListener('mousedown', startRecording);
+pttBtn.addEventListener('mouseup', stopRecording);
+pttBtn.addEventListener('mouseleave', stopRecording);
+pttBtn.addEventListener('touchstart', startRecording);
+pttBtn.addEventListener('touchend', stopRecording);
+
+// ==================== MAPA ====================
+let mapOpen = false;
+
+function toggleMap() {
+    const container = document.getElementById('mapContainer');
+    const arrow = document.getElementById('mapArrow');
+    mapOpen = !mapOpen;
+    
+    if (mapOpen) {
+        container.style.height = '220px';
+        arrow.style.transform = 'rotate(180deg)';
+        setTimeout(() => {
+            if (!mapa) {
+                mapa = L.map('map').setView([-25.4284, -49.2733], 12);
                 L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(mapa);
-                if(navigator.geolocation){
-                    navigator.geolocation.watchPosition(p=>{
-                        minhaLocalizacao=[p.coords.latitude,p.coords.longitude];
-                        if(!userMarker){
-                            userMarker=L.marker(minhaLocalizacao,{icon:L.divIcon({html:'<div style="font-size:28px;">🚗</div>',iconSize:[28,28],iconAnchor:[14,14]})}).addTo(mapa);
-                            mapa.setView(minhaLocalizacao,13);
-                        }else userMarker.setLatLng(minhaLocalizacao);
+                
+                if (navigator.geolocation) {
+                    navigator.geolocation.watchPosition(pos => {
+                        userLocation = [pos.coords.latitude, pos.coords.longitude];
+                        if (!userMarker) {
+                            userMarker = L.marker(userLocation, {
+                                icon: L.divIcon({
+                                    html: '<div style="font-size:28px;">🚗</div>',
+                                    iconSize: [28, 28],
+                                    iconAnchor: [14, 14],
+                                    className: ''
+                                })
+                            }).addTo(mapa);
+                            mapa.setView(userLocation, 13);
+                        } else {
+                            userMarker.setLatLng(userLocation);
+                        }
                     });
                 }
-                db.ref('alertas').on('child_added',snap=>{const a=snap.val(),id=snap.key;if(alertasNoMapa[id]||!mapa)return;L.marker([a.lat,a.lng],{icon:L.divIcon({html:`<div style="background:${a.cor};width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;border:2px solid white;">${a.icone}</div>`,iconSize:[32,32],iconAnchor:[16,16]})}).addTo(mapa).bindPopup(`<b>${a.icone} ${a.nome}</b>`);alertasNoMapa[id]=true;});
-            }else mapa.invalidateSize();
-        },100);
-    }else{c.style.height='0';i.style.transform='rotate(0deg)';}
+                
+                carregarAlertasMapa();
+            } else {
+                mapa.invalidateSize();
+            }
+        }, 100);
+    } else {
+        container.style.height = '0';
+        arrow.style.transform = 'rotate(0deg)';
+    }
 }
 
-function criarAlertasGrid(){
-    const g=document.getElementById('alertasGrid');
-    g.innerHTML='';
-    alertasLista.forEach(a=>{const d=document.createElement('div');d.className='alerta-item';d.innerHTML=`<div class="alerta-icon">${a.icone}</div><div class="alerta-nome">${a.nome}</div>`;d.onclick=()=>criarAlerta(a);g.appendChild(d);});
+function carregarAlertasMapa() {
+    db.ref('alertas').on('child_added', (snap) => {
+        const a = snap.val();
+        const id = snap.key;
+        if (alertasMapa[id] || !mapa) return;
+        
+        const marker = L.marker([a.lat, a.lng], {
+            icon: L.divIcon({
+                html: `<div style="background:${a.cor}; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:18px; border:2px solid white;">${a.emoji}</div>`,
+                iconSize: [32, 32],
+                iconAnchor: [16, 16],
+                className: ''
+            })
+        }).addTo(mapa);
+        
+        marker.bindPopup(`<b>${a.emoji} ${a.nome}</b><br><small>${new Date(a.timestamp).toLocaleTimeString()}</small>`);
+        alertasMapa[id] = marker;
+    });
 }
-async function criarAlerta(a){
-    if(!minhaLocalizacao){mostrarToast("Aguardando localização...");return;}
-    await db.ref(`alertas/${Date.now()}`).set({...a,lat:minhaLocalizacao[0],lng:minhaLocalizacao[1],timestamp:Date.now(),criador:usuario,confirmacoes:1});
-    mostrarToast(`✅ ${a.icone} ${a.nome} reportado!`);closeAlertas();
+
+// ==================== ALERTAS ====================
+function criarAlertasGrid() {
+    const grid = document.getElementById('alertasGrid');
+    grid.innerHTML = '';
+    
+    alertasData.forEach(alerta => {
+        const card = document.createElement('div');
+        card.className = 'alerta-card';
+        card.innerHTML = `
+            <div class="alerta-emoji">${alerta.emoji}</div>
+            <div class="alerta-nome">${alerta.nome}</div>
+        `;
+        card.onclick = () => criarAlerta(alerta);
+        grid.appendChild(card);
+    });
 }
-function openAlertas(){document.getElementById('alertasModal').classList.add('visible');}
-function closeAlertas(){document.getElementById('alertasModal').classList.remove('visible');}
-function openChat(){document.getElementById('chatModal').classList.add('visible');carregarChat();}
-function closeChat(){document.getElementById('chatModal').classList.remove('visible');}
-function carregarChat(){
-    db.ref('chat_geral').on('value',snap=>{const m=snap.val(),c=document.getElementById('chatMessages');if(!m){c.innerHTML='';return;}let h='';Object.values(m).sort((a,b)=>a.timestamp-b.timestamp).forEach(msg=>{const isMe=msg.usuario===usuario;h+=`<div class="msg ${isMe?'me':'other'}"><strong>${msg.usuario}</strong><br>${msg.texto}<br><small>${new Date(msg.timestamp).toLocaleTimeString()}</small></div>`;});c.innerHTML=h;c.scrollTop=c.scrollHeight;});
+
+async function criarAlerta(alerta) {
+    if (!userLocation) {
+        showToast("📍 Aguardando localização...");
+        return;
+    }
+    
+    const id = Date.now();
+    await db.ref(`alertas/${id}`).set({
+        ...alerta,
+        lat: userLocation[0],
+        lng: userLocation[1],
+        timestamp: id,
+        criador: usuario,
+        confirmacoes: 1
+    });
+    
+    showToast(`✅ ${alerta.emoji} ${alerta.nome} reportado!`);
+    closeAlertasModal();
 }
-function sendChat(){const i=document.getElementById('chatInput');if(!i.value.trim())return;db.ref('chat_geral').push({usuario:usuario,texto:i.value.trim(),timestamp:Date.now()});i.value='';}
-function mostrarToast(m){const t=document.createElement('div');t.style.cssText='position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#00BFFF;color:white;padding:8px20px;border-radius:40px;z-index:13000;font-weight:bold;border:2px solid gold;';t.innerText=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2000);}
-window.addEventListener('beforeunload',()=>{if(usuario)db.ref(`estacoes/${estacaoAtual}/users/${usuario}`).remove();});
-criarCidades();carregarContagens();setupAudioListener();criarAlertasGrid();carregarChat();mostrarToast(`🎙️ Bem-vindo, ${usuario}!`);
+
+function openAlertasModal() {
+    document.getElementById('alertasModal').classList.add('visible');
+}
+
+function closeAlertasModal() {
+    document.getElementById('alertasModal').classList.remove('visible');
+}
+
+// ==================== CHAT ====================
+function openChatModal() {
+    document.getElementById('chatModal').classList.add('visible');
+    carregarChat();
+}
+
+function closeChatModal() {
+    document.getElementById('chatModal').classList.remove('visible');
+}
+
+function carregarChat() {
+    db.ref('chat_geral').on('value', (snap) => {
+        const msgs = snap.val();
+        const container = document.getElementById('chatBody');
+        if (!msgs) {
+            container.innerHTML = '<div style="text-align:center; color:#888;">Nenhuma mensagem</div>';
+            return;
+        }
+        
+        let html = '';
+        Object.values(msgs).sort((a, b) => a.timestamp - b.timestamp).forEach(msg => {
+            const isMe = msg.usuario === usuario;
+            html += `
+                <div class="message ${isMe ? 'me' : 'other'}">
+                    <strong>${msg.usuario}</strong><br>
+                    ${msg.texto}<br>
+                    <small style="font-size:9px; opacity:0.6;">${new Date(msg.timestamp).toLocaleTimeString()}</small>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+        container.scrollTop = container.scrollHeight;
+    });
+}
+
+function sendChatMessage() {
+    const input = document.getElementById('chatInput');
+    if (!input.value.trim()) return;
+    
+    db.ref('chat_geral').push({
+        usuario: usuario,
+        texto: input.value.trim(),
+        timestamp: Date.now()
+    });
+    input.value = '';
+}
+
+// ==================== UTILIDADES ====================
+function showToast(msg) {
+    const toast = document.createElement('div');
+    toast.style.cssText = 'position:fixed; bottom:100px; left:50%; transform:translateX(-50%); background:#00BFFF; color:white; padding:8px 20px; border-radius:40px; z-index:13000; font-weight:bold; border:2px solid gold; font-size:12px;';
+    toast.innerText = msg;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 2000);
+}
+
+// ==================== LIMPAR AO SAIR ====================
+window.addEventListener('beforeunload', () => {
+    if (usuario) {
+        db.ref(`estacoes/${estacaoAtual}/users/${usuario}`).remove();
+    }
+});
+
+// ==================== INICIAR ====================
+function init() {
+    criarBotoesCidades();
+    carregarContagens();
+    setupAudioListener();
+    criarAlertasGrid();
+    carregarChat();
+    showToast(`🎙️ Bem-vindo, ${usuario}!`);
+}
+
+init();
 </script>
 </body>
 </html>
