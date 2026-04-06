@@ -1,1463 +1,249 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<head><!DOCTYPE html>
-<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RÁDIO BR-277 | Mapa + Alertas + Comunicação</title>
+    <title>RÁDIO BR-277</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            background: linear-gradient(135deg, #0f0c29, #1a1a2e);
-            font-family: 'Segoe UI', 'Poppins', sans-serif;
-            min-height: 100vh;
-        }
-
-        /* ===== LAYOUT PRINCIPAL ===== */
-        .app-container {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            max-width: 500px;
-            margin: 0 auto;
-            background: #0f0f23;
-            box-shadow: 0 0 30px rgba(0,0,0,0.5);
-        }
-
-        /* ===== RÁDIO VINTAGE (Topo) ===== */
-        .radio-header {
-            background: linear-gradient(145deg, #2d2d44, #1a1a2e);
-            padding: 12px 16px;
-            border-bottom: 3px solid #00BFFF;
-            position: relative;
-        }
-        
-        .radio-title {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .radio-title h2 {
-            color: #ffd700;
-            font-size: 18px;
-            letter-spacing: 2px;
-        }
-        
-        .radio-freq {
-            background: #0a0a15;
-            padding: 4px 12px;
-            border-radius: 20px;
-        }
-        
-        .radio-freq span {
-            color: #00ff88;
-            font-family: monospace;
-            font-size: 12px;
-        }
-        
-        .station-scroll {
-            display: flex;
-            overflow-x: auto;
-            gap: 8px;
-            padding: 10px 0;
-            margin-top: 8px;
-        }
-        
-        .station-chip {
-            background: #1f1f35;
-            border-radius: 30px;
-            padding: 6px 14px;
-            white-space: nowrap;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 600;
-            color: #ccc;
-            border: 1px solid #3a3a5a;
-            transition: all 0.2s;
-        }
-        
-        .station-chip.active {
-            background: linear-gradient(145deg, #00BFFF, #0066cc);
-            color: white;
-            border-color: #ffd700;
-            box-shadow: 0 0 10px #00BFFF;
-        }
-        
-        .station-chip small {
-            font-size: 9px;
-            margin-left: 5px;
-            background: rgba(0,0,0,0.5);
-            padding: 2px 6px;
-            border-radius: 20px;
-        }
-        
-        .station-chip.active small {
-            background: #ffd700;
-            color: #1a1a2e;
-        }
-        
-        /* ===== MAPA ===== */
-        .map-container {
-            flex: 1;
-            position: relative;
-            background: #1a1a2e;
-        }
-        
-        #map {
-            height: 100%;
-            width: 100%;
-            z-index: 1;
-        }
-        
-        /* ===== BARRA INFERIOR (WhatsApp Style) ===== */
-        .bottom-bar {
-            background: #1a1a2e;
-            border-top: 1px solid #2a2a4a;
-            padding: 8px 12px;
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            position: relative;
-            z-index: 10;
-        }
-        
-        .ptt-radio {
-            width: 65px;
-            height: 65px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 35% 35%, #e53935, #8b0000);
-            border: 3px solid #ffd700;
-            color: white;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.05s linear;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .ptt-radio:active {
-            transform: scale(0.95);
-        }
-        
-        .ptt-radio.recording {
-            animation: pulse-rec 0.6s infinite;
-        }
-        
-        @keyframes pulse-rec {
-            0% { box-shadow: 0 0 0 0 #e53935; }
-            70% { box-shadow: 0 0 0 15px rgba(229,57,53,0); }
-        }
-        
-        .recording-timer {
-            font-size: 10px;
-            margin-top: 3px;
-        }
-        
-        .action-buttons {
-            flex: 1;
-            display: flex;
-            gap: 8px;
-        }
-        
-        .action-btn {
-            flex: 1;
-            background: #252542;
-            border: none;
-            border-radius: 30px;
-            padding: 10px;
-            color: #ccc;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-        }
-        
-        .action-btn i {
-            color: #00BFFF;
-            font-size: 14px;
-        }
-        
-        /* ===== MODAL ALERTAS (15 itens) ===== */
-        .modal-alertas {
-            position: fixed;
-            bottom: 100px;
-            left: 10px;
-            right: 10px;
-            background: #1a1a2e;
-            border-radius: 25px;
-            z-index: 2000;
-            display: none;
-            border: 2px solid #00BFFF;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-        
-        .modal-alertas.visible {
-            display: block;
-        }
-        
-        .alertas-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            padding: 15px;
-        }
-        
-        .alerta-item {
-            aspect-ratio: 1/1;
-            border-radius: 16px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 28px;
-            color: white;
-            font-weight: bold;
-            transition: all 0.2s;
-        }
-        
-        .alerta-item span {
-            font-size: 10px;
-            margin-top: 5px;
-            background: rgba(0,0,0,0.6);
-            padding: 2px 8px;
-            border-radius: 20px;
-        }
-        
-        /* ===== MODAL CHAT WHATSAPP ===== */
-        .chat-whatsapp {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            top: 0;
-            background: #0a0a15;
-            z-index: 3000;
-            display: none;
-            flex-direction: column;
-        }
-        
-        .chat-whatsapp.visible {
-            display: flex;
-        }
-        
-        .chat-header-wp {
-            background: #075e54;
-            padding: 15px;
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .chat-messages-wp {
-            flex: 1;
-            overflow-y: auto;
-            padding: 15px;
-            background: #e5ddd5;
-        }
-        
-        .chat-input-wp {
-            display: flex;
-            padding: 10px;
-            background: #f0f0f0;
-            gap: 8px;
-        }
-        
-        .chat-input-wp input {
-            flex: 1;
-            padding: 12px;
-            border-radius: 25px;
-            border: none;
-            background: white;
-        }
-        
-        .chat-input-wp button {
-            background: #075e54;
-            border: none;
-            width: 45px;
-            border-radius: 50%;
-            color: white;
-            cursor: pointer;
-        }
-        
-        .msg-wp {
-            margin: 8px 0;
-            padding: 10px 14px;
-            border-radius: 18px;
-            max-width: 80%;
-            font-size: 13px;
-        }
-        
-        .msg-wp.me {
-            background: #dcf8c6;
-            margin-left: auto;
-            color: #000;
-        }
-        
-        .msg-wp.other {
-            background: white;
-            color: #000;
-        }
-        
-        /* ===== POPUP ALERTA COM FOTO ===== */
-        .popup-alerta {
-            background: #1a1a2e;
-            border-radius: 15px;
-            max-width: 280px;
-            border: 2px solid #00BFFF;
-        }
-        
-        .popup-alerta-img {
-            width: 100%;
-            height: 120px;
-            object-fit: cover;
-            border-radius: 13px 13px 0 0;
-        }
-        
-        /* ===== NOTIFICAÇÃO ===== */
-        .audio-toast {
-            position: fixed;
-            top: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #00BFFF;
-            color: white;
-            padding: 8px 20px;
-            border-radius: 40px;
-            z-index: 4000;
-            display: none;
-            font-weight: bold;
-            border: 2px solid gold;
-            font-size: 12px;
-        }
-        
-        /* ===== CONFIGURAÇÕES ===== */
-        .config-panel {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #1a1a2e;
-            border-radius: 30px;
-            padding: 20px;
-            z-index: 5000;
-            display: none;
-            flex-direction: column;
-            gap: 15px;
-            min-width: 280px;
-            border: 2px solid #00BFFF;
-        }
-        
-        .config-panel.visible {
-            display: flex;
-        }
-        
-        .config-colors {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        
-        .color-option {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 2px solid transparent;
-        }
-        
-        .color-option.selected {
-            border-color: gold;
-            transform: scale(1.1);
-        }
-        
-        /* ===== ANIMAÇÕES ===== */
-        .carro-icon {
-            font-size: 28px;
-            filter: drop-shadow(0 0 5px #00BFFF);
-        }
-        
-        .alerta-marker {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            border: 2px solid white;
-            cursor: pointer;
-        }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{background:#0a0a15;font-family:'Segoe UI',sans-serif;height:100vh;display:flex;justify-content:center;align-items:center;}
+        .app{max-width:450px;width:100%;height:100vh;background:#0f0f23;display:flex;flex-direction:column;overflow:hidden;}
+        .radio-header{background:linear-gradient(135deg,#1a1a2e,#16213e);padding:15px;border-bottom:2px solid #00BFFF;}
+        .radio-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+        .radio-top h1{font-size:20px;color:#ffd700;}
+        .radio-top h1 i{color:#00BFFF;}
+        .freq-badge{background:#0a0a15;padding:5px12px;border-radius:30px;}
+        .freq-badge span{color:#00ff88;font-family:monospace;font-size:12px;}
+        .cities-wrapper{overflow-x:auto;white-space:nowrap;padding:8px0;scrollbar-width:thin;}
+        .cities-grid{display:inline-flex;gap:8px;padding:0 5px;}
+        .city-btn{background:#1f1f35;border:1px solid #3a3a5a;border-radius:30px;padding:8px16px;font-size:12px;font-weight:600;color:#ccc;cursor:pointer;}
+        .city-btn.active{background:linear-gradient(145deg,#00BFFF,#0066cc);color:white;border-color:#ffd700;}
+        .city-count{background:rgba(0,0,0,0.5);border-radius:20px;padding:2px6px;font-size:9px;margin-left:6px;}
+        .current-station{background:#0f0f23;margin:10px15px;padding:12px18px;border-radius:40px;display:flex;justify-content:space-between;border-left:4px solid #00BFFF;}
+        .station-name{font-size:16px;font-weight:bold;color:white;}
+        .station-online{background:#00BFFF;border-radius:30px;padding:4px12px;font-size:11px;color:#0f0f23;}
+        .map-section{margin:10px15px;background:#1a1a2e;border-radius:20px;overflow:hidden;border:1px solid #2a2a4a;}
+        .map-header{display:flex;justify-content:space-between;padding:12px15px;background:#1f1f35;cursor:pointer;}
+        .map-header h3{font-size:14px;color:#00BFFF;}
+        .map-container{height:0;overflow:hidden;transition:height 0.3s;}
+        .map-container.open{height:280px;}
+        #map{height:100%;width:100%;}
+        .action-bar{display:flex;gap:12px;padding:12px15px;background:#0f0f23;border-top:1px solid #2a2a4a;margin-top:auto;}
+        .ptt-btn{flex:2;background:radial-gradient(circle at 35%35%,#e53935,#8b0000);border:2px solid #ffd700;border-radius:50px;padding:12px;color:white;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;}
+        .ptt-btn.recording{animation:pulse 0.6s infinite;}
+        @keyframes pulse{0%{box-shadow:0 0 0 0 #e53935;}70%{box-shadow:0 0 0 12px rgba(229,57,53,0);}}
+        .action-icon{flex:1;background:#1f1f35;border:1px solid #3a3a5a;border-radius:50px;padding:12px;color:#ccc;text-align:center;cursor:pointer;}
+        .action-icon i{color:#00BFFF;}
+        .modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.95);z-index:10000;display:none;align-items:center;justify-content:center;}
+        .modal.visible{display:flex;}
+        .modal-content{background:#1a1a2e;border-radius:30px;width:100%;max-width:380px;max-height:80vh;overflow-y:auto;border:2px solid #00BFFF;}
+        .modal-header{padding:15px;background:#00BFFF;border-radius:28px 28px 0 0;display:flex;justify-content:space-between;color:white;}
+        .alertas-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:20px;}
+        .alerta-item{background:#2a2a4a;border-radius:16px;padding:12px;text-align:center;cursor:pointer;}
+        .alerta-icon{font-size:28px;}
+        .alerta-nome{font-size:10px;color:white;margin-top:5px;}
+        .chat-modal{position:fixed;top:0;left:0;right:0;bottom:0;background:#0a0a15;z-index:11000;display:none;flex-direction:column;}
+        .chat-modal.visible{display:flex;}
+        .chat-header{background:#075e54;padding:15px;color:white;display:flex;justify-content:space-between;}
+        .chat-messages{flex:1;overflow-y:auto;padding:15px;background:#e5ddd5;}
+        .chat-input-area{display:flex;padding:10px;background:#f0f0f0;gap:8px;}
+        .chat-input-area input{flex:1;padding:12px;border-radius:25px;border:none;}
+        .chat-input-area button{background:#075e54;border:none;width:45px;border-radius:50%;color:white;cursor:pointer;}
+        .msg{margin:8px0;padding:10px14px;border-radius:18px;max-width:80%;font-size:13px;}
+        .msg.me{background:#dcf8c6;margin-left:auto;}
+        .msg.other{background:white;}
+        .toast-audio{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#00BFFF;color:white;padding:8px20px;border-radius:40px;z-index:12000;display:none;border:2px solid gold;}
     </style>
 </head>
 <body>
-
-<div class="app-container">
-    <!-- RÁDIO VINTAGE (Topo) -->
+<div class="app">
     <div class="radio-header">
-        <div class="radio-title">
-            <h2><i class="fas fa-broadcast-tower"></i> RÁDIO BR-277</h2>
-            <div class="radio-freq">
-                <span>27.7 MHz <i class="fas fa-circle" style="color:#00ff88; font-size:8px;"></i></span>
-            </div>
+        <div class="radio-top">
+            <h1><i class="fas fa-broadcast-tower"></i> RÁDIO BR-277</h1>
+            <div class="freq-badge"><span>27.7 MHz</span><i class="fas fa-circle"></i></div>
         </div>
-        <div class="station-scroll" id="stationsList"></div>
+        <div class="cities-wrapper"><div class="cities-grid" id="citiesGrid"></div></div>
     </div>
-    
-    <!-- MAPA -->
-    <div class="map-container">
-        <div id="map"></div>
+    <div class="current-station">
+        <div class="station-name" id="currentStationName">Curitiba</div>
+        <div class="station-online" id="currentStationOnline">0 online</div>
     </div>
-    
-    <!-- BARRA INFERIOR -->
-    <div class="bottom-bar">
-        <button class="ptt-radio" id="pttButton">
-            🎤<br>
-            <span class="recording-timer" id="timerText">FALAR</span>
-        </button>
-        <div class="action-buttons">
-            <button class="action-btn" onclick="toggleAlertas()"><i class="fas fa-exclamation-triangle"></i> REPORTE</button>
-            <button class="action-btn" onclick="openChat()"><i class="fas fa-comment-dots"></i> CHAT</button>
-            <button class="action-btn" onclick="openConfig()"><i class="fas fa-sliders-h"></i> COR</button>
-        </div>
+    <div class="map-section">
+        <div class="map-header" onclick="toggleMap()"><h3><i class="fas fa-map-marked-alt"></i> MAPA DE TRÂNSITO</h3><i class="fas fa-chevron-down" id="mapIcon"></i></div>
+        <div class="map-container" id="mapContainer"><div id="map"></div></div>
+    </div>
+    <div class="action-bar">
+        <button class="ptt-btn" id="pttBtn"><i class="fas fa-microphone-alt"></i> FALAR</button>
+        <div class="action-icon" onclick="openAlertas()"><i class="fas fa-exclamation-triangle"></i> ⚠️</div>
+        <div class="action-icon" onclick="openChat()"><i class="fas fa-comment-dots"></i> 💬</div>
     </div>
 </div>
-
-<!-- MODAL ALERTAS (15 itens) -->
-<div class="modal-alertas" id="alertasModal">
-    <div class="alertas-grid" id="alertasGrid"></div>
-    <div style="text-align:center; padding-bottom:15px;">
-        <button onclick="toggleAlertas()" style="background:#e53935; border:none; padding:6px 20px; border-radius:20px; color:white;">FECHAR</button>
-    </div>
-</div>
-
-<!-- MODAL CHAT WHATSAPP -->
-<div class="chat-whatsapp" id="chatModal">
-    <div class="chat-header-wp">
-        <span><i class="fas fa-comments"></i> GRUPO BR-277</span>
-        <span onclick="closeChat()" style="cursor:pointer; font-size:22px;">✕</span>
-    </div>
-    <div class="chat-messages-wp" id="chatMessages"></div>
-    <div class="chat-input-wp">
-        <input type="text" id="chatInput" placeholder="Digite sua mensagem...">
-        <button onclick="sendChatMessage()"><i class="fas fa-paper-plane"></i></button>
-    </div>
-</div>
-
-<!-- MODAL CONFIGURAÇÕES -->
-<div class="config-panel" id="configModal">
-    <h3 style="color:white;">🎨 CORES DO RÁDIO</h3>
-    <div class="config-colors" id="colorOptions"></div>
-    <button onclick="closeConfig()" style="background:#00BFFF; border:none; padding:10px; border-radius:30px; color:white;">FECHAR</button>
-</div>
-
-<!-- NOTIFICAÇÃO ÁUDIO -->
-<div class="audio-toast" id="audioToast">🎙️ ÁUDIO RECEBIDO</div>
+<div class="modal" id="alertasModal"><div class="modal-content"><div class="modal-header"><span>REPORTAR OCORRÊNCIA</span><span onclick="closeAlertas()">✕</span></div><div class="alertas-grid" id="alertasGrid"></div></div></div>
+<div class="chat-modal" id="chatModal"><div class="chat-header"><span>GRUPO BR-277</span><span onclick="closeChat()">✕</span></div><div class="chat-messages" id="chatMessages"></div><div class="chat-input-area"><input type="text" id="chatInput" placeholder="Digite sua mensagem..."><button onclick="sendChat()"><i class="fas fa-paper-plane"></i></button></div></div>
+<div class="toast-audio" id="audioToast">🎙️ ÁUDIO RECEBIDO</div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
 
 <script>
-// ==================== FIREBASE ====================
-const firebaseConfig = {
-    databaseURL: "https://gps-br277-default-rtdb.firebaseio.com"
-};
+const firebaseConfig = { databaseURL: "https://gps-br277-default-rtdb.firebaseio.com" };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// ==================== LISTA DAS 21 CIDADES ====================
-const cities = [
-    "Guarapuava", "Palmeira", "Porto Amazonas", "Ponta Grossa", "São Luiz do Purunã",
-    "Campo Largo", "Curitiba", "Almirante Tamandaré", "Fazenda Rio Grande", "Tijucas do Sul",
-    "Guaratuba", "Morretes", "Paranaguá", "São José dos Pinhais", "Colombo",
-    "Araucária", "Piraquara", "Campina Grande do Sul", "Quatro Barras", "Barra do Turvo", "Cajati"
-];
+const cities = ["Guarapuava","Palmeira","Porto Amazonas","Ponta Grossa","Sao Luiz","Campo Largo","Curitiba","Almirante Tamandare","Fazenda Rio Grande","Tijucas do Sul","Guaratuba","Morretes","Paranagua","Sao Jose","Colombo","Araucaria","Piraquara","Campina Grande","Quatro Barras","Barra do Turvo","Cajati"];
 
-// ==================== 15 ALERTAS ====================
 const alertasLista = [
-    { nome: 'ACIDENTE', icone: '💥', cor: '#e53935', bg: 'linear-gradient(145deg, #e53935, #b71c1c)' },
-    { nome: 'OBRAS', icone: '🚧', cor: '#ff9800', bg: 'linear-gradient(145deg, #ff9800, #f57c00)' },
-    { nome: 'PANE', icone: '🔧', cor: '#795548', bg: 'linear-gradient(145deg, #795548, #5d4037)' },
-    { nome: 'ANIMAL', icone: '🐂', cor: '#9c27b0', bg: 'linear-gradient(145deg, #9c27b0, #7b1fa2)' },
-    { nome: 'RADAR', icone: '📷', cor: '#607d8b', bg: 'linear-gradient(145deg, #607d8b, #455a64)' },
-    { nome: 'BARREIRA', icone: '⛰️', cor: '#8b4513', bg: 'linear-gradient(145deg, #8b4513, #5d3a1a)' },
-    { nome: 'NEBLINA', icone: '🌫️', cor: '#00acc1', bg: 'linear-gradient(145deg, #00acc1, #0097a7)' },
-    { nome: 'CONGEST', icone: '🔴', cor: '#f44336', bg: 'linear-gradient(145deg, #f44336, #d32f2f)' },
-    { nome: 'ALAGAM', icone: '💧', cor: '#2196f3', bg: 'linear-gradient(145deg, #2196f3, #1976d2)' },
-    { nome: 'BLOQ', icone: '⛔', cor: '#b71c1c', bg: 'linear-gradient(145deg, #b71c1c, #8B0000)' },
-    { nome: 'PERIGO', icone: '⚠️', cor: '#ff5722', bg: 'linear-gradient(145deg, #ff5722, #e64a19)' },
-    { nome: 'DESVIO', icone: '🔄', cor: '#3f51b5', bg: 'linear-gradient(145deg, #3f51b5, #303f9f)' },
-    { nome: 'CARGA', icone: '📦', cor: '#8bc34a', bg: 'linear-gradient(145deg, #8bc34a, #689f38)' },
-    { nome: 'GRANIZO', icone: '🧊', cor: '#00bcd4', bg: 'linear-gradient(145deg, #00bcd4, #0097a7)' },
-    { nome: 'MANIFEST', icone: '📢', cor: '#ff4081', bg: 'linear-gradient(145deg, #ff4081, #f50057)' }
+    {nome:'ACIDENTE',icone:'💥',cor:'#e53935'},{nome:'OBRAS',icone:'🚧',cor:'#ff9800'},{nome:'PANE',icone:'🔧',cor:'#795548'},
+    {nome:'ANIMAL',icone:'🐂',cor:'#9c27b0'},{nome:'RADAR',icone:'📷',cor:'#607d8b'},{nome:'BARREIRA',icone:'⛰️',cor:'#8b4513'},
+    {nome:'NEBLINA',icone:'🌫️',cor:'#00acc1'},{nome:'CONGEST',icone:'🔴',cor:'#f44336'},{nome:'ALAGAM',icone:'💧',cor:'#2196f3'},
+    {nome:'BLOQ',icone:'⛔',cor:'#b71c1c'},{nome:'PERIGO',icone:'⚠️',cor:'#ff5722'},{nome:'DESVIO',icone:'🔄',cor:'#3f51b5'},
+    {nome:'CARGA',icone:'📦',cor:'#8bc34a'},{nome:'GRANIZO',icone:'🧊',cor:'#00bcd4'},{nome:'MANIFEST',icone:'📢',cor:'#ff4081'}
 ];
 
-// ==================== VARIÁVEIS ====================
 let usuario = localStorage.getItem('radio_user');
-let estacaoAtual = localStorage.getItem('current_station') || 'curitiba';
-let corAtual = localStorage.getItem('radio_color') || '#00BFFF';
-let mediaRecorder = null;
-let recording = false;
-let audioChunks = [];
-let timerInterval = null;
-let secondsLeft = 20;
-let mapa = null;
-let userMarker = null;
-let minhaLocalizacao = null;
-let alertasNoMapa = {};
+if(!usuario){usuario=prompt("Digite seu nome:","Motorista");if(!usuario)usuario="Motorista";localStorage.setItem('radio_user',usuario);}
+let estacaoAtual = localStorage.getItem('current_station')||'curitiba';
+let mediaRecorder=null,recording=false,audioChunks=[],timerInterval=null,secondsLeft=20;
+let mapa=null,userMarker=null,minhaLocalizacao=null,alertasNoMapa={};
 
-// ==================== PEDIR NOME ====================
-if (!usuario) {
-    usuario = prompt("🎙️ Digite seu nome para entrar:", "Motorista");
-    if (!usuario) usuario = "Motorista";
-    localStorage.setItem('radio_user', usuario);
-}
-
-// ==================== CRIAR LISTA DE ESTAÇÕES ====================
-function criarEstacoes() {
-    const container = document.getElementById('stationsList');
-    container.innerHTML = '';
-    cities.forEach(cidade => {
-        const id = cidade.toLowerCase().replace(/ /g, '_').replace(/ã/g, 'a').replace(/ç/g, 'c').replace(/á/g, 'a');
-        const chip = document.createElement('div');
-        chip.className = 'station-chip';
-        if (id === estacaoAtual) chip.classList.add('active');
-        chip.innerHTML = `${cidade} <small id="count-${id}">0</small>`;
-        chip.onclick = () => trocarEstacao(id, cidade);
-        container.appendChild(chip);
+function criarCidades(){
+    const grid=document.getElementById('citiesGrid');
+    grid.innerHTML='';
+    cities.forEach(cidade=>{
+        const id=cidade.toLowerCase().replace(/ /g,'_').replace(/ã/g,'a').replace(/ç/g,'c');
+        const btn=document.createElement('div');
+        btn.className='city-btn'+(id===estacaoAtual?' active':'');
+        btn.innerHTML=`${cidade.substring(0,8)}<span class="city-count" id="count-${id}">0</span>`;
+        btn.onclick=()=>trocarEstacao(id,cidade);
+        grid.appendChild(btn);
     });
 }
 
-// ==================== TROCAR ESTAÇÃO ====================
-function trocarEstacao(id, nome) {
-    estacaoAtual = id;
-    localStorage.setItem('current_station', id);
-    
-    document.querySelectorAll('.station-chip').forEach(chip => chip.classList.remove('active'));
-    event.target.closest('.station-chip').classList.add('active');
-    
-    // Registrar no Firebase
-    db.ref(`estacoes/${id}/users/${usuario}`).set({ nome: usuario, timestamp: Date.now() });
-    
-    cities.forEach(c => {
-        const outroId = c.toLowerCase().replace(/ /g, '_').replace(/ã/g, 'a').replace(/ç/g, 'c');
-        if (outroId !== id) {
-            db.ref(`estacoes/${outroId}/users/${usuario}`).remove();
-        }
-    });
-    
+function trocarEstacao(id,nome){
+    estacaoAtual=id;
+    localStorage.setItem('current_station',id);
+    document.querySelectorAll('.city-btn').forEach(b=>b.classList.remove('active'));
+    event.target.closest('.city-btn').classList.add('active');
+    document.getElementById('currentStationName').innerText=nome;
+    db.ref(`estacoes/${id}/users/${usuario}`).set({nome:usuario,timestamp:Date.now()});
+    cities.forEach(c=>{const o=c.toLowerCase().replace(/ /g,'_').replace(/ã/g,'a').replace(/ç/g,'c');if(o!==id)db.ref(`estacoes/${o}/users/${usuario}`).remove();});
     setupAudioListener();
-    mostrarToast(`📻 Você entrou em ${nome}`);
+    mostrarToast(`📻 Entrou em ${nome}`);
 }
 
-// ==================== CONTAGEM DE USUÁRIOS ====================
-function carregarContagens() {
-    cities.forEach(cidade => {
-        const id = cidade.toLowerCase().replace(/ /g, '_').replace(/ã/g, 'a').replace(/ç/g, 'c');
-        db.ref(`estacoes/${id}/users`).on('value', (snap) => {
-            const users = snap.val();
-            const count = users ? Object.keys(users).length : 0;
-            const el = document.getElementById(`count-${id}`);
-            if (el) el.innerText = count;
+function carregarContagens(){
+    cities.forEach(cidade=>{
+        const id=cidade.toLowerCase().replace(/ /g,'_').replace(/ã/g,'a').replace(/ç/g,'c');
+        db.ref(`estacoes/${id}/users`).on('value',snap=>{
+            const u=snap.val(),c=u?Object.keys(u).length:0;
+            const el=document.getElementById(`count-${id}`);if(el)el.innerText=c;
+            if(id===estacaoAtual)document.getElementById('currentStationOnline').innerText=`${c} online`;
         });
     });
 }
 
-// ==================== ÁUDIO: OUVIR ====================
-let audioListenerRef = null;
-
-function setupAudioListener() {
-    if (audioListenerRef) {
-        db.ref(`estacoes/${estacaoAtual}/audios`).off('child_added', audioListenerRef);
-    }
-    
-    audioListenerRef = db.ref(`estacoes/${estacaoAtual}/audios`).on('child_added', (snap) => {
-        const data = snap.val();
-        if (data && data.sender !== usuario) {
-            const audio = new Audio(data.audio);
-            audio.play().catch(e => console.log('Erro:', e));
-            
-            const toast = document.getElementById('audioToast');
-            toast.style.display = 'block';
-            toast.innerHTML = `🎙️ ${data.sender} falou em ${data.station}`;
-            setTimeout(() => toast.style.display = 'none', 3000);
+let audioListenerRef=null;
+function setupAudioListener(){
+    if(audioListenerRef)db.ref(`estacoes/${estacaoAtual}/audios`).off('child_added',audioListenerRef);
+    audioListenerRef=db.ref(`estacoes/${estacaoAtual}/audios`).on('child_added',snap=>{
+        const d=snap.val();
+        if(d&&d.sender!==usuario){
+            new Audio(d.audio).play().catch(e=>console.log);
+            const t=document.getElementById('audioToast');
+            t.style.display='block';t.innerHTML=`🎙️ ${d.sender} falou em ${d.station}`;
+            setTimeout(()=>t.style.display='none',3000);
         }
     });
 }
 
-// ==================== ÁUDIO: GRAVAR ====================
-const pttBtn = document.getElementById('pttButton');
-const timerText = document.getElementById('timerText');
-
-async function startRecording() {
-    if (recording) return;
-    
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        mediaRecorder = new MediaRecorder(stream);
-        audioChunks = [];
-        secondsLeft = 20;
-        
-        mediaRecorder.ondataavailable = e => {
-            if (e.data.size > 0) audioChunks.push(e.data);
-        };
-        
-        mediaRecorder.onstop = async () => {
-            if (audioChunks.length > 0) {
-                const blob = new Blob(audioChunks, { type: 'audio/webm' });
-                const reader = new FileReader();
-                reader.onloadend = async () => {
-                    const cidadeNome = cities.find(c => {
-                        const id = c.toLowerCase().replace(/ /g, '_').replace(/ã/g, 'a').replace(/ç/g, 'c');
-                        return id === estacaoAtual;
-                    });
-                    
-                    await db.ref(`estacoes/${estacaoAtual}/audios`).push({
-                        sender: usuario,
-                        station: cidadeNome,
-                        audio: reader.result,
-                        timestamp: Date.now()
-                    });
-                    
-                    // Limpar áudios antigos
-                    const snapshot = await db.ref(`estacoes/${estacaoAtual}/audios`).once('value');
-                    const audios = snapshot.val();
-                    if (audios) {
-                        const keys = Object.keys(audios);
-                        if (keys.length > 30) {
-                            keys.slice(0, keys.length - 30).forEach(k => {
-                                db.ref(`estacoes/${estacaoAtual}/audios/${k}`).remove();
-                            });
-                        }
-                    }
+const pttBtn=document.getElementById('pttBtn');
+async function startRecording(){
+    if(recording)return;
+    try{
+        const s=await navigator.mediaDevices.getUserMedia({audio:true});
+        mediaRecorder=new MediaRecorder(s);
+        audioChunks=[];secondsLeft=20;
+        mediaRecorder.ondataavailable=e=>{if(e.data.size>0)audioChunks.push(e.data);};
+        mediaRecorder.onstop=async()=>{
+            if(audioChunks.length){
+                const b=new Blob(audioChunks,{type:'audio/webm'});
+                const r=new FileReader();
+                r.onloadend=async()=>{
+                    const cn=cities.find(c=>{const id=c.toLowerCase().replace(/ /g,'_').replace(/ã/g,'a').replace(/ç/g,'c');return id===estacaoAtual;});
+                    await db.ref(`estacoes/${estacaoAtual}/audios`).push({sender:usuario,station:cn,audio:r.result,timestamp:Date.now()});
+                    const snap=await db.ref(`estacoes/${estacaoAtual}/audios`).once('value');
+                    const a=snap.val();if(a){const k=Object.keys(a);if(k.length>30)k.slice(0,k.length-30).forEach(k=>db.ref(`estacoes/${estacaoAtual}/audios/${k}`).remove());}
                 };
-                reader.readAsDataURL(blob);
+                r.readAsDataURL(b);
             }
-            stream.getTracks().forEach(t => t.stop());
+            s.getTracks().forEach(t=>t.stop());
         };
-        
         mediaRecorder.start(100);
-        recording = true;
+        recording=true;
         pttBtn.classList.add('recording');
-        timerText.innerText = '20s';
-        
-        timerInterval = setInterval(() => {
-            secondsLeft--;
-            timerText.innerText = `${secondsLeft}s`;
-            if (secondsLeft <= 0) {
-                stopRecording();
-            }
-        }, 1000);
-        
-        setTimeout(() => {
-            if (recording) stopRecording();
-        }, 20000);
-        
-    } catch(e) {
-        alert("🎤 Permita o acesso ao microfone!");
-    }
+        timerInterval=setInterval(()=>{secondsLeft--;if(secondsLeft<=0)stopRecording();},1000);
+        setTimeout(()=>{if(recording)stopRecording();},20000);
+    }catch(e){alert("Permita o microfone!");}
 }
-
-function stopRecording() {
-    if (mediaRecorder && mediaRecorder.state === 'recording') {
-        mediaRecorder.stop();
-    }
-    if (timerInterval) clearInterval(timerInterval);
-    recording = false;
+function stopRecording(){
+    if(mediaRecorder&&mediaRecorder.state==='recording')mediaRecorder.stop();
+    if(timerInterval)clearInterval(timerInterval);
+    recording=false;
     pttBtn.classList.remove('recording');
-    timerText.innerText = 'FALAR';
 }
+pttBtn.addEventListener('mousedown',startRecording);
+pttBtn.addEventListener('mouseup',stopRecording);
+pttBtn.addEventListener('mouseleave',stopRecording);
 
-pttBtn.addEventListener('mousedown', startRecording);
-pttBtn.addEventListener('mouseup', stopRecording);
-pttBtn.addEventListener('mouseleave', stopRecording);
-pttBtn.addEventListener('touchstart', startRecording);
-pttBtn.addEventListener('touchend', stopRecording);
-
-// ==================== MAPA COMPLETO ====================
-function initMap() {
-    mapa = L.map('map').setView([-25.4284, -49.2733], 12);
-    L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(mapa);
-    
-    // GPS do usuário
-    if (navigator.geolocation) {
-        navigator.geolocation.watchPosition(pos => {
-            minhaLocalizacao = [pos.coords.latitude, pos.coords.longitude];
-            if (!userMarker) {
-                userMarker = L.marker(minhaLocalizacao, {
-                    icon: L.divIcon({
-                        html: `<div class="carro-icon">🚗</div>`,
-                        className: '',
-                        iconSize: [30, 30],
-                        iconAnchor: [15, 15]
-                    })
-                }).addTo(mapa);
-                mapa.setView(minhaLocalizacao, 13);
-            } else {
-                userMarker.setLatLng(minhaLocalizacao);
-            }
-            
-            db.ref(`localizacoes/${usuario}`).set({
-                lat: minhaLocalizacao[0],
-                lng: minhaLocalizacao[1],
-                estacao: estacaoAtual,
-                timestamp: Date.now()
-            });
-        });
-    }
-    
-    // Carregar alertas do Firebase
-    carregarAlertasFirebase();
-}
-
-// ==================== CRIAR ALERTAS (15 itens) ====================
-function criarAlertasGrid() {
-    const grid = document.getElementById('alertasGrid');
-    grid.innerHTML = '';
-    alertasLista.forEach(alerta => {
-        const div = document.createElement('div');
-        div.className = 'alerta-item';
-        div.style.background = alerta.bg;
-        div.innerHTML = `<div>${alerta.icone}</div><span>${alerta.nome}</span>`;
-        div.onclick = () => criarAlertaComFoto(alerta);
-        grid.appendChild(div);
-    });
-}
-
-// ==================== CRIAR ALERTA COM FOTO ====================
-async function criarAlertaComFoto(alerta) {
-    if (!minhaLocalizacao) {
-        alert("Aguardando localização...");
-        return;
-    }
-    
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-        
-        const overlay = document.createElement('div');
-        overlay.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:#000; z-index:10000; display:flex; flex-direction:column; align-items:center; justify-content:center;';
-        
-        const video = document.createElement('video');
-        video.style.cssText = 'width:90%; max-width:350px; border-radius:20px;';
-        video.autoplay = true;
-        video.srcObject = stream;
-        
-        const btnFoto = document.createElement('button');
-        btnFoto.style.cssText = 'margin:15px; padding:12px 25px; background:#ffd700; border:none; border-radius:40px; font-size:16px; font-weight:700; cursor:pointer;';
-        btnFoto.innerHTML = '📷 TIRAR FOTO';
-        
-        const btnPular = document.createElement('button');
-        btnPular.style.cssText = 'margin:15px; padding:12px 25px; background:#444; border:none; border-radius:40px; color:white; cursor:pointer;';
-        btnPular.innerHTML = '⏭️ PULAR';
-        
-        const btnFechar = document.createElement('button');
-        btnFechar.style.cssText = 'position:absolute; top:15px; right:15px; width:40px; height:40px; background:#e53935; border:none; border-radius:50%; color:white; font-size:18px; cursor:pointer;';
-        btnFechar.innerHTML = '✕';
-        
-        overlay.appendChild(video);
-        overlay.appendChild(btnFoto);
-        overlay.appendChild(btnPular);
-        overlay.appendChild(btnFechar);
-        document.body.appendChild(overlay);
-        
-        btnFoto.onclick = () => {
-            const canvas = document.createElement('canvas');
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            canvas.getContext('2d').drawImage(video, 0, 0);
-            
-            canvas.toBlob(async (blob) => {
-                const reader = new FileReader();
-                reader.onloadend = async () => {
-                    const id = Date.now();
-                    await db.ref(`alertas/${id}`).set({
-                        ...alerta,
-                        lat: minhaLocalizacao[0],
-                        lng: minhaLocalizacao[1],
-                        timestamp: id,
-                        criador: usuario,
-                        confirmacoes: 1,
-                        imagem: reader.result
+let mapOpen=false;
+function toggleMap(){
+    const c=document.getElementById('mapContainer'),i=document.getElementById('mapIcon');
+    mapOpen=!mapOpen;
+    if(mapOpen){
+        c.style.height='280px';i.style.transform='rotate(180deg)';
+        setTimeout(()=>{
+            if(!mapa){
+                mapa=L.map('map').setView([-25.4284,-49.2733],12);
+                L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(mapa);
+                if(navigator.geolocation){
+                    navigator.geolocation.watchPosition(p=>{
+                        minhaLocalizacao=[p.coords.latitude,p.coords.longitude];
+                        if(!userMarker){
+                            userMarker=L.marker(minhaLocalizacao,{icon:L.divIcon({html:'<div style="font-size:28px;">🚗</div>',iconSize:[28,28],iconAnchor:[14,14]})}).addTo(mapa);
+                            mapa.setView(minhaLocalizacao,13);
+                        }else userMarker.setLatLng(minhaLocalizacao);
                     });
-                    stream.getTracks().forEach(t => t.stop());
-                    document.body.removeChild(overlay);
-                    mostrarToast('✅ Alerta criado!');
-                };
-                reader.readAsDataURL(blob);
-            }, 'image/jpeg', 0.6);
-        };
-        
-        btnPular.onclick = async () => {
-            const id = Date.now();
-            await db.ref(`alertas/${id}`).set({
-                ...alerta,
-                lat: minhaLocalizacao[0],
-                lng: minhaLocalizacao[1],
-                timestamp: id,
-                criador: usuario,
-                confirmacoes: 1
-            });
-            stream.getTracks().forEach(t => t.stop());
-            document.body.removeChild(overlay);
-            mostrarToast('⚠️ Alerta criado!');
-        };
-        
-        btnFechar.onclick = () => {
-            stream.getTracks().forEach(t => t.stop());
-            document.body.removeChild(overlay);
-        };
-        
-    } catch(e) {
-        const id = Date.now();
-        await db.ref(`alertas/${id}`).set({
-            ...alerta,
-            lat: minhaLocalizacao[0],
-            lng: minhaLocalizacao[1],
-            timestamp: id,
-            criador: usuario,
-            confirmacoes: 1
-        });
-        mostrarToast('⚠️ Alerta criado!');
-    }
+                }
+                db.ref('alertas').on('child_added',snap=>{const a=snap.val(),id=snap.key;if(alertasNoMapa[id]||!mapa)return;L.marker([a.lat,a.lng],{icon:L.divIcon({html:`<div style="background:${a.cor};width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;border:2px solid white;">${a.icone}</div>`,iconSize:[32,32],iconAnchor:[16,16]})}).addTo(mapa).bindPopup(`<b>${a.icone} ${a.nome}</b>`);alertasNoMapa[id]=true;});
+            }else mapa.invalidateSize();
+        },100);
+    }else{c.style.height='0';i.style.transform='rotate(0deg)';}
 }
 
-// ==================== CARREGAR ALERTAS NO MAPA ====================
-function carregarAlertasFirebase() {
-    db.ref('alertas').on('child_added', (snap) => {
-        const a = snap.val();
-        const id = snap.key;
-        
-        if (alertasNoMapa[id]) return;
-        
-        const markerHtml = `
-            <div class="alerta-marker" style="background:${a.cor};">
-                ${a.icone}
-            </div>
-        `;
-        
-        const marcador = L.marker([a.lat, a.lng], {
-            icon: L.divIcon({
-                html: markerHtml,
-                className: '',
-                iconSize: [40, 40],
-                iconAnchor: [20, 20]
-            })
-        }).addTo(mapa);
-        
-        let imgHtml = '';
-        if (a.imagem) {
-            imgHtml = `<img src="${a.imagem}" class="popup-alerta-img" style="width:100%; height:120px; object-fit:cover;">`;
-        }
-        
-        marcador.bindPopup(`
-            <div class="popup-alerta">
-                ${imgHtml}
-                <div style="padding:10px; text-align:center;">
-                    <strong>${a.icone} ${a.nome}</strong><br>
-                    <small>${new Date(a.timestamp).toLocaleTimeString()}</small><br>
-                    <span>👍 ${a.confirmacoes || 0}</span>
-                </div>
-            </div>
-        `);
-        
-        alertasNoMapa[id] = marcador;
-    });
+function criarAlertasGrid(){
+    const g=document.getElementById('alertasGrid');
+    g.innerHTML='';
+    alertasLista.forEach(a=>{const d=document.createElement('div');d.className='alerta-item';d.innerHTML=`<div class="alerta-icon">${a.icone}</div><div class="alerta-nome">${a.nome}</div>`;d.onclick=()=>criarAlerta(a);g.appendChild(d);});
 }
-
-// ==================== CHAT WHATSAPP ====================
-function openChat() {
-    document.getElementById('chatModal').classList.add('visible');
-    carregarChat();
+async function criarAlerta(a){
+    if(!minhaLocalizacao){mostrarToast("Aguardando localização...");return;}
+    await db.ref(`alertas/${Date.now()}`).set({...a,lat:minhaLocalizacao[0],lng:minhaLocalizacao[1],timestamp:Date.now(),criador:usuario,confirmacoes:1});
+    mostrarToast(`✅ ${a.icone} ${a.nome} reportado!`);closeAlertas();
 }
-
-function closeChat() {
-    document.getElementById('chatModal').classList.remove('visible');
+function openAlertas(){document.getElementById('alertasModal').classList.add('visible');}
+function closeAlertas(){document.getElementById('alertasModal').classList.remove('visible');}
+function openChat(){document.getElementById('chatModal').classList.add('visible');carregarChat();}
+function closeChat(){document.getElementById('chatModal').classList.remove('visible');}
+function carregarChat(){
+    db.ref('chat_geral').on('value',snap=>{const m=snap.val(),c=document.getElementById('chatMessages');if(!m){c.innerHTML='';return;}let h='';Object.values(m).sort((a,b)=>a.timestamp-b.timestamp).forEach(msg=>{const isMe=msg.usuario===usuario;h+=`<div class="msg ${isMe?'me':'other'}"><strong>${msg.usuario}</strong><br>${msg.texto}<br><small>${new Date(msg.timestamp).toLocaleTimeString()}</small></div>`;});c.innerHTML=h;c.scrollTop=c.scrollHeight;});
 }
-
-function carregarChat() {
-    db.ref('chat_geral').on('value', (snap) => {
-        const msgs = snap.val();
-        const container = document.getElementById('chatMessages');
-        if (!msgs) { container.innerHTML = ''; return; }
-        
-        let html = '';
-        Object.values(msgs).sort((a,b) => a.timestamp - b.timestamp).forEach(msg => {
-            const isMe = msg.usuario === usuario;
-            html += `
-                <div class="msg-wp ${isMe ? 'me' : 'other'}">
-                    <strong>${msg.usuario}</strong><br>
-                    ${msg.texto}<br>
-                    <small style="font-size:9px; opacity:0.6;">${new Date(msg.timestamp).toLocaleTimeString()}</small>
-                </div>
-            `;
-        });
-        container.innerHTML = html;
-        container.scrollTop = container.scrollHeight;
-    });
-}
-
-function sendChatMessage() {
-    const input = document.getElementById('chatInput');
-    if (!input.value.trim()) return;
-    db.ref('chat_geral').push({
-        usuario: usuario,
-        texto: input.value.trim(),
-        timestamp: Date.now()
-    });
-    input.value = '';
-}
-
-// ==================== CORES DO RÁDIO ====================
-const cores = ['#00BFFF', '#4caf50', '#e53935', '#ff9800', '#9c27b0', '#ffc107', '#e91e63'];
-
-function criarCores() {
-    const container = document.getElementById('colorOptions');
-    container.innerHTML = '';
-    cores.forEach(cor => {
-        const div = document.createElement('div');
-        div.className = 'color-option';
-        div.style.background = cor;
-        if (cor === corAtual) div.classList.add('selected');
-        div.onclick = () => mudarCor(cor);
-        container.appendChild(div);
-    });
-}
-
-function mudarCor(cor) {
-    corAtual = cor;
-    localStorage.setItem('radio_color', cor);
-    document.documentElement.style.setProperty('--cor-principal', cor);
-    document.querySelectorAll('.station-chip.active').forEach(el => {
-        el.style.background = `linear-gradient(145deg, ${cor}, ${cor}cc)`;
-    });
-    criarCores();
-}
-
-function openConfig() {
-    document.getElementById('configModal').classList.add('visible');
-}
-
-function closeConfig() {
-    document.getElementById('configModal').classList.remove('visible');
-}
-
-// ==================== UTILIDADES ====================
-function toggleAlertas() {
-    document.getElementById('alertasModal').classList.toggle('visible');
-}
-
-function mostrarToast(msg) {
-    const toast = document.createElement('div');
-    toast.style.cssText = 'position:fixed; bottom:100px; left:50%; transform:translateX(-50%); background:#00BFFF; color:white; padding:8px 20px; border-radius:40px; z-index:6000; font-weight:bold; border:2px solid gold;';
-    toast.innerText = msg;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 2000);
-}
-
-// ==================== LIMPAR AO SAIR ====================
-window.addEventListener('beforeunload', () => {
-    if (usuario) {
-        db.ref(`estacoes/${estacaoAtual}/users/${usuario}`).remove();
-        db.ref(`localizacoes/${usuario}`).remove();
-    }
-});
-
-// ==================== INICIAR TUDO ====================
-function init() {
-    criarEstacoes();
-    carregarContagens();
-    setupAudioListener();
-    initMap();
-    criarAlertasGrid();
-    carregarChat();
-    criarCores();
-    mostrarToast(`🎙️ Bem-vindo, ${usuario}!`);
-}
-
-init();
-</script>
-</body>
-</html>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>RÁDIO BR-277</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: linear-gradient(135deg, #0f0c29, #302b63);
-            font-family: 'Segoe UI', sans-serif;
-            padding: 20px;
-        }
-        .radio {
-            max-width: 500px;
-            margin: 0 auto;
-            background: #1a1a2e;
-            border-radius: 40px;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        .header {
-            text-align: center;
-            color: #00BFFF;
-            margin-bottom: 20px;
-        }
-        .header h1 { font-size: 24px; }
-        .stations {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-bottom: 20px;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-        .station {
-            background: #0f0f23;
-            border-radius: 12px;
-            padding: 10px;
-            text-align: center;
-            cursor: pointer;
-            border: 1px solid #3a3a5a;
-            transition: all 0.2s;
-        }
-        .station.active {
-            background: #00BFFF;
-            border-color: gold;
-        }
-        .station-name { color: white; font-size: 11px; font-weight: bold; }
-        .station-count { font-size: 9px; color: #aaa; }
-        .station.active .station-name { color: #1a1a2e; }
-        .station.active .station-count { color: #1a1a2e; background: gold; padding: 2px 6px; border-radius: 20px; }
-        
-        .current {
-            background: #0f0f23;
-            border-radius: 30px;
-            padding: 12px 20px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-left: 4px solid #00BFFF;
-        }
-        .current-name { color: white; font-size: 16px; font-weight: bold; }
-        .current-online { background: #00BFFF; border-radius: 30px; padding: 4px 12px; font-size: 12px; }
-        
-        .ptt {
-            text-align: center;
-            margin: 20px 0;
-        }
-        .ptt-btn {
-            width: 120px;
-            height: 120px;
-            border-radius: 60px;
-            background: radial-gradient(circle at 30% 30%, #e53935, #8b0000);
-            border: 4px solid gold;
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.05s linear;
-        }
-        .ptt-btn:active { transform: scale(0.95); }
-        .ptt-btn.recording { animation: pulse 0.5s infinite; }
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 #e53935; }
-            70% { box-shadow: 0 0 0 15px rgba(229,57,53,0); }
-        }
-        .timer {
-            margin-top: 10px;
-            color: gold;
-            font-size: 20px;
-            font-weight: bold;
-        }
-        .menu {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        .menu-btn {
-            flex: 1;
-            background: #0f0f23;
-            border: 1px solid #3a3a5a;
-            border-radius: 30px;
-            padding: 10px;
-            text-align: center;
-            color: white;
-            cursor: pointer;
-        }
-        .notif {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #00BFFF;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 40px;
-            display: none;
-            font-weight: bold;
-            border: 2px solid gold;
-            z-index: 1000;
-        }
-        .chat-modal {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            right: 20px;
-            background: #1a1a2e;
-            border-radius: 20px;
-            display: none;
-            flex-direction: column;
-            max-height: 400px;
-            border: 1px solid #00BFFF;
-            z-index: 2000;
-        }
-        .chat-modal.visible { display: flex; }
-        .chat-header { background: #00BFFF; padding: 10px; border-radius: 20px 20px 0 0; display: flex; justify-content: space-between; }
-        .chat-msgs { flex: 1; overflow-y: auto; padding: 10px; max-height: 300px; }
-        .chat-input { display: flex; padding: 10px; gap: 5px; border-top: 1px solid #333; }
-        .chat-input input { flex: 1; padding: 10px; border-radius: 20px; border: none; background: #0f0f23; color: white; }
-        .chat-input button { background: #00BFFF; border: none; width: 40px; border-radius: 50%; cursor: pointer; }
-        .msg { margin: 5px 0; padding: 8px 12px; border-radius: 15px; max-width: 80%; }
-        .msg.me { background: #00BFFF; margin-left: auto; color: white; }
-        .msg.other { background: #333; color: white; }
-    </style>
-</head>
-<body>
-
-<div class="radio">
-    <div class="header">
-        <h1><i class="fas fa-radio"></i> RÁDIO BR-277</h1>
-        <small style="color:#888;">27.7 MHz</small>
-    </div>
-
-    <div class="stations" id="stations"></div>
-
-    <div class="current">
-        <div class="current-name" id="currentName">Curitiba</div>
-        <div class="current-online" id="currentOnline">0 online</div>
-    </div>
-
-    <div class="ptt">
-        <button class="ptt-btn" id="pttBtn">🎤<br>FALAR</button>
-        <div class="timer" id="timer" style="display: none;">20s</div>
-    </div>
-
-    <div class="menu">
-        <div class="menu-btn" onclick="abrirChat()"><i class="fas fa-comment"></i> CHAT</div>
-        <div class="menu-btn" onclick="mudarNome()"><i class="fas fa-user"></i> PERFIL</div>
-    </div>
-</div>
-
-<div class="notif" id="notif">🎙️ ÁUDIO RECEBIDO</div>
-
-<div class="chat-modal" id="chatModal">
-    <div class="chat-header">
-        <span>💬 CHAT GERAL</span>
-        <span onclick="fecharChat()" style="cursor:pointer;">✕</span>
-    </div>
-    <div class="chat-msgs" id="chatMsgs"></div>
-    <div class="chat-input">
-        <input type="text" id="chatInput" placeholder="Digite...">
-        <button onclick="enviarMsg()"><i class="fas fa-paper-plane"></i></button>
-    </div>
-</div>
-
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
-<script>
-// ========== FIREBASE ==========
-const firebaseConfig = {
-    databaseURL: "https://gps-br277-default-rtdb.firebaseio.com"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-
-// ========== DADOS ==========
-const cidades = [
-    "Guarapuava", "Palmeira", "Porto Amazonas", "Ponta Grossa", "São Luiz",
-    "Campo Largo", "Curitiba", "Almirante Tamandaré", "Fazenda Rio Grande", "Tijucas do Sul",
-    "Guaratuba", "Morretes", "Paranaguá", "São José", "Colombo",
-    "Araucária", "Piraquara", "Campina Grande", "Quatro Barras", "Barra do Turvo", "Cajati"
-];
-
-let usuario = localStorage.getItem('nome');
-if (!usuario) {
-    usuario = prompt("Digite seu nome:", "Motorista");
-    if (usuario) localStorage.setItem('nome', usuario);
-    else usuario = "Motorista";
-}
-
-let estacaoAtual = localStorage.getItem('estacao') || 'curitiba';
-let gravando = false;
-let mediaRecorder = null;
-let audioChunks = [];
-let timerInterval = null;
-
-// ========== CRIAR BOTÕES ==========
-function criarBotoes() {
-    const container = document.getElementById('stations');
-    container.innerHTML = '';
-    cidades.forEach(cidade => {
-        const id = cidade.toLowerCase().replace(/ /g, '_').replace(/ã/g, 'a').replace(/ç/g, 'c');
-        const btn = document.createElement('div');
-        btn.className = 'station';
-        if (id === estacaoAtual) btn.classList.add('active');
-        btn.innerHTML = `
-            <div class="station-name">${cidade}</div>
-            <div class="station-count" id="count-${id}">0</div>
-        `;
-        btn.onclick = () => trocarEstacao(id, cidade);
-        container.appendChild(btn);
-    });
-}
-
-// ========== TROCAR ESTAÇÃO ==========
-function trocarEstacao(id, nome) {
-    estacaoAtual = id;
-    localStorage.setItem('estacao', id);
-    
-    document.querySelectorAll('.station').forEach(btn => btn.classList.remove('active'));
-    event.target.closest('.station').classList.add('active');
-    
-    document.getElementById('currentName').innerHTML = nome;
-    
-    // Registrar no Firebase
-    db.ref(`estacoes/${id}/usuarios/${usuario}`).set({ nome: usuario, timestamp: Date.now() });
-    
-    // Remover de outras
-    cidades.forEach(c => {
-        const outroId = c.toLowerCase().replace(/ /g, '_').replace(/ã/g, 'a').replace(/ç/g, 'c');
-        if (outroId !== id) {
-            db.ref(`estacoes/${outroId}/usuarios/${usuario}`).remove();
-        }
-    });
-    
-    // Recarregar listener de áudio
-    carregarAudio();
-    
-    mostrarNotif(`📻 Você entrou em ${nome}`);
-}
-
-// ========== CONTAGEM DE USUÁRIOS ==========
-function carregarContagens() {
-    cidades.forEach(cidade => {
-        const id = cidade.toLowerCase().replace(/ /g, '_').replace(/ã/g, 'a').replace(/ç/g, 'c');
-        db.ref(`estacoes/${id}/usuarios`).on('value', (snap) => {
-            const users = snap.val();
-            const count = users ? Object.keys(users).length : 0;
-            const el = document.getElementById(`count-${id}`);
-            if (el) el.innerHTML = count;
-            if (id === estacaoAtual) {
-                document.getElementById('currentOnline').innerHTML = `${count} online`;
-            }
-        });
-    });
-}
-
-// ========== ÁUDIO: OUVIR ==========
-let audioListener = null;
-
-function carregarAudio() {
-    if (audioListener) {
-        db.ref(`estacoes/${estacaoAtual}/audios`).off('child_added', audioListener);
-    }
-    
-    audioListener = db.ref(`estacoes/${estacaoAtual}/audios`).on('child_added', (snap) => {
-        const data = snap.val();
-        if (data && data.usuario !== usuario) {
-            // Tocar áudio
-            const audio = new Audio(data.audio);
-            audio.play().catch(e => console.log('Erro:', e));
-            
-            // Mostrar notificação
-            const notif = document.getElementById('notif');
-            notif.style.display = 'block';
-            notif.innerHTML = `🎙️ ${data.usuario} falou em ${data.estacao}`;
-            setTimeout(() => notif.style.display = 'none', 3000);
-        }
-    });
-}
-
-// ========== ÁUDIO: GRAVAR ==========
-const pttBtn = document.getElementById('pttBtn');
-const timerDiv = document.getElementById('timer');
-
-async function comecarGravacao() {
-    if (gravando) return;
-    
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        mediaRecorder = new MediaRecorder(stream);
-        audioChunks = [];
-        let segundos = 20;
-        
-        mediaRecorder.ondataavailable = e => {
-            if (e.data.size > 0) audioChunks.push(e.data);
-        };
-        
-        mediaRecorder.onstop = async () => {
-            if (audioChunks.length > 0) {
-                const blob = new Blob(audioChunks, { type: 'audio/webm' });
-                const reader = new FileReader();
-                reader.onloadend = async () => {
-                    const cidadeNome = cidades.find(c => {
-                        const id = c.toLowerCase().replace(/ /g, '_').replace(/ã/g, 'a').replace(/ç/g, 'c');
-                        return id === estacaoAtual;
-                    });
-                    
-                    await db.ref(`estacoes/${estacaoAtual}/audios`).push({
-                        usuario: usuario,
-                        estacao: cidadeNome,
-                        audio: reader.result,
-                        timestamp: Date.now()
-                    });
-                    
-                    // Limpar áudios antigos (manter últimos 30)
-                    const snapshot = await db.ref(`estacoes/${estacaoAtual}/audios`).once('value');
-                    const audios = snapshot.val();
-                    if (audios) {
-                        const keys = Object.keys(audios);
-                        if (keys.length > 30) {
-                            keys.slice(0, keys.length - 30).forEach(k => {
-                                db.ref(`estacoes/${estacaoAtual}/audios/${k}`).remove();
-                            });
-                        }
-                    }
-                };
-                reader.readAsDataURL(blob);
-            }
-            stream.getTracks().forEach(t => t.stop());
-        };
-        
-        mediaRecorder.start(100);
-        gravando = true;
-        pttBtn.classList.add('recording');
-        timerDiv.style.display = 'block';
-        timerDiv.innerHTML = '20s';
-        
-        timerInterval = setInterval(() => {
-            segundos--;
-            timerDiv.innerHTML = `${segundos}s`;
-            if (segundos <= 0) {
-                pararGravacao();
-            }
-        }, 1000);
-        
-        setTimeout(() => {
-            if (gravando) pararGravacao();
-        }, 20000);
-        
-    } catch(e) {
-        alert("🎤 Para falar, permita o acesso ao microfone!");
-    }
-}
-
-function pararGravacao() {
-    if (mediaRecorder && mediaRecorder.state === 'recording') {
-        mediaRecorder.stop();
-    }
-    if (timerInterval) clearInterval(timerInterval);
-    gravando = false;
-    pttBtn.classList.remove('recording');
-    timerDiv.style.display = 'none';
-}
-
-pttBtn.addEventListener('mousedown', comecarGravacao);
-pttBtn.addEventListener('mouseup', pararGravacao);
-pttBtn.addEventListener('mouseleave', pararGravacao);
-pttBtn.addEventListener('touchstart', comecarGravacao);
-pttBtn.addEventListener('touchend', pararGravacao);
-
-// ========== CHAT ==========
-function abrirChat() {
-    document.getElementById('chatModal').classList.add('visible');
-}
-function fecharChat() {
-    document.getElementById('chatModal').classList.remove('visible');
-}
-
-function carregarChat() {
-    db.ref('chat_geral').on('value', (snap) => {
-        const msgs = snap.val();
-        const container = document.getElementById('chatMsgs');
-        if (!msgs) { container.innerHTML = '<div style="text-align:center;color:#666;">Nenhuma mensagem</div>'; return; }
-        
-        let html = '';
-        Object.values(msgs).sort((a,b) => a.timestamp - b.timestamp).forEach(msg => {
-            const isMe = msg.usuario === usuario;
-            html += `
-                <div class="msg ${isMe ? 'me' : 'other'}">
-                    <strong>${msg.usuario}</strong><br>${msg.texto}<br>
-                    <small style="font-size:9px;">${new Date(msg.timestamp).toLocaleTimeString()}</small>
-                </div>
-            `;
-        });
-        container.innerHTML = html;
-        container.scrollTop = container.scrollHeight;
-    });
-}
-
-function enviarMsg() {
-    const input = document.getElementById('chatInput');
-    if (!input.value.trim()) return;
-    db.ref('chat_geral').push({
-        usuario: usuario,
-        texto: input.value.trim(),
-        timestamp: Date.now()
-    });
-    input.value = '';
-}
-
-// ========== PERFIL ==========
-function mudarNome() {
-    const novo = prompt("Digite seu novo nome:", usuario);
-    if (novo && novo.trim()) {
-        usuario = novo.trim();
-        localStorage.setItem('nome', usuario);
-        mostrarNotif(`✅ Nome alterado para ${usuario}`);
-    }
-}
-
-// ========== NOTIFICAÇÃO ==========
-function mostrarNotif(msg) {
-    const n = document.createElement('div');
-    n.style.cssText = 'position:fixed; bottom:200px; left:50%; transform:translateX(-50%); background:#00BFFF; color:white; padding:8px 20px; border-radius:40px; z-index:3000; font-weight:bold; border:2px solid gold;';
-    n.innerHTML = msg;
-    document.body.appendChild(n);
-    setTimeout(() => n.remove(), 2000);
-}
-
-// ========== LIMPAR AO SAIR ==========
-window.addEventListener('beforeunload', () => {
-    if (usuario) {
-        db.ref(`estacoes/${estacaoAtual}/usuarios/${usuario}`).remove();
-    }
-});
-
-// ========== INICIAR ==========
-criarBotoes();
-carregarContagens();
-carregarAudio();
-carregarChat();
-mostrarNotif(`🎙️ Bem-vindo, ${usuario}!`);
+function sendChat(){const i=document.getElementById('chatInput');if(!i.value.trim())return;db.ref('chat_geral').push({usuario:usuario,texto:i.value.trim(),timestamp:Date.now()});i.value='';}
+function mostrarToast(m){const t=document.createElement('div');t.style.cssText='position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#00BFFF;color:white;padding:8px20px;border-radius:40px;z-index:13000;font-weight:bold;border:2px solid gold;';t.innerText=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2000);}
+window.addEventListener('beforeunload',()=>{if(usuario)db.ref(`estacoes/${estacaoAtual}/users/${usuario}`).remove();});
+criarCidades();carregarContagens();setupAudioListener();criarAlertasGrid();carregarChat();mostrarToast(`🎙️ Bem-vindo, ${usuario}!`);
 </script>
 </body>
 </html>
