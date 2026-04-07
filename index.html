@@ -19,7 +19,6 @@
             padding: 20px;
         }
 
-        /* ===== RÁDIO PX 277 ===== */
         .radio-px {
             max-width: 550px;
             width: 100%;
@@ -31,7 +30,6 @@
             position: relative;
         }
 
-        /* ===== CABEÇALHO ===== */
         .px-header {
             background: linear-gradient(135deg, #0f0f25, #0a0a1a);
             padding: 20px 24px 16px;
@@ -53,9 +51,27 @@
         .px-header h1 i {
             background: none;
             -webkit-background-clip: unset;
-            background-clip: unset;
             color: #00BFFF;
             margin: 0 8px;
+        }
+
+        /* AO VIVO PULSANTE */
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #e53935;
+            padding: 4px 12px;
+            border-radius: 40px;
+            margin-top: 8px;
+            font-size: 11px;
+            font-weight: bold;
+            animation: pulse-red 1s infinite;
+        }
+
+        @keyframes pulse-red {
+            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 #e53935; }
+            50% { opacity: 0.7; box-shadow: 0 0 0 8px rgba(229,57,53,0.3); }
         }
 
         .px-status {
@@ -79,27 +95,7 @@
             font-weight: bold;
         }
 
-        .online-badge {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: #050510;
-            padding: 5px 15px;
-            border-radius: 40px;
-        }
-
-        .online-badge i {
-            color: #00ff88;
-            font-size: 10px;
-            animation: pulse-green 1.5s infinite;
-        }
-
-        @keyframes pulse-green {
-            0%, 100% { opacity: 1; text-shadow: 0 0 0 #00ff88; }
-            50% { opacity: 0.5; text-shadow: 0 0 5px #00ff88; }
-        }
-
-        /* ===== SELEÇÃO DE ESTAÇÃO ===== */
+        /* SELEÇÃO DE ESTAÇÃO SIMPLIFICADA */
         .station-area {
             padding: 16px 20px 8px;
         }
@@ -137,15 +133,6 @@
         .selector-trigger:hover {
             border-color: #00BFFF;
             background: #202040;
-        }
-
-        .selector-trigger i {
-            color: #ffd700;
-            transition: transform 0.3s;
-        }
-
-        .selector-trigger.open i {
-            transform: rotate(180deg);
         }
 
         .station-dropdown {
@@ -198,12 +185,7 @@
             font-weight: bold;
         }
 
-        .station-option.active .station-count {
-            background: #ffd700;
-            color: #1a1a2e;
-        }
-
-        /* ===== ESTAÇÃO ATUAL (DESTAQUE) ===== */
+        /* ESTAÇÃO ATUAL - COR DIFERENCIADA */
         .current-highlight {
             background: linear-gradient(135deg, #0f0f25, #080818);
             margin: 12px 20px;
@@ -212,9 +194,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-left: 5px solid #00BFFF;
+            border-left: 5px solid #ffd700;
             border-right: 1px solid #2a2a55;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
         .city-detail {
@@ -226,17 +207,16 @@
         .city-icon {
             width: 50px;
             height: 50px;
-            background: linear-gradient(145deg, #00BFFF, #0066cc);
+            background: linear-gradient(145deg, #ffd700, #ffaa00);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 0 15px rgba(0,191,255,0.4);
         }
 
         .city-icon i {
             font-size: 24px;
-            color: white;
+            color: #0f0f25;
         }
 
         .city-name {
@@ -254,7 +234,7 @@
             color: #0f0f25;
         }
 
-        /* ===== BOTÃO PX CENTRALIZADO ===== */
+        /* BOTÃO PX SIMPLIFICADO (SEM LED ROTACIONAL) */
         .mic-panel {
             text-align: center;
             padding: 25px 20px;
@@ -267,51 +247,9 @@
             justify-content: center;
         }
 
-        /* LED ROTACIONAL PROFISSIONAL */
-        .rotating-led {
-            width: 180px;
-            height: 180px;
-            position: relative;
-            margin-bottom: 15px;
-        }
-
-        .rotating-led::before {
-            content: '';
-            position: absolute;
-            top: -5px;
-            left: -5px;
-            right: -5px;
-            bottom: -5px;
-            border-radius: 50%;
-            background: conic-gradient(from 0deg, #ff0000, #ff6600, #ffcc00, #00ff00, #00ccff, #ff00ff, #ff0000);
-            animation: rotate-led 2s linear infinite;
-            z-index: 0;
-        }
-
-        .rotating-led::after {
-            content: '';
-            position: absolute;
-            top: 3px;
-            left: 3px;
-            right: 3px;
-            bottom: 3px;
-            border-radius: 50%;
-            background: #0f0f25;
-            z-index: 1;
-        }
-
-        @keyframes rotate-led {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
         .px-button {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 140px;
-            height: 140px;
+            width: 160px;
+            height: 160px;
             border-radius: 50%;
             background: radial-gradient(circle at 35% 35%, #2a2a4a, #1a1a35);
             border: 4px solid #3a3a6a;
@@ -326,7 +264,6 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            z-index: 2;
         }
 
         .px-button i {
@@ -338,13 +275,11 @@
             letter-spacing: 2px;
         }
 
-        /* Estado ATIVO (transmitindo) */
         .px-button.active {
             background: radial-gradient(circle at 35% 35%, #e53935, #8b0000);
             border-color: #ffd700;
             color: white;
             animation: px-pulse 1.2s infinite;
-            box-shadow: 0 0 30px rgba(229,57,53,0.8);
         }
 
         @keyframes px-pulse {
@@ -353,7 +288,6 @@
             100% { box-shadow: 0 0 0 0 rgba(229,57,53,0); }
         }
 
-        /* Estado DESLIGADO */
         .px-button.off {
             background: radial-gradient(circle at 35% 35%, #2a2a4a, #1a1a35);
             border-color: #3a3a6a;
@@ -397,7 +331,7 @@
             border-radius: 40px;
         }
 
-        /* ===== BOTÕES DE AÇÃO PROFISSIONAIS ===== */
+        /* BOTÕES DE AÇÃO */
         .action-grid {
             display: flex;
             gap: 15px;
@@ -419,48 +353,11 @@
             justify-content: center;
             gap: 10px;
             transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
         }
 
-        /* BOTÃO MAPA COM CONTORNO LED */
         .action-card.map-btn {
             border: 2px solid #00BFFF;
             background: linear-gradient(135deg, #1a1a35, #151530);
-            box-shadow: 0 0 10px rgba(0,191,255,0.3);
-        }
-
-        .action-card.map-btn::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(90deg, #00BFFF, #ffd700, #00BFFF);
-            border-radius: 50px;
-            z-index: -1;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .action-card.map-btn:hover::before {
-            opacity: 1;
-        }
-
-        .action-card.map-btn:hover {
-            transform: translateY(-3px);
-            border-color: #ffd700;
-            box-shadow: 0 0 20px rgba(0,191,255,0.6);
-        }
-
-        .action-card i {
-            color: #00BFFF;
-            font-size: 18px;
-        }
-
-        .action-card.map-btn i {
-            color: #ffd700;
         }
 
         .action-card:hover {
@@ -469,7 +366,12 @@
             transform: translateY(-2px);
         }
 
-        /* ===== MODAIS ===== */
+        .action-card i {
+            color: #00BFFF;
+            font-size: 18px;
+        }
+
+        /* MODAIS */
         .modal-full {
             position: fixed;
             top: 0;
@@ -508,6 +410,7 @@
 
         .map-container {
             flex: 1;
+            position: relative;
         }
 
         #map {
@@ -515,7 +418,24 @@
             width: 100%;
         }
 
-        /* MODAL ALERTAS */
+        .recenter-btn {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: #00BFFF;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 18px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1001;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
         .modal-alert {
             position: fixed;
             top: 0;
@@ -549,7 +469,6 @@
             justify-content: space-between;
             color: white;
             font-weight: bold;
-            font-size: 16px;
         }
 
         .alert-grid {
@@ -567,18 +486,6 @@
             cursor: pointer;
             transition: all 0.2s;
             border: 1px solid #3a3a6a;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .alert-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: var(--alert-color);
         }
 
         .alert-emoji { font-size: 34px; }
@@ -647,6 +554,7 @@
             border-radius: 18px;
             max-width: 80%;
             font-size: 13px;
+            position: relative;
         }
 
         .msg-bubble.me {
@@ -658,16 +566,23 @@
             background: white;
         }
 
-        /* POPUP ALERTA */
+        .msg-time {
+            font-size: 10px;
+            color: #666;
+            margin-top: 4px;
+            text-align: right;
+        }
+
+        /* POPUP ALERTA MELHORADO */
         .popup-alert {
             background: #13132a;
             border-radius: 20px;
-            max-width: 280px;
+            max-width: 300px;
             overflow: hidden;
             border: 2px solid #00BFFF;
         }
         .popup-alert-img { width: 100%; height: 120px; object-fit: cover; }
-        .popup-alert-header { padding: 8px 12px; background: #00BFFF; color: white; display: flex; justify-content: space-between; }
+        .popup-alert-header { padding: 8px 12px; background: #00BFFF; color: white; display: flex; justify-content: space-between; cursor: pointer; }
         .popup-alert-chat { padding: 10px; max-height: 150px; overflow-y: auto; background: #0f0f23; }
         .popup-chat-msg { margin: 5px 0; padding: 6px 10px; border-radius: 12px; font-size: 11px; }
         .popup-chat-msg.me { background: #00BFFF; margin-left: auto; text-align: right; }
@@ -676,7 +591,7 @@
         .popup-chat-input input { flex: 1; padding: 8px; border-radius: 20px; border: none; background: #252542; color: white; }
         .popup-chat-input button { background: #00BFFF; border: none; width: 32px; border-radius: 50%; cursor: pointer; }
 
-        /* ===== NOTIFICAÇÃO DE ÁUDIO (COM NOME DO LOCUTOR) ===== */
+        /* NOTIFICAÇÃO DE ÁUDIO */
         .audio-player-container {
             position: fixed;
             bottom: 30px;
@@ -691,19 +606,12 @@
             align-items: center;
             gap: 15px;
             min-width: 280px;
-            box-shadow: 0 0 30px rgba(0,191,255,0.4);
             animation: slideUp 0.3s ease;
         }
 
         @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateX(-50%) translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(-50%) translateY(0);
-            }
+            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
 
         .audio-speaker-icon {
@@ -722,11 +630,6 @@
             50% { box-shadow: 0 0 0 10px rgba(229,57,53,0.3); }
         }
 
-        .audio-speaker-icon i {
-            font-size: 22px;
-            color: white;
-        }
-
         .audio-info {
             flex: 1;
         }
@@ -742,18 +645,6 @@
             color: #aaa;
         }
 
-        .audio-duration {
-            font-size: 12px;
-            color: #00ff88;
-            font-family: monospace;
-        }
-
-        .audio-wave {
-            display: flex;
-            align-items: center;
-            gap: 3px;
-        }
-
         .audio-wave span {
             width: 3px;
             height: 20px;
@@ -762,35 +653,38 @@
             animation: wave 0.8s infinite ease;
         }
 
-        .audio-wave span:nth-child(1) { animation-delay: 0s; height: 10px; }
-        .audio-wave span:nth-child(2) { animation-delay: 0.1s; height: 20px; }
-        .audio-wave span:nth-child(3) { animation-delay: 0.2s; height: 15px; }
-        .audio-wave span:nth-child(4) { animation-delay: 0.3s; height: 25px; }
-        .audio-wave span:nth-child(5) { animation-delay: 0.4s; height: 12px; }
-
         @keyframes wave {
             0%, 100% { height: 8px; }
             50% { height: 25px; }
         }
 
+        /* INDICADOR DE ALGUÉM FALANDO */
+        .someone-speaking {
+            background: #e53935;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            margin-top: 8px;
+            animation: pulse-red 1s infinite;
+        }
+
         .station-dropdown::-webkit-scrollbar { width: 3px; }
         .station-dropdown::-webkit-scrollbar-track { background: #1a1a2e; }
-        .station-dropdown::-webkit-scrollbar-thumb { background: #00BFFF; border-radius: 10px; }
+        .station-dropdown::-webkit-scrollbar-thumb { background: #00BFFF; }
     </style>
 </head>
 <body>
 
 <div class="radio-px">
-    <!-- CABEÇALHO -->
     <div class="px-header">
         <h1><i class="fas fa-microphone-alt"></i> RÁDIO PX 277 <i class="fas fa-broadcast-tower"></i></h1>
+        <div class="live-badge"><i class="fas fa-circle"></i> AO VIVO</div>
         <div class="px-status">
             <div class="freq-box"><span>📡 FREQ: 27.7 MHz</span></div>
-            <div class="online-badge"><i class="fas fa-circle"></i> <span>AO VIVO</span></div>
         </div>
     </div>
 
-    <!-- SELEÇÃO DE ESTAÇÃO -->
     <div class="station-area">
         <div class="station-label"><i class="fas fa-map-marker-alt"></i> SELECIONE SUA ESTAÇÃO</div>
         <div class="station-selector">
@@ -802,7 +696,6 @@
         </div>
     </div>
 
-    <!-- ESTAÇÃO ATUAL -->
     <div class="current-highlight">
         <div class="city-detail">
             <div class="city-icon"><i class="fas fa-radio"></i></div>
@@ -811,19 +704,16 @@
         <div class="city-online" id="currentCityOnline">0 online</div>
     </div>
 
-    <!-- BOTÃO PX CENTRALIZADO COM LED ROTACIONAL -->
     <div class="mic-panel">
-        <div class="rotating-led">
-            <button class="px-button off" id="pxButton">
-                <i class="fas fa-microphone-slash"></i>
-                <span>PX (FALAR)</span>
-            </button>
-        </div>
+        <button class="px-button off" id="pxButton">
+            <i class="fas fa-microphone-slash"></i>
+            <span>PX (FALAR)</span>
+        </button>
         <div class="px-status-text off" id="pxStatusText">🔴 MICROFONE DESLIGADO</div>
+        <div id="speakingIndicator" class="someone-speaking" style="display:none;">📢 Alguém está falando...</div>
         <div class="timer-display" id="timerDisplay" style="display: none;"></div>
     </div>
 
-    <!-- AÇÕES -->
     <div class="action-grid">
         <div class="action-card map-btn" onclick="openMapModal()"><i class="fas fa-map-marked-alt"></i> MAPA</div>
         <div class="action-card" onclick="openAlertModal()"><i class="fas fa-exclamation-triangle"></i> ALERTA</div>
@@ -834,10 +724,13 @@
 <!-- MODAIS -->
 <div class="modal-full" id="mapModal">
     <div class="modal-header">
-        <span><i class="fas fa-map"></i> MAPA BR-277 - TRÂNSITO EM TEMPO REAL</span>
+        <span><i class="fas fa-map"></i> MAPA BR-277 - OCORRÊNCIAS</span>
         <button class="modal-close" onclick="closeMapModal()">✕</button>
     </div>
-    <div class="map-container"><div id="map"></div></div>
+    <div class="map-container">
+        <div id="map"></div>
+        <button class="recenter-btn" onclick="recenterMap()"><i class="fas fa-location-arrow"></i> Recentralizar</button>
+    </div>
 </div>
 
 <div class="modal-alert" id="alertModal">
@@ -862,13 +755,11 @@
     </div>
 </div>
 
-<!-- NOTIFICAÇÃO DE ÁUDIO COM NOME DO LOCUTOR -->
 <div class="audio-player-container" id="audioPlayerContainer">
     <div class="audio-speaker-icon"><i class="fas fa-bullhorn"></i></div>
     <div class="audio-info">
         <div class="audio-sender" id="audioSender">Motorista</div>
         <div class="audio-station" id="audioStation">Curitiba</div>
-        <div class="audio-duration" id="audioDuration">0s</div>
     </div>
     <div class="audio-wave">
         <span></span><span></span><span></span><span></span><span></span>
@@ -895,13 +786,13 @@ const cities = [
     "Araucária", "Piraquara", "Campina Grande", "Quatro Barras", "Cajati"
 ];
 
-// ==================== 15 ALERTAS ====================
+// ==================== 15 ALERTAS (RADAR REMOVIDO) ====================
 const alertTypes = [
     { name: 'ACIDENTE', emoji: '💥', color: '#e53935', type: 'acidente' },
     { name: 'OBRAS', emoji: '🚧', color: '#ff9800', type: 'obras' },
     { name: 'PANE MECÂNICA', emoji: '🔧', color: '#795548', type: 'pane' },
     { name: 'ANIMAL NA PISTA', emoji: '🐂', color: '#9c27b0', type: 'animal' },
-    { name: 'RADAR MÓVEL', emoji: '📷', color: '#607d8b', type: 'radar' },
+    { name: 'VEÍCULO ENGUIÇADO', emoji: '🚗💨', color: '#ff5722', type: 'enguicado' },
     { name: 'BARREIRA', emoji: '⛰️', color: '#8b4513', type: 'barreira' },
     { name: 'NEBLINA', emoji: '🌫️', color: '#00acc1', type: 'neblina' },
     { name: 'CONGESTIONAMENTO', emoji: '🔴', color: '#f44336', type: 'congest' },
@@ -936,6 +827,7 @@ let alertsOnMap = {};
 let audioListener = null;
 let currentAudio = null;
 let currentAudioTimeout = null;
+let speakingListener = null;
 
 // ==================== NORMALIZAR ID ====================
 function normalizeId(str) {
@@ -968,7 +860,7 @@ function buildDropdown() {
             <span>${city}</span>
             <span class="station-count" id="count-${id}">0</span>
         `;
-        option.onclick = () => {
+        option.onclick = (e) => {
             changeStation(id, city);
             closeDropdown();
         };
@@ -1018,6 +910,7 @@ function changeStation(id, name) {
     });
     
     setupAudio();
+    checkSpeakingStatus();
     showToast(`📻 Você sintonizou ${name}`);
 }
 
@@ -1031,13 +924,36 @@ function loadCounts() {
             const badge = document.getElementById(`count-${id}`);
             if (badge) badge.innerText = count;
             if (id === currentStation) {
-                document.getElementById('currentCityOnline').innerText = `${count} online`;
+                document.getElementById('currentCityOnline').innerHTML = `${count} online <i class="fas fa-users"></i>`;
             }
         });
     });
 }
 
-// ==================== ÁUDIO (TOGGLE) ====================
+// ==================== VERIFICAR SE ALGUÉM ESTÁ FALANDO ====================
+function checkSpeakingStatus() {
+    if (speakingListener) {
+        db.ref(`stations/${currentStation}/speaking`).off('value', speakingListener);
+    }
+    
+    speakingListener = db.ref(`stations/${currentStation}/speaking`).on('value', (snap) => {
+        const speaker = snap.val();
+        const indicator = document.getElementById('speakingIndicator');
+        if (speaker && speaker.user !== userName) {
+            indicator.style.display = 'block';
+            indicator.innerHTML = `📢 ${speaker.user} está falando...`;
+            setTimeout(() => {
+                if (indicator.style.display === 'block') indicator.style.display = 'none';
+            }, 2000);
+        } else if (speaker && speaker.user === userName) {
+            indicator.style.display = 'none';
+        } else {
+            indicator.style.display = 'none';
+        }
+    });
+}
+
+// ==================== ÁUDIO (COM LIMPEZA: APENAS 1 ÁUDIO) ====================
 function setupAudio() {
     if (audioListener) {
         db.ref(`stations/${currentStation}/audios`).off('child_added', audioListener);
@@ -1046,30 +962,24 @@ function setupAudio() {
     audioListener = db.ref(`stations/${currentStation}/audios`).on('child_added', (snap) => {
         const data = snap.val();
         if (data && data.sender !== userName) {
-            // Parar áudio anterior se existir
             if (currentAudio) {
                 currentAudio.pause();
                 if (currentAudioTimeout) clearTimeout(currentAudioTimeout);
             }
             
-            // Criar e tocar novo áudio
             currentAudio = new Audio(data.audio);
             currentAudio.play().catch(e => console.log);
             
-            // Mostrar notificação com nome do locutor
             const audioContainer = document.getElementById('audioPlayerContainer');
             document.getElementById('audioSender').innerHTML = `<i class="fas fa-user"></i> ${data.sender}`;
             document.getElementById('audioStation').innerHTML = `<i class="fas fa-radio"></i> ${data.station}`;
-            document.getElementById('audioDuration').innerHTML = `<i class="fas fa-clock"></i> ${data.duration}s`;
             audioContainer.style.display = 'flex';
             
-            // Esconder notificação após a duração do áudio + 1 segundo
             if (currentAudioTimeout) clearTimeout(currentAudioTimeout);
             currentAudioTimeout = setTimeout(() => {
                 audioContainer.style.display = 'none';
-            }, (data.duration * 1000) + 1000);
+            }, 3000);
             
-            // Quando o áudio terminar, esconder também
             currentAudio.onended = () => {
                 audioContainer.style.display = 'none';
             };
@@ -1090,6 +1000,9 @@ async function startTransmission() {
         audioChunks = [];
         recordSeconds = 0;
         
+        // Indicar que está falando
+        db.ref(`stations/${currentStation}/speaking`).set({ user: userName, timestamp: Date.now() });
+        
         mediaRecorder.ondataavailable = e => {
             if (e.data.size > 0) audioChunks.push(e.data);
         };
@@ -1100,6 +1013,18 @@ async function startTransmission() {
                 const reader = new FileReader();
                 reader.onloadend = async () => {
                     const cityName = cities.find(c => normalizeId(c) === currentStation);
+                    
+                    // LIMPAR TODOS OS ÁUDIOS ANTERIORES (manter apenas 1)
+                    const snapshot = await db.ref(`stations/${currentStation}/audios`).once('value');
+                    const audios = snapshot.val();
+                    if (audios) {
+                        const keys = Object.keys(audios);
+                        keys.forEach(key => {
+                            db.ref(`stations/${currentStation}/audios/${key}`).remove();
+                        });
+                    }
+                    
+                    // Enviar novo áudio
                     await db.ref(`stations/${currentStation}/audios`).push({
                         sender: userName,
                         station: cityName,
@@ -1108,16 +1033,10 @@ async function startTransmission() {
                         duration: recordSeconds
                     });
                     
-                    const snapshot = await db.ref(`stations/${currentStation}/audios`).once('value');
-                    const audios = snapshot.val();
-                    if (audios) {
-                        const keys = Object.keys(audios);
-                        if (keys.length > 50) {
-                            keys.slice(0, keys.length - 50).forEach(k => {
-                                db.ref(`stations/${currentStation}/audios/${k}`).remove();
-                            });
-                        }
-                    }
+                    // Remover indicador de fala após 1 segundo
+                    setTimeout(() => {
+                        db.ref(`stations/${currentStation}/speaking`).remove();
+                    }, 1000);
                 };
                 reader.readAsDataURL(blob);
             }
@@ -1127,23 +1046,16 @@ async function startTransmission() {
         mediaRecorder.start(100);
         isTransmitting = true;
         
-        // Atualizar UI para ON
         pxButton.classList.remove('off');
         pxButton.classList.add('active');
-        pxButton.innerHTML = '<i class="fas fa-microphone"></i><span>PX (FALANDO)</span>';
+        pxButton.innerHTML = '<i class="fas fa-microphone"></i><span>FALANDO</span>';
         pxStatusText.className = 'px-status-text on';
-        pxStatusText.innerHTML = '🎤 TRANSMITINDO AO VIVO...';
+        pxStatusText.innerHTML = '🎤 TRANSMITINDO...';
         timerDisplay.style.display = 'block';
         
         recordInterval = setInterval(() => {
             recordSeconds++;
-            const mins = Math.floor(recordSeconds / 60);
-            const secs = recordSeconds % 60;
-            if (mins > 0) {
-                timerDisplay.innerHTML = `⏱️ TEMPO: ${mins}min ${secs}s`;
-            } else {
-                timerDisplay.innerHTML = `⏱️ TEMPO: ${secs}s`;
-            }
+            timerDisplay.innerHTML = `⏱️ ${recordSeconds}s`;
         }, 1000);
         
     } catch(e) {
@@ -1158,7 +1070,8 @@ function stopTransmission() {
     if (recordInterval) clearInterval(recordInterval);
     isTransmitting = false;
     
-    // Atualizar UI para OFF
+    db.ref(`stations/${currentStation}/speaking`).remove();
+    
     pxButton.classList.remove('active');
     pxButton.classList.add('off');
     pxButton.innerHTML = '<i class="fas fa-microphone-slash"></i><span>PX (FALAR)</span>';
@@ -1168,7 +1081,6 @@ function stopTransmission() {
     timerDisplay.innerHTML = '';
 }
 
-// Toggle no clique
 pxButton.addEventListener('click', () => {
     if (isTransmitting) {
         stopTransmission();
@@ -1177,7 +1089,9 @@ pxButton.addEventListener('click', () => {
     }
 });
 
-// ==================== MAPA ====================
+// ==================== MAPA COM AGREGAÇÃO DE ÍCONES ====================
+let clusterMarkers = {};
+
 function initMap() {
     map = L.map('map').setView([-25.4284, -49.2733], 12);
     L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(map);
@@ -1187,9 +1101,8 @@ function initMap() {
             userLocation = [pos.coords.latitude, pos.coords.longitude];
             if (!userMarker) {
                 userMarker = L.marker(userLocation, {
-                    icon: L.divIcon({ html: '<div style="font-size:34px;">🚛</div>', iconSize: [34, 34], iconAnchor: [17, 17], className: '' })
+                    icon: L.divIcon({ html: '<div style="font-size:34px;">🚛</div>', iconSize: [34, 34], iconAnchor: [17, 17] })
                 }).addTo(map);
-                map.setView(userLocation, 13);
             } else {
                 userMarker.setLatLng(userLocation);
             }
@@ -1199,42 +1112,97 @@ function initMap() {
     loadAlertsOnMap();
 }
 
+function recenterMap() {
+    if (userLocation) {
+        map.setView(userLocation, 14);
+        showToast("📍 Mapa recentralizado na sua posição");
+    } else {
+        showToast("⏳ Aguardando sua localização...");
+    }
+}
+
 function loadAlertsOnMap() {
     db.ref('alerts').on('child_added', (snap) => {
         const alert = snap.val();
         const id = snap.key;
+        
+        // Verificar se já expirou (20 minutos)
+        const now = Date.now();
+        if (now - alert.timestamp > 20 * 60 * 1000) {
+            db.ref(`alerts/${id}`).remove();
+            return;
+        }
+        
         if (alertsOnMap[id] || !map) return;
         
-        const marker = L.marker([alert.lat, alert.lng], {
-            icon: L.divIcon({
-                html: `<div style="background:${alert.color}; width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; border:3px solid white; box-shadow:0 0 15px ${alert.color};">${alert.emoji}</div>`,
-                iconSize: [42, 42],
-                iconAnchor: [21, 21]
-            })
-        }).addTo(map);
+        // Agrupar ocorrências próximas (dentro de 200m)
+        const lat = alert.lat;
+        const lng = alert.lng;
+        let groupKey = null;
         
-        let imgHtml = '';
-        if (alert.image) imgHtml = `<img src="${alert.image}" class="popup-alert-img">`;
+        for (let key in clusterMarkers) {
+            const marker = clusterMarkers[key];
+            const distance = Math.hypot(marker.lat - lat, marker.lng - lng);
+            if (distance < 0.002) { // ~200m
+                groupKey = key;
+                break;
+            }
+        }
         
-        const popupDiv = document.createElement('div');
-        popupDiv.className = 'popup-alert';
-        popupDiv.innerHTML = `
-            ${imgHtml}
-            <div class="popup-alert-header">
-                <span>${alert.emoji} ${alert.name}</span>
-                <span>👍 ${alert.confirmations || 0}</span>
-            </div>
-            <div class="popup-alert-chat" id="alert-chat-${id}"></div>
-            <div class="popup-chat-input">
-                <input type="text" id="alert-input-${id}" placeholder="Comentar...">
-                <button onclick="sendAlertMsg('${id}')">➔</button>
-            </div>
-        `;
-        
-        marker.bindPopup(popupDiv);
-        marker.on('popupopen', () => loadAlertChat(id));
-        alertsOnMap[id] = marker;
+        if (groupKey) {
+            // Adicionar ao grupo existente
+            clusterMarkers[groupKey].count++;
+            clusterMarkers[groupKey].alerts.push(alert);
+            const marker = alertsOnMap[groupKey];
+            if (marker) {
+                marker.setIcon(L.divIcon({
+                    html: `<div style="background:#e53935; width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:bold; color:white; border:3px solid white; box-shadow:0 0 15px red;">${clusterMarkers[groupKey].count}</div>`,
+                    iconSize: [48, 48],
+                    iconAnchor: [24, 24]
+                }));
+            }
+        } else {
+            // Criar novo grupo
+            clusterMarkers[id] = { lat, lng, count: 1, alerts: [alert] };
+            
+            const marker = L.marker([lat, lng], {
+                icon: L.divIcon({
+                    html: `<div style="background:${alert.color}; width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; border:3px solid white; box-shadow:0 0 15px ${alert.color};">${alert.emoji}</div>`,
+                    iconSize: [42, 42],
+                    iconAnchor: [21, 21]
+                })
+            }).addTo(map);
+            
+            let imgHtml = '';
+            if (alert.image) imgHtml = `<img src="${alert.image}" class="popup-alert-img">`;
+            
+            const popupDiv = document.createElement('div');
+            popupDiv.className = 'popup-alert';
+            popupDiv.innerHTML = `
+                ${imgHtml}
+                <div class="popup-alert-header" onclick="confirmAlert('${id}')">
+                    <span>${alert.emoji} ${alert.name}</span>
+                    <span>👍 <span id="confirm-count-${id}">${alert.confirmations || 1}</span></span>
+                </div>
+                <div class="popup-alert-chat" id="alert-chat-${id}"></div>
+                <div class="popup-chat-input">
+                    <input type="text" id="alert-input-${id}" placeholder="Comentar...">
+                    <button onclick="sendAlertMsg('${id}')">➔</button>
+                </div>
+            `;
+            
+            marker.bindPopup(popupDiv);
+            marker.on('popupopen', () => loadAlertChat(id));
+            alertsOnMap[id] = marker;
+        }
     });
+}
+
+function confirmAlert(id) {
+    db.ref(`alerts/${id}/confirmations`).transaction((current) => {
+        return (current || 1) + 1;
+    });
+    showToast("👍 Ocorrência confirmada!");
 }
 
 function loadAlertChat(id) {
@@ -1251,6 +1219,12 @@ function loadAlertChat(id) {
         });
         chatDiv.innerHTML = html;
         chatDiv.scrollTop = chatDiv.scrollHeight;
+    });
+    
+    // Atualizar contagem de confirmações em tempo real
+    db.ref(`alerts/${id}/confirmations`).on('value', (snap) => {
+        const countSpan = document.getElementById(`confirm-count-${id}`);
+        if (countSpan) countSpan.innerText = snap.val() || 1;
     });
 }
 
@@ -1281,7 +1255,7 @@ function buildAlertGrid() {
     alertTypes.forEach(alert => {
         const card = document.createElement('div');
         card.className = 'alert-item';
-        card.style.setProperty('--alert-color', alert.color);
+        card.style.borderTop = `4px solid ${alert.color}`;
         card.innerHTML = `<div class="alert-emoji">${alert.emoji}</div><div class="alert-name">${alert.name}</div>`;
         card.onclick = () => createAlertWithPhoto(alert);
         grid.appendChild(card);
@@ -1387,20 +1361,31 @@ async function createAlertWithPhoto(alert) {
 function openAlertModal() { document.getElementById('alertModal').classList.add('visible'); }
 function closeAlertModal() { document.getElementById('alertModal').classList.remove('visible'); }
 
-// ==================== CHAT ====================
-function openChatModal() { document.getElementById('chatModal').classList.add('visible'); loadChatMessages(); }
-function closeChatModal() { document.getElementById('chatModal').classList.remove('visible'); }
+// ==================== CHAT GERAL (HORA DO LADO DIREITO, SEM SEGUNDOS) ====================
+function openChatModal() { 
+    document.getElementById('chatModal').classList.add('visible'); 
+    loadChatMessages(); 
+}
+
+function closeChatModal() { 
+    document.getElementById('chatModal').classList.remove('visible'); 
+}
 
 function loadChatMessages() {
+    db.ref('chat_global').off();
     db.ref('chat_global').on('value', (snap) => {
         const msgs = snap.val();
         const container = document.getElementById('chatMessagesArea');
-        if (!msgs) { container.innerHTML = ''; return; }
+        if (!msgs) { container.innerHTML = '<div style="text-align:center; color:#888;">Nenhuma mensagem</div>'; return; }
         
         let html = '';
         Object.values(msgs).sort((a,b) => a.timestamp - b.timestamp).forEach(msg => {
             const isMe = msg.user === userName;
-            html += `<div class="msg-bubble ${isMe ? 'me' : 'other'}"><strong>${msg.user}</strong><br>${msg.text}<br><small>${new Date(msg.timestamp).toLocaleTimeString()}</small></div>`;
+            const time = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            html += `<div class="msg-bubble ${isMe ? 'me' : 'other'}">
+                        <strong>${msg.user}</strong><br>${msg.text}
+                        <div class="msg-time">${time}</div>
+                     </div>`;
         });
         container.innerHTML = html;
         container.scrollTop = container.scrollHeight;
@@ -1412,21 +1397,24 @@ function sendChatMsg() {
     if (!input.value.trim()) return;
     db.ref('chat_global').push({ user: userName, text: input.value.trim(), timestamp: Date.now() });
     input.value = '';
+    // Feedback visual de confirmação
+    showToast("✓ Mensagem enviada");
 }
 
 // ==================== UTILIDADES ====================
 function showToast(msg) {
     const toast = document.createElement('div');
-    toast.style.cssText = 'position:fixed; bottom:100px; left:50%; transform:translateX(-50%); background:#00BFFF; color:white; padding:8px 20px; border-radius:40px; z-index:13000; font-weight:bold; border:2px solid gold; font-size:14px; white-space:nowrap;';
+    toast.style.cssText = 'position:fixed; bottom:100px; left:50%; transform:translateX(-50%); background:#00BFFF; color:white; padding:8px 20px; border-radius:40px; z-index:13000; font-weight:bold; font-size:14px; white-space:nowrap;';
     toast.innerText = msg;
     document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 2500);
+    setTimeout(() => toast.remove(), 2000);
 }
 
 // ==================== LIMPAR AO SAIR ====================
 window.addEventListener('beforeunload', () => {
     if (userName) db.ref(`stations/${currentStation}/users/${userName}`).remove();
     if (isTransmitting) stopTransmission();
+    db.ref(`stations/${currentStation}/speaking`).remove();
 });
 
 // ==================== INICIAR ====================
@@ -1435,7 +1423,7 @@ function init() {
     loadCounts();
     setupAudio();
     buildAlertGrid();
-    loadChatMessages();
+    checkSpeakingStatus();
     showToast(`🎙️ Bem-vindo, ${userName}!`);
 }
 
