@@ -738,9 +738,9 @@ const db = firebase.database();
 
 // ==================== 20 CIDADES ====================
 const cities = [
-    "Guarapuava", "Palmeira", "Porto Amazonas", "Ponta Grossa", "São Luiz",
+    "Guarapuava", "Palmeira", "Porto Amazonas", "Ponta Grossa", "São Luiz do Purunã",
     "Campo Largo", "Curitiba", "Alm. Tamandaré", "Fazenda Rio Grande", "Tijucas do Sul",
-    "Guaratuba", "Morretes", "Paranaguá", "São José", "Colombo",
+    "Guaratuba", "Morretes", "Paranaguá", "São José dos Pinhais", "Colombo",
     "Araucária", "Piraquara", "Campina Grande", "Quatro Barras", "Cajati"
 ];
 
@@ -1061,7 +1061,7 @@ function initMap() {
 function recenterMap() {
     if (userLocation) {
         map.setView(userLocation, 14);
-        showToast("📍 Mapa recentralizado na sua posição");
+        showToast("📍 Mapa recentralizado");
     } else {
         showToast("⏳ Aguardando sua localização...");
     }
