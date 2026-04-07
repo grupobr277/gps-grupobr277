@@ -183,7 +183,6 @@
             font-weight: bold;
         }
 
-        /* ESTAÇÃO ATUAL - SEM NOME DA CIDADE, APENAS NÚMERO ONLINE */
         .current-highlight {
             background: linear-gradient(135deg, #0f0f25, #080818);
             margin: 12px 20px;
@@ -306,6 +305,7 @@
             display: flex;
             gap: 15px;
             padding: 15px 20px 25px;
+            flex-wrap: wrap;
         }
 
         .action-card {
@@ -323,6 +323,7 @@
             justify-content: center;
             gap: 10px;
             transition: all 0.3s;
+            min-width: 100px;
         }
 
         .action-card.map-btn {
@@ -330,15 +331,27 @@
             background: linear-gradient(135deg, #1a1a35, #151530);
         }
 
+        .action-card.admin-btn {
+            border: 2px solid #ffd700;
+            background: linear-gradient(135deg, #2a2a4a, #1a1a35);
+        }
+
+        .action-card.admin-btn i {
+            color: #ffd700;
+        }
+
+        .action-card.exit-admin {
+            border: 2px solid #e53935;
+        }
+
+        .action-card.exit-admin i {
+            color: #e53935;
+        }
+
         .action-card:hover {
             background: #202050;
             border-color: #00BFFF;
             transform: translateY(-2px);
-        }
-
-        .action-card i {
-            color: #00BFFF;
-            font-size: 18px;
         }
 
         .modal-full {
@@ -403,6 +416,22 @@
             display: flex;
             align-items: center;
             gap: 8px;
+        }
+
+        .admin-status {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: #ffd700;
+            color: #0f0f25;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            z-index: 1001;
+            display: none;
+            align-items: center;
+            gap: 5px;
         }
 
         .modal-alert {
@@ -633,6 +662,16 @@
             margin-top: 8px;
             animation: pulse-red 1s infinite;
         }
+
+        /* Animação para o alfinete admin */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .admin-marker {
+            animation: bounce 0.5s ease infinite;
+        }
     </style>
 </head>
 <body>
@@ -657,7 +696,7 @@
         </div>
     </div>
 
-    <!-- APENAS NÚMERO DE USUÁRIOS ONLINE - SEM NOME DA CIDADE REPETIDO -->
+    <!-- APENAS NÚMERO DE USUÁRIOS ONLINE -->
     <div class="current-highlight">
         <div class="city-online" id="currentCityOnline">0 online <i class="fas fa-users"></i></div>
     </div>
@@ -676,10 +715,12 @@
         <div class="action-card map-btn" onclick="openMapModal()"><i class="fas fa-map-marked-alt"></i> MAPA</div>
         <div class="action-card" onclick="openAlertModal()"><i class="fas fa-exclamation-triangle"></i> ALERTA</div>
         <div class="action-card" onclick="openChatModal()"><i class="fas fa-comment-dots"></i> CHAT</div>
+        <div class="action-card admin-btn" onclick="enableAdminMode()"><i class="fas fa-user-shield"></i> ADMIN</div>
+        <div class="action-card exit-admin" onclick="disableAdminMode()"><i class="fas fa-power-off"></i> SAIR</div>
     </div>
 </div>
 
-<!-- MODAIS (mesmo código JavaScript) -->
+<!-- MODAIS -->
 <div class="modal-full" id="mapModal">
     <div class="modal-header">
         <span><i class="fas fa-map"></i> MAPA BR-277 - OCORRÊNCIAS</span>
@@ -688,6 +729,7 @@
     <div class="map-container">
         <div id="map"></div>
         <button class="recenter-btn" onclick="recenterMap()"><i class="fas fa-location-arrow"></i> Recentralizar</button>
+        <div id="adminStatusBadge" class="admin-status"><i class="fas fa-user-shield"></i> MODO ADMIN ATIVO</div>
     </div>
 </div>
 
@@ -738,9 +780,9 @@ const db = firebase.database();
 
 // ==================== 20 CIDADES ====================
 const cities = [
-    "Guarapuava", "Palmeira", "Porto Amazonas", "Ponta Grossa", "São Luiz do Purunã",
+    "Guarapuava", "Palmeira", "Porto Amazonas", "Ponta Grossa", "São Luiz",
     "Campo Largo", "Curitiba", "Alm. Tamandaré", "Fazenda Rio Grande", "Tijucas do Sul",
-    "Guaratuba", "Morretes", "Paranaguá", "São José dos Pinhais", "Colombo",
+    "Guaratuba", "Morretes", "Paranaguá", "São José", "Colombo",
     "Araucária", "Piraquara", "Campina Grande", "Quatro Barras", "Cajati"
 ];
 
@@ -787,6 +829,13 @@ let currentAudio = null;
 let currentAudioTimeout = null;
 let speakingListener = null;
 
+// ==================== MODO ADMIN ====================
+let isAdminMode = false;
+let tempMarker = null;
+let adminClickCount = 0;
+let adminClickTimeout = null;
+let adminFirstPos = null;
+
 function normalizeId(str) {
     return str.toLowerCase()
         .replace(/ /g, '_')
@@ -803,6 +852,220 @@ function normalizeId(str) {
         .replace(/\./g, '');
 }
 
+// ==================== FUNÇÕES ADMIN ====================
+function enableAdminMode() {
+    const password = prompt("🔐 SENHA ADMINISTRATIVA:\n\nDigite a senha para ativar o modo administrador:");
+    if (password === "277") {
+        isAdminMode = true;
+        showToast("👑 MODO ADMIN ATIVADO! Clique 2x no mapa para criar alerta");
+        
+        // Mudar cursor do mapa
+        if (map) {
+            map.getContainer().style.cursor = "crosshair";
+            const badge = document.getElementById('adminStatusBadge');
+            if (badge) badge.style.display = "flex";
+        }
+    } else {
+        showToast("❌ Senha incorreta! Modo ADMIN não ativado.");
+    }
+}
+
+function disableAdminMode() {
+    isAdminMode = false;
+    adminClickCount = 0;
+    if (adminClickTimeout) clearTimeout(adminClickTimeout);
+    
+    if (tempMarker) {
+        map.removeLayer(tempMarker);
+        tempMarker = null;
+    }
+    
+    if (map) {
+        map.getContainer().style.cursor = "";
+        const badge = document.getElementById('adminStatusBadge');
+        if (badge) badge.style.display = "none";
+    }
+    showToast("Modo ADMIN desativado");
+}
+
+// Função para mostrar o dropdown com os 15 alertas
+function showAdminAlertDropdown(lat, lng) {
+    const modal = document.createElement('div');
+    modal.id = "adminAlertModal";
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.95);
+        z-index: 20000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Segoe UI', sans-serif;
+    `;
+    
+    const container = document.createElement('div');
+    container.style.cssText = `
+        background: linear-gradient(145deg, #13132a, #0c0c1f);
+        border-radius: 40px;
+        width: 90%;
+        max-width: 420px;
+        max-height: 85vh;
+        overflow: hidden;
+        border: 2px solid #ffd700;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    `;
+    
+    container.innerHTML = `
+        <div style="background: #ffd700; padding: 15px 20px; text-align: center;">
+            <h3 style="color: #0f0f25; margin: 0;"><i class="fas fa-crown"></i> CRIAR ALERTA ADMIN</h3>
+            <p style="color: #0f0f25; margin: 5px 0 0; font-size: 12px;">📍 ${lat.toFixed(5)}, ${lng.toFixed(5)}</p>
+        </div>
+        <div style="padding: 15px;">
+            <div style="background: #1a1a35; border-radius: 20px; padding: 10px; margin-bottom: 15px; text-align: center;">
+                <i class="fas fa-arrows-alt" style="color: #ffd700;"></i>
+                <span style="color: #ccc; margin-left: 8px;">Você pode arrastar o alfinete amarelo no mapa</span>
+            </div>
+            <div style="color: white; margin-bottom: 10px; font-size: 14px;">⚠️ SELECIONE O TIPO DE OCORRÊNCIA:</div>
+            <div id="adminAlertSelector" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; max-height: 380px; overflow-y: auto; padding: 5px;"></div>
+        </div>
+        <div style="display: flex; gap: 10px; padding: 15px; border-top: 1px solid #2a2a55;">
+            <button id="cancelAdminAlert" style="flex:1; padding: 12px; background: #e53935; border: none; border-radius: 40px; color: white; font-weight: bold; cursor: pointer; font-size: 14px;">CANCELAR</button>
+        </div>
+    `;
+    
+    modal.appendChild(container);
+    document.body.appendChild(modal);
+    
+    const grid = container.querySelector('#adminAlertSelector');
+    alertTypes.forEach(alert => {
+        const card = document.createElement('div');
+        card.style.cssText = `
+            background: #1f1f40;
+            border-radius: 20px;
+            padding: 12px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-top: 4px solid ${alert.color};
+        `;
+        card.innerHTML = `
+            <div style="font-size: 32px;">${alert.emoji}</div>
+            <div style="color: white; font-size: 11px; margin-top: 5px; font-weight: bold;">${alert.name}</div>
+        `;
+        card.onclick = async () => {
+            const id = Date.now();
+            await db.ref(`alerts/${id}`).set({
+                ...alert,
+                lat: lat,
+                lng: lng,
+                timestamp: id,
+                creator: userName + " (ADMIN)",
+                confirmations: 1,
+                status: 'active'
+            });
+            showToast(`✅ Alerta ${alert.name} criado com sucesso!`);
+            document.body.removeChild(modal);
+            
+            if (tempMarker) {
+                map.removeLayer(tempMarker);
+                tempMarker = null;
+            }
+            adminClickCount = 0;
+        };
+        card.onmouseover = () => { card.style.transform = 'scale(1.02)'; card.style.background = '#2a2a60'; };
+        card.onmouseout = () => { card.style.transform = 'scale(1)'; card.style.background = '#1f1f40'; };
+        grid.appendChild(card);
+    });
+    
+    container.querySelector('#cancelAdminAlert').onclick = () => {
+        if (tempMarker) {
+            map.removeLayer(tempMarker);
+            tempMarker = null;
+        }
+        document.body.removeChild(modal);
+        adminClickCount = 0;
+    };
+}
+
+// Configurar os dois cliques no mapa
+function setupAdminMode() {
+    if (!map) return;
+    
+    map.on('click', (e) => {
+        if (!isAdminMode) return;
+        
+        adminClickCount++;
+        
+        if (adminClickCount === 1) {
+            // Primeiro clique: cria alfinete móvel
+            adminFirstPos = e.latlng;
+            
+            if (tempMarker) map.removeLayer(tempMarker);
+            
+            tempMarker = L.marker(adminFirstPos, {
+                draggable: true,
+                icon: L.divIcon({
+                    html: '<div style="background:#ffd700; width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:26px; border:3px solid white; box-shadow:0 0 20px rgba(255,215,0,0.8); animation:bounce 0.5s ease infinite;">📍</div>',
+                    iconSize: [44, 44],
+                    iconAnchor: [22, 22],
+                    className: 'admin-marker'
+                })
+            }).addTo(map);
+            
+            tempMarker.on('dragend', () => {
+                const newPos = tempMarker.getLatLng();
+                adminFirstPos = newPos;
+                showToast(`📍 Posição ajustada: ${newPos.lat.toFixed(5)}, ${newPos.lng.toFixed(5)}`);
+            });
+            
+            showToast("⚠️ Clique NOVAMENTE no alfinete para criar alerta (ou arraste para ajustar)");
+            
+            adminClickTimeout = setTimeout(() => {
+                adminClickCount = 0;
+                adminFirstPos = null;
+                if (tempMarker) {
+                    map.removeLayer(tempMarker);
+                    tempMarker = null;
+                }
+                showToast("❌ Criação de alerta cancelada (tempo esgotado)");
+            }, 10000);
+            
+        } else if (adminClickCount === 2) {
+            clearTimeout(adminClickTimeout);
+            
+            const markerPos = tempMarker ? tempMarker.getLatLng() : adminFirstPos;
+            
+            if (markerPos) {
+                const secondPos = e.latlng;
+                const distance = Math.hypot(markerPos.lat - secondPos.lat, markerPos.lng - secondPos.lng);
+                
+                if (distance < 0.0005) {
+                    showAdminAlertDropdown(markerPos.lat, markerPos.lng);
+                } else {
+                    showToast("❌ Clique no alfinete amarelo para criar o alerta");
+                    adminClickCount = 1;
+                    adminFirstPos = markerPos;
+                    adminClickTimeout = setTimeout(() => {
+                        adminClickCount = 0;
+                        adminFirstPos = null;
+                        if (tempMarker) {
+                            map.removeLayer(tempMarker);
+                            tempMarker = null;
+                        }
+                    }, 10000);
+                    return;
+                }
+            }
+            
+            adminClickCount = 0;
+        }
+    });
+}
+
+// ==================== DROPDOWN ESTAÇÕES ====================
 function buildDropdown() {
     const menu = document.getElementById('stationDropdown');
     menu.innerHTML = '';
@@ -1036,6 +1299,7 @@ pxButton.addEventListener('click', () => {
     }
 });
 
+// ==================== MAPA ====================
 let clusterMarkers = {};
 
 function initMap() {
@@ -1056,12 +1320,13 @@ function initMap() {
     }
     
     loadAlertsOnMap();
+    setupAdminMode();
 }
 
 function recenterMap() {
     if (userLocation) {
         map.setView(userLocation, 14);
-        showToast("📍 Mapa recentralizado");
+        showToast("📍 Mapa recentralizado na sua posição");
     } else {
         showToast("⏳ Aguardando sua localização...");
     }
@@ -1188,6 +1453,7 @@ function closeMapModal() {
     document.getElementById('mapModal').classList.remove('visible');
 }
 
+// ==================== ALERTAS ====================
 function buildAlertGrid() {
     const grid = document.getElementById('alertGrid');
     grid.innerHTML = '';
@@ -1301,6 +1567,7 @@ async function createAlertWithPhoto(alert) {
 function openAlertModal() { document.getElementById('alertModal').classList.add('visible'); }
 function closeAlertModal() { document.getElementById('alertModal').classList.remove('visible'); }
 
+// ==================== CHAT ====================
 function openChatModal() { 
     document.getElementById('chatModal').classList.add('visible'); 
     loadChatMessages(); 
@@ -1339,6 +1606,7 @@ function sendChatMsg() {
     showToast("✓ Mensagem enviada");
 }
 
+// ==================== UTILIDADES ====================
 function showToast(msg) {
     const toast = document.createElement('div');
     toast.style.cssText = 'position:fixed; bottom:100px; left:50%; transform:translateX(-50%); background:#00BFFF; color:white; padding:8px 20px; border-radius:40px; z-index:13000; font-weight:bold; font-size:14px; white-space:nowrap;';
@@ -1347,12 +1615,14 @@ function showToast(msg) {
     setTimeout(() => toast.remove(), 2000);
 }
 
+// ==================== LIMPAR AO SAIR ====================
 window.addEventListener('beforeunload', () => {
     if (userName) db.ref(`stations/${currentStation}/users/${userName}`).remove();
     if (isTransmitting) stopTransmission();
     db.ref(`stations/${currentStation}/speaking`).remove();
 });
 
+// ==================== INICIAR ====================
 function init() {
     buildDropdown();
     loadCounts();
