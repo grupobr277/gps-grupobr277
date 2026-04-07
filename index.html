@@ -6,7 +6,6 @@
     <title>RÁDIO PX 277 | Comunicação Profissional</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- Emoji Picker -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emoji-picker-element@1.18.3/dist/index.css"/>
     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@1.18.3/dist/index.js"></script>
     <style>
@@ -58,7 +57,6 @@
             margin: 0 8px;
         }
 
-        /* Botão Admin (engrenagem) */
         .admin-gear {
             position: absolute;
             top: 15px;
@@ -124,10 +122,6 @@
 
         .admin-panel button:hover {
             background: #e53935;
-        }
-
-        .admin-panel button i {
-            font-size: 12px;
         }
 
         .live-badge {
@@ -607,14 +601,44 @@
 
         .chat-input-area {
             display: flex;
-            padding: 10px 15px;
+            flex-direction: column;
             background: #F0F0F0;
-            gap: 10px;
-            align-items: center;
             border-top: 1px solid #ddd;
         }
 
-        .chat-input-area input {
+        .reply-preview {
+            display: none;
+            background: #E8E8E8;
+            padding: 8px 15px;
+            font-size: 12px;
+            color: #666;
+            border-left: 3px solid #075E54;
+            margin: 5px 15px 0;
+            border-radius: 10px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .reply-preview.show {
+            display: flex;
+        }
+
+        .reply-preview .cancel-reply {
+            background: none;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            color: #e53935;
+        }
+
+        .input-row {
+            display: flex;
+            padding: 10px 15px;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .input-row input {
             flex: 1;
             padding: 12px 15px;
             border-radius: 25px;
@@ -624,7 +648,7 @@
             outline: none;
         }
 
-        .chat-input-area button {
+        .input-row button {
             background: #075E54;
             border: none;
             width: 44px;
@@ -639,7 +663,7 @@
             background: #128C7E !important;
         }
 
-        /* Balões de mensagem estilo WhatsApp */
+        /* Balões de mensagem estilo WhatsApp - SEM BORDA */
         .msg-wrapper {
             margin-bottom: 12px;
             position: relative;
@@ -665,6 +689,8 @@
             word-wrap: break-word;
             cursor: pointer;
             transition: all 0.2s;
+            outline: none;
+            border: none;
         }
 
         .msg-bubble.me .msg-content {
@@ -679,7 +705,8 @@
 
         .msg-content.selected {
             background: #C5E0B4 !important;
-            box-shadow: 0 0 0 2px #075E54;
+            outline: none;
+            border: none;
         }
 
         .msg-sender {
@@ -713,7 +740,7 @@
             color: #4FC3F7;
         }
 
-        /* Menu de contexto (aparece ao selecionar mensagem) */
+        /* Menu de contexto */
         .context-menu {
             position: fixed;
             background: #fff;
@@ -748,15 +775,15 @@
             color: #075E54;
         }
 
-        /* Popup de alerta com chat WhatsApp */
+        /* Popup de alerta com chat WhatsApp - SEM BORDAS */
         .popup-alert {
             background: #E5DDD5;
             border-radius: 20px;
             max-width: 320px;
             overflow: hidden;
-            border: 1px solid #ddd;
+            border: none;
         }
-        .popup-alert-img { width: 100%; height: 120px; object-fit: cover; cursor: pointer; }
+        .popup-alert-img { width: 100%; height: 120px; object-fit: cover; cursor: pointer; border-radius: 20px 20px 0 0; }
         .popup-alert-header { 
             padding: 10px 12px; 
             background: #075E54; 
@@ -780,6 +807,8 @@
             max-width: 90%;
             cursor: pointer;
             position: relative;
+            border: none;
+            outline: none;
         }
         .popup-chat-msg.me {
             background: #DCF8C6;
@@ -792,6 +821,8 @@
         }
         .popup-chat-msg.selected {
             background: #C5E0B4 !important;
+            outline: none;
+            border: none;
         }
         .popup-chat-msg strong {
             color: #075E54;
@@ -799,12 +830,31 @@
         }
         .popup-chat-input {
             display: flex;
-            padding: 8px;
-            gap: 5px;
+            flex-direction: column;
             background: #F0F0F0;
             border-top: 1px solid #ddd;
         }
-        .popup-chat-input input {
+        .popup-chat-reply-preview {
+            display: none;
+            background: #E8E8E8;
+            padding: 5px 10px;
+            font-size: 10px;
+            color: #666;
+            border-left: 3px solid #075E54;
+            margin: 5px 10px 0;
+            border-radius: 8px;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .popup-chat-reply-preview.show {
+            display: flex;
+        }
+        .popup-chat-input-row {
+            display: flex;
+            padding: 8px;
+            gap: 5px;
+        }
+        .popup-chat-input-row input {
             flex: 1;
             padding: 8px 12px;
             border-radius: 20px;
@@ -812,7 +862,7 @@
             background: white;
             font-size: 12px;
         }
-        .popup-chat-input button {
+        .popup-chat-input-row button {
             background: #075E54;
             border: none;
             width: 32px;
@@ -820,6 +870,26 @@
             border-radius: 50%;
             color: white;
             cursor: pointer;
+        }
+
+        /* Ícones do mapa - SEM BORDA e com pulsação */
+        .pulsing-marker {
+            animation: pulse-marker 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse-marker {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.15);
+                opacity: 0.9;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
 
         .audio-player-container {
@@ -898,7 +968,6 @@
             animation: pulse-red 1s infinite;
         }
 
-        /* Emoji Picker */
         emoji-picker {
             position: fixed;
             bottom: 80px;
@@ -926,6 +995,21 @@
             cursor: pointer;
             margin-left: 8px;
         }
+
+        .long-press-menu {
+            position: fixed;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            padding: 8px 0;
+            z-index: 10000;
+            display: none;
+            min-width: 120px;
+        }
+
+        .long-press-menu.show {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -937,7 +1021,6 @@
         <div class="px-status">
             <div class="freq-box"><span>📡 FREQ: 27.7 MHz</span></div>
         </div>
-        <!-- Botão Admin (Engrenagem) -->
         <div class="admin-gear" id="adminGearBtn">
             <i class="fas fa-cog"></i>
         </div>
@@ -1003,7 +1086,7 @@
     </div>
 </div>
 
-<!-- CHAT GERAL (WhatsApp Style) -->
+<!-- CHAT GERAL -->
 <div class="modal-chat" id="chatModal">
     <div class="chat-header">
         <div class="chat-header-left">
@@ -1017,9 +1100,15 @@
     </div>
     <div class="chat-messages-area" id="chatMessagesArea"></div>
     <div class="chat-input-area">
-        <button class="emoji-btn" id="chatEmojiBtn"><i class="fas fa-smile"></i></button>
-        <input type="text" id="chatInput" placeholder="Digite sua mensagem...">
-        <button onclick="sendChatMsg()"><i class="fas fa-paper-plane"></i></button>
+        <div class="reply-preview" id="replyPreview">
+            <span id="replyPreviewText"></span>
+            <button class="cancel-reply" onclick="cancelReply()">✕</button>
+        </div>
+        <div class="input-row">
+            <button class="emoji-btn" id="chatEmojiBtn"><i class="fas fa-smile"></i></button>
+            <input type="text" id="chatInput" placeholder="Digite sua mensagem...">
+            <button onclick="sendChatMsg()"><i class="fas fa-paper-plane"></i></button>
+        </div>
     </div>
 </div>
 
@@ -1031,9 +1120,18 @@
     <div class="context-menu-item" id="contextDelete">
         <i class="fas fa-trash-alt"></i> Apagar
     </div>
+    <div class="context-menu-item" id="contextEmoji">
+        <i class="fas fa-smile"></i> Emoji
+    </div>
 </div>
 
-<!-- Emoji Picker -->
+<!-- Long Press Menu para ícones do mapa -->
+<div class="long-press-menu" id="longPressMenu">
+    <div class="context-menu-item" id="longPressDelete">
+        <i class="fas fa-trash-alt"></i> Apagar Alerta
+    </div>
+</div>
+
 <emoji-picker id="emojiPicker"></emoji-picker>
 
 <div class="audio-player-container" id="audioPlayerContainer">
@@ -1122,6 +1220,16 @@ let adminFirstPos = null;
 let selectedMsgId = null;
 let selectedMsgChatType = null;
 let selectedMsgElement = null;
+let selectedMsgText = null;
+let selectedMsgUser = null;
+
+// Variáveis para reply
+let currentReplyTo = null;
+let currentReplyPreview = null;
+
+// Variáveis para long press no mapa
+let longPressTimer = null;
+let longPressTarget = null;
 
 function normalizeId(str) {
     return str.toLowerCase()
@@ -1144,7 +1252,7 @@ function enableAdminMapMode() {
     const password = prompt("🔐 SENHA ADMINISTRATIVA DO MAPA:\n\nDigite a senha para ativar:");
     if (password === "277") {
         isAdminMapMode = true;
-        showToast("👑 MODO ADMIN MAPA ATIVADO! Clique 2x no mapa para criar alerta");
+        showToast("👑 MODO ADMIN MAPA ATIVADO! Pressione e segure em qualquer ícone para apagar");
         if (map) {
             map.getContainer().style.cursor = "crosshair";
             const badge = document.getElementById('adminStatusBadge');
@@ -1160,8 +1268,6 @@ function enableAdminChatMode() {
     if (password === "277") {
         isAdminChatMode = true;
         showToast("👑 MODO ADMIN CHAT ATIVADO! Clique em qualquer mensagem para apagá-la");
-        // Destacar que está em modo admin chat
-        document.body.style.border = "2px solid #ffd700";
     } else {
         showToast("❌ Senha incorreta!");
     }
@@ -1184,12 +1290,10 @@ function disableAdminMode() {
         if (badge) badge.style.display = "none";
     }
     
-    document.body.style.border = "";
     showToast("Modo ADMIN desativado");
     document.getElementById('adminPanel').classList.remove('show');
 }
 
-// Função para apagar alerta do mapa
 async function deleteAlertFromMap(alertId) {
     if (!isAdminMapMode) {
         showToast("❌ Ative o modo ADMIN MAPA primeiro");
@@ -1205,7 +1309,6 @@ async function deleteAlertFromMap(alertId) {
     }
 }
 
-// Função para apagar mensagem do chat
 async function deleteChatMessage(chatType, msgId) {
     if (!isAdminChatMode) {
         showToast("❌ Ative o modo ADMIN CHAT primeiro");
@@ -1630,7 +1733,7 @@ pxButton.addEventListener('click', () => {
     }
 });
 
-// ==================== MAPA ====================
+// ==================== MAPA COM ÍCONES PULSANTES ====================
 let clusterMarkers = {};
 
 function initMap() {
@@ -1695,9 +1798,10 @@ function loadAlertsOnMap() {
             const marker = alertsOnMap[groupKey];
             if (marker) {
                 marker.setIcon(L.divIcon({
-                    html: `<div style="background:#e53935; width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:bold; color:white; border:3px solid white; box-shadow:0 0 15px red;">${clusterMarkers[groupKey].count}</div>`,
+                    html: `<div style="background:#e53935; width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:bold; color:white; border:3px solid white; box-shadow:0 0 15px red; animation:pulse-marker 1.5s ease-in-out infinite;">${clusterMarkers[groupKey].count}</div>`,
                     iconSize: [48, 48],
-                    iconAnchor: [24, 24]
+                    iconAnchor: [24, 24],
+                    className: 'pulsing-marker'
                 }));
             }
         } else {
@@ -1705,14 +1809,36 @@ function loadAlertsOnMap() {
             
             const marker = L.marker([lat, lng], {
                 icon: L.divIcon({
-                    html: `<div style="background:${alert.color}; width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; border:3px solid white; box-shadow:0 0 15px ${alert.color};">${alert.emoji}</div>`,
+                    html: `<div style="background:${alert.color}; width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; border:3px solid white; box-shadow:0 0 15px ${alert.color}; animation:pulse-marker 1.5s ease-in-out infinite;">${alert.emoji}</div>`,
                     iconSize: [42, 42],
-                    iconAnchor: [21, 21]
+                    iconAnchor: [21, 21],
+                    className: 'pulsing-marker'
                 })
             }).addTo(map);
             
+            // Long press para apagar (admin)
+            marker.on('mousedown', (e) => {
+                longPressTimer = setTimeout(() => {
+                    if (isAdminMapMode) {
+                        const menu = document.getElementById('longPressMenu');
+                        menu.style.left = e.originalEvent.clientX + 'px';
+                        menu.style.top = e.originalEvent.clientY + 'px';
+                        menu.classList.add('show');
+                        longPressTarget = id;
+                    }
+                }, 500);
+            });
+            
+            marker.on('mouseup', () => {
+                if (longPressTimer) clearTimeout(longPressTimer);
+            });
+            
+            marker.on('dragstart', () => {
+                if (longPressTimer) clearTimeout(longPressTimer);
+            });
+            
             let imgHtml = '';
-            if (alert.image) imgHtml = `<img src="${alert.image}" class="popup-alert-img" onclick="viewFullImage('${alert.image}')">`;
+            if (alert.image) imgHtml = `<img src="${alert.image}" class="popup-alert-img" onclick="event.stopPropagation(); viewFullImage('${alert.image}')">`;
             
             const popupDiv = document.createElement('div');
             popupDiv.className = 'popup-alert';
@@ -1725,16 +1851,60 @@ function loadAlertsOnMap() {
                 </div>
                 <div class="popup-alert-chat" id="alert-chat-${id}"></div>
                 <div class="popup-chat-input">
-                    <input type="text" id="alert-input-${id}" placeholder="Digite um comentário...">
-                    <button onclick="sendAlertMsg('${id}')">➔</button>
+                    <div class="popup-chat-reply-preview" id="popup-reply-preview-${id}">
+                        <span id="popup-reply-text-${id}"></span>
+                        <button class="cancel-reply" onclick="cancelPopupReply('${id}')">✕</button>
+                    </div>
+                    <div class="popup-chat-input-row">
+                        <input type="text" id="alert-input-${id}" placeholder="Digite um comentário...">
+                        <button class="popup-emoji-btn" data-id="${id}"><i class="fas fa-smile"></i></button>
+                        <button onclick="sendAlertMsg('${id}')">➔</button>
+                    </div>
                 </div>
             `;
             
             marker.bindPopup(popupDiv);
-            marker.on('popupopen', () => loadAlertChat(id));
+            marker.on('popupopen', () => {
+                loadAlertChat(id);
+                setupPopupEmojiPicker(id);
+            });
             alertsOnMap[id] = marker;
         }
     });
+}
+
+let popupReplyTo = {};
+
+function setupPopupEmojiPicker(alertId) {
+    const btn = document.querySelector(`.popup-emoji-btn[data-id="${alertId}"]`);
+    if (!btn) return;
+    
+    const emojiPickerPopup = document.createElement('emoji-picker');
+    emojiPickerPopup.style.cssText = 'position:fixed; bottom:80px; left:50%; transform:translateX(-50%); z-index:10001; display:none; width:90%; max-width:350px; height:400px;';
+    document.body.appendChild(emojiPickerPopup);
+    
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isVisible = emojiPickerPopup.style.display === 'block';
+        document.querySelectorAll('emoji-picker').forEach(picker => picker.style.display = 'none');
+        emojiPickerPopup.style.display = isVisible ? 'none' : 'block';
+    });
+    
+    emojiPickerPopup.addEventListener('emoji-click', (event) => {
+        const input = document.getElementById(`alert-input-${alertId}`);
+        if (input) {
+            input.value += event.detail.unicode;
+        }
+        emojiPickerPopup.style.display = 'none';
+    });
+}
+
+function cancelPopupReply(alertId) {
+    if (popupReplyTo[alertId]) {
+        delete popupReplyTo[alertId];
+        const preview = document.getElementById(`popup-reply-preview-${alertId}`);
+        if (preview) preview.classList.remove('show');
+    }
 }
 
 function viewFullImage(imageUrl) {
@@ -1753,6 +1923,7 @@ function confirmAlert(id) {
 }
 
 function loadAlertChat(id) {
+    db.ref(`chats/alert_${id}`).off();
     db.ref(`chats/alert_${id}`).on('value', (snap) => {
         const chatDiv = document.getElementById(`alert-chat-${id}`);
         if (!chatDiv) return;
@@ -1763,9 +1934,14 @@ function loadAlertChat(id) {
         Object.entries(msgs).sort((a,b) => a[1].timestamp - b[1].timestamp).forEach(([msgId, msg]) => {
             const isMe = msg.user === userName;
             const time = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            const adminDeleteBtn = (isAdminChatMode && !isMe) ? `<button class="admin-delete-btn" onclick="event.stopPropagation(); deleteAlertChatMessage('alert_${id}', '${msgId}')">🗑️</button>` : '';
-            html += `<div class="popup-chat-msg ${isMe ? 'me' : 'other'}" data-msg-id="${msgId}" data-chat-type="chats/alert_${id}" onclick="selectAlertChatMessage(this, '${msgId}', 'chats/alert_${id}')">
-                        <strong>${msg.user}</strong><br>${escapeHtml(msg.text)}<br>
+            const replyHtml = msg.replyTo ? `<div style="font-size:9px; color:#666; margin-bottom:2px;">↩️ ${msg.replyTo}</div>` : '';
+            const adminDeleteBtn = (isAdminChatMode && !isMe) ? `<button class="admin-delete-btn" onclick="event.stopPropagation(); deleteAlertChatMessage('chats/alert_${id}', '${msgId}')">🗑️</button>` : '';
+            const selectedClass = (selectedMsgId === msgId && selectedMsgChatType === `chats/alert_${id}`) ? 'selected' : '';
+            
+            html += `<div class="popup-chat-msg ${isMe ? 'me' : 'other'} ${selectedClass}" data-msg-id="${msgId}" data-chat-type="chats/alert_${id}" data-msg-user="${msg.user}" data-msg-text="${escapeHtml(msg.text)}" onclick="selectAlertChatMessage(this, '${msgId}', 'chats/alert_${id}')">
+                        <strong>${msg.user}</strong><br>
+                        ${replyHtml}
+                        ${escapeHtml(msg.text)}<br>
                         <small style="font-size:9px; color:#888;">${time}</small>
                         ${adminDeleteBtn}
                      </div>`;
@@ -1788,22 +1964,35 @@ async function deleteAlertChatMessage(chatPath, msgId) {
 
 function selectAlertChatMessage(element, msgId, chatType) {
     if (!isAdminChatMode) return;
+    
     document.querySelectorAll('.popup-chat-msg').forEach(el => el.classList.remove('selected'));
     element.classList.add('selected');
     selectedMsgId = msgId;
     selectedMsgChatType = chatType;
     selectedMsgElement = element;
+    selectedMsgUser = element.dataset.msgUser;
+    selectedMsgText = element.dataset.msgText;
     
     const menu = document.getElementById('contextMenu');
-    menu.style.left = element.getBoundingClientRect().left + 'px';
-    menu.style.top = element.getBoundingClientRect().bottom + 'px';
+    const rect = element.getBoundingClientRect();
+    menu.style.left = rect.left + 'px';
+    menu.style.top = rect.bottom + 'px';
     menu.classList.add('show');
 }
 
-function sendAlertMsg(id) {
+async function sendAlertMsg(id) {
     const input = document.getElementById(`alert-input-${id}`);
     if (!input.value.trim()) return;
-    db.ref(`chats/alert_${id}`).push({ user: userName, text: input.value.trim(), timestamp: Date.now() });
+    
+    let msgData = { user: userName, text: input.value.trim(), timestamp: Date.now() };
+    if (popupReplyTo[id]) {
+        msgData.replyTo = popupReplyTo[id];
+        delete popupReplyTo[id];
+        const preview = document.getElementById(`popup-reply-preview-${id}`);
+        if (preview) preview.classList.remove('show');
+    }
+    
+    await db.ref(`chats/alert_${id}`).push(msgData);
     input.value = '';
 }
 
@@ -1934,8 +2123,6 @@ function openAlertModal() { document.getElementById('alertModal').classList.add(
 function closeAlertModal() { document.getElementById('alertModal').classList.remove('visible'); }
 
 // ==================== CHAT GERAL ====================
-let currentReplyTo = null;
-
 function openChatModal() { 
     document.getElementById('chatModal').classList.add('visible'); 
     loadChatMessages(); 
@@ -1944,6 +2131,16 @@ function openChatModal() {
 function closeChatModal() { 
     document.getElementById('chatModal').classList.remove('visible'); 
     document.getElementById('emojiPicker').classList.remove('show');
+    cancelReply();
+}
+
+function cancelReply() {
+    currentReplyTo = null;
+    const preview = document.getElementById('replyPreview');
+    preview.classList.remove('show');
+    document.getElementById('replyPreviewText').innerText = '';
+    const input = document.getElementById('chatInput');
+    input.placeholder = 'Digite sua mensagem...';
 }
 
 function loadChatMessages() {
@@ -1957,13 +2154,14 @@ function loadChatMessages() {
         Object.entries(msgs).sort((a,b) => a[1].timestamp - b[1].timestamp).forEach(([msgId, msg]) => {
             const isMe = msg.user === userName;
             const time = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            const replyHtml = msg.replyTo ? `<div style="font-size:10px; color:#666; margin-bottom:4px; padding-left:8px; border-left:2px solid #075E54;">↩️ Respondendo a: ${msg.replyTo}</div>` : '';
+            const replyHtml = msg.replyTo ? `<div style="font-size:10px; color:#666; margin-bottom:4px; padding-left:8px; border-left:2px solid #075E54;">↩️ ${msg.replyTo}</div>` : '';
             const adminDeleteBtn = (isAdminChatMode && !isMe) ? `<button class="admin-delete-btn" onclick="event.stopPropagation(); deleteChatMessage('chat_global', '${msgId}')">🗑️</button>` : '';
+            const selectedClass = (selectedMsgId === msgId && selectedMsgChatType === 'chat_global') ? 'selected' : '';
             
             html += `
                 <div class="msg-wrapper" data-msg-id="${msgId}" data-msg-user="${msg.user}" data-msg-text="${escapeHtml(msg.text)}">
                     <div class="msg-bubble ${isMe ? 'me' : 'other'}">
-                        <div class="msg-content" onclick="selectMessage(this, '${msgId}', 'chat_global')">
+                        <div class="msg-content ${selectedClass}" onclick="selectMessage(this, '${msgId}', 'chat_global')">
                             ${replyHtml}
                             <div class="msg-sender">${msg.user}</div>
                             <div class="msg-text">${escapeHtml(msg.text)}</div>
@@ -1988,6 +2186,8 @@ function selectMessage(element, msgId, chatType) {
     selectedMsgId = msgId;
     selectedMsgChatType = chatType;
     selectedMsgElement = element.closest('.msg-wrapper');
+    selectedMsgUser = selectedMsgElement?.dataset.msgUser;
+    selectedMsgText = selectedMsgElement?.dataset.msgText;
     
     const menu = document.getElementById('contextMenu');
     const rect = element.getBoundingClientRect();
@@ -2003,7 +2203,7 @@ function sendChatMsg() {
     let msgData = { user: userName, text: input.value.trim(), timestamp: Date.now() };
     if (currentReplyTo) {
         msgData.replyTo = currentReplyTo;
-        currentReplyTo = null;
+        cancelReply();
     }
     
     db.ref('chat_global').push(msgData);
@@ -2012,43 +2212,45 @@ function sendChatMsg() {
 }
 
 // ==================== EMOJI PICKER ====================
-const emojiPicker = document.getElementById('emojiPicker');
-const chatInput = document.getElementById('chatInput');
+const emojiPickerGlobal = document.getElementById('emojiPicker');
+const chatInputGlobal = document.getElementById('chatInput');
 const chatEmojiBtn = document.getElementById('chatEmojiBtn');
 
 chatEmojiBtn.addEventListener('click', () => {
-    emojiPicker.classList.toggle('show');
+    emojiPickerGlobal.classList.toggle('show');
 });
 
-emojiPicker.addEventListener('emoji-click', (event) => {
-    chatInput.value += event.detail.unicode;
-    emojiPicker.classList.remove('show');
-});
-
-document.addEventListener('click', (e) => {
-    if (!emojiPicker.contains(e.target) && e.target !== chatEmojiBtn) {
-        emojiPicker.classList.remove('show');
-    }
-    if (!document.getElementById('contextMenu').contains(e.target) && !e.target.classList.contains('msg-content')) {
-        document.getElementById('contextMenu').classList.remove('show');
-        document.querySelectorAll('.msg-content').forEach(el => el.classList.remove('selected'));
-        document.querySelectorAll('.popup-chat-msg').forEach(el => el.classList.remove('selected'));
-        selectedMsgId = null;
-        selectedMsgChatType = null;
-        selectedMsgElement = null;
-    }
+emojiPickerGlobal.addEventListener('emoji-click', (event) => {
+    chatInputGlobal.value += event.detail.unicode;
+    emojiPickerGlobal.classList.remove('show');
 });
 
 // Menu de contexto actions
 document.getElementById('contextReply').addEventListener('click', () => {
-    if (selectedMsgElement) {
-        const userName = selectedMsgElement.querySelector('.msg-sender')?.innerText || 'Alguém';
-        const msgText = selectedMsgElement.querySelector('.msg-text')?.innerText || '';
-        currentReplyTo = `${userName}: "${msgText.substring(0, 50)}${msgText.length > 50 ? '...' : ''}"`;
-        chatInput.value = '';
-        chatInput.placeholder = `Respondendo para ${userName}...`;
+    if (selectedMsgUser && selectedMsgText) {
+        currentReplyTo = `${selectedMsgUser}: "${selectedMsgText.substring(0, 50)}${selectedMsgText.length > 50 ? '...' : ''}"`;
+        const preview = document.getElementById('replyPreview');
+        document.getElementById('replyPreviewText').innerHTML = `<i class="fas fa-reply"></i> Respondendo para ${selectedMsgUser}`;
+        preview.classList.add('show');
+        document.getElementById('chatInput').focus();
         document.getElementById('contextMenu').classList.remove('show');
-        document.querySelectorAll('.msg-content').forEach(el => el.classList.remove('selected'));
+        document.querySelectorAll('.msg-content, .popup-chat-msg').forEach(el => el.classList.remove('selected'));
+        selectedMsgId = null;
+        selectedMsgChatType = null;
+        selectedMsgElement = null;
+    } else if (selectedMsgChatType?.startsWith('chats/alert_')) {
+        const alertId = selectedMsgChatType.replace('chats/alert_', '');
+        popupReplyTo[alertId] = `${selectedMsgUser}: "${selectedMsgText?.substring(0, 50)}${selectedMsgText?.length > 50 ? '...' : ''}"`;
+        const preview = document.getElementById(`popup-reply-preview-${alertId}`);
+        if (preview) {
+            document.getElementById(`popup-reply-text-${alertId}`).innerHTML = `<i class="fas fa-reply"></i> Respondendo para ${selectedMsgUser}`;
+            preview.classList.add('show');
+        }
+        document.getElementById('contextMenu').classList.remove('show');
+        document.querySelectorAll('.msg-content, .popup-chat-msg').forEach(el => el.classList.remove('selected'));
+        selectedMsgId = null;
+        selectedMsgChatType = null;
+        selectedMsgElement = null;
     }
 });
 
@@ -2057,6 +2259,32 @@ document.getElementById('contextDelete').addEventListener('click', async () => {
         await deleteChatMessage(selectedMsgChatType, selectedMsgId);
     }
     document.getElementById('contextMenu').classList.remove('show');
+});
+
+document.getElementById('contextEmoji').addEventListener('click', () => {
+    if (selectedMsgChatType === 'chat_global') {
+        emojiPickerGlobal.classList.toggle('show');
+    } else if (selectedMsgChatType?.startsWith('chats/alert_')) {
+        const alertId = selectedMsgChatType.replace('chats/alert_', '');
+        const picker = document.querySelector(`emoji-picker`);
+        if (picker) picker.style.display = 'block';
+    }
+    document.getElementById('contextMenu').classList.remove('show');
+});
+
+// Long press menu delete
+document.getElementById('longPressDelete').addEventListener('click', () => {
+    if (longPressTarget) {
+        deleteAlertFromMap(longPressTarget);
+        document.getElementById('longPressMenu').classList.remove('show');
+        longPressTarget = null;
+    }
+});
+
+document.addEventListener('click', () => {
+    document.getElementById('contextMenu').classList.remove('show');
+    document.getElementById('longPressMenu').classList.remove('show');
+    document.querySelectorAll('emoji-picker').forEach(picker => picker.style.display = 'none');
 });
 
 function escapeHtml(text) {
