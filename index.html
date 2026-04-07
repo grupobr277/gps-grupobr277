@@ -253,7 +253,7 @@
             color: #0f0f25;
         }
 
-        /* ===== PAINEL DO MICROFONE (PTT) ===== */
+        /* ===== BOTÃO PX (FALAR) - TOGGLE ===== */
         .mic-panel {
             text-align: center;
             padding: 20px;
@@ -262,39 +262,88 @@
             border-radius: 80px;
         }
 
-        .ptt-microphone {
-            width: 150px;
-            height: 150px;
+        .px-button {
+            width: 160px;
+            height: 160px;
             border-radius: 50%;
-            background: radial-gradient(circle at 35% 35%, #e53935, #8b0000);
-            border: 4px solid #ffd700;
-            color: white;
-            font-size: 22px;
-            font-weight: bold;
+            background: radial-gradient(circle at 35% 35%, #2a2a4a, #1a1a35);
+            border: 4px solid #3a3a6a;
+            color: #888;
+            font-size: 24px;
+            font-weight: 800;
             cursor: pointer;
-            transition: 0.05s linear;
+            transition: all 0.2s ease;
             box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
-        .ptt-microphone:active {
-            transform: scale(0.96);
+        .px-button i {
+            font-size: 42px;
         }
 
-        .ptt-microphone.recording {
-            animation: mic-pulse 0.7s infinite;
-            background: radial-gradient(circle at 35% 35%, #ff4444, #ff0000);
+        .px-button span {
+            font-size: 14px;
+            letter-spacing: 2px;
         }
 
-        @keyframes mic-pulse {
+        /* Estado ATIVO (transmitindo) */
+        .px-button.active {
+            background: radial-gradient(circle at 35% 35%, #e53935, #8b0000);
+            border-color: #ffd700;
+            color: white;
+            animation: px-pulse 1.2s infinite;
+            box-shadow: 0 0 25px rgba(229,57,53,0.6);
+        }
+
+        @keyframes px-pulse {
             0% { box-shadow: 0 0 0 0 #e53935; }
-            70% { box-shadow: 0 0 0 20px rgba(229,57,53,0); }
+            50% { box-shadow: 0 0 0 18px rgba(229,57,53,0.3); }
+            100% { box-shadow: 0 0 0 0 rgba(229,57,53,0); }
         }
 
-        .ptt-status {
-            margin-top: 12px;
+        /* Estado DESLIGADO */
+        .px-button.off {
+            background: radial-gradient(circle at 35% 35%, #2a2a4a, #1a1a35);
+            border-color: #3a3a6a;
+            color: #666;
+            animation: none;
+        }
+
+        .px-status-text {
+            margin-top: 15px;
             font-size: 13px;
-            color: #ffd700;
             font-weight: 600;
+            padding: 6px 15px;
+            border-radius: 30px;
+            display: inline-block;
+        }
+
+        .px-status-text.off {
+            background: #1a1a35;
+            color: #888;
+        }
+
+        .px-status-text.on {
+            background: #e53935;
+            color: white;
+            animation: status-pulse 1s infinite;
+        }
+
+        @keyframes status-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .timer-display {
+            margin-top: 10px;
+            font-size: 14px;
+            font-family: monospace;
+            color: #ffd700;
+            font-weight: bold;
         }
 
         /* ===== BOTÕES DE AÇÃO ===== */
@@ -332,7 +381,7 @@
             font-size: 16px;
         }
 
-        /* ===== MODAL MAPA ===== */
+        /* ===== MODAIS ===== */
         .modal-full {
             position: fixed;
             top: 0;
@@ -377,7 +426,7 @@
             width: 100%;
         }
 
-        /* ===== MODAL ALERTAS PROFISSIONAL ===== */
+        /* MODAL ALERTAS */
         .modal-alert {
             position: fixed;
             top: 0;
@@ -438,29 +487,14 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 3px;
+            height: 4px;
             background: var(--alert-color);
         }
 
-        .alert-emoji {
-            font-size: 34px;
-        }
+        .alert-emoji { font-size: 34px; }
+        .alert-name { font-size: 10px; color: white; margin-top: 6px; font-weight: 600; }
 
-        .alert-name {
-            font-size: 10px;
-            color: white;
-            margin-top: 6px;
-            font-weight: 600;
-        }
-
-        /* Cores dos alertas */
-        .alert-item[data-type="acidente"] { --alert-color: #e53935; }
-        .alert-item[data-type="obras"] { --alert-color: #ff9800; }
-        .alert-item[data-type="perigo"] { --alert-color: #ff5722; }
-        .alert-item[data-type="congest"] { --alert-color: #f44336; }
-        .alert-item[data-type="radar"] { --alert-color: #607d8b; }
-
-        /* ===== MODAL CHAT ===== */
+        /* MODAL CHAT */
         .modal-chat {
             position: fixed;
             top: 0;
@@ -532,7 +566,7 @@
             background: white;
         }
 
-        /* ===== POPUP ALERTA ===== */
+        /* POPUP ALERTA */
         .popup-alert {
             background: #13132a;
             border-radius: 20px;
@@ -550,7 +584,7 @@
         .popup-chat-input input { flex: 1; padding: 8px; border-radius: 20px; border: none; background: #252542; color: white; }
         .popup-chat-input button { background: #00BFFF; border: none; width: 32px; border-radius: 50%; cursor: pointer; }
 
-        /* ===== NOTIFICAÇÃO ===== */
+        /* NOTIFICAÇÃO */
         .toast-notify {
             position: fixed;
             bottom: 30px;
@@ -568,7 +602,6 @@
             white-space: nowrap;
         }
 
-        /* SCROLL */
         .station-dropdown::-webkit-scrollbar { width: 3px; }
         .station-dropdown::-webkit-scrollbar-track { background: #1a1a2e; }
         .station-dropdown::-webkit-scrollbar-thumb { background: #00BFFF; border-radius: 10px; }
@@ -598,7 +631,7 @@
         </div>
     </div>
 
-    <!-- ESTAÇÃO ATUAL (DESTAQUE) -->
+    <!-- ESTAÇÃO ATUAL -->
     <div class="current-highlight">
         <div class="city-detail">
             <div class="city-icon"><i class="fas fa-radio"></i></div>
@@ -607,12 +640,14 @@
         <div class="city-online" id="currentCityOnline">0 online</div>
     </div>
 
-    <!-- MICROFONE PTT -->
+    <!-- BOTÃO PX (FALAR) - TOGGLE -->
     <div class="mic-panel">
-        <button class="ptt-microphone" id="pttMic">
-            🎤<br>PTT
+        <button class="px-button off" id="pxButton">
+            <i class="fas fa-microphone-slash"></i>
+            <span>PX (FALAR)</span>
         </button>
-        <div class="ptt-status" id="pttStatus">🔴 Pressione para falar</div>
+        <div class="px-status-text off" id="pxStatusText">🔴 MICROFONE DESLIGADO</div>
+        <div class="timer-display" id="timerDisplay" style="display: none;"></div>
     </div>
 
     <!-- AÇÕES -->
@@ -623,7 +658,7 @@
     </div>
 </div>
 
-<!-- MODAL MAPA -->
+<!-- MODAIS -->
 <div class="modal-full" id="mapModal">
     <div class="modal-header">
         <span><i class="fas fa-map"></i> MAPA BR-277 - TRÂNSITO EM TEMPO REAL</span>
@@ -632,7 +667,6 @@
     <div class="map-container"><div id="map"></div></div>
 </div>
 
-<!-- MODAL ALERTAS -->
 <div class="modal-alert" id="alertModal">
     <div class="alert-card">
         <div class="alert-header">
@@ -643,7 +677,6 @@
     </div>
 </div>
 
-<!-- MODAL CHAT -->
 <div class="modal-chat" id="chatModal">
     <div class="chat-header">
         <span><i class="fas fa-comments"></i> CHAT GERAL - RÁDIO PX 277</span>
@@ -656,7 +689,6 @@
     </div>
 </div>
 
-<!-- NOTIFICAÇÃO -->
 <div class="toast-notify" id="audioNotify">🎙️ ÁUDIO RECEBIDO</div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -679,7 +711,7 @@ const cities = [
     "Araucária", "Piraquara", "Campina Grande", "Quatro Barras", "Cajati"
 ];
 
-// ==================== 15 ALERTAS PROFISSIONAIS ====================
+// ==================== 15 ALERTAS ====================
 const alertTypes = [
     { name: 'ACIDENTE', emoji: '💥', color: '#e53935', type: 'acidente' },
     { name: 'OBRAS', emoji: '🚧', color: '#ff9800', type: 'obras' },
@@ -708,10 +740,10 @@ if (!userName) {
 
 let currentStation = localStorage.getItem('px_station') || 'curitiba';
 let mediaRecorder = null;
-let isRecording = false;
+let isTransmitting = false;
 let audioStream = null;
 let audioChunks = [];
-let timerInterval = null;
+let recordInterval = null;
 let recordSeconds = 0;
 let map = null;
 let userLocation = null;
@@ -819,7 +851,7 @@ function loadCounts() {
     });
 }
 
-// ==================== ÁUDIO (WEBRTC + FIREBASE) ====================
+// ==================== ÁUDIO (TOGGLE) ====================
 function setupAudio() {
     if (audioListener) {
         db.ref(`stations/${currentStation}/audios`).off('child_added', audioListener);
@@ -833,17 +865,18 @@ function setupAudio() {
             
             const toast = document.getElementById('audioNotify');
             toast.style.display = 'block';
-            toast.innerHTML = `🎙️ ${data.sender} falou em ${data.station}`;
+            toast.innerHTML = `🎙️ ${data.sender} falou em ${data.station} (${data.duration}s)`;
             setTimeout(() => toast.style.display = 'none', 3000);
         }
     });
 }
 
-const pttMic = document.getElementById('pttMic');
-const pttStatus = document.getElementById('pttStatus');
+const pxButton = document.getElementById('pxButton');
+const pxStatusText = document.getElementById('pxStatusText');
+const timerDisplay = document.getElementById('timerDisplay');
 
-async function startRecording() {
-    if (isRecording) return;
+async function startTransmission() {
+    if (isTransmitting) return;
     
     try {
         audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -869,7 +902,6 @@ async function startRecording() {
                         duration: recordSeconds
                     });
                     
-                    // Limpar áudios antigos (manter últimos 50)
                     const snapshot = await db.ref(`stations/${currentStation}/audios`).once('value');
                     const audios = snapshot.val();
                     if (audios) {
@@ -887,14 +919,19 @@ async function startRecording() {
         };
         
         mediaRecorder.start(100);
-        isRecording = true;
-        pttMic.classList.add('recording');
-        pttStatus.innerHTML = '🔴 GRAVANDO... solte para enviar';
+        isTransmitting = true;
         
-        // Timer para mostrar duração
-        timerInterval = setInterval(() => {
+        // Atualizar UI para ON
+        pxButton.classList.remove('off');
+        pxButton.classList.add('active');
+        pxButton.innerHTML = '<i class="fas fa-microphone"></i><span>PX (FALANDO)</span>';
+        pxStatusText.className = 'px-status-text on';
+        pxStatusText.innerHTML = '🎤 TRANSMITINDO AO VIVO...';
+        timerDisplay.style.display = 'block';
+        
+        recordInterval = setInterval(() => {
             recordSeconds++;
-            pttStatus.innerHTML = `🔴 GRAVANDO... ${recordSeconds}s`;
+            timerDisplay.innerHTML = `⏱️ TEMPO DE TRANSMISSÃO: ${formatTime(recordSeconds)}`;
         }, 1000);
         
     } catch(e) {
@@ -902,21 +939,40 @@ async function startRecording() {
     }
 }
 
-function stopRecording() {
+function stopTransmission() {
     if (mediaRecorder && mediaRecorder.state === 'recording') {
         mediaRecorder.stop();
     }
-    if (timerInterval) clearInterval(timerInterval);
-    isRecording = false;
-    pttMic.classList.remove('recording');
-    pttStatus.innerHTML = '🔴 Pressione para falar';
+    if (recordInterval) clearInterval(recordInterval);
+    isTransmitting = false;
+    
+    // Atualizar UI para OFF
+    pxButton.classList.remove('active');
+    pxButton.classList.add('off');
+    pxButton.innerHTML = '<i class="fas fa-microphone-slash"></i><span>PX (FALAR)</span>';
+    pxStatusText.className = 'px-status-text off';
+    pxStatusText.innerHTML = '🔴 MICROFONE DESLIGADO';
+    timerDisplay.style.display = 'none';
+    timerDisplay.innerHTML = '';
 }
 
-pttMic.addEventListener('mousedown', startRecording);
-pttMic.addEventListener('mouseup', stopRecording);
-pttMic.addEventListener('mouseleave', stopRecording);
-pttMic.addEventListener('touchstart', startRecording);
-pttMic.addEventListener('touchend', stopRecording);
+function formatTime(seconds) {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    if (mins > 0) {
+        return `${mins}min ${secs}s`;
+    }
+    return `${secs}s`;
+}
+
+// Toggle no clique
+pxButton.addEventListener('click', () => {
+    if (isTransmitting) {
+        stopTransmission();
+    } else {
+        startTransmission();
+    }
+});
 
 // ==================== MAPA ====================
 function initMap() {
@@ -1014,7 +1070,7 @@ function closeMapModal() {
     document.getElementById('mapModal').classList.remove('visible');
 }
 
-// ==================== ALERTAS COM FOTO ====================
+// ==================== ALERTAS ====================
 function buildAlertGrid() {
     const grid = document.getElementById('alertGrid');
     grid.innerHTML = '';
@@ -1022,7 +1078,7 @@ function buildAlertGrid() {
     alertTypes.forEach(alert => {
         const card = document.createElement('div');
         card.className = 'alert-item';
-        card.setAttribute('data-type', alert.type);
+        card.style.setProperty('--alert-color', alert.color);
         card.innerHTML = `<div class="alert-emoji">${alert.emoji}</div><div class="alert-name">${alert.name}</div>`;
         card.onclick = () => createAlertWithPhoto(alert);
         grid.appendChild(card);
@@ -1128,7 +1184,7 @@ async function createAlertWithPhoto(alert) {
 function openAlertModal() { document.getElementById('alertModal').classList.add('visible'); }
 function closeAlertModal() { document.getElementById('alertModal').classList.remove('visible'); }
 
-// ==================== CHAT GERAL ====================
+// ==================== CHAT ====================
 function openChatModal() { document.getElementById('chatModal').classList.add('visible'); loadChatMessages(); }
 function closeChatModal() { document.getElementById('chatModal').classList.remove('visible'); }
 
@@ -1167,6 +1223,7 @@ function showToast(msg) {
 // ==================== LIMPAR AO SAIR ====================
 window.addEventListener('beforeunload', () => {
     if (userName) db.ref(`stations/${currentStation}/users/${userName}`).remove();
+    if (isTransmitting) stopTransmission();
 });
 
 // ==================== INICIAR ====================
