@@ -2,8 +2,9 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>RÁDIO PX 277 - STREAMING AO VIVO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RÁDIO PX 277 | Streaming Ao Vivo</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -15,213 +16,778 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 16px;
         }
 
-        .radio-live {
+        /* ===== RÁDIO PRINCIPAL ===== */
+        .radio-container {
             max-width: 550px;
             width: 100%;
             background: linear-gradient(145deg, #13132a, #0c0c1f);
-            border-radius: 60px;
-            box-shadow: 0 30px 50px rgba(0,0,0,0.6);
+            border-radius: 50px;
+            box-shadow: 0 25px 45px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
             overflow: hidden;
             border: 1px solid rgba(0, 191, 255, 0.3);
         }
 
-        .live-header {
+        /* ===== CABEÇALHO ===== */
+        .header {
             background: linear-gradient(135deg, #0f0f25, #0a0a1a);
-            padding: 20px;
+            padding: 18px 20px;
             text-align: center;
             border-bottom: 2px solid #00BFFF;
         }
 
-        .live-header h1 {
+        .header h1 {
             font-size: 24px;
             background: linear-gradient(135deg, #ffd700, #ffaa00);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            letter-spacing: 2px;
         }
 
-        .live-badge {
+        .header h1 i {
+            background: none;
+            -webkit-background-clip: unset;
+            color: #00BFFF;
+            margin: 0 5px;
+        }
+
+        .live-tag {
             display: inline-block;
             background: #e53935;
             color: white;
-            padding: 4px 12px;
+            padding: 4px 14px;
             border-radius: 30px;
-            font-size: 12px;
+            font-size: 11px;
+            font-weight: bold;
             margin-top: 8px;
-            animation: pulse-red 1.5s infinite;
+            animation: pulse-live 1.5s infinite;
         }
 
-        @keyframes pulse-red {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
+        @keyframes pulse-live {
+            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 #e53935; }
+            50% { opacity: 0.8; box-shadow: 0 0 0 5px rgba(229,57,53,0.3); }
+        }
+
+        /* ===== SELEÇÃO DE ESTAÇÃO ===== */
+        .station-area {
+            padding: 16px 20px 8px;
+        }
+
+        .station-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #888;
+            font-size: 11px;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
         }
 
         .station-selector {
-            padding: 16px 20px;
+            position: relative;
         }
 
-        .selector-btn {
+        .selector-trigger {
             width: 100%;
             background: #1a1a35;
             border: 2px solid #2a2a55;
             border-radius: 60px;
             padding: 14px 20px;
             color: white;
-            font-size: 16px;
+            font-size: 15px;
+            font-weight: 600;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
         }
 
-        .city-dropdown {
+        .selector-trigger:hover {
+            border-color: #00BFFF;
+            background: #202040;
+        }
+
+        .selector-trigger i {
+            color: #ffd700;
+            transition: transform 0.3s;
+        }
+
+        .selector-trigger.open i {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu {
             position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
             background: #151530;
             border: 2px solid #00BFFF;
-            border-radius: 25px;
-            max-height: 250px;
+            border-radius: 20px;
+            margin-top: 8px;
+            max-height: 260px;
             overflow-y: auto;
+            z-index: 200;
             display: none;
-            z-index: 100;
-            width: calc(100% - 40px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
         }
 
-        .city-dropdown.open { display: block; }
-        .city-option { padding: 12px 20px; color: #ccc; cursor: pointer; border-bottom: 1px solid #252550; }
-        .city-option:hover { background: #202050; color: #00BFFF; }
+        .dropdown-menu.open {
+            display: block;
+        }
 
-        .current-station {
-            background: #0f0f25;
-            margin: 0 20px 15px;
-            padding: 12px 20px;
+        .city-option {
+            padding: 12px 18px;
+            color: #ccc;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #252550;
+            font-size: 14px;
+        }
+
+        .city-option:hover {
+            background: #202050;
+            color: #00BFFF;
+        }
+
+        .city-option.active {
+            background: linear-gradient(145deg, #00BFFF, #0066cc);
+            color: white;
+        }
+
+        .city-count {
+            background: rgba(0,0,0,0.5);
+            border-radius: 30px;
+            padding: 2px 10px;
+            font-size: 11px;
+        }
+
+        /* ===== ESTAÇÃO ATUAL ===== */
+        .current-card {
+            background: linear-gradient(135deg, #0f0f25, #080818);
+            margin: 12px 20px;
+            padding: 14px 20px;
             border-radius: 60px;
             display: flex;
             justify-content: space-between;
-            border-left: 4px solid #00BFFF;
+            align-items: center;
+            border-left: 5px solid #00BFFF;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
 
-        .mic-panel {
+        .city-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .city-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(145deg, #00BFFF, #0066cc);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 12px rgba(0,191,255,0.4);
+        }
+
+        .city-icon i {
+            font-size: 22px;
+            color: white;
+        }
+
+        .city-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .city-online {
+            background: #00BFFF;
+            border-radius: 40px;
+            padding: 6px 16px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #0f0f25;
+        }
+
+        /* ===== MICROFONE PX ===== */
+        .mic-section {
             text-align: center;
             padding: 20px;
-            margin: 10px 20px;
+            margin: 5px 20px;
             background: linear-gradient(145deg, #0f0f25, #0a0a1a);
             border-radius: 80px;
         }
 
-        .px-live-btn {
-            width: 140px;
-            height: 140px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 35% 35%, #2a2a4a, #1a1a35);
-            border: 4px solid #3a3a6a;
-            color: #888;
-            font-size: 24px;
-            cursor: pointer;
-            transition: all 0.2s;
+        .led-ring {
+            width: 170px;
+            height: 170px;
+            position: relative;
+            margin: 0 auto 15px;
         }
 
-        .px-live-btn.active {
+        .led-ring::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: -6px;
+            right: -6px;
+            bottom: -6px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, #ff0000, #ff6600, #ffcc00, #00ff00, #00ccff, #ff00ff, #ff0000);
+            animation: rotate-led 2.5s linear infinite;
+            z-index: 0;
+        }
+
+        .led-ring::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            right: 4px;
+            bottom: 4px;
+            border-radius: 50%;
+            background: #0f0f25;
+            z-index: 1;
+        }
+
+        @keyframes rotate-led {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .px-mic {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #2a2a4a, #1a1a35);
+            border: 3px solid #3a3a6a;
+            color: #888;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            z-index: 2;
+        }
+
+        .px-mic i { font-size: 42px; }
+        .px-mic span { font-size: 13px; letter-spacing: 1px; }
+
+        .px-mic.active {
             background: radial-gradient(circle at 35% 35%, #e53935, #8b0000);
             border-color: #ffd700;
             color: white;
-            animation: mic-pulse 1.2s infinite;
+            animation: pulse-mic 1.2s infinite;
         }
 
-        @keyframes mic-pulse {
+        @keyframes pulse-mic {
             0% { box-shadow: 0 0 0 0 #e53935; }
-            70% { box-shadow: 0 0 0 20px rgba(229,57,53,0); }
+            70% { box-shadow: 0 0 0 18px rgba(229,57,53,0.2); }
         }
 
-        .live-status {
+        .mic-status {
             margin-top: 15px;
             font-size: 14px;
-            font-weight: bold;
-        }
-
-        .live-status.on { color: #e53935; }
-        .live-status.off { color: #888; }
-
-        .listening-status {
-            background: #1a1a35;
-            margin: 10px 20px;
-            padding: 12px;
+            font-weight: 700;
+            padding: 8px 20px;
             border-radius: 40px;
-            text-align: center;
-            color: #00ff88;
-            font-size: 13px;
+            display: inline-block;
         }
 
-        .action-buttons {
+        .mic-status.off {
+            background: #1a1a35;
+            color: #888;
+        }
+
+        .mic-status.on {
+            background: #e53935;
+            color: white;
+            animation: status-pulse 1s infinite;
+        }
+
+        @keyframes status-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* ===== BOTÕES DE AÇÃO ===== */
+        .action-bar {
             display: flex;
-            gap: 15px;
+            gap: 12px;
             padding: 15px 20px 25px;
         }
 
         .action-btn {
             flex: 1;
             background: #151530;
-            border: 1px solid #2a2a55;
+            border: 2px solid #2a2a55;
             border-radius: 50px;
             padding: 12px;
             color: #ccc;
             font-size: 13px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
         }
 
-        .action-btn i { color: #00BFFF; margin-right: 5px; }
+        .action-btn i { color: #00BFFF; font-size: 16px; }
+        .action-btn:hover { background: #202050; border-color: #00BFFF; transform: translateY(-2px); }
+
+        /* ===== MODAL MAPA ===== */
+        .modal-map {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.96);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+        }
+
+        .modal-map.visible { display: flex; }
+
+        .modal-header {
+            background: #0f0f25;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            border-bottom: 2px solid #00BFFF;
+        }
+
+        .close-modal {
+            background: #e53935;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .map-container { flex: 1; }
+        #map { height: 100%; width: 100%; }
+
+        /* ===== MODAL ALERTAS PROFISSIONAL ===== */
+        .modal-alert {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.95);
+            z-index: 1100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-alert.visible { display: flex; }
+
+        .alert-card {
+            background: #13132a;
+            border-radius: 40px;
+            width: 100%;
+            max-width: 400px;
+            max-height: 85vh;
+            overflow: hidden;
+            border: 2px solid #00BFFF;
+        }
+
+        .alert-header {
+            background: #00BFFF;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            color: white;
+            font-weight: bold;
+        }
+
+        .alert-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            padding: 20px;
+        }
+
+        .alert-item {
+            background: #1f1f40;
+            border-radius: 20px;
+            padding: 14px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #3a3a6a;
+            position: relative;
+        }
+
+        .alert-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            border-radius: 20px 20px 0 0;
+            background: var(--alert-color);
+        }
+
+        .alert-emoji { font-size: 32px; }
+        .alert-name { font-size: 10px; color: white; margin-top: 6px; font-weight: 600; }
+
+        /* ===== MODAL CHAT WHATSAPP STYLE ===== */
+        .modal-chat {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #0a0a15;
+            z-index: 1200;
+            display: none;
+            flex-direction: column;
+        }
+
+        .modal-chat.visible { display: flex; }
+
+        .chat-header {
+            background: #075e54;
+            padding: 15px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            background: #e5ddd5;
+        }
+
+        .chat-input-area {
+            display: flex;
+            padding: 10px;
+            background: #f0f0f0;
+            gap: 8px;
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 25px;
+            border: none;
+            background: white;
+        }
+
+        .chat-input-area button {
+            background: #075e54;
+            border: none;
+            width: 45px;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+        }
+
+        .message {
+            margin: 8px 0;
+            padding: 10px 14px;
+            border-radius: 18px;
+            max-width: 80%;
+            font-size: 13px;
+        }
+
+        .message.me {
+            background: #dcf8c6;
+            margin-left: auto;
+        }
+
+        .message.other {
+            background: white;
+        }
+
+        .message small {
+            font-size: 10px;
+            color: #999;
+            display: block;
+            margin-top: 4px;
+        }
+
+        /* ===== POPUP ALERTA BONITO ===== */
+        .popup-alert {
+            background: #1a1a2e;
+            border-radius: 20px;
+            max-width: 280px;
+            overflow: hidden;
+            border: 2px solid #00BFFF;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .popup-img {
+            width: 100%;
+            height: 130px;
+            object-fit: cover;
+        }
+
+        .popup-header {
+            padding: 10px 15px;
+            background: #00BFFF;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+        }
+
+        .popup-chat-area {
+            padding: 10px;
+            max-height: 140px;
+            overflow-y: auto;
+            background: #0f0f23;
+        }
+
+        .popup-msg {
+            margin: 5px 0;
+            padding: 6px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+        }
+
+        .popup-msg.me {
+            background: #00BFFF;
+            margin-left: auto;
+            text-align: right;
+            color: white;
+        }
+
+        .popup-msg.other {
+            background: #252542;
+            color: #ccc;
+        }
+
+        .popup-input {
+            display: flex;
+            padding: 8px;
+            gap: 5px;
+            border-top: 1px solid #2a2a4a;
+            background: #0f0f23;
+        }
+
+        .popup-input input {
+            flex: 1;
+            padding: 8px;
+            border-radius: 20px;
+            border: none;
+            background: #252542;
+            color: white;
+        }
+
+        .popup-input button {
+            background: #00BFFF;
+            border: none;
+            width: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        /* ===== NOTIFICAÇÃO ÁUDIO ===== */
+        .audio-notification {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #1a1a35, #0f0f25);
+            border: 2px solid #00BFFF;
+            border-radius: 60px;
+            padding: 12px 25px;
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            gap: 15px;
+            min-width: 280px;
+            box-shadow: 0 0 25px rgba(0,191,255,0.4);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        .audio-icon {
+            background: #e53935;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse-speaker 1s infinite;
+        }
+
+        @keyframes pulse-speaker {
+            0%, 100% { box-shadow: 0 0 0 0 #e53935; }
+            50% { box-shadow: 0 0 0 10px rgba(229,57,53,0.3); }
+        }
+
+        .audio-icon i { font-size: 22px; color: white; }
+        .audio-info { flex: 1; }
+        .audio-sender { font-size: 15px; font-weight: bold; color: #ffd700; }
+        .audio-station { font-size: 11px; color: #aaa; }
+        .audio-wave { display: flex; align-items: center; gap: 3px; }
+        .audio-wave span { width: 3px; height: 18px; background: #00BFFF; animation: wave 0.8s infinite; }
+        .audio-wave span:nth-child(1) { animation-delay: 0s; height: 8px; }
+        .audio-wave span:nth-child(2) { animation-delay: 0.1s; height: 18px; }
+        .audio-wave span:nth-child(3) { animation-delay: 0.2s; height: 12px; }
+        .audio-wave span:nth-child(4) { animation-delay: 0.3s; height: 22px; }
+        .audio-wave span:nth-child(5) { animation-delay: 0.4s; height: 10px; }
+
+        @keyframes wave {
+            0%, 100% { height: 8px; }
+            50% { height: 22px; }
+        }
+
+        .dropdown-menu::-webkit-scrollbar { width: 3px; }
+        .dropdown-menu::-webkit-scrollbar-track { background: #1a1a2e; }
+        .dropdown-menu::-webkit-scrollbar-thumb { background: #00BFFF; border-radius: 10px; }
+        .chat-messages::-webkit-scrollbar { width: 4px; }
+        .chat-messages::-webkit-scrollbar-track { background: #ddd; border-radius: 10px; }
+        .chat-messages::-webkit-scrollbar-thumb { background: #075e54; border-radius: 10px; }
     </style>
 </head>
 <body>
 
-<div class="radio-live">
-    <div class="live-header">
+<div class="radio-container">
+    <!-- CABEÇALHO -->
+    <div class="header">
         <h1><i class="fas fa-microphone-alt"></i> RÁDIO PX 277 <i class="fas fa-broadcast-tower"></i></h1>
-        <div class="live-badge">🔴 AO VIVO - STREAMING</div>
+        <div class="live-tag"><i class="fas fa-circle"></i> STREAMING AO VIVO</div>
     </div>
 
-    <div class="station-selector">
-        <div class="selector-btn" id="selectorBtn">
-            <span id="selectedCity">Curitiba</span>
-            <i class="fas fa-chevron-down"></i>
+    <!-- SELEÇÃO DE ESTAÇÃO -->
+    <div class="station-area">
+        <div class="station-label"><i class="fas fa-map-marker-alt"></i> SELECIONE SUA ESTAÇÃO</div>
+        <div class="station-selector">
+            <div class="selector-trigger" id="selectorTrigger">
+                <span id="selectedCity">Curitiba</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="dropdown-menu" id="cityDropdown"></div>
         </div>
-        <div class="city-dropdown" id="cityDropdown"></div>
     </div>
 
-    <div class="current-station">
-        <span><i class="fas fa-radio"></i> <span id="currentCity">Curitiba</span></span>
-        <span id="roomStats">0 online</span>
+    <!-- ESTAÇÃO ATUAL -->
+    <div class="current-card">
+        <div class="city-info">
+            <div class="city-icon"><i class="fas fa-radio"></i></div>
+            <div class="city-name" id="currentCityName">Curitiba</div>
+        </div>
+        <div class="city-online" id="onlineCount">0 online</div>
     </div>
 
-    <div class="mic-panel">
-        <button class="px-live-btn" id="pxBtn">
-            <i class="fas fa-microphone-slash"></i><br>
-            <span style="font-size: 14px;">PX (FALAR)</span>
-        </button>
-        <div class="live-status off" id="liveStatus">🔴 MICROFONE DESLIGADO</div>
+    <!-- MICROFONE PX -->
+    <div class="mic-section">
+        <div class="led-ring">
+            <button class="px-mic" id="pxMic">
+                <i class="fas fa-microphone-slash"></i>
+                <span>PX (FALAR)</span>
+            </button>
+        </div>
+        <div class="mic-status off" id="micStatus">🔴 MICROFONE DESLIGADO</div>
     </div>
 
-    <div class="listening-status" id="listeningStatus">
-        🎧 Modo ouvinte - Aguardando transmissão...
-    </div>
-
-    <div class="action-buttons">
-        <div class="action-btn" id="mapBtn"><i class="fas fa-map"></i> MAPA</div>
-        <div class="action-btn" id="chatBtn"><i class="fas fa-comment"></i> CHAT</div>
+    <!-- AÇÕES -->
+    <div class="action-bar">
+        <div class="action-btn" id="mapBtn"><i class="fas fa-map-marked-alt"></i> MAPA</div>
+        <div class="action-btn" id="alertBtn"><i class="fas fa-exclamation-triangle"></i> ALERTA</div>
+        <div class="action-btn" id="chatBtn"><i class="fas fa-comment-dots"></i> CHAT</div>
     </div>
 </div>
 
+<!-- MODAL MAPA -->
+<div class="modal-map" id="mapModal">
+    <div class="modal-header">
+        <span><i class="fas fa-map"></i> MAPA BR-277 - TRÂNSITO EM TEMPO REAL</span>
+        <button class="close-modal" onclick="closeMap()">✕</button>
+    </div>
+    <div class="map-container"><div id="map"></div></div>
+</div>
+
+<!-- MODAL ALERTAS -->
+<div class="modal-alert" id="alertModal">
+    <div class="alert-card">
+        <div class="alert-header">
+            <span><i class="fas fa-exclamation-triangle"></i> REPORTAR OCORRÊNCIA</span>
+            <span onclick="closeAlert()" style="cursor:pointer;">✕</span>
+        </div>
+        <div class="alert-grid" id="alertGrid"></div>
+    </div>
+</div>
+
+<!-- MODAL CHAT WHATSAPP -->
+<div class="modal-chat" id="chatModal">
+    <div class="chat-header">
+        <span><i class="fas fa-comments"></i> CHAT GERAL - RÁDIO PX 277</span>
+        <span onclick="closeChat()" style="cursor:pointer; font-size:22px;">✕</span>
+    </div>
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="chat-input-area">
+        <input type="text" id="chatInput" placeholder="Digite sua mensagem...">
+        <button onclick="sendChatMsg()"><i class="fas fa-paper-plane"></i></button>
+    </div>
+</div>
+
+<!-- NOTIFICAÇÃO ÁUDIO -->
+<div class="audio-notification" id="audioNotif">
+    <div class="audio-icon"><i class="fas fa-bullhorn"></i></div>
+    <div class="audio-info">
+        <div class="audio-sender" id="audioSender">Motorista</div>
+        <div class="audio-station" id="audioStation">Curitiba</div>
+    </div>
+    <div class="audio-wave"><span></span><span></span><span></span><span></span><span></span></div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+
 <script>
 // ==================== CONFIGURAÇÕES ====================
-const SERVER_URL = window.location.hostname === 'localhost' 
-    ? 'http://localhost:3001' 
-    : 'https://seu-servidor.onrender.com'; // Mude para seu servidor
-
+const SERVER_URL = window.location.hostname === 'localhost' ? 'http://localhost:3001' : window.location.origin;
 const socket = io(SERVER_URL);
+
+const firebaseConfig = {
+    databaseURL: "https://gps-br277-default-rtdb.firebaseio.com"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
 
 // ==================== CIDADES ====================
 const cities = [
@@ -231,10 +797,30 @@ const cities = [
     "Araucária", "Piraquara", "Campina Grande", "Quatro Barras", "Cajati"
 ];
 
+// ==================== 15 ALERTAS PROFISSIONAIS ====================
+const alertsList = [
+    { name: 'ACIDENTE', emoji: '💥', color: '#e53935', type: 'acidente' },
+    { name: 'OBRAS', emoji: '🚧', color: '#ff9800', type: 'obras' },
+    { name: 'PANE', emoji: '🔧', color: '#795548', type: 'pane' },
+    { name: 'ANIMAL', emoji: '🐂', color: '#9c27b0', type: 'animal' },
+    { name: 'RADAR', emoji: '📷', color: '#607d8b', type: 'radar' },
+    { name: 'BARREIRA', emoji: '⛰️', color: '#8b4513', type: 'barreira' },
+    { name: 'NEBLINA', emoji: '🌫️', color: '#00acc1', type: 'neblina' },
+    { name: 'CONGEST', emoji: '🔴', color: '#f44336', type: 'congest' },
+    { name: 'ALAGAMENTO', emoji: '💧', color: '#2196f3', type: 'alagamento' },
+    { name: 'BLOQUEIO', emoji: '⛔', color: '#b71c1c', type: 'bloqueio' },
+    { name: 'PERIGO', emoji: '⚠️', color: '#ff5722', type: 'perigo' },
+    { name: 'DESVIO', emoji: '🔄', color: '#3f51b5', type: 'desvio' },
+    { name: 'CARGA', emoji: '📦', color: '#8bc34a', type: 'carga' },
+    { name: 'GRANIZO', emoji: '🧊', color: '#00bcd4', type: 'granizo' },
+    { name: 'MANIFEST', emoji: '📢', color: '#ff4081', type: 'manifest' }
+];
+
 // ==================== VARIÁVEIS ====================
 let userName = localStorage.getItem('px_user');
 if (!userName) {
     userName = prompt("🎙️ Digite seu nome:", "Motorista");
+    if (!userName) userName = "Motorista";
     localStorage.setItem('px_user', userName);
 }
 
@@ -242,50 +828,86 @@ let currentCity = localStorage.getItem('px_city') || 'curitiba';
 let isBroadcasting = false;
 let peerConnection = null;
 let localStream = null;
+let map = null;
+let userLocation = null;
+let userMarker = null;
+let alertsOnMap = {};
 
-// Elementos
-const pxBtn = document.getElementById('pxBtn');
-const liveStatus = document.getElementById('liveStatus');
-const listeningStatus = document.getElementById('listeningStatus');
-const roomStats = document.getElementById('roomStats');
-const selectorBtn = document.getElementById('selectorBtn');
-const cityDropdown = document.getElementById('cityDropdown');
-const selectedCitySpan = document.getElementById('selectedCity');
-const currentCitySpan = document.getElementById('currentCity');
+// ==================== NORMALIZAR ID ====================
+function normalizeId(str) {
+    return str.toLowerCase().replace(/ /g, '_').replace(/ã/g, 'a').replace(/ç/g, 'c').replace(/á/g, 'a');
+}
 
 // ==================== DROPDOWN ====================
 function buildDropdown() {
-    cityDropdown.innerHTML = '';
+    const menu = document.getElementById('cityDropdown');
+    menu.innerHTML = '';
     cities.forEach(city => {
-        const id = city.toLowerCase().replace(/ /g, '_').replace(/ã/g, 'a').replace(/ç/g, 'c');
+        const id = normalizeId(city);
         const option = document.createElement('div');
         option.className = 'city-option';
-        option.textContent = city;
+        if (id === currentCity) option.classList.add('active');
+        option.innerHTML = `<span>${city}</span><span class="city-count" id="count-${id}">0</span>`;
         option.onclick = () => changeCity(id, city);
-        cityDropdown.appendChild(option);
+        menu.appendChild(option);
     });
 }
 
-selectorBtn.onclick = () => cityDropdown.classList.toggle('open');
+function toggleDropdown() {
+    document.getElementById('cityDropdown').classList.toggle('open');
+    document.getElementById('selectorTrigger').classList.toggle('open');
+}
+
+document.getElementById('selectorTrigger').addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleDropdown();
+});
+
 document.addEventListener('click', (e) => {
-    if (!e.target.closest('.station-selector')) cityDropdown.classList.remove('open');
+    if (!e.target.closest('.station-selector')) {
+        document.getElementById('cityDropdown').classList.remove('open');
+        document.getElementById('selectorTrigger').classList.remove('open');
+    }
 });
 
 function changeCity(id, name) {
     currentCity = id;
     localStorage.setItem('px_city', id);
-    selectedCitySpan.textContent = name;
-    currentCitySpan.textContent = name;
-    cityDropdown.classList.remove('open');
+    document.getElementById('selectedCity').innerText = name;
+    document.getElementById('currentCityName').innerText = name;
+    document.querySelectorAll('.city-option').forEach(opt => opt.classList.remove('active'));
+    event.target.closest('.city-option').classList.add('active');
+    document.getElementById('cityDropdown').classList.remove('open');
+    document.getElementById('selectorTrigger').classList.remove('open');
     
-    // Sair da sala atual e entrar na nova
     if (isBroadcasting) stopBroadcasting();
     socket.emit('leave-room');
     socket.emit('join-room', { roomId: id, userName, isBroadcaster: false });
+    
+    // Atualizar Firebase
+    db.ref(`stations/${id}/users/${userName}`).set({ name: userName, timestamp: Date.now() });
+    cities.forEach(c => {
+        const otherId = normalizeId(c);
+        if (otherId !== id) db.ref(`stations/${otherId}/users/${userName}`).remove();
+    });
 }
 
-// ==================== WEbRTC ====================
-const configuration = {
+// ==================== CONTAGEM DE USUÁRIOS ====================
+function loadCounts() {
+    cities.forEach(city => {
+        const id = normalizeId(city);
+        db.ref(`stations/${id}/users`).on('value', (snap) => {
+            const users = snap.val();
+            const count = users ? Object.keys(users).length : 0;
+            const badge = document.getElementById(`count-${id}`);
+            if (badge) badge.innerText = count;
+            if (id === currentCity) document.getElementById('onlineCount').innerText = `${count} online`;
+        });
+    });
+}
+
+// ==================== WEbRTC STREAMING ====================
+const rtcConfig = {
     iceServers: [
         { urls: 'stun:stun.l.google.com:19302' },
         { urls: 'stun:stun1.l.google.com:19302' }
@@ -294,127 +916,90 @@ const configuration = {
 
 async function startBroadcasting() {
     if (isBroadcasting) return;
-    
     try {
         localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        peerConnection = new RTCPeerConnection(configuration);
-        
-        localStream.getTracks().forEach(track => {
-            peerConnection.addTrack(track, localStream);
-        });
+        peerConnection = new RTCPeerConnection(rtcConfig);
+        localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
         
         peerConnection.onicecandidate = (event) => {
-            if (event.candidate) {
-                socket.emit('ice-candidate', { targetId: 'broadcast', candidate: event.candidate });
-            }
+            if (event.candidate) socket.emit('ice-candidate', { targetId: 'broadcast', candidate: event.candidate });
         };
         
         const offer = await peerConnection.createOffer();
         await peerConnection.setLocalDescription(offer);
-        
         socket.emit('offer', { targetId: 'broadcast', offer });
         
         isBroadcasting = true;
         socket.emit('join-room', { roomId: currentCity, userName, isBroadcaster: true });
         
-        pxBtn.classList.add('active');
-        pxBtn.innerHTML = '<i class="fas fa-microphone"></i><br><span style="font-size: 14px;">TRANSMITINDO</span>';
-        liveStatus.className = 'live-status on';
-        liveStatus.innerHTML = '🎤 TRANSMITINDO AO VIVO...';
-        
-    } catch(e) {
-        alert("🎤 Permita o acesso ao microfone!");
-    }
+        document.getElementById('pxMic').classList.add('active');
+        document.getElementById('pxMic').innerHTML = '<i class="fas fa-microphone"></i><span>TRANSMITINDO</span>';
+        document.getElementById('micStatus').className = 'mic-status on';
+        document.getElementById('micStatus').innerHTML = '🎤 TRANSMITINDO AO VIVO';
+    } catch(e) { alert("🎤 Permita o acesso ao microfone!"); }
 }
 
 function stopBroadcasting() {
-    if (peerConnection) {
-        peerConnection.close();
-        peerConnection = null;
-    }
-    if (localStream) {
-        localStream.getTracks().forEach(track => track.stop());
-        localStream = null;
-    }
-    
+    if (peerConnection) { peerConnection.close(); peerConnection = null; }
+    if (localStream) { localStream.getTracks().forEach(t => t.stop()); localStream = null; }
     isBroadcasting = false;
     socket.emit('leave-room');
     socket.emit('join-room', { roomId: currentCity, userName, isBroadcaster: false });
     
-    pxBtn.classList.remove('active');
-    pxBtn.innerHTML = '<i class="fas fa-microphone-slash"></i><br><span style="font-size: 14px;">PX (FALAR)</span>';
-    liveStatus.className = 'live-status off';
-    liveStatus.innerHTML = '🔴 MICROFONE DESLIGADO';
+    document.getElementById('pxMic').classList.remove('active');
+    document.getElementById('pxMic').innerHTML = '<i class="fas fa-microphone-slash"></i><span>PX (FALAR)</span>';
+    document.getElementById('micStatus').className = 'mic-status off';
+    document.getElementById('micStatus').innerHTML = '🔴 MICROFONE DESLIGADO';
 }
 
-pxBtn.onclick = () => {
-    if (isBroadcasting) {
-        stopBroadcasting();
-    } else {
-        startBroadcasting();
-    }
-};
+document.getElementById('pxMic').onclick = () => isBroadcasting ? stopBroadcasting() : startBroadcasting();
 
 // ==================== SOCKET EVENTOS ====================
 socket.on('connect', () => {
-    console.log('✅ Conectado ao servidor');
+    console.log('✅ Conectado');
     socket.emit('join-room', { roomId: currentCity, userName, isBroadcaster: false });
 });
 
 socket.on('room-update', (data) => {
-    if (data.broadcaster) {
-        roomStats.innerHTML = `🎙️ Transmitindo | 👂 ${data.listeners} ouvindo`;
-    } else {
-        roomStats.innerHTML = `⏸️ Aguardando transmissão | ${data.listeners} online`;
-    }
+    document.getElementById('onlineCount').innerHTML = data.broadcaster ? `🎙️ ${data.listeners} ouvindo` : `${data.listeners} online`;
 });
 
 socket.on('broadcaster-joined', ({ userName }) => {
-    listeningStatus.innerHTML = `🎤 ${userName} começou a transmitir! Conectando...`;
-    listeningStatus.style.color = '#00ff88';
+    const notif = document.getElementById('audioNotif');
+    document.getElementById('audioSender').innerHTML = `<i class="fas fa-user"></i> ${userName}`;
+    document.getElementById('audioStation').innerHTML = `<i class="fas fa-radio"></i> ${currentCity.toUpperCase()}`;
+    notif.style.display = 'flex';
+    setTimeout(() => notif.style.display = 'none', 3000);
 });
 
 socket.on('broadcaster-left', () => {
-    listeningStatus.innerHTML = `🔴 Transmissão encerrada. Aguardando...`;
-    listeningStatus.style.color = '#888';
-    if (peerConnection) {
-        peerConnection.close();
-        peerConnection = null;
-    }
+    if (peerConnection) { peerConnection.close(); peerConnection = null; }
 });
 
-socket.on('broadcaster-active', ({ broadcasterId }) => {
-    listeningStatus.innerHTML = `🎧 Transmissão ativa! Conectando...`;
-    createReceiverConnection();
-});
+socket.on('broadcaster-active', () => createReceiver());
 
-async function createReceiverConnection() {
+async function createReceiver() {
     if (peerConnection) return;
-    
-    peerConnection = new RTCPeerConnection(configuration);
-    
+    peerConnection = new RTCPeerConnection(rtcConfig);
     peerConnection.ontrack = (event) => {
         const audio = new Audio();
         audio.srcObject = event.streams[0];
         audio.play().catch(e => console.log);
-        listeningStatus.innerHTML = `🎧 Ouvindo transmissão ao vivo!`;
+        const notif = document.getElementById('audioNotif');
+        notif.style.display = 'flex';
+        setTimeout(() => notif.style.display = 'none', 2000);
     };
-    
     peerConnection.onicecandidate = (event) => {
-        if (event.candidate) {
-            socket.emit('ice-candidate', { targetId: 'broadcast', candidate: event.candidate });
-        }
+        if (event.candidate) socket.emit('ice-candidate', { targetId: 'broadcast', candidate: event.candidate });
     };
-    
     const offer = await peerConnection.createOffer();
     await peerConnection.setLocalDescription(offer);
     socket.emit('offer', { targetId: 'broadcast', offer });
 }
 
-// WebRTC Signaling
 socket.on('offer', async ({ fromId, offer }) => {
     if (!peerConnection) {
-        peerConnection = new RTCPeerConnection(configuration);
+        peerConnection = new RTCPeerConnection(rtcConfig);
         peerConnection.ontrack = (event) => {
             const audio = new Audio();
             audio.srcObject = event.streams[0];
@@ -432,14 +1017,207 @@ socket.on('answer', async ({ answer }) => {
 });
 
 socket.on('ice-candidate', async ({ candidate }) => {
-    if (peerConnection) {
-        await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+    if (peerConnection) await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+});
+
+// ==================== MAPA ====================
+function initMap() {
+    map = L.map('map').setView([-25.4284, -49.2733], 12);
+    L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(map);
+    
+    if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(pos => {
+            userLocation = [pos.coords.latitude, pos.coords.longitude];
+            if (!userMarker) {
+                userMarker = L.marker(userLocation, {
+                    icon: L.divIcon({ html: '<div style="font-size:34px;">🚛</div>', iconSize: [34,34], iconAnchor: [17,17] })
+                }).addTo(map);
+                map.setView(userLocation, 13);
+            } else userMarker.setLatLng(userLocation);
+        });
     }
+    loadAlerts();
+}
+
+function loadAlerts() {
+    db.ref('alerts').on('child_added', (snap) => {
+        const a = snap.val();
+        const id = snap.key;
+        if (alertsOnMap[id] || !map) return;
+        
+        const marker = L.marker([a.lat, a.lng], {
+            icon: L.divIcon({
+                html: `<div style="background:${a.color}; width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; border:3px solid white; box-shadow:0 0 15px ${a.color};">${a.emoji}</div>`,
+                iconSize: [42,42],
+                iconAnchor: [21,21]
+            })
+        }).addTo(map);
+        
+        const popupDiv = document.createElement('div');
+        popupDiv.className = 'popup-alert';
+        popupDiv.innerHTML = `
+            ${a.image ? `<img src="${a.image}" class="popup-img">` : ''}
+            <div class="popup-header"><span>${a.emoji} ${a.name}</span><span>👍 ${a.confirmations || 0}</span></div>
+            <div class="popup-chat-area" id="chat-${id}"></div>
+            <div class="popup-input"><input type="text" id="input-${id}" placeholder="Comentar..."><button onclick="sendAlertMsg('${id}')">➔</button></div>
+        `;
+        marker.bindPopup(popupDiv);
+        marker.on('popupopen', () => loadAlertChat(id));
+        alertsOnMap[id] = marker;
+    });
+}
+
+function loadAlertChat(id) {
+    db.ref(`chats/alert_${id}`).on('value', (snap) => {
+        const chatDiv = document.getElementById(`chat-${id}`);
+        if (!chatDiv) return;
+        const msgs = snap.val();
+        if (!msgs) { chatDiv.innerHTML = '<div style="text-align:center; color:#888;">Nenhum comentário</div>'; return; }
+        let html = '';
+        Object.values(msgs).sort((a,b) => a.timestamp - b.timestamp).forEach(msg => {
+            const isMe = msg.user === userName;
+            html += `<div class="popup-msg ${isMe ? 'me' : 'other'}"><strong>${msg.user}</strong><br>${msg.text}<br><small>${new Date(msg.timestamp).toLocaleTimeString().slice(0,5)}</small></div>`;
+        });
+        chatDiv.innerHTML = html;
+        chatDiv.scrollTop = chatDiv.scrollHeight;
+    });
+}
+
+function sendAlertMsg(id) {
+    const input = document.getElementById(`input-${id}`);
+    if (!input.value.trim()) return;
+    db.ref(`chats/alert_${id}`).push({ user: userName, text: input.value.trim(), timestamp: Date.now() });
+    input.value = '';
+}
+
+async function createAlert(alert) {
+    if (!userLocation) { alert("Aguardando localização..."); return; }
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:#000; z-index:10000; display:flex; flex-direction:column; align-items:center; justify-content:center;';
+        const video = document.createElement('video');
+        video.style.cssText = 'width:90%; max-width:350px; border-radius:20px;';
+        video.autoplay = true;
+        video.srcObject = stream;
+        const btnPhoto = document.createElement('button');
+        btnPhoto.style.cssText = 'margin:15px; padding:12px 25px; background:#ffd700; border:none; border-radius:40px; font-size:16px; cursor:pointer;';
+        btnPhoto.innerHTML = '📷 TIRAR FOTO';
+        const btnSkip = document.createElement('button');
+        btnSkip.style.cssText = 'margin:15px; padding:12px 25px; background:#444; border:none; border-radius:40px; color:white; cursor:pointer;';
+        btnSkip.innerHTML = '⏭️ PULAR';
+        const btnClose = document.createElement('button');
+        btnClose.style.cssText = 'position:absolute; top:15px; right:15px; width:40px; height:40px; background:#e53935; border:none; border-radius:50%; color:white; font-size:18px; cursor:pointer;';
+        btnClose.innerHTML = '✕';
+        overlay.appendChild(video);
+        overlay.appendChild(btnPhoto);
+        overlay.appendChild(btnSkip);
+        overlay.appendChild(btnClose);
+        document.body.appendChild(overlay);
+        
+        btnPhoto.onclick = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            canvas.toBlob(async (blob) => {
+                const reader = new FileReader();
+                reader.onloadend = async () => {
+                    await db.ref(`alerts/${Date.now()}`).set({ ...alert, lat: userLocation[0], lng: userLocation[1], timestamp: Date.now(), creator: userName, confirmations: 1, image: reader.result });
+                    stream.getTracks().forEach(t => t.stop());
+                    document.body.removeChild(overlay);
+                    alert('✅ Alerta enviado!');
+                    closeAlert();
+                };
+                reader.readAsDataURL(blob);
+            }, 'image/jpeg', 0.6);
+        };
+        btnSkip.onclick = async () => {
+            await db.ref(`alerts/${Date.now()}`).set({ ...alert, lat: userLocation[0], lng: userLocation[1], timestamp: Date.now(), creator: userName, confirmations: 1 });
+            stream.getTracks().forEach(t => t.stop());
+            document.body.removeChild(overlay);
+            alert(`⚠️ ${alert.name} reportado!`);
+            closeAlert();
+        };
+        btnClose.onclick = () => {
+            stream.getTracks().forEach(t => t.stop());
+            document.body.removeChild(overlay);
+        };
+    } catch(e) {
+        await db.ref(`alerts/${Date.now()}`).set({ ...alert, lat: userLocation[0], lng: userLocation[1], timestamp: Date.now(), creator: userName, confirmations: 1 });
+        alert(`⚠️ ${alert.name} reportado!`);
+        closeAlert();
+    }
+}
+
+// ==================== CHAT WHATSAPP ====================
+function loadChat() {
+    db.ref('chat_global').on('value', (snap) => {
+        const msgs = snap.val();
+        const container = document.getElementById('chatMessages');
+        if (!msgs) { container.innerHTML = ''; return; }
+        let html = '';
+        Object.values(msgs).sort((a,b) => a.timestamp - b.timestamp).forEach(msg => {
+            const isMe = msg.user === userName;
+            html += `<div class="message ${isMe ? 'me' : 'other'}"><strong>${msg.user}</strong><br>${msg.text}<br><small>${new Date(msg.timestamp).toLocaleTimeString().slice(0,5)}</small></div>`;
+        });
+        container.innerHTML = html;
+        container.scrollTop = container.scrollHeight;
+    });
+}
+
+function sendChatMsg() {
+    const input = document.getElementById('chatInput');
+    if (!input.value.trim()) return;
+    db.ref('chat_global').push({ user: userName, text: input.value.trim(), timestamp: Date.now() });
+    input.value = '';
+}
+
+// ==================== MODAIS ====================
+function buildAlertGrid() {
+    const grid = document.getElementById('alertGrid');
+    grid.innerHTML = '';
+    alertsList.forEach(alert => {
+        const card = document.createElement('div');
+        card.className = 'alert-item';
+        card.style.setProperty('--alert-color', alert.color);
+        card.innerHTML = `<div class="alert-emoji">${alert.emoji}</div><div class="alert-name">${alert.name}</div>`;
+        card.onclick = () => createAlert(alert);
+        grid.appendChild(card);
+    });
+}
+
+function openMap() { document.getElementById('mapModal').classList.add('visible'); setTimeout(() => { if (!map) initMap(); else map.invalidateSize(); }, 100); }
+function closeMap() { document.getElementById('mapModal').classList.remove('visible'); }
+function openAlert() { document.getElementById('alertModal').classList.add('visible'); }
+function closeAlert() { document.getElementById('alertModal').classList.remove('visible'); }
+function openChat() { document.getElementById('chatModal').classList.add('visible'); }
+function closeChat() { document.getElementById('chatModal').classList.remove('visible'); }
+
+document.getElementById('mapBtn').onclick = openMap;
+document.getElementById('alertBtn').onclick = openAlert;
+document.getElementById('chatBtn').onclick = openChat;
+
+// ==================== LIMPAR AO SAIR ====================
+window.addEventListener('beforeunload', () => {
+    if (userName) db.ref(`stations/${currentCity}/users/${userName}`).remove();
+    if (isBroadcasting) stopBroadcasting();
 });
 
 // ==================== INICIAR ====================
 buildDropdown();
-changeCity(currentCity, cities.find(c => c.toLowerCase().replace(/ /g, '_').replace(/ã/g, 'a').replace(/ç/g, 'c') === currentCity) || 'Curitiba');
+loadCounts();
+loadChat();
+buildAlertGrid();
+showToast(`🎙️ Bem-vindo, ${userName}!`);
+
+function showToast(msg) {
+    const t = document.createElement('div');
+    t.style.cssText = 'position:fixed; bottom:100px; left:50%; transform:translateX(-50%); background:#00BFFF; color:white; padding:8px 20px; border-radius:40px; z-index:13000; font-weight:bold; border:2px solid gold; font-size:13px;';
+    t.innerText = msg;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 2500);
+}
 </script>
 </body>
 </html>
