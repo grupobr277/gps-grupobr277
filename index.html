@@ -489,6 +489,7 @@
         .alert-emoji { font-size: 34px; }
         .alert-name { font-size: 11px; color: white; margin-top: 6px; font-weight: 600; }
 
+        /* ==================== CHAT ESTILO WHATSAPP ==================== */
         .modal-chat {
             position: fixed;
             top: 0;
@@ -504,88 +505,218 @@
         .modal-chat.visible { display: flex; }
 
         .chat-header {
-            background: #075e54;
-            padding: 15px;
+            background: #075E54;
+            padding: 15px 20px;
             color: white;
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-size: 16px;
+            font-weight: 600;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .chat-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chat-header-left i {
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .chat-header-info h3 {
+            font-size: 16px;
+            margin: 0;
+        }
+
+        .chat-header-info p {
+            font-size: 11px;
+            margin: 2px 0 0;
+            opacity: 0.8;
         }
 
         .chat-messages-area {
             flex: 1;
             overflow-y: auto;
             padding: 15px;
-            background: #e5ddd5;
+            background: #E5DDD5;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.05"><path d="M10,10 L90,10 M10,30 L90,30 M10,50 L90,50 M10,70 L90,70 M10,90 L90,90 M10,10 L10,90 M30,10 L30,90 M50,10 L50,90 M70,10 L70,90 M90,10 L90,90" stroke="%23000" stroke-width="1"/></svg>');
+            background-repeat: repeat;
         }
 
         .chat-input-area {
             display: flex;
-            padding: 10px;
-            background: #f0f0f0;
-            gap: 8px;
+            padding: 10px 15px;
+            background: #F0F0F0;
+            gap: 10px;
+            align-items: center;
+            border-top: 1px solid #ddd;
         }
 
         .chat-input-area input {
             flex: 1;
-            padding: 12px;
+            padding: 12px 15px;
             border-radius: 25px;
             border: none;
             background: white;
             font-size: 14px;
+            outline: none;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .chat-input-area input:focus {
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
         }
 
         .chat-input-area button {
-            background: #075e54;
+            background: #075E54;
             border: none;
-            width: 45px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             color: white;
             cursor: pointer;
+            transition: all 0.2s;
         }
 
+        .chat-input-area button:hover {
+            background: #054a42;
+        }
+
+        /* Balões de mensagem estilo WhatsApp */
         .msg-bubble {
-            margin: 8px 0;
-            padding: 10px 14px;
-            border-radius: 18px;
-            max-width: 80%;
-            font-size: 13px;
-            position: relative;
+            display: flex;
+            margin-bottom: 12px;
         }
 
         .msg-bubble.me {
-            background: #dcf8c6;
-            margin-left: auto;
+            justify-content: flex-end;
         }
 
         .msg-bubble.other {
+            justify-content: flex-start;
+        }
+
+        .msg-content {
+            max-width: 75%;
+            padding: 8px 12px;
+            border-radius: 18px;
+            position: relative;
+            word-wrap: break-word;
+        }
+
+        .msg-bubble.me .msg-content {
+            background: #DCF8C6;
+            border-bottom-right-radius: 4px;
+        }
+
+        .msg-bubble.other .msg-content {
             background: white;
+            border-bottom-left-radius: 4px;
+        }
+
+        .msg-sender {
+            font-size: 12px;
+            font-weight: bold;
+            color: #075E54;
+            margin-bottom: 4px;
+        }
+
+        .msg-text {
+            font-size: 13px;
+            line-height: 1.4;
+            color: #111;
+        }
+
+        .msg-meta {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 6px;
+            margin-top: 4px;
         }
 
         .msg-time {
             font-size: 10px;
-            color: #666;
-            margin-top: 4px;
-            text-align: right;
+            color: #888;
         }
 
+        .msg-status {
+            font-size: 10px;
+            color: #4FC3F7;
+        }
+
+        /* Popup de alerta com chat WhatsApp */
         .popup-alert {
-            background: #13132a;
+            background: #E5DDD5;
             border-radius: 20px;
-            max-width: 300px;
+            max-width: 320px;
             overflow: hidden;
-            border: 2px solid #00BFFF;
+            border: 1px solid #ddd;
         }
         .popup-alert-img { width: 100%; height: 120px; object-fit: cover; }
-        .popup-alert-header { padding: 8px 12px; background: #00BFFF; color: white; display: flex; justify-content: space-between; cursor: pointer; }
-        .popup-alert-chat { padding: 10px; max-height: 150px; overflow-y: auto; background: #0f0f23; }
-        .popup-chat-msg { margin: 5px 0; padding: 6px 10px; border-radius: 12px; font-size: 11px; }
-        .popup-chat-msg.me { background: #00BFFF; margin-left: auto; text-align: right; }
-        .popup-chat-msg.other { background: #252542; }
-        .popup-chat-input { display: flex; padding: 8px; gap: 5px; border-top: 1px solid #2a2a4a; }
-        .popup-chat-input input { flex: 1; padding: 8px; border-radius: 20px; border: none; background: #252542; color: white; }
-        .popup-chat-input button { background: #00BFFF; border: none; width: 32px; border-radius: 50%; cursor: pointer; }
+        .popup-alert-header { 
+            padding: 10px 12px; 
+            background: #075E54; 
+            color: white; 
+            display: flex; 
+            justify-content: space-between; 
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .popup-alert-chat { 
+            padding: 10px; 
+            max-height: 200px; 
+            overflow-y: auto; 
+            background: #E5DDD5;
+        }
+        .popup-chat-msg {
+            margin: 8px 0;
+            padding: 8px 12px;
+            border-radius: 16px;
+            font-size: 11px;
+            max-width: 90%;
+        }
+        .popup-chat-msg.me {
+            background: #DCF8C6;
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+        .popup-chat-msg.other {
+            background: white;
+            border-bottom-left-radius: 4px;
+        }
+        .popup-chat-msg strong {
+            color: #075E54;
+            font-size: 10px;
+        }
+        .popup-chat-input {
+            display: flex;
+            padding: 8px;
+            gap: 5px;
+            background: #F0F0F0;
+            border-top: 1px solid #ddd;
+        }
+        .popup-chat-input input {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 20px;
+            border: none;
+            background: white;
+            font-size: 12px;
+        }
+        .popup-chat-input button {
+            background: #075E54;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+        }
 
         .audio-player-container {
             position: fixed;
@@ -663,7 +794,6 @@
             animation: pulse-red 1s infinite;
         }
 
-        /* Animação para o alfinete admin */
         @keyframes bounce {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-10px); }
@@ -671,6 +801,18 @@
         
         .admin-marker {
             animation: bounce 0.5s ease infinite;
+        }
+
+        /* Scrollbar WhatsApp style */
+        .chat-messages-area::-webkit-scrollbar {
+            width: 6px;
+        }
+        .chat-messages-area::-webkit-scrollbar-track {
+            background: #E5DDD5;
+        }
+        .chat-messages-area::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 10px;
         }
     </style>
 </head>
@@ -696,7 +838,6 @@
         </div>
     </div>
 
-    <!-- APENAS NÚMERO DE USUÁRIOS ONLINE -->
     <div class="current-highlight">
         <div class="city-online" id="currentCityOnline">0 online <i class="fas fa-users"></i></div>
     </div>
@@ -714,7 +855,8 @@
     <div class="action-grid">
         <div class="action-card map-btn" onclick="openMapModal()"><i class="fas fa-map-marked-alt"></i> MAPA</div>
         <div class="action-card" onclick="openAlertModal()"><i class="fas fa-exclamation-triangle"></i> ALERTA</div>
-        <div class="action-card" onclick="openChatModal()"><i class="fas fa-comment-dots"></i> CHAT</div>
+        <div class="action-card" onclick="openChatModal()"><i class="fas fa-comment-dots"></i> CHAT GERAL</div>
+        <div class="action-card" onclick="openStationChatModal()"><i class="fas fa-users"></i> CHAT ESTAÇÃO</div>
         <div class="action-card admin-btn" onclick="enableAdminMode()"><i class="fas fa-user-shield"></i> ADMIN</div>
         <div class="action-card exit-admin" onclick="disableAdminMode()"><i class="fas fa-power-off"></i> SAIR</div>
     </div>
@@ -743,15 +885,41 @@
     </div>
 </div>
 
+<!-- CHAT GERAL (WhatsApp Style) -->
 <div class="modal-chat" id="chatModal">
     <div class="chat-header">
-        <span><i class="fas fa-comments"></i> CHAT GERAL - RÁDIO PX 277</span>
-        <span onclick="closeChatModal()" style="cursor:pointer; font-size:22px;">✕</span>
+        <div class="chat-header-left">
+            <i class="fas fa-arrow-left" onclick="closeChatModal()" style="cursor:pointer;"></i>
+            <div class="chat-header-info">
+                <h3><i class="fas fa-globe"></i> Chat Geral</h3>
+                <p>Rádio PX 277 - Todos</p>
+            </div>
+        </div>
+        <span onclick="closeChatModal()" style="cursor:pointer; font-size:20px;">✕</span>
     </div>
     <div class="chat-messages-area" id="chatMessagesArea"></div>
     <div class="chat-input-area">
         <input type="text" id="chatInput" placeholder="Digite sua mensagem...">
         <button onclick="sendChatMsg()"><i class="fas fa-paper-plane"></i></button>
+    </div>
+</div>
+
+<!-- CHAT POR ESTAÇÃO (WhatsApp Style) -->
+<div class="modal-chat" id="stationChatModal">
+    <div class="chat-header">
+        <div class="chat-header-left">
+            <i class="fas fa-arrow-left" onclick="closeStationChatModal()" style="cursor:pointer;"></i>
+            <div class="chat-header-info">
+                <h3 id="stationChatTitle"><i class="fas fa-radio"></i> Estação</h3>
+                <p id="stationChatSubtitle">Conversa local</p>
+            </div>
+        </div>
+        <span onclick="closeStationChatModal()" style="cursor:pointer; font-size:20px;">✕</span>
+    </div>
+    <div class="chat-messages-area" id="stationChatMessagesArea"></div>
+    <div class="chat-input-area">
+        <input type="text" id="stationChatInput" placeholder="Digite sua mensagem...">
+        <button onclick="sendStationChatMsg()"><i class="fas fa-paper-plane"></i></button>
     </div>
 </div>
 
@@ -859,7 +1027,6 @@ function enableAdminMode() {
         isAdminMode = true;
         showToast("👑 MODO ADMIN ATIVADO! Clique 2x no mapa para criar alerta");
         
-        // Mudar cursor do mapa
         if (map) {
             map.getContainer().style.cursor = "crosshair";
             const badge = document.getElementById('adminStatusBadge');
@@ -888,10 +1055,8 @@ function disableAdminMode() {
     showToast("Modo ADMIN desativado");
 }
 
-// Função para mostrar o dropdown com os 15 alertas
 function showAdminAlertDropdown(lat, lng) {
     const modal = document.createElement('div');
-    modal.id = "adminAlertModal";
     modal.style.cssText = `
         position: fixed;
         top: 0;
@@ -932,7 +1097,7 @@ function showAdminAlertDropdown(lat, lng) {
             <div id="adminAlertSelector" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; max-height: 380px; overflow-y: auto; padding: 5px;"></div>
         </div>
         <div style="display: flex; gap: 10px; padding: 15px; border-top: 1px solid #2a2a55;">
-            <button id="cancelAdminAlert" style="flex:1; padding: 12px; background: #e53935; border: none; border-radius: 40px; color: white; font-weight: bold; cursor: pointer; font-size: 14px;">CANCELAR</button>
+            <button id="cancelAdminAlert" style="flex:1; padding: 12px; background: #e53935; border: none; border-radius: 40px; color: white; font-weight: bold; cursor: pointer;">CANCELAR</button>
         </div>
     `;
     
@@ -990,7 +1155,6 @@ function showAdminAlertDropdown(lat, lng) {
     };
 }
 
-// Configurar os dois cliques no mapa
 function setupAdminMode() {
     if (!map) return;
     
@@ -1000,7 +1164,6 @@ function setupAdminMode() {
         adminClickCount++;
         
         if (adminClickCount === 1) {
-            // Primeiro clique: cria alfinete móvel
             adminFirstPos = e.latlng;
             
             if (tempMarker) map.removeLayer(tempMarker);
@@ -1008,10 +1171,9 @@ function setupAdminMode() {
             tempMarker = L.marker(adminFirstPos, {
                 draggable: true,
                 icon: L.divIcon({
-                    html: '<div style="background:#ffd700; width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:26px; border:3px solid white; box-shadow:0 0 20px rgba(255,215,0,0.8); animation:bounce 0.5s ease infinite;">📍</div>',
+                    html: '<div style="background:#ffd700; width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:26px; border:3px solid white; box-shadow:0 0 20px rgba(255,215,0,0.8);">📍</div>',
                     iconSize: [44, 44],
-                    iconAnchor: [22, 22],
-                    className: 'admin-marker'
+                    iconAnchor: [22, 22]
                 })
             }).addTo(map);
             
@@ -1021,7 +1183,7 @@ function setupAdminMode() {
                 showToast(`📍 Posição ajustada: ${newPos.lat.toFixed(5)}, ${newPos.lng.toFixed(5)}`);
             });
             
-            showToast("⚠️ Clique NOVAMENTE no alfinete para criar alerta (ou arraste para ajustar)");
+            showToast("⚠️ Clique NOVAMENTE no alfinete para criar alerta");
             
             adminClickTimeout = setTimeout(() => {
                 adminClickCount = 0;
@@ -1030,7 +1192,7 @@ function setupAdminMode() {
                     map.removeLayer(tempMarker);
                     tempMarker = null;
                 }
-                showToast("❌ Criação de alerta cancelada (tempo esgotado)");
+                showToast("❌ Criação de alerta cancelada");
             }, 10000);
             
         } else if (adminClickCount === 2) {
@@ -1141,6 +1303,7 @@ function loadCounts() {
             if (badge) badge.innerText = count;
             if (id === currentStation) {
                 document.getElementById('currentCityOnline').innerHTML = `${count} online <i class="fas fa-users"></i>`;
+                document.getElementById('stationChatSubtitle').innerHTML = `${count} participantes online`;
             }
         });
     });
@@ -1393,7 +1556,7 @@ function loadAlertsOnMap() {
                 </div>
                 <div class="popup-alert-chat" id="alert-chat-${id}"></div>
                 <div class="popup-chat-input">
-                    <input type="text" id="alert-input-${id}" placeholder="Comentar...">
+                    <input type="text" id="alert-input-${id}" placeholder="Digite um comentário...">
                     <button onclick="sendAlertMsg('${id}')">➔</button>
                 </div>
             `;
@@ -1417,12 +1580,16 @@ function loadAlertChat(id) {
         const chatDiv = document.getElementById(`alert-chat-${id}`);
         if (!chatDiv) return;
         const msgs = snap.val();
-        if (!msgs) { chatDiv.innerHTML = '<div style="text-align:center; color:#888;">Nenhum comentário</div>'; return; }
+        if (!msgs) { chatDiv.innerHTML = '<div style="text-align:center; color:#888; padding:10px;">Nenhum comentário</div>'; return; }
         
         let html = '';
         Object.values(msgs).sort((a,b) => a.timestamp - b.timestamp).forEach(msg => {
             const isMe = msg.user === userName;
-            html += `<div class="popup-chat-msg ${isMe ? 'me' : 'other'}"><strong>${msg.user}</strong><br>${msg.text}<br><small>${new Date(msg.timestamp).toLocaleTimeString()}</small></div>`;
+            const time = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            html += `<div class="popup-chat-msg ${isMe ? 'me' : 'other'}">
+                        <strong>${msg.user}</strong><br>${msg.text}<br>
+                        <small style="font-size:9px; color:#888;">${time}</small>
+                     </div>`;
         });
         chatDiv.innerHTML = html;
         chatDiv.scrollTop = chatDiv.scrollHeight;
@@ -1567,7 +1734,7 @@ async function createAlertWithPhoto(alert) {
 function openAlertModal() { document.getElementById('alertModal').classList.add('visible'); }
 function closeAlertModal() { document.getElementById('alertModal').classList.remove('visible'); }
 
-// ==================== CHAT ====================
+// ==================== CHAT GERAL (WhatsApp Style) ====================
 function openChatModal() { 
     document.getElementById('chatModal').classList.add('visible'); 
     loadChatMessages(); 
@@ -1582,20 +1749,83 @@ function loadChatMessages() {
     db.ref('chat_global').on('value', (snap) => {
         const msgs = snap.val();
         const container = document.getElementById('chatMessagesArea');
-        if (!msgs) { container.innerHTML = '<div style="text-align:center; color:#888;">Nenhuma mensagem</div>'; return; }
+        if (!msgs) { container.innerHTML = '<div style="text-align:center; color:#888; padding:20px;">Nenhuma mensagem</div>'; return; }
         
         let html = '';
         Object.values(msgs).sort((a,b) => a.timestamp - b.timestamp).forEach(msg => {
             const isMe = msg.user === userName;
             const time = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            html += `<div class="msg-bubble ${isMe ? 'me' : 'other'}">
-                        <strong>${msg.user}</strong><br>${msg.text}
-                        <div class="msg-time">${time}</div>
-                     </div>`;
+            
+            html += `
+                <div class="msg-bubble ${isMe ? 'me' : 'other'}">
+                    <div class="msg-content">
+                        <div class="msg-sender">${msg.user}</div>
+                        <div class="msg-text">${escapeHtml(msg.text)}</div>
+                        <div class="msg-meta">
+                            <span class="msg-time">${time}</span>
+                            ${isMe ? '<span class="msg-status"><i class="fas fa-check-double"></i></span>' : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
         });
         container.innerHTML = html;
         container.scrollTop = container.scrollHeight;
     });
+}
+
+// ==================== CHAT POR ESTAÇÃO (WhatsApp Style) ====================
+function openStationChatModal() {
+    const cityName = cities.find(c => normalizeId(c) === currentStation);
+    document.getElementById('stationChatTitle').innerHTML = `<i class="fas fa-radio"></i> ${cityName}`;
+    document.getElementById('stationChatModal').classList.add('visible');
+    loadStationChatMessages();
+}
+
+function closeStationChatModal() {
+    document.getElementById('stationChatModal').classList.remove('visible');
+}
+
+function loadStationChatMessages() {
+    db.ref(`chats/station_${currentStation}`).off();
+    db.ref(`chats/station_${currentStation}`).on('value', (snap) => {
+        const msgs = snap.val();
+        const container = document.getElementById('stationChatMessagesArea');
+        if (!msgs) { container.innerHTML = '<div style="text-align:center; color:#888; padding:20px;">Nenhuma mensagem</div>'; return; }
+        
+        let html = '';
+        Object.values(msgs).sort((a,b) => a.timestamp - b.timestamp).forEach(msg => {
+            const isMe = msg.user === userName;
+            const time = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            html += `
+                <div class="msg-bubble ${isMe ? 'me' : 'other'}">
+                    <div class="msg-content">
+                        <div class="msg-sender">${msg.user}</div>
+                        <div class="msg-text">${escapeHtml(msg.text)}</div>
+                        <div class="msg-meta">
+                            <span class="msg-time">${time}</span>
+                            ${isMe ? '<span class="msg-status"><i class="fas fa-check-double"></i></span>' : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+        container.scrollTop = container.scrollHeight;
+    });
+}
+
+function sendStationChatMsg() {
+    const input = document.getElementById('stationChatInput');
+    if (!input.value.trim()) return;
+    db.ref(`chats/station_${currentStation}`).push({ 
+        user: userName, 
+        text: input.value.trim(), 
+        timestamp: Date.now() 
+    });
+    input.value = '';
+    showToast("✓ Mensagem enviada para a estação");
 }
 
 function sendChatMsg() {
@@ -1604,6 +1834,12 @@ function sendChatMsg() {
     db.ref('chat_global').push({ user: userName, text: input.value.trim(), timestamp: Date.now() });
     input.value = '';
     showToast("✓ Mensagem enviada");
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
 // ==================== UTILIDADES ====================
