@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emoji-picker-element@1.18.3/dist/index.css"/>
     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@1.18.3/dist/index.js"></script>
-    <!-- Fontes modernas -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -20,18 +19,18 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 12px;
+            padding: 10px;
         }
 
         /* ==================== RÁDIO CB ESTILO CAMINHONEIRO ==================== */
         .radio-cb {
-            max-width: 500px;
+            max-width: 550px;
             width: 100%;
-            background: linear-gradient(145deg, #181818, #0c0c0c);
-            border-radius: 32px;
+            background: linear-gradient(145deg, #1c1c1c, #0a0a0a);
+            border-radius: 36px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.6), inset 0 1px 2px rgba(255,255,255,0.08);
             overflow: hidden;
-            border: 1px solid #333;
+            border: 1px solid #3a3a3a;
             position: relative;
         }
 
@@ -42,30 +41,32 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 4px;
-            background: linear-gradient(135deg, #e8e8e8, #b0b0b0, #e8e8e8);
+            height: 6px;
+            background: linear-gradient(135deg, #e8e8e8, #b0b0b0, #888, #b0b0b0, #e8e8e8);
             z-index: 1;
         }
 
         /* ===== PAINEL SUPERIOR ===== */
         .cb-header {
-            background: linear-gradient(145deg, #1e1e1e, #0f0f0f);
-            padding: 16px 16px 12px;
+            background: linear-gradient(145deg, #222, #111);
+            padding: 18px 18px 14px;
             text-align: center;
             position: relative;
-            border-bottom: 2px solid #2a2a2a;
+            border-bottom: 2px solid #0a84ff;
+            box-shadow: inset 0 -1px 0 rgba(255,255,255,0.05);
         }
 
         .brand {
-            font-size: 9px;
-            letter-spacing: 2px;
-            color: #888;
+            font-size: 10px;
+            letter-spacing: 3px;
+            color: #0a84ff;
             font-family: 'Inter', monospace;
             margin-bottom: 6px;
+            text-shadow: 0 0 3px rgba(10,132,255,0.3);
         }
 
         .cb-header h1 {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 800;
             background: linear-gradient(135deg, #ffd700, #ffaa00);
             -webkit-background-clip: text;
@@ -73,23 +74,22 @@
             color: transparent;
             letter-spacing: 2px;
             font-family: 'Inter', sans-serif;
-            text-shadow: 0 0 5px rgba(255,215,0,0.3);
         }
 
         .cb-header h1 i {
             color: #ff4444;
             background: none;
-            margin: 0 4px;
+            margin: 0 5px;
         }
 
         /* Display Digital */
         .digital-display {
             background: #050505;
-            border-radius: 16px;
-            padding: 10px 12px;
-            margin-top: 10px;
-            border: 1px solid #2a2a2a;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.5), 0 0 5px rgba(0,255,0,0.15);
+            border-radius: 18px;
+            padding: 12px 14px;
+            margin-top: 12px;
+            border: 1px solid #0a84ff;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5), 0 0 8px rgba(10,132,255,0.2);
         }
 
         .freq-display {
@@ -101,23 +101,22 @@
         }
 
         .freq-number {
-            font-family: 'Orbitron', 'Courier New', monospace;
-            font-size: 26px;
+            font-family: 'Orbitron', monospace;
+            font-size: 28px;
             font-weight: bold;
             color: #00ff88;
             text-shadow: 0 0 5px #00ff88;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
             background: #080808;
-            padding: 4px 12px;
-            border-radius: 10px;
+            padding: 5px 14px;
+            border-radius: 12px;
             display: inline-block;
         }
 
         .freq-label {
-            font-size: 9px;
+            font-size: 10px;
             color: #00ff88;
             letter-spacing: 1px;
-            font-family: 'Inter', monospace;
         }
 
         .live-badge-cb {
@@ -125,90 +124,93 @@
             align-items: center;
             gap: 5px;
             background: #e53935;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 9px;
+            padding: 5px 12px;
+            border-radius: 25px;
+            font-size: 10px;
             font-weight: bold;
             animation: pulse-red 1s infinite;
-            font-family: 'Inter', monospace;
+            box-shadow: 0 0 8px rgba(229,57,53,0.5);
         }
 
         /* S-Meter */
         .s-meter {
-            margin-top: 10px;
+            margin-top: 12px;
             background: #080808;
-            border-radius: 8px;
-            padding: 6px;
+            border-radius: 10px;
+            padding: 8px;
             border: 1px solid #2a2a2a;
         }
 
         .s-meter-label {
             display: flex;
             justify-content: space-between;
-            font-size: 7px;
-            color: #555;
-            margin-bottom: 4px;
-            font-family: 'Inter', monospace;
+            font-size: 8px;
+            color: #0a84ff;
+            margin-bottom: 5px;
+            font-family: monospace;
             padding: 0 4px;
         }
 
         .meter-bars {
             display: flex;
-            gap: 3px;
-            height: 28px;
+            gap: 4px;
+            height: 32px;
         }
 
         .meter-bar {
             flex: 1;
             background: #1a1a1a;
-            border-radius: 3px;
+            border-radius: 4px;
             transition: all 0.2s;
         }
 
         .meter-bar.active {
             background: linear-gradient(180deg, #00ff88, #00cc66);
-            box-shadow: 0 0 3px #00ff88;
+            box-shadow: 0 0 4px #00ff88;
         }
 
         .meter-bar.warning {
             background: linear-gradient(180deg, #ffaa00, #ff8800);
+            box-shadow: 0 0 4px #ffaa00;
         }
 
         .meter-bar.danger {
             background: linear-gradient(180deg, #ff4444, #cc0000);
+            box-shadow: 0 0 4px #ff4444;
         }
 
         /* ===== SELEÇÃO DE ESTAÇÃO ===== */
         .station-area {
-            padding: 12px 16px;
-            background: linear-gradient(145deg, #161616, #0d0d0d);
-            border-bottom: 1px solid #252525;
+            padding: 14px 18px;
+            background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
+            border-bottom: 1px solid #0a84ff;
+            border-top: 1px solid #333;
         }
 
         .knob-row {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 15px;
             flex-wrap: wrap;
         }
 
         .knob {
             flex: 1;
             text-align: center;
-            min-width: 60px;
+            min-width: 70px;
         }
 
         .knob-label {
-            font-size: 8px;
-            color: #777;
-            margin-bottom: 4px;
+            font-size: 9px;
+            color: #0a84ff;
+            margin-bottom: 5px;
             letter-spacing: 1px;
-            font-family: 'Inter', monospace;
+            font-weight: bold;
         }
 
         .knob-circle {
-            width: 44px;
-            height: 44px;
+            width: 48px;
+            height: 48px;
             background: radial-gradient(circle at 30% 30%, #3a3a3a, #1a1a1a);
             border-radius: 50%;
             margin: 0 auto;
@@ -216,48 +218,47 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            border: 1px solid #4a4a4a;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.08);
+            border: 1px solid #555;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.08);
             transition: all 0.2s;
         }
 
         .knob-circle i {
-            font-size: 20px;
-            color: #bbb;
+            font-size: 22px;
+            color: #0a84ff;
         }
 
         .knob-value {
-            font-size: 9px;
+            font-size: 10px;
             color: #ffd700;
-            margin-top: 4px;
-            font-family: 'Inter', monospace;
+            margin-top: 5px;
+            font-family: monospace;
         }
 
         .station-selector {
             flex: 2;
-            min-width: 140px;
+            min-width: 160px;
             position: relative;
         }
 
         .selector-trigger {
             width: 100%;
-            background: #080808;
-            border: 1px solid #333;
+            background: #0a0a0a;
+            border: 1px solid #0a84ff;
             border-radius: 40px;
-            padding: 10px 14px;
+            padding: 12px 16px;
             color: #ffd700;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 600;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
             transition: all 0.2s;
-            font-family: 'Inter', sans-serif;
         }
 
         .selector-trigger:hover {
-            border-color: #00BFFF;
+            border-color: #ffd700;
             background: #111;
         }
 
@@ -267,10 +268,10 @@
             left: 0;
             right: 0;
             background: #1a1a1a;
-            border: 1px solid #00BFFF;
+            border: 1px solid #0a84ff;
             border-radius: 16px;
-            margin-top: 6px;
-            max-height: 250px;
+            margin-top: 8px;
+            max-height: 260px;
             overflow-y: auto;
             z-index: 200;
             display: none;
@@ -282,7 +283,7 @@
         }
 
         .station-option {
-            padding: 10px 14px;
+            padding: 12px 16px;
             color: #ccc;
             cursor: pointer;
             display: flex;
@@ -290,39 +291,40 @@
             align-items: center;
             border-bottom: 1px solid #2a2a2a;
             transition: all 0.2s;
-            font-size: 12px;
-            font-family: 'Inter', sans-serif;
+            font-size: 13px;
         }
 
         .station-option:hover {
             background: #2a2a2a;
-            color: #00BFFF;
+            color: #0a84ff;
         }
 
         .station-option.active {
-            background: linear-gradient(145deg, #00BFFF, #0066cc);
+            background: linear-gradient(145deg, #0a84ff, #0066cc);
             color: white;
         }
 
         .station-count {
             background: rgba(0,0,0,0.5);
             border-radius: 30px;
-            padding: 2px 10px;
-            font-size: 10px;
+            padding: 3px 12px;
+            font-size: 11px;
             font-weight: bold;
         }
 
         /* Estação atual */
         .current-highlight {
-            background: linear-gradient(145deg, #161616, #0d0d0d);
-            margin: 8px 16px;
-            padding: 10px 16px;
-            border-radius: 40px;
+            background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
+            margin: 12px 18px;
+            padding: 12px 18px;
+            border-radius: 50px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-left: 3px solid #ffd700;
-            border-right: 1px solid #2a2a2a;
+            border-left: 4px solid #ffd700;
+            border-right: 1px solid #0a84ff;
+            border-top: 1px solid #333;
+            border-bottom: 1px solid #333;
         }
 
         .tx-led {
@@ -330,16 +332,16 @@
             align-items: center;
             gap: 8px;
             background: #0a0a0a;
-            padding: 4px 12px;
+            padding: 5px 14px;
             border-radius: 30px;
-            font-size: 10px;
+            font-size: 11px;
             font-weight: bold;
-            font-family: 'Inter', monospace;
+            border: 1px solid #333;
         }
 
         .tx-led .led {
-            width: 8px;
-            height: 8px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
             background: #444;
         }
@@ -347,55 +349,56 @@
         .tx-led .led.red {
             background: #e53935;
             animation: blink 0.8s infinite;
+            box-shadow: 0 0 5px #e53935;
         }
 
         .city-online {
-            background: #00BFFF;
+            background: linear-gradient(145deg, #0a84ff, #0066cc);
             border-radius: 30px;
-            padding: 5px 14px;
-            font-size: 12px;
+            padding: 6px 16px;
+            font-size: 13px;
             font-weight: bold;
-            color: #0f0f25;
-            font-family: 'Inter', monospace;
+            color: white;
+            box-shadow: 0 0 8px rgba(10,132,255,0.3);
         }
 
         /* ===== BOTÃO PTT ===== */
         .mic-panel {
             text-align: center;
-            padding: 16px;
-            margin: 6px 16px;
-            background: linear-gradient(145deg, #161616, #0d0d0d);
-            border-radius: 60px;
+            padding: 18px;
+            margin: 8px 18px;
+            background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
+            border-radius: 80px;
+            border: 1px solid #0a84ff;
         }
 
         .ptt-button {
-            width: 140px;
-            height: 140px;
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
             background: radial-gradient(circle at 35% 35%, #3a3a3a, #1a1a1a);
-            border: 4px solid #4a4a4a;
+            border: 4px solid #555;
             color: #888;
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 800;
             cursor: pointer;
             transition: all 0.2s ease;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.5), inset 0 2px 3px rgba(255,255,255,0.08);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5), inset 0 2px 3px rgba(255,255,255,0.08);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 8px;
             margin: 0 auto;
-            font-family: 'Inter', monospace;
         }
 
         .ptt-button i {
-            font-size: 45px;
+            font-size: 50px;
         }
 
         .ptt-button span {
-            font-size: 12px;
-            letter-spacing: 2px;
+            font-size: 13px;
+            letter-spacing: 3px;
         }
 
         .ptt-button.active {
@@ -407,36 +410,30 @@
 
         @keyframes ptt-pulse {
             0% { box-shadow: 0 0 0 0 #e53935; }
-            50% { box-shadow: 0 0 0 20px rgba(229,57,53,0.3); }
+            50% { box-shadow: 0 0 0 22px rgba(229,57,53,0.3); }
             100% { box-shadow: 0 0 0 0 rgba(229,57,53,0); }
         }
 
-        .ptt-button.off {
-            background: radial-gradient(circle at 35% 35%, #3a3a3a, #1a1a1a);
-            border-color: #4a4a4a;
-            color: #666;
-            animation: none;
-        }
-
         .timer-display {
-            margin-top: 10px;
-            font-size: 13px;
+            margin-top: 12px;
+            font-size: 14px;
             font-family: 'Orbitron', monospace;
             color: #ffd700;
             font-weight: bold;
             background: #0a0a0a;
-            padding: 5px 12px;
+            padding: 6px 16px;
             border-radius: 30px;
             display: inline-block;
+            border: 1px solid #333;
         }
 
         .someone-speaking {
             background: #e53935;
             color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 9px;
-            margin-top: 8px;
+            padding: 5px 14px;
+            border-radius: 25px;
+            font-size: 10px;
+            margin-top: 10px;
             animation: pulse-red 1s infinite;
             display: inline-block;
         }
@@ -444,32 +441,31 @@
         /* ===== BOTÕES DE AÇÃO ===== */
         .action-grid {
             display: flex;
-            gap: 10px;
-            padding: 12px 16px 20px;
+            gap: 12px;
+            padding: 14px 18px 22px;
             flex-wrap: wrap;
         }
 
         .action-card {
             flex: 1;
             background: linear-gradient(145deg, #252525, #181818);
-            border: 1px solid #333;
+            border: 1px solid #0a84ff;
             border-radius: 50px;
-            padding: 10px;
+            padding: 12px;
             color: #ccc;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
             transition: all 0.3s;
-            min-width: 80px;
-            font-family: 'Inter', sans-serif;
+            min-width: 90px;
         }
 
         .action-card.map-btn {
-            border: 1px solid #00BFFF;
+            border: 1px solid #0a84ff;
             background: linear-gradient(145deg, #1a2a3a, #0f1f2f);
         }
 
@@ -481,17 +477,17 @@
 
         .action-card i {
             color: #ffd700;
-            font-size: 14px;
+            font-size: 15px;
         }
 
         /* Admin Gear */
         .admin-gear {
             position: absolute;
-            top: 12px;
-            right: 16px;
+            top: 14px;
+            right: 18px;
             background: #1a1a1a;
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -499,26 +495,35 @@
             cursor: pointer;
             border: 1px solid #ffd700;
             z-index: 10;
+            transition: all 0.2s;
         }
 
         .admin-gear i {
             color: #ffd700;
-            font-size: 14px;
+            font-size: 16px;
+        }
+
+        .admin-gear:hover {
+            background: #ffd700;
+            transform: rotate(30deg);
+        }
+        .admin-gear:hover i {
+            color: #1a1a1a;
         }
 
         .admin-panel {
             position: absolute;
-            top: 50px;
-            right: 16px;
+            top: 55px;
+            right: 18px;
             background: #1a1a1a;
             border-radius: 16px;
-            padding: 8px;
+            padding: 10px;
             display: none;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
             z-index: 100;
             border: 1px solid #ffd700;
-            min-width: 130px;
+            min-width: 140px;
         }
 
         .admin-panel.show {
@@ -528,15 +533,19 @@
         .admin-panel button {
             background: #2a2a2a;
             border: none;
-            padding: 8px 12px;
-            border-radius: 25px;
+            padding: 10px 14px;
+            border-radius: 30px;
             color: white;
             cursor: pointer;
-            font-size: 11px;
+            font-size: 12px;
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-family: 'Inter', sans-serif;
+            gap: 10px;
+            transition: all 0.2s;
+        }
+
+        .admin-panel button:hover {
+            background: #e53935;
         }
 
         /* MODAIS */
@@ -556,20 +565,19 @@
 
         .modal-header, .alert-header, .chat-header {
             background: #075E54;
-            padding: 14px 18px;
+            padding: 16px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             color: white;
             font-weight: bold;
-            font-family: 'Inter', sans-serif;
         }
 
         .modal-close, .alert-header span:last-child {
             background: #e53935;
             border: none;
-            width: 36px;
-            height: 36px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
             color: white;
             font-size: 18px;
@@ -593,57 +601,64 @@
             position: absolute;
             bottom: 20px;
             right: 20px;
-            background: #00BFFF;
+            background: #0a84ff;
             color: white;
             border: none;
             border-radius: 50px;
-            padding: 8px 15px;
+            padding: 10px 18px;
             font-weight: bold;
             cursor: pointer;
             z-index: 1001;
             display: flex;
             align-items: center;
-            gap: 6px;
-            font-size: 12px;
+            gap: 8px;
+            font-size: 13px;
         }
 
         .admin-status {
             position: absolute;
-            top: 10px;
-            left: 10px;
+            top: 12px;
+            left: 12px;
             background: #ffd700;
             color: #000;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 10px;
+            padding: 5px 12px;
+            border-radius: 25px;
+            font-size: 11px;
             display: none;
             z-index: 1001;
+            font-weight: bold;
         }
 
         .alert-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            padding: 16px;
+            gap: 12px;
+            padding: 18px;
         }
 
         .alert-item {
             background: #1f1f40;
-            border-radius: 16px;
-            padding: 12px 6px;
+            border-radius: 18px;
+            padding: 14px 8px;
             text-align: center;
             cursor: pointer;
             transition: all 0.2s;
+            border: 1px solid #0a84ff;
         }
 
-        .alert-emoji { font-size: 28px; }
-        .alert-name { font-size: 10px; color: white; margin-top: 4px; }
+        .alert-item:hover {
+            transform: scale(1.02);
+            border-color: #ffd700;
+        }
+
+        .alert-emoji { font-size: 32px; }
+        .alert-name { font-size: 11px; color: white; margin-top: 5px; }
 
         /* Chat WhatsApp Style */
         .chat-messages-area {
             flex: 1;
             overflow-y: auto;
-            padding: 12px;
+            padding: 14px;
             background: #E5DDD5;
         }
 
@@ -657,12 +672,12 @@
         .reply-preview {
             display: none;
             background: #E8E8E8;
-            padding: 6px 12px;
-            font-size: 11px;
+            padding: 8px 14px;
+            font-size: 12px;
             color: #666;
             border-left: 3px solid #075E54;
-            margin: 4px 12px 0;
-            border-radius: 8px;
+            margin: 6px 14px 0;
+            border-radius: 10px;
             align-items: center;
             justify-content: space-between;
         }
@@ -671,26 +686,26 @@
 
         .input-row {
             display: flex;
-            padding: 8px 12px;
-            gap: 8px;
+            padding: 10px 14px;
+            gap: 10px;
             align-items: center;
         }
 
         .input-row input {
             flex: 1;
-            padding: 10px 14px;
+            padding: 12px 16px;
             border-radius: 25px;
             border: none;
             background: white;
-            font-size: 13px;
+            font-size: 14px;
             outline: none;
         }
 
         .input-row button {
             background: #075E54;
             border: none;
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             color: white;
             cursor: pointer;
@@ -698,7 +713,7 @@
 
         .msg-bubble {
             display: flex;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
         .msg-bubble.me { justify-content: flex-end; }
@@ -706,7 +721,7 @@
 
         .msg-content {
             max-width: 75%;
-            padding: 8px 12px;
+            padding: 10px 14px;
             border-radius: 18px;
             word-wrap: break-word;
             cursor: pointer;
@@ -723,76 +738,77 @@
         }
 
         .msg-sender {
-            font-size: 11px;
+            font-size: 12px;
             font-weight: bold;
             color: #075E54;
-            margin-bottom: 3px;
+            margin-bottom: 4px;
         }
 
-        .msg-text { font-size: 12px; }
-        .msg-meta { display: flex; justify-content: flex-end; gap: 5px; margin-top: 3px; }
-        .msg-time { font-size: 9px; color: #888; }
+        .msg-text { font-size: 13px; }
+        .msg-meta { display: flex; justify-content: flex-end; gap: 6px; margin-top: 4px; }
+        .msg-time { font-size: 10px; color: #888; }
 
         .context-menu {
             position: fixed;
             background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            padding: 6px 0;
+            border-radius: 14px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            padding: 8px 0;
             z-index: 10000;
             display: none;
-            min-width: 140px;
+            min-width: 150px;
         }
 
         .context-menu.show { display: block; }
         .context-menu-item {
-            padding: 10px 18px;
+            padding: 12px 20px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 13px;
+            gap: 12px;
+            font-size: 14px;
         }
         .context-menu-item:hover { background: #f0f0f0; }
 
         .popup-alert {
             background: #E5DDD5;
-            border-radius: 16px;
-            max-width: 300px;
+            border-radius: 18px;
+            max-width: 320px;
             overflow: hidden;
+            border: 1px solid #0a84ff;
         }
-        .popup-alert-img { width: 100%; height: 100px; object-fit: cover; cursor: pointer; }
+        .popup-alert-img { width: 100%; height: 110px; object-fit: cover; cursor: pointer; }
         .popup-alert-header {
-            padding: 8px 12px;
+            padding: 10px 14px;
             background: #075E54;
             color: white;
             display: flex;
             justify-content: space-between;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 13px;
         }
         .popup-alert-chat {
-            padding: 8px;
-            max-height: 180px;
+            padding: 10px;
+            max-height: 190px;
             overflow-y: auto;
             background: #E5DDD5;
         }
         .popup-chat-msg {
-            margin: 6px 0;
-            padding: 6px 10px;
-            border-radius: 14px;
-            font-size: 10px;
+            margin: 8px 0;
+            padding: 8px 12px;
+            border-radius: 16px;
+            font-size: 11px;
             max-width: 90%;
             cursor: pointer;
         }
         .popup-chat-msg.me {
             background: #DCF8C6;
             margin-left: auto;
-            border-bottom-right-radius: 3px;
+            border-bottom-right-radius: 4px;
         }
         .popup-chat-msg.other {
             background: white;
-            border-bottom-left-radius: 3px;
+            border-bottom-left-radius: 4px;
         }
         .popup-chat-input {
             display: flex;
@@ -802,22 +818,22 @@
         }
         .popup-chat-input-row {
             display: flex;
-            padding: 6px;
-            gap: 5px;
+            padding: 8px;
+            gap: 6px;
         }
         .popup-chat-input-row input {
             flex: 1;
-            padding: 6px 10px;
+            padding: 8px 12px;
             border-radius: 20px;
             border: none;
             background: white;
-            font-size: 11px;
+            font-size: 12px;
         }
         .popup-chat-input-row button {
             background: #075E54;
             border: none;
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             color: white;
             cursor: pointer;
@@ -825,24 +841,24 @@
 
         .audio-player-container {
             position: fixed;
-            bottom: 20px;
+            bottom: 25px;
             left: 50%;
             transform: translateX(-50%);
             background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
-            border: 1px solid #00BFFF;
-            border-radius: 50px;
-            padding: 8px 18px;
+            border: 1px solid #0a84ff;
+            border-radius: 60px;
+            padding: 10px 20px;
             z-index: 2000;
             display: none;
             align-items: center;
-            gap: 12px;
-            min-width: 260px;
+            gap: 14px;
+            min-width: 280px;
         }
 
         .audio-speaker-icon {
             background: #e53935;
-            width: 35px;
-            height: 35px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -851,19 +867,19 @@
         }
 
         .audio-info { flex: 1; }
-        .audio-sender { font-size: 12px; font-weight: bold; color: #ffd700; }
-        .audio-station { font-size: 9px; color: #aaa; }
+        .audio-sender { font-size: 13px; font-weight: bold; color: #ffd700; }
+        .audio-station { font-size: 10px; color: #aaa; }
 
         emoji-picker {
             position: fixed;
-            bottom: 70px;
+            bottom: 80px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 10001;
             display: none;
             width: 90%;
-            max-width: 330px;
-            height: 380px;
+            max-width: 350px;
+            height: 400px;
         }
         emoji-picker.show { display: block; }
 
@@ -873,7 +889,7 @@
             align-items: center;
             justify-content: center;
             font-size: 26px;
-            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
             animation: pulse-marker 1.5s ease-in-out infinite;
         }
 
@@ -895,26 +911,48 @@
         }
         @keyframes pulse-speaker {
             0%, 100% { box-shadow: 0 0 0 0 #e53935; }
-            50% { box-shadow: 0 0 0 8px rgba(229,57,53,0.3); }
+            50% { box-shadow: 0 0 0 10px rgba(229,57,53,0.3); }
         }
         @keyframes blink {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.3; }
         }
 
-        /* Responsividade extra */
-        @media (max-width: 450px) {
-            .ptt-button {
-                width: 120px;
-                height: 120px;
-            }
-            .ptt-button i { font-size: 38px; }
-            .freq-number { font-size: 22px; }
+        /* Responsividade para celular */
+        @media (max-width: 500px) {
+            body { padding: 8px; }
+            .radio-cb { border-radius: 28px; }
+            .cb-header { padding: 14px 14px 10px; }
+            .cb-header h1 { font-size: 20px; }
+            .freq-number { font-size: 22px; padding: 4px 10px; }
+            .digital-display { padding: 10px; }
+            .meter-bars { height: 26px; gap: 3px; }
+            .knob-circle { width: 42px; height: 42px; }
+            .knob-circle i { font-size: 18px; }
+            .selector-trigger { padding: 10px 14px; font-size: 13px; }
+            .station-area { padding: 12px 14px; }
+            .current-highlight { margin: 10px 14px; padding: 10px 14px; }
+            .city-online { padding: 5px 14px; font-size: 12px; }
+            .tx-led { padding: 4px 12px; font-size: 10px; }
+            .mic-panel { padding: 14px; margin: 6px 14px; }
+            .ptt-button { width: 130px; height: 130px; }
+            .ptt-button i { font-size: 42px; }
+            .ptt-button span { font-size: 12px; }
+            .action-grid { padding: 12px 14px 18px; gap: 10px; }
+            .action-card { padding: 10px; font-size: 11px; min-width: 80px; }
+            .action-card i { font-size: 13px; }
+            .admin-gear { width: 32px; height: 32px; top: 12px; right: 14px; }
+            .admin-gear i { font-size: 14px; }
+        }
+
+        @media (max-width: 400px) {
+            .knob-row { gap: 10px; }
+            .knob { min-width: 55px; }
             .knob-circle { width: 38px; height: 38px; }
-            .knob-circle i { font-size: 16px; }
-            .action-card { font-size: 11px; padding: 8px; min-width: 70px; }
-            .city-online { font-size: 11px; padding: 4px 12px; }
-            .tx-led { font-size: 9px; padding: 3px 10px; }
+            .selector-trigger { padding: 8px 12px; font-size: 12px; }
+            .ptt-button { width: 110px; height: 110px; }
+            .ptt-button i { font-size: 36px; }
+            .freq-number { font-size: 18px; }
         }
     </style>
 </head>
@@ -1036,11 +1074,11 @@
         <div style="display:flex; align-items:center; gap:12px;">
             <i class="fas fa-arrow-left" onclick="closeChatModal()" style="cursor:pointer;"></i>
             <div>
-                <h3 style="font-size:14px;"><i class="fas fa-globe"></i> Chat Geral</h3>
-                <p style="font-size:10px;">Rádio PX 277</p>
+                <h3 style="font-size:15px;"><i class="fas fa-globe"></i> Chat Geral</h3>
+                <p style="font-size:11px;">Rádio PX 277</p>
             </div>
         </div>
-        <span onclick="closeChatModal()" style="cursor:pointer; font-size:18px;">✕</span>
+        <span onclick="closeChatModal()" style="cursor:pointer; font-size:20px;">✕</span>
     </div>
     <div class="chat-messages-area" id="chatMessagesArea"></div>
     <div class="chat-input-area">
@@ -1230,16 +1268,16 @@ function showAdminAlertDropdown(lat, lng) {
     const modal = document.createElement('div');
     modal.style.cssText = 'position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.95); z-index:20000; display:flex; align-items:center; justify-content:center;';
     const container = document.createElement('div');
-    container.style.cssText = 'background:#1a1a1a; border-radius:30px; width:90%; max-width:380px; max-height:85vh; overflow:auto; border:2px solid #ffd700; padding:16px;';
-    container.innerHTML = `<h3 style="color:#ffd700; text-align:center; margin-bottom:12px;">📌 NOVO ALERTA</h3><div id="adminAlertSelector" style="display:grid; grid-template-columns:repeat(2,1fr); gap:8px;"></div><button id="cancelAdminAlert" style="margin-top:12px; width:100%; padding:10px; background:#e53935; border:none; border-radius:30px; color:white;">CANCELAR</button>`;
+    container.style.cssText = 'background:#1a1a1a; border-radius:30px; width:90%; max-width:380px; max-height:85vh; overflow:auto; border:2px solid #0a84ff; padding:18px;';
+    container.innerHTML = `<h3 style="color:#0a84ff; text-align:center; margin-bottom:14px;">📌 NOVO ALERTA</h3><div id="adminAlertSelector" style="display:grid; grid-template-columns:repeat(2,1fr); gap:10px;"></div><button id="cancelAdminAlert" style="margin-top:14px; width:100%; padding:12px; background:#e53935; border:none; border-radius:30px; color:white;">CANCELAR</button>`;
     modal.appendChild(container);
     document.body.appendChild(modal);
     
     const grid = container.querySelector('#adminAlertSelector');
     alertTypes.forEach(alert => {
         const card = document.createElement('div');
-        card.style.cssText = `background:#2a2a2a; border-radius:15px; padding:10px; text-align:center; cursor:pointer; border-top:3px solid ${alert.color}`;
-        card.innerHTML = `<div style="font-size:28px;">${alert.emoji}</div><div style="color:white; font-size:10px;">${alert.name}</div>`;
+        card.style.cssText = `background:#2a2a2a; border-radius:16px; padding:12px; text-align:center; cursor:pointer; border-top:3px solid ${alert.color}`;
+        card.innerHTML = `<div style="font-size:30px;">${alert.emoji}</div><div style="color:white; font-size:11px;">${alert.name}</div>`;
         card.onclick = async () => {
             const id = Date.now();
             await db.ref(`alerts/${id}`).set({ ...alert, lat, lng, timestamp: id, creator: userName + " (ADMIN)", confirmations: 1 });
@@ -1265,7 +1303,7 @@ function setupAdminMode() {
         if (adminClickCount === 1) {
             adminFirstPos = e.latlng;
             if (tempMarker) map.removeLayer(tempMarker);
-            tempMarker = L.marker(adminFirstPos, { draggable: true, icon: L.divIcon({ html: '<div style="background:#ffd700; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px;">📍</div>', iconSize: [36,36], iconAnchor: [18,18] }) }).addTo(map);
+            tempMarker = L.marker(adminFirstPos, { draggable: true, icon: L.divIcon({ html: '<div style="background:#ffd700; width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:22px;">📍</div>', iconSize: [38,38], iconAnchor: [19,19] }) }).addTo(map);
             tempMarker.on('dragend', () => { adminFirstPos = tempMarker.getLatLng(); showToast("Posição ajustada"); });
             showToast("⚠️ Clique NOVAMENTE no alfinete");
             adminClickTimeout = setTimeout(() => { adminClickCount = 0; if(tempMarker) map.removeLayer(tempMarker); showToast("Cancelado"); }, 10000);
@@ -1439,13 +1477,13 @@ function loadAlertsOnMap() {
         const alert = snap.val(), id = snap.key;
         if (Date.now() - alert.timestamp > 20*60*1000) { db.ref(`alerts/${id}`).remove(); return; }
         if (alertsOnMap[id] || !map) return;
-        const marker = L.marker([alert.lat, alert.lng], { icon: L.divIcon({ html: `<div class="map-marker-icon" style="background:${alert.color}; width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:22px; box-shadow:0 0 10px ${alert.color};">${alert.emoji}</div>`, iconSize: [40,40], iconAnchor: [20,20] }) }).addTo(map);
+        const marker = L.marker([alert.lat, alert.lng], { icon: L.divIcon({ html: `<div class="map-marker-icon" style="background:${alert.color}; width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; box-shadow:0 0 10px ${alert.color};">${alert.emoji}</div>`, iconSize: [42,42], iconAnchor: [21,21] }) }).addTo(map);
         marker.on('mousedown', () => { longPressTimer = setTimeout(() => { if(isAdminMapMode){ document.getElementById('longPressMenu').style.left = event.clientX+'px'; document.getElementById('longPressMenu').style.top = event.clientY+'px'; document.getElementById('longPressMenu').classList.add('show'); longPressTarget = id; } }, 500); });
         marker.on('mouseup', () => { if(longPressTimer) clearTimeout(longPressTimer); });
         let imgHtml = alert.image ? `<img src="${alert.image}" class="popup-alert-img" onclick="event.stopPropagation(); viewFullImage('${alert.image}')">` : '';
         const popupDiv = document.createElement('div');
         popupDiv.className = 'popup-alert';
-        popupDiv.innerHTML = `${imgHtml}<div class="popup-alert-header" onclick="confirmAlert('${id}')"><span>${alert.emoji} ${alert.name}</span><span>👍 <span id="confirm-count-${id}">${alert.confirmations||1}</span></span>${isAdminMapMode?`<button class="admin-delete-btn" onclick="event.stopPropagation(); deleteAlertFromMap('${id}')" style="background:#e53935; border:none; border-radius:15px; padding:2px 8px; color:white;">🗑️</button>`:''}</div><div class="popup-alert-chat" id="alert-chat-${id}"></div><div class="popup-chat-input"><div class="popup-chat-reply-preview" id="popup-reply-preview-${id}"><span id="popup-reply-text-${id}"></span><button class="cancel-reply" onclick="cancelPopupReply('${id}')" style="background:none; border:none;">✕</button></div><div class="popup-chat-input-row"><input type="text" id="alert-input-${id}" placeholder="Comentar..."><button class="popup-emoji-btn" data-id="${id}"><i class="fas fa-smile"></i></button><button onclick="sendAlertMsg('${id}')">➔</button></div></div>`;
+        popupDiv.innerHTML = `${imgHtml}<div class="popup-alert-header" onclick="confirmAlert('${id}')"><span>${alert.emoji} ${alert.name}</span><span>👍 <span id="confirm-count-${id}">${alert.confirmations||1}</span></span>${isAdminMapMode?`<button class="admin-delete-btn" onclick="event.stopPropagation(); deleteAlertFromMap('${id}')" style="background:#e53935; border:none; border-radius:15px; padding:3px 10px; color:white;">🗑️</button>`:''}</div><div class="popup-alert-chat" id="alert-chat-${id}"></div><div class="popup-chat-input"><div class="popup-chat-reply-preview" id="popup-reply-preview-${id}"><span id="popup-reply-text-${id}"></span><button class="cancel-reply" onclick="cancelPopupReply('${id}')" style="background:none; border:none;">✕</button></div><div class="popup-chat-input-row"><input type="text" id="alert-input-${id}" placeholder="Comentar..."><button class="popup-emoji-btn" data-id="${id}"><i class="fas fa-smile"></i></button><button onclick="sendAlertMsg('${id}')">➔</button></div></div>`;
         marker.bindPopup(popupDiv);
         marker.on('popupopen', () => { loadAlertChat(id); setupPopupEmojiPicker(id); });
         alertsOnMap[id] = marker;
@@ -1488,7 +1526,7 @@ document.getElementById('contextEmoji').addEventListener('click',()=>{ if(select
 document.getElementById('longPressDelete').addEventListener('click',()=>{ if(longPressTarget){ deleteAlertFromMap(longPressTarget); document.getElementById('longPressMenu').classList.remove('show'); longPressTarget=null; } });
 document.addEventListener('click',()=>{ document.getElementById('contextMenu').classList.remove('show'); document.getElementById('longPressMenu').classList.remove('show'); document.querySelectorAll('emoji-picker').forEach(p=>p.style.display='none'); });
 function escapeHtml(t){ const d=document.createElement('div'); d.textContent=t; return d.innerHTML; }
-function showToast(m){ const t=document.createElement('div'); t.style.cssText='position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:#00BFFF; color:white; padding:6px 16px; border-radius:30px; z-index:13000; font-weight:bold; font-size:12px; white-space:nowrap;'; t.innerText=m; document.body.appendChild(t); setTimeout(()=>t.remove(),2000); }
+function showToast(m){ const t=document.createElement('div'); t.style.cssText='position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:#0a84ff; color:white; padding:8px 18px; border-radius:30px; z-index:13000; font-weight:bold; font-size:13px; white-space:nowrap;'; t.innerText=m; document.body.appendChild(t); setTimeout(()=>t.remove(),2000); }
 
 // Admin Panel
 document.getElementById('adminGearBtn').addEventListener('click',()=>{ document.getElementById('adminPanel').classList.toggle('show'); });
