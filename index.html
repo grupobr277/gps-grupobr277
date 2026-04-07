@@ -6,6 +6,9 @@
     <title>RÁDIO PX 277 | Comunicação Profissional</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Emoji Picker -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emoji-picker-element@1.18.3/dist/index.css"/>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@1.18.3/dist/index.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -53,6 +56,78 @@
             -webkit-background-clip: unset;
             color: #00BFFF;
             margin: 0 8px;
+        }
+
+        /* Botão Admin (engrenagem) */
+        .admin-gear {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: #1a1a35;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid #ffd700;
+            z-index: 10;
+        }
+
+        .admin-gear i {
+            color: #ffd700;
+            font-size: 20px;
+        }
+
+        .admin-gear:hover {
+            background: #ffd700;
+            transform: rotate(30deg);
+        }
+        .admin-gear:hover i {
+            color: #1a1a35;
+        }
+
+        .admin-panel {
+            position: absolute;
+            top: 70px;
+            right: 20px;
+            background: #151530;
+            border-radius: 20px;
+            padding: 10px;
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 100;
+            border: 1px solid #ffd700;
+            min-width: 140px;
+        }
+
+        .admin-panel.show {
+            display: flex;
+        }
+
+        .admin-panel button {
+            background: #1a1a35;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 30px;
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .admin-panel button:hover {
+            background: #e53935;
+        }
+
+        .admin-panel button i {
+            font-size: 12px;
         }
 
         .live-badge {
@@ -331,23 +406,6 @@
             background: linear-gradient(135deg, #1a1a35, #151530);
         }
 
-        .action-card.admin-btn {
-            border: 2px solid #ffd700;
-            background: linear-gradient(135deg, #2a2a4a, #1a1a35);
-        }
-
-        .action-card.admin-btn i {
-            color: #ffd700;
-        }
-
-        .action-card.exit-admin {
-            border: 2px solid #e53935;
-        }
-
-        .action-card.exit-admin i {
-            color: #e53935;
-        }
-
         .action-card:hover {
             background: #202050;
             border-color: #00BFFF;
@@ -564,11 +622,6 @@
             background: white;
             font-size: 14px;
             outline: none;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        }
-
-        .chat-input-area input:focus {
-            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
         }
 
         .chat-input-area button {
@@ -582,14 +635,18 @@
             transition: all 0.2s;
         }
 
-        .chat-input-area button:hover {
-            background: #054a42;
+        .emoji-btn {
+            background: #128C7E !important;
         }
 
         /* Balões de mensagem estilo WhatsApp */
+        .msg-wrapper {
+            margin-bottom: 12px;
+            position: relative;
+        }
+
         .msg-bubble {
             display: flex;
-            margin-bottom: 12px;
         }
 
         .msg-bubble.me {
@@ -606,6 +663,8 @@
             border-radius: 18px;
             position: relative;
             word-wrap: break-word;
+            cursor: pointer;
+            transition: all 0.2s;
         }
 
         .msg-bubble.me .msg-content {
@@ -616,6 +675,11 @@
         .msg-bubble.other .msg-content {
             background: white;
             border-bottom-left-radius: 4px;
+        }
+
+        .msg-content.selected {
+            background: #C5E0B4 !important;
+            box-shadow: 0 0 0 2px #075E54;
         }
 
         .msg-sender {
@@ -649,6 +713,41 @@
             color: #4FC3F7;
         }
 
+        /* Menu de contexto (aparece ao selecionar mensagem) */
+        .context-menu {
+            position: fixed;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            padding: 8px 0;
+            z-index: 10000;
+            display: none;
+            min-width: 150px;
+        }
+
+        .context-menu.show {
+            display: block;
+        }
+
+        .context-menu-item {
+            padding: 10px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        .context-menu-item:hover {
+            background: #f0f0f0;
+        }
+
+        .context-menu-item i {
+            width: 20px;
+            color: #075E54;
+        }
+
         /* Popup de alerta com chat WhatsApp */
         .popup-alert {
             background: #E5DDD5;
@@ -657,7 +756,7 @@
             overflow: hidden;
             border: 1px solid #ddd;
         }
-        .popup-alert-img { width: 100%; height: 120px; object-fit: cover; }
+        .popup-alert-img { width: 100%; height: 120px; object-fit: cover; cursor: pointer; }
         .popup-alert-header { 
             padding: 10px 12px; 
             background: #075E54; 
@@ -679,6 +778,8 @@
             border-radius: 16px;
             font-size: 11px;
             max-width: 90%;
+            cursor: pointer;
+            position: relative;
         }
         .popup-chat-msg.me {
             background: #DCF8C6;
@@ -688,6 +789,9 @@
         .popup-chat-msg.other {
             background: white;
             border-bottom-left-radius: 4px;
+        }
+        .popup-chat-msg.selected {
+            background: #C5E0B4 !important;
         }
         .popup-chat-msg strong {
             color: #075E54;
@@ -794,25 +898,33 @@
             animation: pulse-red 1s infinite;
         }
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        /* Emoji Picker */
+        emoji-picker {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10001;
+            display: none;
+            width: 90%;
+            max-width: 350px;
+            height: 400px;
+            --emoji-picker-background: #1a1a35;
+            --emoji-picker-border-color: #00BFFF;
         }
-        
-        .admin-marker {
-            animation: bounce 0.5s ease infinite;
+        emoji-picker.show {
+            display: block;
         }
 
-        /* Scrollbar WhatsApp style */
-        .chat-messages-area::-webkit-scrollbar {
-            width: 6px;
-        }
-        .chat-messages-area::-webkit-scrollbar-track {
-            background: #E5DDD5;
-        }
-        .chat-messages-area::-webkit-scrollbar-thumb {
-            background: #ccc;
-            border-radius: 10px;
+        .admin-delete-btn {
+            background: #e53935;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 4px 10px;
+            font-size: 10px;
+            cursor: pointer;
+            margin-left: 8px;
         }
     </style>
 </head>
@@ -824,6 +936,15 @@
         <div class="live-badge"><i class="fas fa-circle"></i> AO VIVO</div>
         <div class="px-status">
             <div class="freq-box"><span>📡 FREQ: 27.7 MHz</span></div>
+        </div>
+        <!-- Botão Admin (Engrenagem) -->
+        <div class="admin-gear" id="adminGearBtn">
+            <i class="fas fa-cog"></i>
+        </div>
+        <div class="admin-panel" id="adminPanel">
+            <button id="enableAdminMapBtn"><i class="fas fa-map-marked-alt"></i> ADMIN MAPA</button>
+            <button id="enableAdminChatBtn"><i class="fas fa-comment-dots"></i> ADMIN CHAT</button>
+            <button id="disableAdminBtn"><i class="fas fa-power-off"></i> SAIR ADMIN</button>
         </div>
     </div>
 
@@ -855,10 +976,7 @@
     <div class="action-grid">
         <div class="action-card map-btn" onclick="openMapModal()"><i class="fas fa-map-marked-alt"></i> MAPA</div>
         <div class="action-card" onclick="openAlertModal()"><i class="fas fa-exclamation-triangle"></i> ALERTA</div>
-        <div class="action-card" onclick="openChatModal()"><i class="fas fa-comment-dots"></i> CHAT GERAL</div>
-        <div class="action-card" onclick="openStationChatModal()"><i class="fas fa-users"></i> CHAT ESTAÇÃO</div>
-        <div class="action-card admin-btn" onclick="enableAdminMode()"><i class="fas fa-user-shield"></i> ADMIN</div>
-        <div class="action-card exit-admin" onclick="disableAdminMode()"><i class="fas fa-power-off"></i> SAIR</div>
+        <div class="action-card" onclick="openChatModal()"><i class="fas fa-comment-dots"></i> CHAT</div>
     </div>
 </div>
 
@@ -871,7 +989,7 @@
     <div class="map-container">
         <div id="map"></div>
         <button class="recenter-btn" onclick="recenterMap()"><i class="fas fa-location-arrow"></i> Recentralizar</button>
-        <div id="adminStatusBadge" class="admin-status"><i class="fas fa-user-shield"></i> MODO ADMIN ATIVO</div>
+        <div id="adminStatusBadge" class="admin-status"><i class="fas fa-user-shield"></i> MODO ADMIN MAPA ATIVO</div>
     </div>
 </div>
 
@@ -899,29 +1017,24 @@
     </div>
     <div class="chat-messages-area" id="chatMessagesArea"></div>
     <div class="chat-input-area">
+        <button class="emoji-btn" id="chatEmojiBtn"><i class="fas fa-smile"></i></button>
         <input type="text" id="chatInput" placeholder="Digite sua mensagem...">
         <button onclick="sendChatMsg()"><i class="fas fa-paper-plane"></i></button>
     </div>
 </div>
 
-<!-- CHAT POR ESTAÇÃO (WhatsApp Style) -->
-<div class="modal-chat" id="stationChatModal">
-    <div class="chat-header">
-        <div class="chat-header-left">
-            <i class="fas fa-arrow-left" onclick="closeStationChatModal()" style="cursor:pointer;"></i>
-            <div class="chat-header-info">
-                <h3 id="stationChatTitle"><i class="fas fa-radio"></i> Estação</h3>
-                <p id="stationChatSubtitle">Conversa local</p>
-            </div>
-        </div>
-        <span onclick="closeStationChatModal()" style="cursor:pointer; font-size:20px;">✕</span>
+<!-- Menu de Contexto -->
+<div class="context-menu" id="contextMenu">
+    <div class="context-menu-item" id="contextReply">
+        <i class="fas fa-reply"></i> Responder
     </div>
-    <div class="chat-messages-area" id="stationChatMessagesArea"></div>
-    <div class="chat-input-area">
-        <input type="text" id="stationChatInput" placeholder="Digite sua mensagem...">
-        <button onclick="sendStationChatMsg()"><i class="fas fa-paper-plane"></i></button>
+    <div class="context-menu-item" id="contextDelete">
+        <i class="fas fa-trash-alt"></i> Apagar
     </div>
 </div>
+
+<!-- Emoji Picker -->
+<emoji-picker id="emojiPicker"></emoji-picker>
 
 <div class="audio-player-container" id="audioPlayerContainer">
     <div class="audio-speaker-icon"><i class="fas fa-bullhorn"></i></div>
@@ -998,11 +1111,17 @@ let currentAudioTimeout = null;
 let speakingListener = null;
 
 // ==================== MODO ADMIN ====================
-let isAdminMode = false;
+let isAdminMapMode = false;
+let isAdminChatMode = false;
 let tempMarker = null;
 let adminClickCount = 0;
 let adminClickTimeout = null;
 let adminFirstPos = null;
+
+// Variáveis para menu de contexto
+let selectedMsgId = null;
+let selectedMsgChatType = null;
+let selectedMsgElement = null;
 
 function normalizeId(str) {
     return str.toLowerCase()
@@ -1021,28 +1140,40 @@ function normalizeId(str) {
 }
 
 // ==================== FUNÇÕES ADMIN ====================
-function enableAdminMode() {
-    const password = prompt("🔐 SENHA ADMINISTRATIVA:\n\nDigite a senha para ativar o modo administrador:");
+function enableAdminMapMode() {
+    const password = prompt("🔐 SENHA ADMINISTRATIVA DO MAPA:\n\nDigite a senha para ativar:");
     if (password === "277") {
-        isAdminMode = true;
-        showToast("👑 MODO ADMIN ATIVADO! Clique 2x no mapa para criar alerta");
-        
+        isAdminMapMode = true;
+        showToast("👑 MODO ADMIN MAPA ATIVADO! Clique 2x no mapa para criar alerta");
         if (map) {
             map.getContainer().style.cursor = "crosshair";
             const badge = document.getElementById('adminStatusBadge');
             if (badge) badge.style.display = "flex";
         }
     } else {
-        showToast("❌ Senha incorreta! Modo ADMIN não ativado.");
+        showToast("❌ Senha incorreta!");
+    }
+}
+
+function enableAdminChatMode() {
+    const password = prompt("🔐 SENHA ADMINISTRATIVA DO CHAT:\n\nDigite a senha para ativar:");
+    if (password === "277") {
+        isAdminChatMode = true;
+        showToast("👑 MODO ADMIN CHAT ATIVADO! Clique em qualquer mensagem para apagá-la");
+        // Destacar que está em modo admin chat
+        document.body.style.border = "2px solid #ffd700";
+    } else {
+        showToast("❌ Senha incorreta!");
     }
 }
 
 function disableAdminMode() {
-    isAdminMode = false;
+    isAdminMapMode = false;
+    isAdminChatMode = false;
     adminClickCount = 0;
     if (adminClickTimeout) clearTimeout(adminClickTimeout);
     
-    if (tempMarker) {
+    if (tempMarker && map) {
         map.removeLayer(tempMarker);
         tempMarker = null;
     }
@@ -1052,7 +1183,45 @@ function disableAdminMode() {
         const badge = document.getElementById('adminStatusBadge');
         if (badge) badge.style.display = "none";
     }
+    
+    document.body.style.border = "";
     showToast("Modo ADMIN desativado");
+    document.getElementById('adminPanel').classList.remove('show');
+}
+
+// Função para apagar alerta do mapa
+async function deleteAlertFromMap(alertId) {
+    if (!isAdminMapMode) {
+        showToast("❌ Ative o modo ADMIN MAPA primeiro");
+        return;
+    }
+    if (confirm("⚠️ Tem certeza que deseja apagar este alerta permanentemente?")) {
+        await db.ref(`alerts/${alertId}`).remove();
+        if (alertsOnMap[alertId]) {
+            map.removeLayer(alertsOnMap[alertId]);
+            delete alertsOnMap[alertId];
+        }
+        showToast("✅ Alerta removido do mapa!");
+    }
+}
+
+// Função para apagar mensagem do chat
+async function deleteChatMessage(chatType, msgId) {
+    if (!isAdminChatMode) {
+        showToast("❌ Ative o modo ADMIN CHAT primeiro");
+        return;
+    }
+    if (confirm("⚠️ Tem certeza que deseja apagar esta mensagem?")) {
+        await db.ref(`${chatType}/${msgId}`).remove();
+        showToast("✅ Mensagem apagada!");
+        if (selectedMsgElement) {
+            selectedMsgElement.classList.remove('selected');
+            selectedMsgElement = null;
+        }
+        selectedMsgId = null;
+        selectedMsgChatType = null;
+        document.getElementById('contextMenu').classList.remove('show');
+    }
 }
 
 function showAdminAlertDropdown(lat, lng) {
@@ -1134,7 +1303,7 @@ function showAdminAlertDropdown(lat, lng) {
             showToast(`✅ Alerta ${alert.name} criado com sucesso!`);
             document.body.removeChild(modal);
             
-            if (tempMarker) {
+            if (tempMarker && map) {
                 map.removeLayer(tempMarker);
                 tempMarker = null;
             }
@@ -1146,7 +1315,7 @@ function showAdminAlertDropdown(lat, lng) {
     });
     
     container.querySelector('#cancelAdminAlert').onclick = () => {
-        if (tempMarker) {
+        if (tempMarker && map) {
             map.removeLayer(tempMarker);
             tempMarker = null;
         }
@@ -1159,7 +1328,7 @@ function setupAdminMode() {
     if (!map) return;
     
     map.on('click', (e) => {
-        if (!isAdminMode) return;
+        if (!isAdminMapMode) return;
         
         adminClickCount++;
         
@@ -1188,7 +1357,7 @@ function setupAdminMode() {
             adminClickTimeout = setTimeout(() => {
                 adminClickCount = 0;
                 adminFirstPos = null;
-                if (tempMarker) {
+                if (tempMarker && map) {
                     map.removeLayer(tempMarker);
                     tempMarker = null;
                 }
@@ -1213,7 +1382,7 @@ function setupAdminMode() {
                     adminClickTimeout = setTimeout(() => {
                         adminClickCount = 0;
                         adminFirstPos = null;
-                        if (tempMarker) {
+                        if (tempMarker && map) {
                             map.removeLayer(tempMarker);
                             tempMarker = null;
                         }
@@ -1303,7 +1472,6 @@ function loadCounts() {
             if (badge) badge.innerText = count;
             if (id === currentStation) {
                 document.getElementById('currentCityOnline').innerHTML = `${count} online <i class="fas fa-users"></i>`;
-                document.getElementById('stationChatSubtitle').innerHTML = `${count} participantes online`;
             }
         });
     });
@@ -1544,7 +1712,7 @@ function loadAlertsOnMap() {
             }).addTo(map);
             
             let imgHtml = '';
-            if (alert.image) imgHtml = `<img src="${alert.image}" class="popup-alert-img">`;
+            if (alert.image) imgHtml = `<img src="${alert.image}" class="popup-alert-img" onclick="viewFullImage('${alert.image}')">`;
             
             const popupDiv = document.createElement('div');
             popupDiv.className = 'popup-alert';
@@ -1553,6 +1721,7 @@ function loadAlertsOnMap() {
                 <div class="popup-alert-header" onclick="confirmAlert('${id}')">
                     <span>${alert.emoji} ${alert.name}</span>
                     <span>👍 <span id="confirm-count-${id}">${alert.confirmations || 1}</span></span>
+                    ${isAdminMapMode ? `<button class="admin-delete-btn" onclick="event.stopPropagation(); deleteAlertFromMap('${id}')">🗑️</button>` : ''}
                 </div>
                 <div class="popup-alert-chat" id="alert-chat-${id}"></div>
                 <div class="popup-chat-input">
@@ -1566,6 +1735,14 @@ function loadAlertsOnMap() {
             alertsOnMap[id] = marker;
         }
     });
+}
+
+function viewFullImage(imageUrl) {
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.95); z-index:30000; display:flex; align-items:center; justify-content:center; cursor:pointer;';
+    modal.innerHTML = `<img src="${imageUrl}" style="max-width:90%; max-height:90%; border-radius:20px;">`;
+    modal.onclick = () => modal.remove();
+    document.body.appendChild(modal);
 }
 
 function confirmAlert(id) {
@@ -1583,22 +1760,44 @@ function loadAlertChat(id) {
         if (!msgs) { chatDiv.innerHTML = '<div style="text-align:center; color:#888; padding:10px;">Nenhum comentário</div>'; return; }
         
         let html = '';
-        Object.values(msgs).sort((a,b) => a.timestamp - b.timestamp).forEach(msg => {
+        Object.entries(msgs).sort((a,b) => a[1].timestamp - b[1].timestamp).forEach(([msgId, msg]) => {
             const isMe = msg.user === userName;
             const time = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            html += `<div class="popup-chat-msg ${isMe ? 'me' : 'other'}">
-                        <strong>${msg.user}</strong><br>${msg.text}<br>
+            const adminDeleteBtn = (isAdminChatMode && !isMe) ? `<button class="admin-delete-btn" onclick="event.stopPropagation(); deleteAlertChatMessage('alert_${id}', '${msgId}')">🗑️</button>` : '';
+            html += `<div class="popup-chat-msg ${isMe ? 'me' : 'other'}" data-msg-id="${msgId}" data-chat-type="chats/alert_${id}" onclick="selectAlertChatMessage(this, '${msgId}', 'chats/alert_${id}')">
+                        <strong>${msg.user}</strong><br>${escapeHtml(msg.text)}<br>
                         <small style="font-size:9px; color:#888;">${time}</small>
+                        ${adminDeleteBtn}
                      </div>`;
         });
         chatDiv.innerHTML = html;
         chatDiv.scrollTop = chatDiv.scrollHeight;
     });
+}
+
+async function deleteAlertChatMessage(chatPath, msgId) {
+    if (!isAdminChatMode) {
+        showToast("❌ Ative o modo ADMIN CHAT primeiro");
+        return;
+    }
+    if (confirm("⚠️ Apagar esta mensagem?")) {
+        await db.ref(`${chatPath}/${msgId}`).remove();
+        showToast("✅ Mensagem apagada!");
+    }
+}
+
+function selectAlertChatMessage(element, msgId, chatType) {
+    if (!isAdminChatMode) return;
+    document.querySelectorAll('.popup-chat-msg').forEach(el => el.classList.remove('selected'));
+    element.classList.add('selected');
+    selectedMsgId = msgId;
+    selectedMsgChatType = chatType;
+    selectedMsgElement = element;
     
-    db.ref(`alerts/${id}/confirmations`).on('value', (snap) => {
-        const countSpan = document.getElementById(`confirm-count-${id}`);
-        if (countSpan) countSpan.innerText = snap.val() || 1;
-    });
+    const menu = document.getElementById('contextMenu');
+    menu.style.left = element.getBoundingClientRect().left + 'px';
+    menu.style.top = element.getBoundingClientRect().bottom + 'px';
+    menu.classList.add('show');
 }
 
 function sendAlertMsg(id) {
@@ -1692,7 +1891,7 @@ async function createAlertWithPhoto(alert) {
                     closeAlertModal();
                 };
                 reader.readAsDataURL(blob);
-            }, 'image/jpeg', 0.6);
+            }, 'image/jpeg', 0.5);
         };
         
         btnSkip.onclick = async () => {
@@ -1734,7 +1933,9 @@ async function createAlertWithPhoto(alert) {
 function openAlertModal() { document.getElementById('alertModal').classList.add('visible'); }
 function closeAlertModal() { document.getElementById('alertModal').classList.remove('visible'); }
 
-// ==================== CHAT GERAL (WhatsApp Style) ====================
+// ==================== CHAT GERAL ====================
+let currentReplyTo = null;
+
 function openChatModal() { 
     document.getElementById('chatModal').classList.add('visible'); 
     loadChatMessages(); 
@@ -1742,6 +1943,7 @@ function openChatModal() {
 
 function closeChatModal() { 
     document.getElementById('chatModal').classList.remove('visible'); 
+    document.getElementById('emojiPicker').classList.remove('show');
 }
 
 function loadChatMessages() {
@@ -1752,18 +1954,24 @@ function loadChatMessages() {
         if (!msgs) { container.innerHTML = '<div style="text-align:center; color:#888; padding:20px;">Nenhuma mensagem</div>'; return; }
         
         let html = '';
-        Object.values(msgs).sort((a,b) => a.timestamp - b.timestamp).forEach(msg => {
+        Object.entries(msgs).sort((a,b) => a[1].timestamp - b[1].timestamp).forEach(([msgId, msg]) => {
             const isMe = msg.user === userName;
             const time = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const replyHtml = msg.replyTo ? `<div style="font-size:10px; color:#666; margin-bottom:4px; padding-left:8px; border-left:2px solid #075E54;">↩️ Respondendo a: ${msg.replyTo}</div>` : '';
+            const adminDeleteBtn = (isAdminChatMode && !isMe) ? `<button class="admin-delete-btn" onclick="event.stopPropagation(); deleteChatMessage('chat_global', '${msgId}')">🗑️</button>` : '';
             
             html += `
-                <div class="msg-bubble ${isMe ? 'me' : 'other'}">
-                    <div class="msg-content">
-                        <div class="msg-sender">${msg.user}</div>
-                        <div class="msg-text">${escapeHtml(msg.text)}</div>
-                        <div class="msg-meta">
-                            <span class="msg-time">${time}</span>
-                            ${isMe ? '<span class="msg-status"><i class="fas fa-check-double"></i></span>' : ''}
+                <div class="msg-wrapper" data-msg-id="${msgId}" data-msg-user="${msg.user}" data-msg-text="${escapeHtml(msg.text)}">
+                    <div class="msg-bubble ${isMe ? 'me' : 'other'}">
+                        <div class="msg-content" onclick="selectMessage(this, '${msgId}', 'chat_global')">
+                            ${replyHtml}
+                            <div class="msg-sender">${msg.user}</div>
+                            <div class="msg-text">${escapeHtml(msg.text)}</div>
+                            <div class="msg-meta">
+                                <span class="msg-time">${time}</span>
+                                ${isMe ? '<span class="msg-status"><i class="fas fa-check-double"></i></span>' : ''}
+                            </div>
+                            ${adminDeleteBtn}
                         </div>
                     </div>
                 </div>
@@ -1774,67 +1982,82 @@ function loadChatMessages() {
     });
 }
 
-// ==================== CHAT POR ESTAÇÃO (WhatsApp Style) ====================
-function openStationChatModal() {
-    const cityName = cities.find(c => normalizeId(c) === currentStation);
-    document.getElementById('stationChatTitle').innerHTML = `<i class="fas fa-radio"></i> ${cityName}`;
-    document.getElementById('stationChatModal').classList.add('visible');
-    loadStationChatMessages();
-}
-
-function closeStationChatModal() {
-    document.getElementById('stationChatModal').classList.remove('visible');
-}
-
-function loadStationChatMessages() {
-    db.ref(`chats/station_${currentStation}`).off();
-    db.ref(`chats/station_${currentStation}`).on('value', (snap) => {
-        const msgs = snap.val();
-        const container = document.getElementById('stationChatMessagesArea');
-        if (!msgs) { container.innerHTML = '<div style="text-align:center; color:#888; padding:20px;">Nenhuma mensagem</div>'; return; }
-        
-        let html = '';
-        Object.values(msgs).sort((a,b) => a.timestamp - b.timestamp).forEach(msg => {
-            const isMe = msg.user === userName;
-            const time = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            
-            html += `
-                <div class="msg-bubble ${isMe ? 'me' : 'other'}">
-                    <div class="msg-content">
-                        <div class="msg-sender">${msg.user}</div>
-                        <div class="msg-text">${escapeHtml(msg.text)}</div>
-                        <div class="msg-meta">
-                            <span class="msg-time">${time}</span>
-                            ${isMe ? '<span class="msg-status"><i class="fas fa-check-double"></i></span>' : ''}
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
-        container.innerHTML = html;
-        container.scrollTop = container.scrollHeight;
-    });
-}
-
-function sendStationChatMsg() {
-    const input = document.getElementById('stationChatInput');
-    if (!input.value.trim()) return;
-    db.ref(`chats/station_${currentStation}`).push({ 
-        user: userName, 
-        text: input.value.trim(), 
-        timestamp: Date.now() 
-    });
-    input.value = '';
-    showToast("✓ Mensagem enviada para a estação");
+function selectMessage(element, msgId, chatType) {
+    document.querySelectorAll('.msg-content').forEach(el => el.classList.remove('selected'));
+    element.classList.add('selected');
+    selectedMsgId = msgId;
+    selectedMsgChatType = chatType;
+    selectedMsgElement = element.closest('.msg-wrapper');
+    
+    const menu = document.getElementById('contextMenu');
+    const rect = element.getBoundingClientRect();
+    menu.style.left = rect.left + 'px';
+    menu.style.top = rect.bottom + 'px';
+    menu.classList.add('show');
 }
 
 function sendChatMsg() {
     const input = document.getElementById('chatInput');
     if (!input.value.trim()) return;
-    db.ref('chat_global').push({ user: userName, text: input.value.trim(), timestamp: Date.now() });
+    
+    let msgData = { user: userName, text: input.value.trim(), timestamp: Date.now() };
+    if (currentReplyTo) {
+        msgData.replyTo = currentReplyTo;
+        currentReplyTo = null;
+    }
+    
+    db.ref('chat_global').push(msgData);
     input.value = '';
     showToast("✓ Mensagem enviada");
 }
+
+// ==================== EMOJI PICKER ====================
+const emojiPicker = document.getElementById('emojiPicker');
+const chatInput = document.getElementById('chatInput');
+const chatEmojiBtn = document.getElementById('chatEmojiBtn');
+
+chatEmojiBtn.addEventListener('click', () => {
+    emojiPicker.classList.toggle('show');
+});
+
+emojiPicker.addEventListener('emoji-click', (event) => {
+    chatInput.value += event.detail.unicode;
+    emojiPicker.classList.remove('show');
+});
+
+document.addEventListener('click', (e) => {
+    if (!emojiPicker.contains(e.target) && e.target !== chatEmojiBtn) {
+        emojiPicker.classList.remove('show');
+    }
+    if (!document.getElementById('contextMenu').contains(e.target) && !e.target.classList.contains('msg-content')) {
+        document.getElementById('contextMenu').classList.remove('show');
+        document.querySelectorAll('.msg-content').forEach(el => el.classList.remove('selected'));
+        document.querySelectorAll('.popup-chat-msg').forEach(el => el.classList.remove('selected'));
+        selectedMsgId = null;
+        selectedMsgChatType = null;
+        selectedMsgElement = null;
+    }
+});
+
+// Menu de contexto actions
+document.getElementById('contextReply').addEventListener('click', () => {
+    if (selectedMsgElement) {
+        const userName = selectedMsgElement.querySelector('.msg-sender')?.innerText || 'Alguém';
+        const msgText = selectedMsgElement.querySelector('.msg-text')?.innerText || '';
+        currentReplyTo = `${userName}: "${msgText.substring(0, 50)}${msgText.length > 50 ? '...' : ''}"`;
+        chatInput.value = '';
+        chatInput.placeholder = `Respondendo para ${userName}...`;
+        document.getElementById('contextMenu').classList.remove('show');
+        document.querySelectorAll('.msg-content').forEach(el => el.classList.remove('selected'));
+    }
+});
+
+document.getElementById('contextDelete').addEventListener('click', async () => {
+    if (selectedMsgId && selectedMsgChatType) {
+        await deleteChatMessage(selectedMsgChatType, selectedMsgId);
+    }
+    document.getElementById('contextMenu').classList.remove('show');
+});
 
 function escapeHtml(text) {
     const div = document.createElement('div');
@@ -1842,7 +2065,6 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-// ==================== UTILIDADES ====================
 function showToast(msg) {
     const toast = document.createElement('div');
     toast.style.cssText = 'position:fixed; bottom:100px; left:50%; transform:translateX(-50%); background:#00BFFF; color:white; padding:8px 20px; border-radius:40px; z-index:13000; font-weight:bold; font-size:14px; white-space:nowrap;';
@@ -1850,6 +2072,26 @@ function showToast(msg) {
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 2000);
 }
+
+// ==================== ADMIN PANEL CONTROLS ====================
+document.getElementById('adminGearBtn').addEventListener('click', () => {
+    document.getElementById('adminPanel').classList.toggle('show');
+});
+
+document.getElementById('enableAdminMapBtn').addEventListener('click', () => {
+    enableAdminMapMode();
+    document.getElementById('adminPanel').classList.remove('show');
+});
+
+document.getElementById('enableAdminChatBtn').addEventListener('click', () => {
+    enableAdminChatMode();
+    document.getElementById('adminPanel').classList.remove('show');
+});
+
+document.getElementById('disableAdminBtn').addEventListener('click', () => {
+    disableAdminMode();
+    document.getElementById('adminPanel').classList.remove('show');
+});
 
 // ==================== LIMPAR AO SAIR ====================
 window.addEventListener('beforeunload', () => {
