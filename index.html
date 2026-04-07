@@ -55,7 +55,6 @@
             margin: 0 8px;
         }
 
-        /* AO VIVO PULSANTE */
         .live-badge {
             display: inline-flex;
             align-items: center;
@@ -95,7 +94,6 @@
             font-weight: bold;
         }
 
-        /* SELEÇÃO DE ESTAÇÃO SIMPLIFICADA */
         .station-area {
             padding: 16px 20px 8px;
         }
@@ -185,7 +183,6 @@
             font-weight: bold;
         }
 
-        /* ESTAÇÃO ATUAL - COR DIFERENCIADA */
         .current-highlight {
             background: linear-gradient(135deg, #0f0f25, #080818);
             margin: 12px 20px;
@@ -196,27 +193,6 @@
             align-items: center;
             border-left: 5px solid #ffd700;
             border-right: 1px solid #2a2a55;
-        }
-
-        .city-detail {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .city-icon {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(145deg, #ffd700, #ffaa00);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .city-icon i {
-            font-size: 24px;
-            color: #0f0f25;
         }
 
         .city-name {
@@ -234,7 +210,6 @@
             color: #0f0f25;
         }
 
-        /* BOTÃO PX SIMPLIFICADO (SEM LED ROTACIONAL) */
         .mic-panel {
             text-align: center;
             padding: 25px 20px;
@@ -331,7 +306,6 @@
             border-radius: 40px;
         }
 
-        /* BOTÕES DE AÇÃO */
         .action-grid {
             display: flex;
             gap: 15px;
@@ -371,7 +345,6 @@
             font-size: 18px;
         }
 
-        /* MODAIS */
         .modal-full {
             position: fixed;
             top: 0;
@@ -491,7 +464,6 @@
         .alert-emoji { font-size: 34px; }
         .alert-name { font-size: 11px; color: white; margin-top: 6px; font-weight: 600; }
 
-        /* MODAL CHAT */
         .modal-chat {
             position: fixed;
             top: 0;
@@ -573,7 +545,6 @@
             text-align: right;
         }
 
-        /* POPUP ALERTA MELHORADO */
         .popup-alert {
             background: #13132a;
             border-radius: 20px;
@@ -591,7 +562,6 @@
         .popup-chat-input input { flex: 1; padding: 8px; border-radius: 20px; border: none; background: #252542; color: white; }
         .popup-chat-input button { background: #00BFFF; border: none; width: 32px; border-radius: 50%; cursor: pointer; }
 
-        /* NOTIFICAÇÃO DE ÁUDIO */
         .audio-player-container {
             position: fixed;
             bottom: 30px;
@@ -658,7 +628,6 @@
             50% { height: 25px; }
         }
 
-        /* INDICADOR DE ALGUÉM FALANDO */
         .someone-speaking {
             background: #e53935;
             color: white;
@@ -668,10 +637,6 @@
             margin-top: 8px;
             animation: pulse-red 1s infinite;
         }
-
-        .station-dropdown::-webkit-scrollbar { width: 3px; }
-        .station-dropdown::-webkit-scrollbar-track { background: #1a1a2e; }
-        .station-dropdown::-webkit-scrollbar-thumb { background: #00BFFF; }
     </style>
 </head>
 <body>
@@ -696,12 +661,10 @@
         </div>
     </div>
 
+    <!-- ESTAÇÃO ATUAL - SEM BOLA AMARELA -->
     <div class="current-highlight">
-        <div class="city-detail">
-            <div class="city-icon"><i class="fas fa-radio"></i></div>
-            <div class="city-name" id="currentCityName">Curitiba</div>
-        </div>
-        <div class="city-online" id="currentCityOnline">0 online</div>
+        <div class="city-name" id="currentCityName">Curitiba</div>
+        <div class="city-online" id="currentCityOnline">0 online <i class="fas fa-users"></i></div>
     </div>
 
     <div class="mic-panel">
@@ -721,7 +684,7 @@
     </div>
 </div>
 
-<!-- MODAIS -->
+<!-- MODAIS (mesmo código JavaScript, não alterado) -->
 <div class="modal-full" id="mapModal">
     <div class="modal-header">
         <span><i class="fas fa-map"></i> MAPA BR-277 - OCORRÊNCIAS</span>
@@ -786,7 +749,7 @@ const cities = [
     "Araucária", "Piraquara", "Campina Grande", "Quatro Barras", "Cajati"
 ];
 
-// ==================== 15 ALERTAS (RADAR REMOVIDO) ====================
+// ==================== 15 ALERTAS ====================
 const alertTypes = [
     { name: 'ACIDENTE', emoji: '💥', color: '#e53935', type: 'acidente' },
     { name: 'OBRAS', emoji: '🚧', color: '#ff9800', type: 'obras' },
@@ -829,7 +792,6 @@ let currentAudio = null;
 let currentAudioTimeout = null;
 let speakingListener = null;
 
-// ==================== NORMALIZAR ID ====================
 function normalizeId(str) {
     return str.toLowerCase()
         .replace(/ /g, '_')
@@ -846,7 +808,6 @@ function normalizeId(str) {
         .replace(/\./g, '');
 }
 
-// ==================== DROPDOWN ====================
 function buildDropdown() {
     const menu = document.getElementById('stationDropdown');
     menu.innerHTML = '';
@@ -889,7 +850,6 @@ document.addEventListener('click', (e) => {
     if (!e.target.closest('.station-selector')) closeDropdown();
 });
 
-// ==================== MUDAR ESTAÇÃO ====================
 function changeStation(id, name) {
     currentStation = id;
     localStorage.setItem('px_station', id);
@@ -914,7 +874,6 @@ function changeStation(id, name) {
     showToast(`📻 Você sintonizou ${name}`);
 }
 
-// ==================== CONTAGEM DE USUÁRIOS ====================
 function loadCounts() {
     cities.forEach(city => {
         const id = normalizeId(city);
@@ -930,7 +889,6 @@ function loadCounts() {
     });
 }
 
-// ==================== VERIFICAR SE ALGUÉM ESTÁ FALANDO ====================
 function checkSpeakingStatus() {
     if (speakingListener) {
         db.ref(`stations/${currentStation}/speaking`).off('value', speakingListener);
@@ -953,7 +911,6 @@ function checkSpeakingStatus() {
     });
 }
 
-// ==================== ÁUDIO (COM LIMPEZA: APENAS 1 ÁUDIO) ====================
 function setupAudio() {
     if (audioListener) {
         db.ref(`stations/${currentStation}/audios`).off('child_added', audioListener);
@@ -1000,7 +957,6 @@ async function startTransmission() {
         audioChunks = [];
         recordSeconds = 0;
         
-        // Indicar que está falando
         db.ref(`stations/${currentStation}/speaking`).set({ user: userName, timestamp: Date.now() });
         
         mediaRecorder.ondataavailable = e => {
@@ -1014,7 +970,6 @@ async function startTransmission() {
                 reader.onloadend = async () => {
                     const cityName = cities.find(c => normalizeId(c) === currentStation);
                     
-                    // LIMPAR TODOS OS ÁUDIOS ANTERIORES (manter apenas 1)
                     const snapshot = await db.ref(`stations/${currentStation}/audios`).once('value');
                     const audios = snapshot.val();
                     if (audios) {
@@ -1024,7 +979,6 @@ async function startTransmission() {
                         });
                     }
                     
-                    // Enviar novo áudio
                     await db.ref(`stations/${currentStation}/audios`).push({
                         sender: userName,
                         station: cityName,
@@ -1033,7 +987,6 @@ async function startTransmission() {
                         duration: recordSeconds
                     });
                     
-                    // Remover indicador de fala após 1 segundo
                     setTimeout(() => {
                         db.ref(`stations/${currentStation}/speaking`).remove();
                     }, 1000);
@@ -1089,7 +1042,6 @@ pxButton.addEventListener('click', () => {
     }
 });
 
-// ==================== MAPA COM AGREGAÇÃO DE ÍCONES ====================
 let clusterMarkers = {};
 
 function initMap() {
@@ -1126,7 +1078,6 @@ function loadAlertsOnMap() {
         const alert = snap.val();
         const id = snap.key;
         
-        // Verificar se já expirou (20 minutos)
         const now = Date.now();
         if (now - alert.timestamp > 20 * 60 * 1000) {
             db.ref(`alerts/${id}`).remove();
@@ -1135,7 +1086,6 @@ function loadAlertsOnMap() {
         
         if (alertsOnMap[id] || !map) return;
         
-        // Agrupar ocorrências próximas (dentro de 200m)
         const lat = alert.lat;
         const lng = alert.lng;
         let groupKey = null;
@@ -1143,14 +1093,13 @@ function loadAlertsOnMap() {
         for (let key in clusterMarkers) {
             const marker = clusterMarkers[key];
             const distance = Math.hypot(marker.lat - lat, marker.lng - lng);
-            if (distance < 0.002) { // ~200m
+            if (distance < 0.002) {
                 groupKey = key;
                 break;
             }
         }
         
         if (groupKey) {
-            // Adicionar ao grupo existente
             clusterMarkers[groupKey].count++;
             clusterMarkers[groupKey].alerts.push(alert);
             const marker = alertsOnMap[groupKey];
@@ -1162,7 +1111,6 @@ function loadAlertsOnMap() {
                 }));
             }
         } else {
-            // Criar novo grupo
             clusterMarkers[id] = { lat, lng, count: 1, alerts: [alert] };
             
             const marker = L.marker([lat, lng], {
@@ -1221,7 +1169,6 @@ function loadAlertChat(id) {
         chatDiv.scrollTop = chatDiv.scrollHeight;
     });
     
-    // Atualizar contagem de confirmações em tempo real
     db.ref(`alerts/${id}/confirmations`).on('value', (snap) => {
         const countSpan = document.getElementById(`confirm-count-${id}`);
         if (countSpan) countSpan.innerText = snap.val() || 1;
@@ -1247,7 +1194,6 @@ function closeMapModal() {
     document.getElementById('mapModal').classList.remove('visible');
 }
 
-// ==================== ALERTAS ====================
 function buildAlertGrid() {
     const grid = document.getElementById('alertGrid');
     grid.innerHTML = '';
@@ -1361,7 +1307,6 @@ async function createAlertWithPhoto(alert) {
 function openAlertModal() { document.getElementById('alertModal').classList.add('visible'); }
 function closeAlertModal() { document.getElementById('alertModal').classList.remove('visible'); }
 
-// ==================== CHAT GERAL (HORA DO LADO DIREITO, SEM SEGUNDOS) ====================
 function openChatModal() { 
     document.getElementById('chatModal').classList.add('visible'); 
     loadChatMessages(); 
@@ -1397,11 +1342,9 @@ function sendChatMsg() {
     if (!input.value.trim()) return;
     db.ref('chat_global').push({ user: userName, text: input.value.trim(), timestamp: Date.now() });
     input.value = '';
-    // Feedback visual de confirmação
     showToast("✓ Mensagem enviada");
 }
 
-// ==================== UTILIDADES ====================
 function showToast(msg) {
     const toast = document.createElement('div');
     toast.style.cssText = 'position:fixed; bottom:100px; left:50%; transform:translateX(-50%); background:#00BFFF; color:white; padding:8px 20px; border-radius:40px; z-index:13000; font-weight:bold; font-size:14px; white-space:nowrap;';
@@ -1410,14 +1353,12 @@ function showToast(msg) {
     setTimeout(() => toast.remove(), 2000);
 }
 
-// ==================== LIMPAR AO SAIR ====================
 window.addEventListener('beforeunload', () => {
     if (userName) db.ref(`stations/${currentStation}/users/${userName}`).remove();
     if (isTransmitting) stopTransmission();
     db.ref(`stations/${currentStation}/speaking`).remove();
 });
 
-// ==================== INICIAR ====================
 function init() {
     buildDropdown();
     loadCounts();
