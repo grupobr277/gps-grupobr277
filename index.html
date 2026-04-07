@@ -2,16 +2,15 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RÁDIO PX 277 | Comunicação Profissional</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>RÁDIO PX 277 - STREAMING AO VIVO</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             background: radial-gradient(circle at 20% 30%, #0a0a1a, #050510);
-            font-family: 'Segoe UI', 'Poppins', 'Inter', sans-serif;
+            font-family: 'Segoe UI', 'Poppins', sans-serif;
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -19,106 +18,52 @@
             padding: 20px;
         }
 
-        /* ===== RÁDIO PX 277 ===== */
-        .radio-px {
+        .radio-live {
             max-width: 550px;
             width: 100%;
             background: linear-gradient(145deg, #13132a, #0c0c1f);
             border-radius: 60px;
-            box-shadow: 0 30px 50px rgba(0,0,0,0.6), inset 0 1px 2px rgba(255,255,255,0.08);
+            box-shadow: 0 30px 50px rgba(0,0,0,0.6);
             overflow: hidden;
-            border: 1px solid rgba(0, 191, 255, 0.25);
-            position: relative;
+            border: 1px solid rgba(0, 191, 255, 0.3);
         }
 
-        /* ===== CABEÇALHO ===== */
-        .px-header {
+        .live-header {
             background: linear-gradient(135deg, #0f0f25, #0a0a1a);
-            padding: 20px 24px 16px;
+            padding: 20px;
             text-align: center;
             border-bottom: 2px solid #00BFFF;
-            position: relative;
         }
 
-        .px-header h1 {
-            font-size: 28px;
-            font-weight: 800;
+        .live-header h1 {
+            font-size: 24px;
             background: linear-gradient(135deg, #ffd700, #ffaa00);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            letter-spacing: 2px;
         }
 
-        .px-header h1 i {
-            background: none;
-            -webkit-background-clip: unset;
-            background-clip: unset;
-            color: #00BFFF;
-            margin: 0 8px;
-        }
-
-        .px-status {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 10px;
-        }
-
-        .freq-box {
-            background: #050510;
-            padding: 5px 18px;
-            border-radius: 40px;
-            border: 1px solid #00ff88;
-        }
-
-        .freq-box span {
-            color: #00ff88;
-            font-family: monospace;
-            font-size: 13px;
-            font-weight: bold;
-        }
-
-        .online-badge {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: #050510;
-            padding: 5px 15px;
-            border-radius: 40px;
-        }
-
-        .online-badge i {
-            color: #00ff88;
-            font-size: 10px;
-            animation: pulse-green 1.5s infinite;
-        }
-
-        @keyframes pulse-green {
-            0%, 100% { opacity: 1; text-shadow: 0 0 0 #00ff88; }
-            50% { opacity: 0.5; text-shadow: 0 0 5px #00ff88; }
-        }
-
-        /* ===== SELEÇÃO DE ESTAÇÃO ===== */
-        .station-area {
-            padding: 16px 20px 8px;
-        }
-
-        .station-label {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-            color: #888;
+        .live-badge {
+            display: inline-block;
+            background: #e53935;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 30px;
             font-size: 12px;
-            letter-spacing: 1px;
+            margin-top: 8px;
+            animation: pulse-red 1.5s infinite;
+        }
+
+        @keyframes pulse-red {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
         }
 
         .station-selector {
-            position: relative;
+            padding: 16px 20px;
         }
 
-        .selector-trigger {
+        .selector-btn {
             width: 100%;
             background: #1a1a35;
             border: 2px solid #2a2a55;
@@ -126,768 +71,159 @@
             padding: 14px 20px;
             color: white;
             font-size: 16px;
-            font-weight: 600;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            transition: all 0.2s;
         }
 
-        .selector-trigger:hover {
-            border-color: #00BFFF;
-            background: #202040;
-        }
-
-        .selector-trigger i {
-            color: #ffd700;
-            transition: transform 0.3s;
-        }
-
-        .selector-trigger.open i {
-            transform: rotate(180deg);
-        }
-
-        .station-dropdown {
+        .city-dropdown {
             position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
             background: #151530;
             border: 2px solid #00BFFF;
             border-radius: 25px;
-            margin-top: 8px;
-            max-height: 280px;
+            max-height: 250px;
             overflow-y: auto;
-            z-index: 200;
             display: none;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+            z-index: 100;
+            width: calc(100% - 40px);
         }
 
-        .station-dropdown.open {
-            display: block;
-        }
+        .city-dropdown.open { display: block; }
+        .city-option { padding: 12px 20px; color: #ccc; cursor: pointer; border-bottom: 1px solid #252550; }
+        .city-option:hover { background: #202050; color: #00BFFF; }
 
-        .station-option {
+        .current-station {
+            background: #0f0f25;
+            margin: 0 20px 15px;
             padding: 12px 20px;
-            color: #ccc;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #252550;
-            transition: all 0.2s;
-            font-size: 14px;
-        }
-
-        .station-option:hover {
-            background: #202050;
-            color: #00BFFF;
-        }
-
-        .station-option.active {
-            background: linear-gradient(145deg, #00BFFF, #0066cc);
-            color: white;
-        }
-
-        .station-count {
-            background: rgba(0,0,0,0.5);
-            border-radius: 30px;
-            padding: 3px 12px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .station-option.active .station-count {
-            background: #ffd700;
-            color: #1a1a2e;
-        }
-
-        /* ===== ESTAÇÃO ATUAL (DESTAQUE) ===== */
-        .current-highlight {
-            background: linear-gradient(135deg, #0f0f25, #080818);
-            margin: 12px 20px;
-            padding: 14px 20px;
             border-radius: 60px;
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            border-left: 5px solid #00BFFF;
-            border-right: 1px solid #2a2a55;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border-left: 4px solid #00BFFF;
         }
 
-        .city-detail {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .city-icon {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(145deg, #00BFFF, #0066cc);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 15px rgba(0,191,255,0.4);
-        }
-
-        .city-icon i {
-            font-size: 24px;
-            color: white;
-        }
-
-        .city-name {
-            font-size: 20px;
-            font-weight: 700;
-            color: white;
-        }
-
-        .city-online {
-            background: #00BFFF;
-            border-radius: 40px;
-            padding: 8px 18px;
-            font-size: 14px;
-            font-weight: bold;
-            color: #0f0f25;
-        }
-
-        /* ===== BOTÃO PX CENTRALIZADO ===== */
         .mic-panel {
             text-align: center;
-            padding: 25px 20px;
+            padding: 20px;
             margin: 10px 20px;
             background: linear-gradient(145deg, #0f0f25, #0a0a1a);
-            border-radius: 100px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            border-radius: 80px;
         }
 
-        /* LED ROTACIONAL PROFISSIONAL */
-        .rotating-led {
-            width: 180px;
-            height: 180px;
-            position: relative;
-            margin-bottom: 15px;
-        }
-
-        .rotating-led::before {
-            content: '';
-            position: absolute;
-            top: -5px;
-            left: -5px;
-            right: -5px;
-            bottom: -5px;
-            border-radius: 50%;
-            background: conic-gradient(from 0deg, #ff0000, #ff6600, #ffcc00, #00ff00, #00ccff, #ff00ff, #ff0000);
-            animation: rotate-led 2s linear infinite;
-            z-index: 0;
-        }
-
-        .rotating-led::after {
-            content: '';
-            position: absolute;
-            top: 3px;
-            left: 3px;
-            right: 3px;
-            bottom: 3px;
-            border-radius: 50%;
-            background: #0f0f25;
-            z-index: 1;
-        }
-
-        @keyframes rotate-led {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .px-button {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+        .px-live-btn {
             width: 140px;
             height: 140px;
             border-radius: 50%;
             background: radial-gradient(circle at 35% 35%, #2a2a4a, #1a1a35);
             border: 4px solid #3a3a6a;
             color: #888;
-            font-size: 28px;
-            font-weight: 800;
+            font-size: 24px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            z-index: 2;
+            transition: all 0.2s;
         }
 
-        .px-button i {
-            font-size: 48px;
-        }
-
-        .px-button span {
-            font-size: 16px;
-            letter-spacing: 2px;
-        }
-
-        /* Estado ATIVO (transmitindo) */
-        .px-button.active {
+        .px-live-btn.active {
             background: radial-gradient(circle at 35% 35%, #e53935, #8b0000);
             border-color: #ffd700;
             color: white;
-            animation: px-pulse 1.2s infinite;
-            box-shadow: 0 0 30px rgba(229,57,53,0.8);
+            animation: mic-pulse 1.2s infinite;
         }
 
-        @keyframes px-pulse {
+        @keyframes mic-pulse {
             0% { box-shadow: 0 0 0 0 #e53935; }
-            50% { box-shadow: 0 0 0 25px rgba(229,57,53,0.3); }
-            100% { box-shadow: 0 0 0 0 rgba(229,57,53,0); }
+            70% { box-shadow: 0 0 0 20px rgba(229,57,53,0); }
         }
 
-        /* Estado DESLIGADO */
-        .px-button.off {
-            background: radial-gradient(circle at 35% 35%, #2a2a4a, #1a1a35);
-            border-color: #3a3a6a;
-            color: #666;
-            animation: none;
-        }
-
-        .px-status-text {
-            margin-top: 20px;
-            font-size: 16px;
-            font-weight: 700;
-            padding: 10px 25px;
-            border-radius: 40px;
-            display: inline-block;
-        }
-
-        .px-status-text.off {
-            background: #1a1a35;
-            color: #888;
-        }
-
-        .px-status-text.on {
-            background: #e53935;
-            color: white;
-            animation: status-pulse 1s infinite;
-        }
-
-        @keyframes status-pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-
-        .timer-display {
+        .live-status {
             margin-top: 15px;
-            font-size: 18px;
-            font-family: monospace;
-            color: #ffd700;
+            font-size: 14px;
             font-weight: bold;
-            background: #1a1a35;
-            padding: 8px 20px;
-            border-radius: 40px;
         }
 
-        /* ===== BOTÕES DE AÇÃO PROFISSIONAIS ===== */
-        .action-grid {
+        .live-status.on { color: #e53935; }
+        .live-status.off { color: #888; }
+
+        .listening-status {
+            background: #1a1a35;
+            margin: 10px 20px;
+            padding: 12px;
+            border-radius: 40px;
+            text-align: center;
+            color: #00ff88;
+            font-size: 13px;
+        }
+
+        .action-buttons {
             display: flex;
             gap: 15px;
             padding: 15px 20px 25px;
         }
 
-        .action-card {
+        .action-btn {
             flex: 1;
             background: #151530;
-            border: 2px solid #2a2a55;
+            border: 1px solid #2a2a55;
             border-radius: 50px;
-            padding: 14px;
-            color: #ccc;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* BOTÃO MAPA COM CONTORNO LED */
-        .action-card.map-btn {
-            border: 2px solid #00BFFF;
-            background: linear-gradient(135deg, #1a1a35, #151530);
-            box-shadow: 0 0 10px rgba(0,191,255,0.3);
-        }
-
-        .action-card.map-btn::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(90deg, #00BFFF, #ffd700, #00BFFF);
-            border-radius: 50px;
-            z-index: -1;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .action-card.map-btn:hover::before {
-            opacity: 1;
-        }
-
-        .action-card.map-btn:hover {
-            transform: translateY(-3px);
-            border-color: #ffd700;
-            box-shadow: 0 0 20px rgba(0,191,255,0.6);
-        }
-
-        .action-card i {
-            color: #00BFFF;
-            font-size: 18px;
-        }
-
-        .action-card.map-btn i {
-            color: #ffd700;
-        }
-
-        .action-card:hover {
-            background: #202050;
-            border-color: #00BFFF;
-            transform: translateY(-2px);
-        }
-
-        /* ===== MODAIS ===== */
-        .modal-full {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.96);
-            z-index: 1000;
-            display: none;
-            flex-direction: column;
-        }
-
-        .modal-full.visible { display: flex; }
-
-        .modal-header {
-            background: #0f0f25;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: white;
-            border-bottom: 2px solid #00BFFF;
-            font-size: 16px;
-        }
-
-        .modal-close {
-            background: #e53935;
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            color: white;
-            font-size: 20px;
-            cursor: pointer;
-        }
-
-        .map-container {
-            flex: 1;
-        }
-
-        #map {
-            height: 100%;
-            width: 100%;
-        }
-
-        /* MODAL ALERTAS */
-        .modal-alert {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.95);
-            z-index: 1100;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .modal-alert.visible { display: flex; }
-
-        .alert-card {
-            background: #13132a;
-            border-radius: 40px;
-            width: 100%;
-            max-width: 400px;
-            max-height: 85vh;
-            overflow: hidden;
-            border: 2px solid #00BFFF;
-        }
-
-        .alert-header {
-            background: #00BFFF;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            color: white;
-            font-weight: bold;
-            font-size: 16px;
-        }
-
-        .alert-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            padding: 20px;
-        }
-
-        .alert-item {
-            background: #1f1f40;
-            border-radius: 20px;
-            padding: 14px 8px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 1px solid #3a3a6a;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .alert-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: var(--alert-color);
-        }
-
-        .alert-emoji { font-size: 34px; }
-        .alert-name { font-size: 11px; color: white; margin-top: 6px; font-weight: 600; }
-
-        /* MODAL CHAT */
-        .modal-chat {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: #0a0a15;
-            z-index: 1200;
-            display: none;
-            flex-direction: column;
-        }
-
-        .modal-chat.visible { display: flex; }
-
-        .chat-header {
-            background: #075e54;
-            padding: 15px;
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 16px;
-        }
-
-        .chat-messages-area {
-            flex: 1;
-            overflow-y: auto;
-            padding: 15px;
-            background: #e5ddd5;
-        }
-
-        .chat-input-area {
-            display: flex;
-            padding: 10px;
-            background: #f0f0f0;
-            gap: 8px;
-        }
-
-        .chat-input-area input {
-            flex: 1;
             padding: 12px;
-            border-radius: 25px;
-            border: none;
-            background: white;
-            font-size: 14px;
-        }
-
-        .chat-input-area button {
-            background: #075e54;
-            border: none;
-            width: 45px;
-            border-radius: 50%;
-            color: white;
-            cursor: pointer;
-        }
-
-        .msg-bubble {
-            margin: 8px 0;
-            padding: 10px 14px;
-            border-radius: 18px;
-            max-width: 80%;
+            color: #ccc;
             font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
         }
 
-        .msg-bubble.me {
-            background: #dcf8c6;
-            margin-left: auto;
-        }
-
-        .msg-bubble.other {
-            background: white;
-        }
-
-        /* POPUP ALERTA */
-        .popup-alert {
-            background: #13132a;
-            border-radius: 20px;
-            max-width: 280px;
-            overflow: hidden;
-            border: 2px solid #00BFFF;
-        }
-        .popup-alert-img { width: 100%; height: 120px; object-fit: cover; }
-        .popup-alert-header { padding: 8px 12px; background: #00BFFF; color: white; display: flex; justify-content: space-between; }
-        .popup-alert-chat { padding: 10px; max-height: 150px; overflow-y: auto; background: #0f0f23; }
-        .popup-chat-msg { margin: 5px 0; padding: 6px 10px; border-radius: 12px; font-size: 11px; }
-        .popup-chat-msg.me { background: #00BFFF; margin-left: auto; text-align: right; }
-        .popup-chat-msg.other { background: #252542; }
-        .popup-chat-input { display: flex; padding: 8px; gap: 5px; border-top: 1px solid #2a2a4a; }
-        .popup-chat-input input { flex: 1; padding: 8px; border-radius: 20px; border: none; background: #252542; color: white; }
-        .popup-chat-input button { background: #00BFFF; border: none; width: 32px; border-radius: 50%; cursor: pointer; }
-
-        /* ===== NOTIFICAÇÃO DE ÁUDIO (COM NOME DO LOCUTOR) ===== */
-        .audio-player-container {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: linear-gradient(135deg, #1a1a35, #0f0f25);
-            border: 2px solid #00BFFF;
-            border-radius: 60px;
-            padding: 12px 25px;
-            z-index: 2000;
-            display: none;
-            align-items: center;
-            gap: 15px;
-            min-width: 280px;
-            box-shadow: 0 0 30px rgba(0,191,255,0.4);
-            animation: slideUp 0.3s ease;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateX(-50%) translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(-50%) translateY(0);
-            }
-        }
-
-        .audio-speaker-icon {
-            background: #e53935;
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: pulse-speaker 1s infinite;
-        }
-
-        @keyframes pulse-speaker {
-            0%, 100% { box-shadow: 0 0 0 0 #e53935; }
-            50% { box-shadow: 0 0 0 10px rgba(229,57,53,0.3); }
-        }
-
-        .audio-speaker-icon i {
-            font-size: 22px;
-            color: white;
-        }
-
-        .audio-info {
-            flex: 1;
-        }
-
-        .audio-sender {
-            font-size: 16px;
-            font-weight: bold;
-            color: #ffd700;
-        }
-
-        .audio-station {
-            font-size: 11px;
-            color: #aaa;
-        }
-
-        .audio-duration {
-            font-size: 12px;
-            color: #00ff88;
-            font-family: monospace;
-        }
-
-        .audio-wave {
-            display: flex;
-            align-items: center;
-            gap: 3px;
-        }
-
-        .audio-wave span {
-            width: 3px;
-            height: 20px;
-            background: #00BFFF;
-            display: inline-block;
-            animation: wave 0.8s infinite ease;
-        }
-
-        .audio-wave span:nth-child(1) { animation-delay: 0s; height: 10px; }
-        .audio-wave span:nth-child(2) { animation-delay: 0.1s; height: 20px; }
-        .audio-wave span:nth-child(3) { animation-delay: 0.2s; height: 15px; }
-        .audio-wave span:nth-child(4) { animation-delay: 0.3s; height: 25px; }
-        .audio-wave span:nth-child(5) { animation-delay: 0.4s; height: 12px; }
-
-        @keyframes wave {
-            0%, 100% { height: 8px; }
-            50% { height: 25px; }
-        }
-
-        .station-dropdown::-webkit-scrollbar { width: 3px; }
-        .station-dropdown::-webkit-scrollbar-track { background: #1a1a2e; }
-        .station-dropdown::-webkit-scrollbar-thumb { background: #00BFFF; border-radius: 10px; }
+        .action-btn i { color: #00BFFF; margin-right: 5px; }
     </style>
 </head>
 <body>
 
-<div class="radio-px">
-    <!-- CABEÇALHO -->
-    <div class="px-header">
+<div class="radio-live">
+    <div class="live-header">
         <h1><i class="fas fa-microphone-alt"></i> RÁDIO PX 277 <i class="fas fa-broadcast-tower"></i></h1>
-        <div class="px-status">
-            <div class="freq-box"><span>📡 FREQ: 27.7 MHz</span></div>
-            <div class="online-badge"><i class="fas fa-circle"></i> <span>AO VIVO</span></div>
-        </div>
+        <div class="live-badge">🔴 AO VIVO - STREAMING</div>
     </div>
 
-    <!-- SELEÇÃO DE ESTAÇÃO -->
-    <div class="station-area">
-        <div class="station-label"><i class="fas fa-map-marker-alt"></i> SELECIONE SUA ESTAÇÃO</div>
-        <div class="station-selector">
-            <div class="selector-trigger" id="selectorTrigger">
-                <span id="selectedCityName">Curitiba</span>
-                <i class="fas fa-chevron-down"></i>
-            </div>
-            <div class="station-dropdown" id="stationDropdown"></div>
+    <div class="station-selector">
+        <div class="selector-btn" id="selectorBtn">
+            <span id="selectedCity">Curitiba</span>
+            <i class="fas fa-chevron-down"></i>
         </div>
+        <div class="city-dropdown" id="cityDropdown"></div>
     </div>
 
-    <!-- ESTAÇÃO ATUAL -->
-    <div class="current-highlight">
-        <div class="city-detail">
-            <div class="city-icon"><i class="fas fa-radio"></i></div>
-            <div class="city-name" id="currentCityName">Curitiba</div>
-        </div>
-        <div class="city-online" id="currentCityOnline">0 online</div>
+    <div class="current-station">
+        <span><i class="fas fa-radio"></i> <span id="currentCity">Curitiba</span></span>
+        <span id="roomStats">0 online</span>
     </div>
 
-    <!-- BOTÃO PX CENTRALIZADO COM LED ROTACIONAL -->
     <div class="mic-panel">
-        <div class="rotating-led">
-            <button class="px-button off" id="pxButton">
-                <i class="fas fa-microphone-slash"></i>
-                <span>PX (FALAR)</span>
-            </button>
-        </div>
-        <div class="px-status-text off" id="pxStatusText">🔴 MICROFONE DESLIGADO</div>
-        <div class="timer-display" id="timerDisplay" style="display: none;"></div>
+        <button class="px-live-btn" id="pxBtn">
+            <i class="fas fa-microphone-slash"></i><br>
+            <span style="font-size: 14px;">PX (FALAR)</span>
+        </button>
+        <div class="live-status off" id="liveStatus">🔴 MICROFONE DESLIGADO</div>
     </div>
 
-    <!-- AÇÕES -->
-    <div class="action-grid">
-        <div class="action-card map-btn" onclick="openMapModal()"><i class="fas fa-map-marked-alt"></i> MAPA</div>
-        <div class="action-card" onclick="openAlertModal()"><i class="fas fa-exclamation-triangle"></i> ALERTA</div>
-        <div class="action-card" onclick="openChatModal()"><i class="fas fa-comment-dots"></i> CHAT</div>
+    <div class="listening-status" id="listeningStatus">
+        🎧 Modo ouvinte - Aguardando transmissão...
+    </div>
+
+    <div class="action-buttons">
+        <div class="action-btn" id="mapBtn"><i class="fas fa-map"></i> MAPA</div>
+        <div class="action-btn" id="chatBtn"><i class="fas fa-comment"></i> CHAT</div>
     </div>
 </div>
 
-<!-- MODAIS -->
-<div class="modal-full" id="mapModal">
-    <div class="modal-header">
-        <span><i class="fas fa-map"></i> MAPA BR-277 - TRÂNSITO EM TEMPO REAL</span>
-        <button class="modal-close" onclick="closeMapModal()">✕</button>
-    </div>
-    <div class="map-container"><div id="map"></div></div>
-</div>
-
-<div class="modal-alert" id="alertModal">
-    <div class="alert-card">
-        <div class="alert-header">
-            <span><i class="fas fa-exclamation-triangle"></i> REPORTAR OCORRÊNCIA</span>
-            <span onclick="closeAlertModal()" style="cursor:pointer;">✕</span>
-        </div>
-        <div class="alert-grid" id="alertGrid"></div>
-    </div>
-</div>
-
-<div class="modal-chat" id="chatModal">
-    <div class="chat-header">
-        <span><i class="fas fa-comments"></i> CHAT GERAL - RÁDIO PX 277</span>
-        <span onclick="closeChatModal()" style="cursor:pointer; font-size:22px;">✕</span>
-    </div>
-    <div class="chat-messages-area" id="chatMessagesArea"></div>
-    <div class="chat-input-area">
-        <input type="text" id="chatInput" placeholder="Digite sua mensagem...">
-        <button onclick="sendChatMsg()"><i class="fas fa-paper-plane"></i></button>
-    </div>
-</div>
-
-<!-- NOTIFICAÇÃO DE ÁUDIO COM NOME DO LOCUTOR -->
-<div class="audio-player-container" id="audioPlayerContainer">
-    <div class="audio-speaker-icon"><i class="fas fa-bullhorn"></i></div>
-    <div class="audio-info">
-        <div class="audio-sender" id="audioSender">Motorista</div>
-        <div class="audio-station" id="audioStation">Curitiba</div>
-        <div class="audio-duration" id="audioDuration">0s</div>
-    </div>
-    <div class="audio-wave">
-        <span></span><span></span><span></span><span></span><span></span>
-    </div>
-</div>
-
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
+<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
 <script>
-// ==================== FIREBASE ====================
-const firebaseConfig = {
-    databaseURL: "https://gps-br277-default-rtdb.firebaseio.com"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+// ==================== CONFIGURAÇÕES ====================
+const SERVER_URL = window.location.hostname === 'localhost' 
+    ? 'http://localhost:3001' 
+    : 'https://seu-servidor.onrender.com'; // Mude para seu servidor
 
-// ==================== 20 CIDADES ====================
+const socket = io(SERVER_URL);
+
+// ==================== CIDADES ====================
 const cities = [
     "Guarapuava", "Palmeira", "Porto Amazonas", "Ponta Grossa", "São Luiz",
     "Campo Largo", "Curitiba", "Alm. Tamandaré", "Fazenda Rio Grande", "Tijucas do Sul",
@@ -895,551 +231,215 @@ const cities = [
     "Araucária", "Piraquara", "Campina Grande", "Quatro Barras", "Cajati"
 ];
 
-// ==================== 15 ALERTAS ====================
-const alertTypes = [
-    { name: 'ACIDENTE', emoji: '💥', color: '#e53935', type: 'acidente' },
-    { name: 'OBRAS', emoji: '🚧', color: '#ff9800', type: 'obras' },
-    { name: 'PANE MECÂNICA', emoji: '🔧', color: '#795548', type: 'pane' },
-    { name: 'ANIMAL NA PISTA', emoji: '🐂', color: '#9c27b0', type: 'animal' },
-    { name: 'RADAR MÓVEL', emoji: '📷', color: '#607d8b', type: 'radar' },
-    { name: 'BARREIRA', emoji: '⛰️', color: '#8b4513', type: 'barreira' },
-    { name: 'NEBLINA', emoji: '🌫️', color: '#00acc1', type: 'neblina' },
-    { name: 'CONGESTIONAMENTO', emoji: '🔴', color: '#f44336', type: 'congest' },
-    { name: 'ALAGAMENTO', emoji: '💧', color: '#2196f3', type: 'alagamento' },
-    { name: 'BLOQUEIO TOTAL', emoji: '⛔', color: '#b71c1c', type: 'bloqueio' },
-    { name: 'PERIGO', emoji: '⚠️', color: '#ff5722', type: 'perigo' },
-    { name: 'DESVIO', emoji: '🔄', color: '#3f51b5', type: 'desvio' },
-    { name: 'CARGA PERIGOSA', emoji: '📦', color: '#8bc34a', type: 'carga' },
-    { name: 'GRANIZO', emoji: '🧊', color: '#00bcd4', type: 'granizo' },
-    { name: 'MANIFESTAÇÃO', emoji: '📢', color: '#ff4081', type: 'manifest' }
-];
-
 // ==================== VARIÁVEIS ====================
 let userName = localStorage.getItem('px_user');
 if (!userName) {
-    userName = prompt("🎙️ Digite seu nome para entrar no RÁDIO PX 277:", "Motorista");
-    if (!userName) userName = "Motorista";
+    userName = prompt("🎙️ Digite seu nome:", "Motorista");
     localStorage.setItem('px_user', userName);
 }
 
-let currentStation = localStorage.getItem('px_station') || 'curitiba';
-let mediaRecorder = null;
-let isTransmitting = false;
-let audioStream = null;
-let audioChunks = [];
-let recordInterval = null;
-let recordSeconds = 0;
-let map = null;
-let userLocation = null;
-let userMarker = null;
-let alertsOnMap = {};
-let audioListener = null;
-let currentAudio = null;
-let currentAudioTimeout = null;
+let currentCity = localStorage.getItem('px_city') || 'curitiba';
+let isBroadcasting = false;
+let peerConnection = null;
+let localStream = null;
 
-// ==================== NORMALIZAR ID ====================
-function normalizeId(str) {
-    return str.toLowerCase()
-        .replace(/ /g, '_')
-        .replace(/ã/g, 'a')
-        .replace(/ç/g, 'c')
-        .replace(/á/g, 'a')
-        .replace(/â/g, 'a')
-        .replace(/é/g, 'e')
-        .replace(/ê/g, 'e')
-        .replace(/í/g, 'i')
-        .replace(/ó/g, 'o')
-        .replace(/ô/g, 'o')
-        .replace(/ú/g, 'u')
-        .replace(/\./g, '');
-}
+// Elementos
+const pxBtn = document.getElementById('pxBtn');
+const liveStatus = document.getElementById('liveStatus');
+const listeningStatus = document.getElementById('listeningStatus');
+const roomStats = document.getElementById('roomStats');
+const selectorBtn = document.getElementById('selectorBtn');
+const cityDropdown = document.getElementById('cityDropdown');
+const selectedCitySpan = document.getElementById('selectedCity');
+const currentCitySpan = document.getElementById('currentCity');
 
 // ==================== DROPDOWN ====================
 function buildDropdown() {
-    const menu = document.getElementById('stationDropdown');
-    menu.innerHTML = '';
-    
+    cityDropdown.innerHTML = '';
     cities.forEach(city => {
-        const id = normalizeId(city);
+        const id = city.toLowerCase().replace(/ /g, '_').replace(/ã/g, 'a').replace(/ç/g, 'c');
         const option = document.createElement('div');
-        option.className = 'station-option';
-        if (id === currentStation) option.classList.add('active');
-        option.innerHTML = `
-            <span>${city}</span>
-            <span class="station-count" id="count-${id}">0</span>
-        `;
-        option.onclick = () => {
-            changeStation(id, city);
-            closeDropdown();
-        };
-        menu.appendChild(option);
+        option.className = 'city-option';
+        option.textContent = city;
+        option.onclick = () => changeCity(id, city);
+        cityDropdown.appendChild(option);
     });
 }
 
-function toggleDropdown() {
-    const menu = document.getElementById('stationDropdown');
-    const trigger = document.getElementById('selectorTrigger');
-    menu.classList.toggle('open');
-    trigger.classList.toggle('open');
-}
-
-function closeDropdown() {
-    document.getElementById('stationDropdown').classList.remove('open');
-    document.getElementById('selectorTrigger').classList.remove('open');
-}
-
-document.getElementById('selectorTrigger').addEventListener('click', (e) => {
-    e.stopPropagation();
-    toggleDropdown();
-});
-
+selectorBtn.onclick = () => cityDropdown.classList.toggle('open');
 document.addEventListener('click', (e) => {
-    if (!e.target.closest('.station-selector')) closeDropdown();
+    if (!e.target.closest('.station-selector')) cityDropdown.classList.remove('open');
 });
 
-// ==================== MUDAR ESTAÇÃO ====================
-function changeStation(id, name) {
-    currentStation = id;
-    localStorage.setItem('px_station', id);
+function changeCity(id, name) {
+    currentCity = id;
+    localStorage.setItem('px_city', id);
+    selectedCitySpan.textContent = name;
+    currentCitySpan.textContent = name;
+    cityDropdown.classList.remove('open');
     
-    document.querySelectorAll('.station-option').forEach(opt => opt.classList.remove('active'));
-    event.target.closest('.station-option').classList.add('active');
-    
-    document.getElementById('selectedCityName').innerText = name;
-    document.getElementById('currentCityName').innerText = name;
-    
-    db.ref(`stations/${id}/users/${userName}`).set({ name: userName, timestamp: Date.now() });
-    
-    cities.forEach(c => {
-        const otherId = normalizeId(c);
-        if (otherId !== id) {
-            db.ref(`stations/${otherId}/users/${userName}`).remove();
-        }
-    });
-    
-    setupAudio();
-    showToast(`📻 Você sintonizou ${name}`);
+    // Sair da sala atual e entrar na nova
+    if (isBroadcasting) stopBroadcasting();
+    socket.emit('leave-room');
+    socket.emit('join-room', { roomId: id, userName, isBroadcaster: false });
 }
 
-// ==================== CONTAGEM DE USUÁRIOS ====================
-function loadCounts() {
-    cities.forEach(city => {
-        const id = normalizeId(city);
-        db.ref(`stations/${id}/users`).on('value', (snap) => {
-            const users = snap.val();
-            const count = users ? Object.keys(users).length : 0;
-            const badge = document.getElementById(`count-${id}`);
-            if (badge) badge.innerText = count;
-            if (id === currentStation) {
-                document.getElementById('currentCityOnline').innerText = `${count} online`;
-            }
-        });
-    });
-}
+// ==================== WEbRTC ====================
+const configuration = {
+    iceServers: [
+        { urls: 'stun:stun.l.google.com:19302' },
+        { urls: 'stun:stun1.l.google.com:19302' }
+    ]
+};
 
-// ==================== ÁUDIO (TOGGLE) ====================
-function setupAudio() {
-    if (audioListener) {
-        db.ref(`stations/${currentStation}/audios`).off('child_added', audioListener);
-    }
-    
-    audioListener = db.ref(`stations/${currentStation}/audios`).on('child_added', (snap) => {
-        const data = snap.val();
-        if (data && data.sender !== userName) {
-            // Parar áudio anterior se existir
-            if (currentAudio) {
-                currentAudio.pause();
-                if (currentAudioTimeout) clearTimeout(currentAudioTimeout);
-            }
-            
-            // Criar e tocar novo áudio
-            currentAudio = new Audio(data.audio);
-            currentAudio.play().catch(e => console.log);
-            
-            // Mostrar notificação com nome do locutor
-            const audioContainer = document.getElementById('audioPlayerContainer');
-            document.getElementById('audioSender').innerHTML = `<i class="fas fa-user"></i> ${data.sender}`;
-            document.getElementById('audioStation').innerHTML = `<i class="fas fa-radio"></i> ${data.station}`;
-            document.getElementById('audioDuration').innerHTML = `<i class="fas fa-clock"></i> ${data.duration}s`;
-            audioContainer.style.display = 'flex';
-            
-            // Esconder notificação após a duração do áudio + 1 segundo
-            if (currentAudioTimeout) clearTimeout(currentAudioTimeout);
-            currentAudioTimeout = setTimeout(() => {
-                audioContainer.style.display = 'none';
-            }, (data.duration * 1000) + 1000);
-            
-            // Quando o áudio terminar, esconder também
-            currentAudio.onended = () => {
-                audioContainer.style.display = 'none';
-            };
-        }
-    });
-}
-
-const pxButton = document.getElementById('pxButton');
-const pxStatusText = document.getElementById('pxStatusText');
-const timerDisplay = document.getElementById('timerDisplay');
-
-async function startTransmission() {
-    if (isTransmitting) return;
+async function startBroadcasting() {
+    if (isBroadcasting) return;
     
     try {
-        audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        mediaRecorder = new MediaRecorder(audioStream);
-        audioChunks = [];
-        recordSeconds = 0;
+        localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        peerConnection = new RTCPeerConnection(configuration);
         
-        mediaRecorder.ondataavailable = e => {
-            if (e.data.size > 0) audioChunks.push(e.data);
+        localStream.getTracks().forEach(track => {
+            peerConnection.addTrack(track, localStream);
+        });
+        
+        peerConnection.onicecandidate = (event) => {
+            if (event.candidate) {
+                socket.emit('ice-candidate', { targetId: 'broadcast', candidate: event.candidate });
+            }
         };
         
-        mediaRecorder.onstop = async () => {
-            if (audioChunks.length > 0) {
-                const blob = new Blob(audioChunks, { type: 'audio/webm' });
-                const reader = new FileReader();
-                reader.onloadend = async () => {
-                    const cityName = cities.find(c => normalizeId(c) === currentStation);
-                    await db.ref(`stations/${currentStation}/audios`).push({
-                        sender: userName,
-                        station: cityName,
-                        audio: reader.result,
-                        timestamp: Date.now(),
-                        duration: recordSeconds
-                    });
-                    
-                    const snapshot = await db.ref(`stations/${currentStation}/audios`).once('value');
-                    const audios = snapshot.val();
-                    if (audios) {
-                        const keys = Object.keys(audios);
-                        if (keys.length > 50) {
-                            keys.slice(0, keys.length - 50).forEach(k => {
-                                db.ref(`stations/${currentStation}/audios/${k}`).remove();
-                            });
-                        }
-                    }
-                };
-                reader.readAsDataURL(blob);
-            }
-            if (audioStream) audioStream.getTracks().forEach(t => t.stop());
-        };
+        const offer = await peerConnection.createOffer();
+        await peerConnection.setLocalDescription(offer);
         
-        mediaRecorder.start(100);
-        isTransmitting = true;
+        socket.emit('offer', { targetId: 'broadcast', offer });
         
-        // Atualizar UI para ON
-        pxButton.classList.remove('off');
-        pxButton.classList.add('active');
-        pxButton.innerHTML = '<i class="fas fa-microphone"></i><span>PX (FALANDO)</span>';
-        pxStatusText.className = 'px-status-text on';
-        pxStatusText.innerHTML = '🎤 TRANSMITINDO AO VIVO...';
-        timerDisplay.style.display = 'block';
+        isBroadcasting = true;
+        socket.emit('join-room', { roomId: currentCity, userName, isBroadcaster: true });
         
-        recordInterval = setInterval(() => {
-            recordSeconds++;
-            const mins = Math.floor(recordSeconds / 60);
-            const secs = recordSeconds % 60;
-            if (mins > 0) {
-                timerDisplay.innerHTML = `⏱️ TEMPO: ${mins}min ${secs}s`;
-            } else {
-                timerDisplay.innerHTML = `⏱️ TEMPO: ${secs}s`;
-            }
-        }, 1000);
+        pxBtn.classList.add('active');
+        pxBtn.innerHTML = '<i class="fas fa-microphone"></i><br><span style="font-size: 14px;">TRANSMITINDO</span>';
+        liveStatus.className = 'live-status on';
+        liveStatus.innerHTML = '🎤 TRANSMITINDO AO VIVO...';
         
     } catch(e) {
-        alert("🎤 Permita o acesso ao microfone para usar o rádio!");
+        alert("🎤 Permita o acesso ao microfone!");
     }
 }
 
-function stopTransmission() {
-    if (mediaRecorder && mediaRecorder.state === 'recording') {
-        mediaRecorder.stop();
+function stopBroadcasting() {
+    if (peerConnection) {
+        peerConnection.close();
+        peerConnection = null;
     }
-    if (recordInterval) clearInterval(recordInterval);
-    isTransmitting = false;
+    if (localStream) {
+        localStream.getTracks().forEach(track => track.stop());
+        localStream = null;
+    }
     
-    // Atualizar UI para OFF
-    pxButton.classList.remove('active');
-    pxButton.classList.add('off');
-    pxButton.innerHTML = '<i class="fas fa-microphone-slash"></i><span>PX (FALAR)</span>';
-    pxStatusText.className = 'px-status-text off';
-    pxStatusText.innerHTML = '🔴 MICROFONE DESLIGADO';
-    timerDisplay.style.display = 'none';
-    timerDisplay.innerHTML = '';
+    isBroadcasting = false;
+    socket.emit('leave-room');
+    socket.emit('join-room', { roomId: currentCity, userName, isBroadcaster: false });
+    
+    pxBtn.classList.remove('active');
+    pxBtn.innerHTML = '<i class="fas fa-microphone-slash"></i><br><span style="font-size: 14px;">PX (FALAR)</span>';
+    liveStatus.className = 'live-status off';
+    liveStatus.innerHTML = '🔴 MICROFONE DESLIGADO';
 }
 
-// Toggle no clique
-pxButton.addEventListener('click', () => {
-    if (isTransmitting) {
-        stopTransmission();
+pxBtn.onclick = () => {
+    if (isBroadcasting) {
+        stopBroadcasting();
     } else {
-        startTransmission();
+        startBroadcasting();
+    }
+};
+
+// ==================== SOCKET EVENTOS ====================
+socket.on('connect', () => {
+    console.log('✅ Conectado ao servidor');
+    socket.emit('join-room', { roomId: currentCity, userName, isBroadcaster: false });
+});
+
+socket.on('room-update', (data) => {
+    if (data.broadcaster) {
+        roomStats.innerHTML = `🎙️ Transmitindo | 👂 ${data.listeners} ouvindo`;
+    } else {
+        roomStats.innerHTML = `⏸️ Aguardando transmissão | ${data.listeners} online`;
     }
 });
 
-// ==================== MAPA ====================
-function initMap() {
-    map = L.map('map').setView([-25.4284, -49.2733], 12);
-    L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(map);
-    
-    if (navigator.geolocation) {
-        navigator.geolocation.watchPosition(pos => {
-            userLocation = [pos.coords.latitude, pos.coords.longitude];
-            if (!userMarker) {
-                userMarker = L.marker(userLocation, {
-                    icon: L.divIcon({ html: '<div style="font-size:34px;">🚛</div>', iconSize: [34, 34], iconAnchor: [17, 17], className: '' })
-                }).addTo(map);
-                map.setView(userLocation, 13);
-            } else {
-                userMarker.setLatLng(userLocation);
-            }
-        });
+socket.on('broadcaster-joined', ({ userName }) => {
+    listeningStatus.innerHTML = `🎤 ${userName} começou a transmitir! Conectando...`;
+    listeningStatus.style.color = '#00ff88';
+});
+
+socket.on('broadcaster-left', () => {
+    listeningStatus.innerHTML = `🔴 Transmissão encerrada. Aguardando...`;
+    listeningStatus.style.color = '#888';
+    if (peerConnection) {
+        peerConnection.close();
+        peerConnection = null;
     }
+});
+
+socket.on('broadcaster-active', ({ broadcasterId }) => {
+    listeningStatus.innerHTML = `🎧 Transmissão ativa! Conectando...`;
+    createReceiverConnection();
+});
+
+async function createReceiverConnection() {
+    if (peerConnection) return;
     
-    loadAlertsOnMap();
-}
-
-function loadAlertsOnMap() {
-    db.ref('alerts').on('child_added', (snap) => {
-        const alert = snap.val();
-        const id = snap.key;
-        if (alertsOnMap[id] || !map) return;
-        
-        const marker = L.marker([alert.lat, alert.lng], {
-            icon: L.divIcon({
-                html: `<div style="background:${alert.color}; width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; border:3px solid white; box-shadow:0 0 15px ${alert.color};">${alert.emoji}</div>`,
-                iconSize: [42, 42],
-                iconAnchor: [21, 21]
-            })
-        }).addTo(map);
-        
-        let imgHtml = '';
-        if (alert.image) imgHtml = `<img src="${alert.image}" class="popup-alert-img">`;
-        
-        const popupDiv = document.createElement('div');
-        popupDiv.className = 'popup-alert';
-        popupDiv.innerHTML = `
-            ${imgHtml}
-            <div class="popup-alert-header">
-                <span>${alert.emoji} ${alert.name}</span>
-                <span>👍 ${alert.confirmations || 0}</span>
-            </div>
-            <div class="popup-alert-chat" id="alert-chat-${id}"></div>
-            <div class="popup-chat-input">
-                <input type="text" id="alert-input-${id}" placeholder="Comentar...">
-                <button onclick="sendAlertMsg('${id}')">➔</button>
-            </div>
-        `;
-        
-        marker.bindPopup(popupDiv);
-        marker.on('popupopen', () => loadAlertChat(id));
-        alertsOnMap[id] = marker;
-    });
-}
-
-function loadAlertChat(id) {
-    db.ref(`chats/alert_${id}`).on('value', (snap) => {
-        const chatDiv = document.getElementById(`alert-chat-${id}`);
-        if (!chatDiv) return;
-        const msgs = snap.val();
-        if (!msgs) { chatDiv.innerHTML = '<div style="text-align:center; color:#888;">Nenhum comentário</div>'; return; }
-        
-        let html = '';
-        Object.values(msgs).sort((a,b) => a.timestamp - b.timestamp).forEach(msg => {
-            const isMe = msg.user === userName;
-            html += `<div class="popup-chat-msg ${isMe ? 'me' : 'other'}"><strong>${msg.user}</strong><br>${msg.text}<br><small>${new Date(msg.timestamp).toLocaleTimeString()}</small></div>`;
-        });
-        chatDiv.innerHTML = html;
-        chatDiv.scrollTop = chatDiv.scrollHeight;
-    });
-}
-
-function sendAlertMsg(id) {
-    const input = document.getElementById(`alert-input-${id}`);
-    if (!input.value.trim()) return;
-    db.ref(`chats/alert_${id}`).push({ user: userName, text: input.value.trim(), timestamp: Date.now() });
-    input.value = '';
-}
-
-function openMapModal() {
-    document.getElementById('mapModal').classList.add('visible');
-    setTimeout(() => {
-        if (map) map.invalidateSize();
-        else initMap();
-    }, 100);
-}
-
-function closeMapModal() {
-    document.getElementById('mapModal').classList.remove('visible');
-}
-
-// ==================== ALERTAS ====================
-function buildAlertGrid() {
-    const grid = document.getElementById('alertGrid');
-    grid.innerHTML = '';
+    peerConnection = new RTCPeerConnection(configuration);
     
-    alertTypes.forEach(alert => {
-        const card = document.createElement('div');
-        card.className = 'alert-item';
-        card.style.setProperty('--alert-color', alert.color);
-        card.innerHTML = `<div class="alert-emoji">${alert.emoji}</div><div class="alert-name">${alert.name}</div>`;
-        card.onclick = () => createAlertWithPhoto(alert);
-        grid.appendChild(card);
-    });
+    peerConnection.ontrack = (event) => {
+        const audio = new Audio();
+        audio.srcObject = event.streams[0];
+        audio.play().catch(e => console.log);
+        listeningStatus.innerHTML = `🎧 Ouvindo transmissão ao vivo!`;
+    };
+    
+    peerConnection.onicecandidate = (event) => {
+        if (event.candidate) {
+            socket.emit('ice-candidate', { targetId: 'broadcast', candidate: event.candidate });
+        }
+    };
+    
+    const offer = await peerConnection.createOffer();
+    await peerConnection.setLocalDescription(offer);
+    socket.emit('offer', { targetId: 'broadcast', offer });
 }
 
-async function createAlertWithPhoto(alert) {
-    if (!userLocation) { showToast("📍 Aguardando localização..."); return; }
-    
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-        
-        const overlay = document.createElement('div');
-        overlay.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:#000; z-index:10000; display:flex; flex-direction:column; align-items:center; justify-content:center;';
-        
-        const video = document.createElement('video');
-        video.style.cssText = 'width:90%; max-width:350px; border-radius:20px;';
-        video.autoplay = true;
-        video.srcObject = stream;
-        
-        const btnPhoto = document.createElement('button');
-        btnPhoto.style.cssText = 'margin:15px; padding:12px 25px; background:#ffd700; border:none; border-radius:40px; font-size:16px; font-weight:700; cursor:pointer;';
-        btnPhoto.innerHTML = '📷 TIRAR FOTO';
-        
-        const btnSkip = document.createElement('button');
-        btnSkip.style.cssText = 'margin:15px; padding:12px 25px; background:#444; border:none; border-radius:40px; color:white; cursor:pointer;';
-        btnSkip.innerHTML = '⏭️ PULAR';
-        
-        const btnClose = document.createElement('button');
-        btnClose.style.cssText = 'position:absolute; top:15px; right:15px; width:40px; height:40px; background:#e53935; border:none; border-radius:50%; color:white; font-size:18px; cursor:pointer;';
-        btnClose.innerHTML = '✕';
-        
-        overlay.appendChild(video);
-        overlay.appendChild(btnPhoto);
-        overlay.appendChild(btnSkip);
-        overlay.appendChild(btnClose);
-        document.body.appendChild(overlay);
-        
-        btnPhoto.onclick = () => {
-            const canvas = document.createElement('canvas');
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            canvas.getContext('2d').drawImage(video, 0, 0);
-            
-            canvas.toBlob(async (blob) => {
-                const reader = new FileReader();
-                reader.onloadend = async () => {
-                    const id = Date.now();
-                    await db.ref(`alerts/${id}`).set({
-                        ...alert,
-                        lat: userLocation[0],
-                        lng: userLocation[1],
-                        timestamp: id,
-                        creator: userName,
-                        confirmations: 1,
-                        image: reader.result
-                    });
-                    stream.getTracks().forEach(t => t.stop());
-                    document.body.removeChild(overlay);
-                    showToast('✅ Alerta com foto enviado!');
-                    closeAlertModal();
-                };
-                reader.readAsDataURL(blob);
-            }, 'image/jpeg', 0.6);
+// WebRTC Signaling
+socket.on('offer', async ({ fromId, offer }) => {
+    if (!peerConnection) {
+        peerConnection = new RTCPeerConnection(configuration);
+        peerConnection.ontrack = (event) => {
+            const audio = new Audio();
+            audio.srcObject = event.streams[0];
+            audio.play();
         };
-        
-        btnSkip.onclick = async () => {
-            const id = Date.now();
-            await db.ref(`alerts/${id}`).set({
-                ...alert,
-                lat: userLocation[0],
-                lng: userLocation[1],
-                timestamp: id,
-                creator: userName,
-                confirmations: 1
-            });
-            stream.getTracks().forEach(t => t.stop());
-            document.body.removeChild(overlay);
-            showToast(`⚠️ ${alert.name} reportado!`);
-            closeAlertModal();
-        };
-        
-        btnClose.onclick = () => {
-            stream.getTracks().forEach(t => t.stop());
-            document.body.removeChild(overlay);
-        };
-        
-    } catch(e) {
-        const id = Date.now();
-        await db.ref(`alerts/${id}`).set({
-            ...alert,
-            lat: userLocation[0],
-            lng: userLocation[1],
-            timestamp: id,
-            creator: userName,
-            confirmations: 1
-        });
-        showToast(`⚠️ ${alert.name} reportado!`);
-        closeAlertModal();
     }
-}
+    await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+    const answer = await peerConnection.createAnswer();
+    await peerConnection.setLocalDescription(answer);
+    socket.emit('answer', { targetId: fromId, answer });
+});
 
-function openAlertModal() { document.getElementById('alertModal').classList.add('visible'); }
-function closeAlertModal() { document.getElementById('alertModal').classList.remove('visible'); }
+socket.on('answer', async ({ answer }) => {
+    await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+});
 
-// ==================== CHAT ====================
-function openChatModal() { document.getElementById('chatModal').classList.add('visible'); loadChatMessages(); }
-function closeChatModal() { document.getElementById('chatModal').classList.remove('visible'); }
-
-function loadChatMessages() {
-    db.ref('chat_global').on('value', (snap) => {
-        const msgs = snap.val();
-        const container = document.getElementById('chatMessagesArea');
-        if (!msgs) { container.innerHTML = ''; return; }
-        
-        let html = '';
-        Object.values(msgs).sort((a,b) => a.timestamp - b.timestamp).forEach(msg => {
-            const isMe = msg.user === userName;
-            html += `<div class="msg-bubble ${isMe ? 'me' : 'other'}"><strong>${msg.user}</strong><br>${msg.text}<br><small>${new Date(msg.timestamp).toLocaleTimeString()}</small></div>`;
-        });
-        container.innerHTML = html;
-        container.scrollTop = container.scrollHeight;
-    });
-}
-
-function sendChatMsg() {
-    const input = document.getElementById('chatInput');
-    if (!input.value.trim()) return;
-    db.ref('chat_global').push({ user: userName, text: input.value.trim(), timestamp: Date.now() });
-    input.value = '';
-}
-
-// ==================== UTILIDADES ====================
-function showToast(msg) {
-    const toast = document.createElement('div');
-    toast.style.cssText = 'position:fixed; bottom:100px; left:50%; transform:translateX(-50%); background:#00BFFF; color:white; padding:8px 20px; border-radius:40px; z-index:13000; font-weight:bold; border:2px solid gold; font-size:14px; white-space:nowrap;';
-    toast.innerText = msg;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 2500);
-}
-
-// ==================== LIMPAR AO SAIR ====================
-window.addEventListener('beforeunload', () => {
-    if (userName) db.ref(`stations/${currentStation}/users/${userName}`).remove();
-    if (isTransmitting) stopTransmission();
+socket.on('ice-candidate', async ({ candidate }) => {
+    if (peerConnection) {
+        await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+    }
 });
 
 // ==================== INICIAR ====================
-function init() {
-    buildDropdown();
-    loadCounts();
-    setupAudio();
-    buildAlertGrid();
-    loadChatMessages();
-    showToast(`🎙️ Bem-vindo, ${userName}!`);
-}
-
-init();
+buildDropdown();
+changeCity(currentCity, cities.find(c => c.toLowerCase().replace(/ /g, '_').replace(/ã/g, 'a').replace(/ç/g, 'c') === currentCity) || 'Curitiba');
 </script>
 </body>
 </html>
