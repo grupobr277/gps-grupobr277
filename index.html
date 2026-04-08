@@ -3,107 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TESTE - 15 Alertas</title>
+    <title>TESTE - 15 Alertas no Mapa</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: #0a0a0a;
             font-family: 'Segoe UI', Arial, sans-serif;
-            padding: 20px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
-
-        .container {
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
         h1 {
+            background: #111;
             color: #ffd700;
             text-align: center;
-            margin-bottom: 20px;
-            font-size: 24px;
+            padding: 10px;
+            font-size: 16px;
+            border-bottom: 2px solid #00aaff;
         }
-
-        .alert-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            background: #1a1a1a;
-            padding: 20px;
-            border-radius: 30px;
+        .map-container {
+            flex: 1;
+            position: relative;
+        }
+        #map {
+            height: 100%;
+            width: 100%;
+        }
+        .alert-panel {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            right: 15px;
+            background: rgba(0,0,0,0.85);
+            border-radius: 60px;
+            padding: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
             border: 1px solid #00aaff;
         }
-
-        .alert-card {
+        .alert-mini {
             background: #1f1f40;
-            border-radius: 60px;
-            padding: 15px 5px;
+            border-radius: 40px;
+            padding: 6px 12px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 0 5px rgba(0,170,255,0.3);
+            font-size: 18px;
+            transition: 0.1s;
+            min-width: 55px;
         }
-
-        .alert-card:hover {
+        .alert-mini:hover {
             transform: scale(1.05);
             background: #2a2a60;
         }
-
-        .alert-emoji {
-            font-size: 40px;
-        }
-
-        .alert-name {
-            font-size: 12px;
-            color: white;
-            margin-top: 8px;
-            font-weight: bold;
-        }
-
         .toast {
             position: fixed;
-            bottom: 30px;
+            bottom: 80px;
             left: 50%;
             transform: translateX(-50%);
             background: #00aaff;
             color: white;
-            padding: 10px 20px;
+            padding: 8px 16px;
             border-radius: 30px;
-            font-size: 14px;
-            z-index: 1000;
+            font-size: 12px;
+            z-index: 2000;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>📢 15 ALERTAS - TESTE</h1>
-        <div class="alert-grid" id="alertGrid"></div>
+    <h1>📍 TESTE: 15 Alertas no Mapa (Clique no ícone)</h1>
+    <div class="map-container">
+        <div id="map"></div>
+        <div class="alert-panel" id="alertPanel"></div>
     </div>
 
     <script>
         // ==================== 15 ALERTAS ====================
         const alertTypes = [
-            { name: 'ACIDENTE', emoji: '💥', color: '#e53935' },
-            { name: 'OBRAS', emoji: '🚧', color: '#ff9800' },
-            { name: 'PANE MECÂNICA', emoji: '🔧', color: '#795548' },
-            { name: 'ANIMAL NA PISTA', emoji: '🐂', color: '#9c27b0' },
-            { name: 'VEÍCULO ENGUIÇADO', emoji: '🚗💨', color: '#ff5722' },
-            { name: 'BARREIRA', emoji: '⛰️', color: '#8b4513' },
-            { name: 'NEBLINA', emoji: '🌫️', color: '#00acc1' },
-            { name: 'CONGESTIONAMENTO', emoji: '🔴', color: '#f44336' },
-            { name: 'ALAGAMENTO', emoji: '💧', color: '#2196f3' },
-            { name: 'BLOQUEIO TOTAL', emoji: '⛔', color: '#b71c1c' },
-            { name: 'PERIGO', emoji: '⚠️', color: '#ff5722' },
-            { name: 'DESVIO', emoji: '🔄', color: '#3f51b5' },
-            { name: 'CARGA PERIGOSA', emoji: '📦', color: '#8bc34a' },
-            { name: 'GRANIZO', emoji: '🧊', color: '#00bcd4' },
-            { name: 'MANIFESTAÇÃO', emoji: '📢', color: '#ff4081' }
+            { name: 'ACIDENTE', emoji: '💥', color: '#e53935', lat: -25.4284, lng: -49.2733 },
+            { name: 'OBRAS', emoji: '🚧', color: '#ff9800', lat: -25.4384, lng: -49.2833 },
+            { name: 'PANE MECÂNICA', emoji: '🔧', color: '#795548', lat: -25.4184, lng: -49.2633 },
+            { name: 'ANIMAL NA PISTA', emoji: '🐂', color: '#9c27b0', lat: -25.4484, lng: -49.2933 },
+            { name: 'VEÍCULO ENGUIÇADO', emoji: '🚗💨', color: '#ff5722', lat: -25.4084, lng: -49.2533 },
+            { name: 'BARREIRA', emoji: '⛰️', color: '#8b4513', lat: -25.4584, lng: -49.3033 },
+            { name: 'NEBLINA', emoji: '🌫️', color: '#00acc1', lat: -25.3984, lng: -49.2433 },
+            { name: 'CONGESTIONAMENTO', emoji: '🔴', color: '#f44336', lat: -25.4684, lng: -49.3133 },
+            { name: 'ALAGAMENTO', emoji: '💧', color: '#2196f3', lat: -25.3884, lng: -49.2333 },
+            { name: 'BLOQUEIO TOTAL', emoji: '⛔', color: '#b71c1c', lat: -25.4784, lng: -49.3233 },
+            { name: 'PERIGO', emoji: '⚠️', color: '#ff5722', lat: -25.3784, lng: -49.2233 },
+            { name: 'DESVIO', emoji: '🔄', color: '#3f51b5', lat: -25.4884, lng: -49.3333 },
+            { name: 'CARGA PERIGOSA', emoji: '📦', color: '#8bc34a', lat: -25.3684, lng: -49.2133 },
+            { name: 'GRANIZO', emoji: '🧊', color: '#00bcd4', lat: -25.4984, lng: -49.3433 },
+            { name: 'MANIFESTAÇÃO', emoji: '📢', color: '#ff4081', lat: -25.3584, lng: -49.2033 }
         ];
+
+        let map;
+        let markers = [];
 
         function showToast(msg) {
             let toast = document.createElement('div');
@@ -113,27 +113,87 @@
             setTimeout(() => toast.remove(), 1500);
         }
 
-        function buildAlertGrid() {
-            const grid = document.getElementById('alertGrid');
-            grid.innerHTML = '';
+        function initMap() {
+            map = L.map('map').setView([-25.4284, -49.2733], 12);
+            L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(map);
+
+            // Adicionar marcadores de alerta
+            alertTypes.forEach(alert => {
+                const iconHtml = `
+                    <div style="
+                        background: ${alert.color};
+                        width: 42px;
+                        height: 42px;
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 24px;
+                        box-shadow: 0 0 10px ${alert.color};
+                        animation: pulse 1.5s infinite;
+                        cursor: pointer;
+                    ">
+                        ${alert.emoji}
+                    </div>
+                `;
+
+                const marker = L.marker([alert.lat, alert.lng], {
+                    icon: L.divIcon({
+                        html: iconHtml,
+                        iconSize: [42, 42],
+                        iconAnchor: [21, 21],
+                        className: ''
+                    })
+                }).addTo(map);
+
+                marker.bindPopup(`
+                    <div style="background: #075E54; color: white; padding: 10px; border-radius: 12px;">
+                        <strong>${alert.emoji} ${alert.name}</strong><br>
+                        <small>Clique para confirmar</small>
+                    </div>
+                `);
+
+                marker.on('click', () => {
+                    showToast(`👍 ${alert.name} confirmado!`);
+                });
+
+                markers.push(marker);
+            });
+
+            // Adicionar animação CSS
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes pulse {
+                    0% { transform: scale(1); opacity: 1; }
+                    50% { transform: scale(1.2); opacity: 0.9; }
+                    100% { transform: scale(1); opacity: 1; }
+                }
+            `;
+            document.head.appendChild(style);
+
+            console.log(`✅ ${markers.length} alertas carregados no mapa!`);
+        }
+
+        function buildAlertPanel() {
+            const panel = document.getElementById('alertPanel');
+            panel.innerHTML = '';
             
             alertTypes.forEach(alert => {
-                const card = document.createElement('div');
-                card.className = 'alert-card';
-                card.style.borderTop = `4px solid ${alert.color}`;
-                card.innerHTML = `
-                    <div class="alert-emoji">${alert.emoji}</div>
-                    <div class="alert-name">${alert.name}</div>
-                `;
-                card.onclick = () => {
-                    showToast(`✅ Alerta: ${alert.name} (simulação)`);
+                const btn = document.createElement('div');
+                btn.className = 'alert-mini';
+                btn.style.borderTop = `3px solid ${alert.color}`;
+                btn.innerHTML = `${alert.emoji} ${alert.name.substring(0, 8)}`;
+                btn.onclick = () => {
+                    // Centralizar no alerta
+                    map.setView([alert.lat, alert.lng], 14);
+                    showToast(`📍 Centralizado em: ${alert.name}`);
                 };
-                grid.appendChild(card);
+                panel.appendChild(btn);
             });
         }
 
-        buildAlertGrid();
-        console.log('✅ 15 alertas carregados com sucesso!');
+        initMap();
+        buildAlertPanel();
     </script>
 </body>
 </html>
