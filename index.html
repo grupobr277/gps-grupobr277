@@ -3,19 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>RÁDIO PX 277 | ANOS 90</title>
+    <title>RÁDIO PX 277 | CB Radio</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emoji-picker-element@1.18.3/dist/index.css"/>
     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@1.18.3/dist/index.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: #0a0a0a;
             font-family: 'Inter', sans-serif;
@@ -25,8 +20,6 @@
             align-items: center;
             padding: 0;
         }
-
-        /* Rádio principal - tela cheia */
         .radio-90s {
             width: 100%;
             max-width: 100%;
@@ -35,8 +28,6 @@
             overflow-x: hidden;
             border-radius: 0;
         }
-
-        /* Faixa metálica */
         .radio-90s::before {
             content: '';
             position: absolute;
@@ -47,43 +38,26 @@
             background: linear-gradient(90deg, #c0c0c0, #f0f0f0, #a0a0a0);
             z-index: 1;
         }
-
-        /* Cabeçalho */
         .header {
             background: #111;
             padding: 12px 16px 8px;
             text-align: center;
             border-bottom: 2px solid #00aaff;
         }
-        .brand {
-            font-size: 9px;
-            letter-spacing: 2px;
-            color: #00aaff;
-        }
-        .header h1 {
-            font-size: 20px;
-            background: linear-gradient(135deg, #ffd700, #ffaa00);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        .header h1 i {
-            color: #ff4444;
-        }
-
-        /* Display digital */
+        .brand { font-size: 9px; letter-spacing: 2px; color: #00aaff; }
+        .header h1 { font-size: 20px; background: linear-gradient(135deg, #ffd700, #ffaa00); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .header h1 i { color: #ff4444; }
         .display {
             background: #000;
             margin: 12px 16px;
             border-radius: 16px;
             padding: 10px;
             border: 1px solid #00aaff;
-            box-shadow: inset 0 0 8px rgba(0,170,255,0.2);
         }
         .freq-row {
             display: flex;
             justify-content: space-between;
-            align-items: baseline;
+            align-items: center;
             flex-wrap: wrap;
             gap: 8px;
         }
@@ -113,36 +87,18 @@
             font-weight: bold;
             margin-left: 8px;
         }
-
-        /* S-Meter */
         .smeter {
             margin-top: 10px;
             background: #080808;
             border-radius: 8px;
             padding: 6px;
         }
-        .meter-labels {
-            display: flex;
-            justify-content: space-between;
-            font-size: 6px;
-            color: #00aaff;
-            padding: 0 2px;
-        }
-        .meter-bars {
-            display: flex;
-            gap: 2px;
-            height: 20px;
-        }
-        .bar {
-            flex: 1;
-            background: #1a1a1a;
-            border-radius: 2px;
-        }
+        .meter-labels { display: flex; justify-content: space-between; font-size: 6px; color: #00aaff; padding: 0 2px; }
+        .meter-bars { display: flex; gap: 2px; height: 20px; }
+        .bar { flex: 1; background: #1a1a1a; border-radius: 2px; }
         .bar.active { background: #00ff88; }
         .bar.warning { background: #ffaa00; }
         .bar.danger { background: #ff4444; }
-
-        /* Painel de botões estilo disjuntor */
         .switch-panel {
             background: #1a1a1a;
             margin: 8px 16px;
@@ -153,15 +109,8 @@
             gap: 16px;
             border: 1px solid #333;
         }
-        .switch-item {
-            text-align: center;
-            flex: 1;
-        }
-        .switch-label {
-            font-size: 9px;
-            color: #aaa;
-            margin-bottom: 6px;
-        }
+        .switch-item { text-align: center; flex: 1; }
+        .switch-label { font-size: 9px; color: #aaa; margin-bottom: 6px; }
         .toggle-switch {
             width: 50px;
             height: 28px;
@@ -170,7 +119,6 @@
             margin: 0 auto;
             cursor: pointer;
             position: relative;
-            transition: all 0.2s;
             box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
         }
         .toggle-switch::after {
@@ -184,27 +132,11 @@
             left: 3px;
             transition: 0.2s;
         }
-        .toggle-switch.active {
-            background: #00aaff;
-        }
-        .toggle-switch.active::after {
-            left: 23px;
-            background: white;
-        }
-        .switch-value {
-            font-size: 8px;
-            color: #ffd700;
-            margin-top: 4px;
-        }
-        /* Botão MUDO ativo fica vermelho */
-        .toggle-switch.mute-active {
-            background: #e53935;
-        }
-
-        /* Seletor de estação */
-        .station-area {
-            margin: 8px 16px;
-        }
+        .toggle-switch.active { background: #00aaff; }
+        .toggle-switch.active::after { left: 23px; background: white; }
+        .toggle-switch.mute-active { background: #e53935; }
+        .switch-value { font-size: 8px; color: #ffd700; margin-top: 4px; }
+        .station-area { margin: 8px 16px; }
         .station-selector {
             background: #0a0a0a;
             border: 1px solid #00aaff;
@@ -239,8 +171,6 @@
         }
         .station-option.active { background: #00aaff; color: white; }
         .station-count { background: #333; padding: 2px 8px; border-radius: 20px; font-size: 10px; }
-
-        /* Botões rápidos de estação */
         .quick-buttons {
             display: flex;
             justify-content: space-between;
@@ -258,14 +188,8 @@
             color: #ccc;
             text-align: center;
             cursor: pointer;
-            transition: 0.1s;
         }
-        .quick-btn.saved {
-            background: #00aaff;
-            color: white;
-        }
-
-        /* Área dos botões principais (MAPA, ALERTA, CHAT) - agora acima do PTT */
+        .quick-btn.saved { background: #00aaff; color: white; }
         .action-bar {
             display: flex;
             gap: 12px;
@@ -288,8 +212,6 @@
             gap: 6px;
         }
         .action i { color: #ffd700; }
-
-        /* Botão PTT maior */
         .ptt-area {
             text-align: center;
             margin: 8px 16px 16px;
@@ -310,7 +232,6 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: 0.1s;
         }
         .ptt i { font-size: 52px; color: #888; }
         .ptt span { font-size: 14px; color: #888; margin-top: 6px; }
@@ -320,12 +241,7 @@
             animation: pulse 1s infinite;
         }
         .ptt.active i, .ptt.active span { color: white; }
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 #e53935; }
-            50% { box-shadow: 0 0 0 18px rgba(229,57,53,0.3); }
-            100% { box-shadow: 0 0 0 0 rgba(229,57,53,0); }
-        }
-
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 #e53935; } 50% { box-shadow: 0 0 0 18px rgba(229,57,53,0.3); } 100% { box-shadow: 0 0 0 0 rgba(229,57,53,0); } }
         .timer {
             font-family: monospace;
             font-size: 13px;
@@ -336,14 +252,7 @@
             border-radius: 30px;
             margin-top: 8px;
         }
-        .speaking-alert {
-            font-size: 9px;
-            color: #e53935;
-            margin-top: 5px;
-            display: none;
-        }
-
-        /* Admin gear */
+        .speaking-alert { font-size: 9px; color: #e53935; margin-top: 5px; display: none; }
         .admin-gear {
             position: absolute;
             top: 12px;
@@ -374,17 +283,7 @@
             z-index: 100;
         }
         .admin-panel.show { display: flex; }
-        .admin-panel button {
-            background: #2a2a2a;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 20px;
-            color: white;
-            font-size: 10px;
-            cursor: pointer;
-        }
-
-        /* MODAIS */
+        .admin-panel button { background: #2a2a2a; border: none; padding: 6px 12px; border-radius: 20px; color: white; font-size: 10px; cursor: pointer; }
         .modal-full, .modal-alert, .modal-chat {
             position: fixed;
             top: 0;
@@ -397,24 +296,8 @@
             flex-direction: column;
         }
         .modal-full.visible, .modal-alert.visible, .modal-chat.visible { display: flex; }
-
-        .modal-header {
-            background: #075E54;
-            padding: 12px 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: white;
-        }
-        .modal-close {
-            background: #e53935;
-            border: none;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            cursor: pointer;
-        }
-
+        .modal-header { background: #075E54; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; color: white; }
+        .modal-close { background: #e53935; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; }
         .map-container { flex: 1; position: relative; }
         #map { height: 100%; width: 100%; }
         .map-buttons {
@@ -441,8 +324,6 @@
             gap: 5px;
             cursor: pointer;
         }
-
-        /* Alertas com ícones redondos e sem bordas quadradas */
         .alert-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -455,15 +336,11 @@
             padding: 12px 5px;
             text-align: center;
             cursor: pointer;
-            transition: 0.1s;
             border: none;
             box-shadow: 0 0 5px rgba(0,170,255,0.3);
         }
-        .alert-card:hover { transform: scale(1.02); background: #2a2a60; }
         .alert-emoji { font-size: 32px; }
         .alert-name { font-size: 11px; color: white; margin-top: 4px; }
-
-        /* Chat WhatsApp */
         .chat-messages {
             flex: 1;
             overflow-y: auto;
@@ -485,31 +362,10 @@
             justify-content: space-between;
         }
         .reply-preview.show { display: flex; }
-        .input-row {
-            display: flex;
-            padding: 8px 10px;
-            gap: 8px;
-        }
-        .input-row input {
-            flex: 1;
-            padding: 10px 14px;
-            border-radius: 25px;
-            border: none;
-            font-size: 13px;
-        }
-        .input-row button {
-            background: #075E54;
-            border: none;
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            color: white;
-            cursor: pointer;
-        }
-        .msg {
-            margin-bottom: 8px;
-            display: flex;
-        }
+        .input-row { display: flex; padding: 8px 10px; gap: 8px; }
+        .input-row input { flex: 1; padding: 10px 14px; border-radius: 25px; border: none; font-size: 13px; }
+        .input-row button { background: #075E54; border: none; width: 38px; height: 38px; border-radius: 50%; color: white; cursor: pointer; }
+        .msg { margin-bottom: 8px; display: flex; }
         .msg.me { justify-content: flex-end; }
         .msg.other { justify-content: flex-start; }
         .msg-content {
@@ -523,7 +379,6 @@
         .msg-sender { font-size: 10px; font-weight: bold; color: #075E54; }
         .msg-text { font-size: 12px; }
         .msg-time { font-size: 9px; color: #888; text-align: right; margin-top: 3px; }
-
         .context-menu {
             position: fixed;
             background: white;
@@ -535,15 +390,8 @@
             min-width: 130px;
         }
         .context-menu.show { display: block; }
-        .context-item {
-            padding: 8px 16px;
-            cursor: pointer;
-            display: flex;
-            gap: 10px;
-            font-size: 12px;
-        }
+        .context-item { padding: 8px 16px; cursor: pointer; display: flex; gap: 10px; font-size: 12px; }
         .context-item:hover { background: #f0f0f0; }
-
         emoji-picker {
             position: fixed;
             bottom: 70px;
@@ -556,7 +404,6 @@
             height: 350px;
         }
         emoji-picker.show { display: block; }
-
         .audio-notify {
             position: fixed;
             bottom: 20px;
@@ -571,8 +418,6 @@
             gap: 10px;
             z-index: 2000;
         }
-
-        /* Marcadores do mapa - redondos, sem bordas */
         .map-marker-icon {
             display: flex;
             align-items: center;
@@ -581,17 +426,12 @@
             width: 38px;
             height: 38px;
             border-radius: 50%;
-            background: rgba(0,0,0,0.5);
             animation: pulse-marker 1.5s infinite;
         }
-        @keyframes pulse-marker {
-            0% { transform: scale(1); opacity: 0.9; }
-            50% { transform: scale(1.2); opacity: 1; }
-            100% { transform: scale(1); opacity: 0.9; }
-        }
-
-        @keyframes pulse-red {
-            0%,100%{opacity:1}50%{opacity:0.6}
+        @keyframes pulse-marker { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+        @keyframes pulse-red { 0%,100%{opacity:1}50%{opacity:0.6} }
+        .admin-badge {
+            position: absolute; top: 10px; left: 10px; background: #ffd700; color: #000; padding: 2px 8px; border-radius: 20px; font-size: 9px; display: none; z-index: 1001;
         }
     </style>
 </head>
@@ -605,10 +445,7 @@
 
     <div class="display">
         <div class="freq-row">
-            <div>
-                <span style="font-size:8px;">FREQUÊNCIA</span>
-                <div class="freq">27.7 MHz</div>
-            </div>
+            <div><span style="font-size:8px;">FREQUÊNCIA</span><div class="freq">27.7 MHz</div></div>
             <div style="display: flex; align-items: center; gap: 6px;">
                 <div class="live"><i class="fas fa-circle"></i> AO VIVO</div>
                 <div class="online-count-header" id="onlineCountHeader">0 online</div>
@@ -624,45 +461,26 @@
         </div>
     </div>
 
-    <!-- Botões disjuntor -->
     <div class="switch-panel">
-        <div class="switch-item">
-            <div class="switch-label">MUDO</div>
-            <div class="toggle-switch" id="muteSwitch"></div>
-            <div class="switch-value" id="muteStatus">DESL</div>
-        </div>
-        <div class="switch-item">
-            <div class="switch-label">LED</div>
-            <div class="toggle-switch active" id="ledSwitch"></div>
-            <div class="switch-value" id="ledStatus">LIG</div>
-        </div>
+        <div class="switch-item"><div class="switch-label">MUDO</div><div class="toggle-switch" id="muteSwitch"></div><div class="switch-value" id="muteStatus">DESL</div></div>
+        <div class="switch-item"><div class="switch-label">LED</div><div class="toggle-switch active" id="ledSwitch"></div><div class="switch-value" id="ledStatus">LIG</div></div>
     </div>
 
-    <!-- Seletor estação -->
     <div class="station-area">
-        <div class="station-selector" id="selectorTrigger">
-            <span id="selectedCityName">Curitiba</span>
-            <i class="fas fa-chevron-down"></i>
-        </div>
+        <div class="station-selector" id="selectorTrigger"><span id="selectedCityName">Curitiba</span><i class="fas fa-chevron-down"></i></div>
         <div class="station-dropdown" id="stationDropdown"></div>
     </div>
 
-    <!-- Botões rápidos de estação (salvar até 5) -->
     <div class="quick-buttons" id="quickButtons"></div>
 
-    <!-- Ações principais (acima do PTT) -->
     <div class="action-bar">
         <div class="action" id="openMapBtn"><i class="fas fa-map-marked-alt"></i> MAPA</div>
         <div class="action" id="openAlertBtn"><i class="fas fa-exclamation-triangle"></i> ALERTA</div>
         <div class="action" id="openChatBtn"><i class="fas fa-comment-dots"></i> CHAT</div>
     </div>
 
-    <!-- PTT maior -->
     <div class="ptt-area">
-        <div class="ptt off" id="pttButton">
-            <i class="fas fa-microphone-slash"></i>
-            <span>PTT</span>
-        </div>
+        <div class="ptt off" id="pttButton"><i class="fas fa-microphone-slash"></i><span>PTT</span></div>
         <div class="speaking-alert" id="speakingAlert">📢 Alguém está falando...</div>
         <div class="timer" id="timerDisplay" style="display:none;"></div>
     </div>
@@ -677,62 +495,26 @@
 
 <!-- MODAIS -->
 <div class="modal-full" id="mapModal">
-    <div class="modal-header">
-        <span>MAP</span>
-        <button class="modal-close" id="closeMapModal">✕</button>
-    </div>
-    <div class="map-container">
-        <div id="map"></div>
-        <div class="map-buttons">
-            <button class="map-btn" id="mapAlertBtn"><i class="fas fa-exclamation-triangle"></i> ALERTAS</button>
-            <button class="map-btn" id="recenterBtn"><i class="fas fa-location-arrow"></i> MINHA POSIÇÃO</button>
-        </div>
-        <div id="adminBadge" style="position:absolute; top:10px; left:10px; background:#ffd700; color:#000; padding:2px 8px; border-radius:20px; font-size:9px; display:none;">ADMIN</div>
-    </div>
+    <div class="modal-header"><span>MAPA BR-277</span><button class="modal-close" id="closeMapModal">✕</button></div>
+    <div class="map-container"><div id="map"></div><div class="map-buttons"><button class="map-btn" id="mapAlertBtn"><i class="fas fa-exclamation-triangle"></i> ALERTAS</button><button class="map-btn" id="recenterBtn"><i class="fas fa-location-arrow"></i> MINHA POSIÇÃO</button></div><div id="adminBadge" class="admin-badge">ADMIN</div></div>
 </div>
 
 <div class="modal-alert" id="alertModal">
-    <div class="modal-header">
-        <span>REPORTAR OCORRÊNCIA</span>
-        <button class="modal-close" id="closeAlertModal">✕</button>
-    </div>
+    <div class="modal-header"><span>REPORTAR OCORRÊNCIA</span><button class="modal-close" id="closeAlertModal">✕</button></div>
     <div class="alert-grid" id="alertGrid"></div>
 </div>
 
 <div class="modal-chat" id="chatModal">
-    <div class="modal-header">
-        <div style="display:flex; gap:10px; align-items:center;">
-            <i class="fas fa-arrow-left" id="closeChatBtn" style="cursor:pointer;"></i>
-            <span>CHAT GERAL</span>
-        </div>
-        <button class="modal-close" id="closeChatModalBtn">✕</button>
-    </div>
+    <div class="modal-header"><div style="display:flex; gap:10px;"><i class="fas fa-arrow-left" id="closeChatBtn" style="cursor:pointer;"></i><span>CHAT GERAL</span></div><button class="modal-close" id="closeChatModalBtn">✕</button></div>
     <div class="chat-messages" id="chatMessages"></div>
-    <div class="chat-input-area">
-        <div class="reply-preview" id="replyPreview">
-            <span id="replyText"></span>
-            <button id="cancelReplyBtn">✕</button>
-        </div>
-        <div class="input-row">
-            <button id="chatEmojiBtn"><i class="fas fa-smile"></i></button>
-            <input type="text" id="chatInput" placeholder="Digite sua mensagem...">
-            <button id="sendMsgBtn"><i class="fas fa-paper-plane"></i></button>
-        </div>
-    </div>
+    <div class="chat-input-area"><div class="reply-preview" id="replyPreview"><span id="replyText"></span><button id="cancelReplyBtn">✕</button></div><div class="input-row"><button id="chatEmojiBtn"><i class="fas fa-smile"></i></button><input type="text" id="chatInput" placeholder="Digite sua mensagem..."><button id="sendMsgBtn"><i class="fas fa-paper-plane"></i></button></div></div>
 </div>
 
-<div class="context-menu" id="contextMenu">
-    <div class="context-item" id="replyMsg"><i class="fas fa-reply"></i> Responder</div>
-    <div class="context-item" id="deleteMsg"><i class="fas fa-trash-alt"></i> Apagar</div>
-    <div class="context-item" id="emojiMsg"><i class="fas fa-smile"></i> Emoji</div>
-</div>
+<div class="context-menu" id="contextMenu"><div class="context-item" id="replyMsg"><i class="fas fa-reply"></i> Responder</div><div class="context-item" id="deleteMsg"><i class="fas fa-trash-alt"></i> Apagar</div><div class="context-item" id="emojiMsg"><i class="fas fa-smile"></i> Emoji</div></div>
 
 <emoji-picker id="emojiPicker"></emoji-picker>
 
-<div class="audio-notify" id="audioNotify">
-    <div style="background:#e53935; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center;"><i class="fas fa-bullhorn"></i></div>
-    <div><span id="audioSender"></span><br><span id="audioStation" style="font-size:10px;"></span></div>
-</div>
+<div class="audio-notify" id="audioNotify"><div style="background:#e53935; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center;"><i class="fas fa-bullhorn"></i></div><div><span id="audioSender"></span><br><span id="audioStation" style="font-size:10px;"></span></div></div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -766,409 +548,266 @@ let map, userMarker, userLocation, alertsOnMap = {};
 let mediaRecorder, isTransmitting = false, audioStream, chunks = [], recordSec = 0, timerInterval;
 let audioListener, currentAudio, speakingListener;
 let selectedMsg = { id: null, type: null, element: null, text: null, user: null };
-let replyTo = null;
-let quickStations = JSON.parse(localStorage.getItem('quickStations') || '[]'); // max 5
+let currentReply = null;
+let quickStations = JSON.parse(localStorage.getItem('quickStations') || '[]');
+let tempMarker = null, adminClickCount = 0, adminClickTimeout = null, adminFirstPos = null;
 
-// ==================== UTILS ====================
 function normalizeId(str) { return str.toLowerCase().replace(/ /g, '_').normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
-function showToast(msg) {
-    let t = document.createElement('div');
-    t.innerText = msg;
-    t.style.cssText = 'position:fixed; bottom:70px; left:50%; transform:translateX(-50%); background:#00aaff; color:white; padding:5px 15px; border-radius:30px; z-index:13000; font-size:11px;';
-    document.body.appendChild(t);
-    setTimeout(() => t.remove(), 2000);
-}
+function showToast(msg) { let t=document.createElement('div'); t.innerText=msg; t.style.cssText='position:fixed; bottom:70px; left:50%; transform:translateX(-50%); background:#00aaff; color:white; padding:5px 15px; border-radius:30px; z-index:13000; font-size:11px;'; document.body.appendChild(t); setTimeout(()=>t.remove(),2000); }
 
 // ==================== SWITCHES ====================
-const muteSwitch = document.getElementById('muteSwitch');
-muteSwitch.addEventListener('click', function() {
-    isMuted = !isMuted;
-    if(isMuted) { this.classList.add('active', 'mute-active'); document.getElementById('muteStatus').innerText = 'LIG'; if(currentAudio) currentAudio.pause(); }
-    else { this.classList.remove('active', 'mute-active'); document.getElementById('muteStatus').innerText = 'DESL'; }
-});
-const ledSwitch = document.getElementById('ledSwitch');
-ledSwitch.addEventListener('click', function() {
-    isLedActive = !isLedActive;
-    if(isLedActive) { this.classList.add('active'); document.getElementById('ledStatus').innerText = 'LIG'; document.getElementById('smeterBox').style.opacity = '1'; }
-    else { this.classList.remove('active'); document.getElementById('ledStatus').innerText = 'DESL'; document.getElementById('smeterBox').style.opacity = '0.3'; }
-});
-function animateSMeter(val=5) {
-    if(!isLedActive) return;
-    let bars = document.querySelectorAll('.bar');
-    bars.forEach((b,i) => {
-        b.classList.remove('active','warning','danger');
-        if(i < val) {
-            if(i>=7) b.classList.add('danger');
-            else if(i>=5) b.classList.add('warning');
-            else b.classList.add('active');
-        }
-    });
-}
-setInterval(() => { if(!isTransmitting && isLedActive) animateSMeter(Math.floor(Math.random()*9)); }, 800);
+document.getElementById('muteSwitch').addEventListener('click', function() { isMuted=!isMuted; if(isMuted){ this.classList.add('active','mute-active'); document.getElementById('muteStatus').innerText='LIG'; if(currentAudio) currentAudio.pause(); } else { this.classList.remove('active','mute-active'); document.getElementById('muteStatus').innerText='DESL'; } });
+document.getElementById('ledSwitch').addEventListener('click', function() { isLedActive=!isLedActive; if(isLedActive){ this.classList.add('active'); document.getElementById('ledStatus').innerText='LIG'; document.getElementById('smeterBox').style.opacity='1'; } else { this.classList.remove('active'); document.getElementById('ledStatus').innerText='DESL'; document.getElementById('smeterBox').style.opacity='0.3'; } });
+function animateSMeter(val=5) { if(!isLedActive) return; let bars=document.querySelectorAll('.bar'); bars.forEach((b,i)=>{ b.classList.remove('active','warning','danger'); if(i<val){ if(i>=7) b.classList.add('danger'); else if(i>=5) b.classList.add('warning'); else b.classList.add('active'); } }); }
+setInterval(()=>{ if(!isTransmitting && isLedActive) animateSMeter(Math.floor(Math.random()*9)); },800);
 
-// ==================== ESTAÇÕES E CONTAGEM ====================
+// ==================== ESTAÇÕES ====================
 function buildDropdown() {
-    let menu = document.getElementById('stationDropdown');
-    menu.innerHTML = '';
-    cities.forEach(city => {
-        let id = normalizeId(city);
-        let opt = document.createElement('div');
-        opt.className = 'station-option';
-        if(id === currentStation) opt.classList.add('active');
-        opt.innerHTML = `<span>${city}</span><span class="station-count" id="count-${id}">0</span>`;
-        opt.onclick = () => { changeStation(id, city); closeDropdown(); };
-        menu.appendChild(opt);
-    });
+    let menu=document.getElementById('stationDropdown'); menu.innerHTML='';
+    cities.forEach(city=>{ let id=normalizeId(city); let opt=document.createElement('div'); opt.className='station-option'; if(id===currentStation) opt.classList.add('active'); opt.innerHTML=`<span>${city}</span><span class="station-count" id="count-${id}">0</span>`; opt.onclick=()=>{ changeStation(id,city); closeDropdown(); }; menu.appendChild(opt); });
 }
 function toggleDropdown() { document.getElementById('stationDropdown').classList.toggle('open'); }
 function closeDropdown() { document.getElementById('stationDropdown').classList.remove('open'); }
-document.getElementById('selectorTrigger').addEventListener('click', (e) => { e.stopPropagation(); toggleDropdown(); });
-document.addEventListener('click', (e) => { if(!e.target.closest('.station-selector')) closeDropdown(); });
-
-function changeStation(id, name) {
-    currentStation = id;
-    localStorage.setItem('px_station', id);
-    document.querySelectorAll('.station-option').forEach(opt => opt.classList.remove('active'));
+document.getElementById('selectorTrigger').addEventListener('click',(e)=>{ e.stopPropagation(); toggleDropdown(); });
+document.addEventListener('click',(e)=>{ if(!e.target.closest('.station-selector')) closeDropdown(); });
+function changeStation(id,name){
+    currentStation=id; localStorage.setItem('px_station',id);
+    document.querySelectorAll('.station-option').forEach(opt=>opt.classList.remove('active'));
     event.target.closest('.station-option').classList.add('active');
-    document.getElementById('selectedCityName').innerText = name;
-    db.ref(`stations/${id}/users/${userName}`).set({ name: userName, timestamp: Date.now() });
-    cities.forEach(c => { let oid = normalizeId(c); if(oid !== id) db.ref(`stations/${oid}/users/${userName}`).remove(); });
+    document.getElementById('selectedCityName').innerText=name;
+    db.ref(`stations/${id}/users/${userName}`).set({ name:userName, timestamp:Date.now() });
+    cities.forEach(c=>{ let oid=normalizeId(c); if(oid!==id) db.ref(`stations/${oid}/users/${userName}`).remove(); });
     setupAudio(); checkSpeaking(); showToast(`📻 ${name}`);
 }
-function loadCounts() {
-    cities.forEach(city => {
-        let id = normalizeId(city);
-        db.ref(`stations/${id}/users`).on('value', snap => {
-            let count = snap.val() ? Object.keys(snap.val()).length : 0;
-            let badge = document.getElementById(`count-${id}`);
-            if(badge) badge.innerText = count;
-            if(id === currentStation) {
-                document.getElementById('onlineCountHeader').innerHTML = `${count} online <i class="fas fa-users"></i>`;
-            }
-        });
-    });
+function loadCounts(){
+    cities.forEach(city=>{ let id=normalizeId(city); db.ref(`stations/${id}/users`).on('value',snap=>{ let count=snap.val()?Object.keys(snap.val()).length:0; let badge=document.getElementById(`count-${id}`); if(badge) badge.innerText=count; if(id===currentStation) document.getElementById('onlineCountHeader').innerHTML=`${count} online <i class="fas fa-users"></i>`; }); });
 }
-function checkSpeaking() {
+function checkSpeaking(){
     if(speakingListener) db.ref(`stations/${currentStation}/speaking`).off();
-    speakingListener = db.ref(`stations/${currentStation}/speaking`).on('value', snap => {
-        let s = snap.val();
-        let div = document.getElementById('speakingAlert');
-        if(s && s.user !== userName) { div.style.display = 'block'; div.innerText = `📢 ${s.user} está falando...`; setTimeout(() => div.style.display = 'none', 2000); }
-        else div.style.display = 'none';
-    });
+    speakingListener=db.ref(`stations/${currentStation}/speaking`).on('value',snap=>{ let s=snap.val(); let div=document.getElementById('speakingAlert'); if(s && s.user!==userName){ div.style.display='block'; div.innerText=`📢 ${s.user} está falando...`; setTimeout(()=>div.style.display='none',2000); } else div.style.display='none'; });
 }
-
-// ==================== ÁUDIO ====================
-function setupAudio() {
+function setupAudio(){
     if(audioListener) db.ref(`stations/${currentStation}/audios`).off();
-    audioListener = db.ref(`stations/${currentStation}/audios`).on('child_added', snap => {
-        let data = snap.val();
-        if(data && data.sender !== userName && !isMuted) {
-            if(currentAudio) currentAudio.pause();
-            currentAudio = new Audio(data.audio);
-            currentAudio.play();
-            document.getElementById('audioSender').innerHTML = `<i class="fas fa-user"></i> ${data.sender}`;
-            document.getElementById('audioStation').innerHTML = `<i class="fas fa-radio"></i> ${data.station}`;
-            document.getElementById('audioNotify').style.display = 'flex';
-            setTimeout(() => document.getElementById('audioNotify').style.display = 'none', 3000);
-        }
-    });
+    audioListener=db.ref(`stations/${currentStation}/audios`).on('child_added',snap=>{ let data=snap.val(); if(data && data.sender!==userName && !isMuted){ if(currentAudio) currentAudio.pause(); currentAudio=new Audio(data.audio); currentAudio.play(); document.getElementById('audioSender').innerHTML=`<i class="fas fa-user"></i> ${data.sender}`; document.getElementById('audioStation').innerHTML=`<i class="fas fa-radio"></i> ${data.station}`; document.getElementById('audioNotify').style.display='flex'; setTimeout(()=>document.getElementById('audioNotify').style.display='none',3000); } });
 }
-const ptt = document.getElementById('pttButton');
-async function startTx() {
+const ptt=document.getElementById('pttButton');
+async function startTx(){
     if(isTransmitting) return;
-    try {
-        let stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        mediaRecorder = new MediaRecorder(stream);
-        chunks = []; recordSec = 0;
-        db.ref(`stations/${currentStation}/speaking`).set({ user: userName, timestamp: Date.now() });
-        mediaRecorder.ondataavailable = e => { if(e.data.size) chunks.push(e.data); };
-        mediaRecorder.onstop = async () => {
-            if(chunks.length) {
-                let blob = new Blob(chunks, { type: 'audio/webm' });
-                let reader = new FileReader();
-                reader.onloadend = async () => {
-                    let cityName = cities.find(c => normalizeId(c) === currentStation);
-                    let snap = await db.ref(`stations/${currentStation}/audios`).once('value');
-                    if(snap.val()) Object.keys(snap.val()).forEach(k => db.ref(`stations/${currentStation}/audios/${k}`).remove());
-                    await db.ref(`stations/${currentStation}/audios`).push({ sender: userName, station: cityName, audio: reader.result, timestamp: Date.now(), duration: recordSec });
-                    setTimeout(() => db.ref(`stations/${currentStation}/speaking`).remove(), 1000);
+    try{
+        let stream=await navigator.mediaDevices.getUserMedia({ audio:true });
+        mediaRecorder=new MediaRecorder(stream);
+        chunks=[]; recordSec=0;
+        db.ref(`stations/${currentStation}/speaking`).set({ user:userName, timestamp:Date.now() });
+        mediaRecorder.ondataavailable=e=>{ if(e.data.size) chunks.push(e.data); };
+        mediaRecorder.onstop=async()=>{
+            if(chunks.length){
+                let blob=new Blob(chunks,{ type:'audio/webm' });
+                let reader=new FileReader();
+                reader.onloadend=async()=>{
+                    let cityName=cities.find(c=>normalizeId(c)===currentStation);
+                    let snap=await db.ref(`stations/${currentStation}/audios`).once('value');
+                    if(snap.val()) Object.keys(snap.val()).forEach(k=>db.ref(`stations/${currentStation}/audios/${k}`).remove());
+                    await db.ref(`stations/${currentStation}/audios`).push({ sender:userName, station:cityName, audio:reader.result, timestamp:Date.now(), duration:recordSec });
+                    setTimeout(()=>db.ref(`stations/${currentStation}/speaking`).remove(),1000);
                 };
                 reader.readAsDataURL(blob);
             }
-            if(audioStream) audioStream.getTracks().forEach(t => t.stop());
+            if(audioStream) audioStream.getTracks().forEach(t=>t.stop());
         };
         mediaRecorder.start(100);
-        isTransmitting = true;
+        isTransmitting=true;
         ptt.classList.add('active');
-        ptt.innerHTML = '<i class="fas fa-microphone"></i><span>PTT</span>';
-        document.getElementById('timerDisplay').style.display = 'block';
+        ptt.innerHTML='<i class="fas fa-microphone"></i><span>PTT</span>';
+        document.getElementById('timerDisplay').style.display='block';
         if(isLedActive) animateSMeter(9);
-        timerInterval = setInterval(() => { recordSec++; document.getElementById('timerDisplay').innerHTML = `⏱️ ${recordSec}s`; }, 1000);
-    } catch(e) { alert("Permita microfone"); }
+        timerInterval=setInterval(()=>{ recordSec++; document.getElementById('timerDisplay').innerHTML=`⏱️ ${recordSec}s`; },1000);
+    }catch(e){ alert("Permita microfone"); }
 }
-function stopTx() {
-    if(mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop();
+function stopTx(){
+    if(mediaRecorder && mediaRecorder.state==='recording') mediaRecorder.stop();
     if(timerInterval) clearInterval(timerInterval);
-    isTransmitting = false;
+    isTransmitting=false;
     db.ref(`stations/${currentStation}/speaking`).remove();
     ptt.classList.remove('active');
-    ptt.innerHTML = '<i class="fas fa-microphone-slash"></i><span>PTT</span>';
-    document.getElementById('timerDisplay').style.display = 'none';
+    ptt.innerHTML='<i class="fas fa-microphone-slash"></i><span>PTT</span>';
+    document.getElementById('timerDisplay').style.display='none';
     if(isLedActive) animateSMeter(3);
 }
-ptt.addEventListener('click', () => { if(isTransmitting) stopTx(); else startTx(); });
+ptt.addEventListener('click',()=>{ if(isTransmitting) stopTx(); else startTx(); });
 
-// ==================== MAPA ====================
-function initMap() {
-    map = L.map('map').setView([-25.4284, -49.2733], 12);
+// ==================== MAPA + ADMIN (ALFINETE) ====================
+function initMap(){
+    map=L.map('map').setView([-25.4284,-49.2733],12);
     L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(map);
-    if(navigator.geolocation) navigator.geolocation.watchPosition(pos => {
-        userLocation = [pos.coords.latitude, pos.coords.longitude];
-        if(!userMarker) userMarker = L.marker(userLocation, { icon: L.divIcon({ html: '<div style="font-size:28px;">🚛</div>', iconSize: [28,28], iconAnchor: [14,14] }) }).addTo(map);
-        else userMarker.setLatLng(userLocation);
-    });
+    if(navigator.geolocation) navigator.geolocation.watchPosition(pos=>{ userLocation=[pos.coords.latitude,pos.coords.longitude]; if(!userMarker) userMarker=L.marker(userLocation,{ icon:L.divIcon({ html:'<div style="font-size:28px;">🚛</div>', iconSize:[28,28], iconAnchor:[14,14] }) }).addTo(map); else userMarker.setLatLng(userLocation); });
     loadAlerts();
+    setupAdminMapMode();
 }
-function recenter() { if(userLocation) map.setView(userLocation, 14); else showToast("Aguardando localização"); }
-function loadAlerts() {
-    db.ref('alerts').on('child_added', snap => {
-        let a = snap.val(), id = snap.key;
-        if(Date.now() - a.timestamp > 20*60*1000) { db.ref(`alerts/${id}`).remove(); return; }
+function recenter(){ if(userLocation) map.setView(userLocation,14); else showToast("Aguardando localização"); }
+function loadAlerts(){
+    db.ref('alerts').on('child_added',snap=>{
+        let a=snap.val(), id=snap.key;
+        if(Date.now()-a.timestamp>20*60*1000){ db.ref(`alerts/${id}`).remove(); return; }
         if(alertsOnMap[id] || !map) return;
-        let iconHtml = `<div style="background:${a.color}; width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; box-shadow:0 0 8px ${a.color}; animation:pulse-marker 1s infinite;">${a.emoji}</div>`;
-        let marker = L.marker([a.lat, a.lng], { icon: L.divIcon({ html: iconHtml, iconSize: [40,40], iconAnchor: [20,20] }) }).addTo(map);
-        marker.on('popupopen', () => loadAlertChat(id));
-        marker.bindPopup(`
-            ${a.image ? `<img src="${a.image}" style="width:100%; height:80px; object-fit:cover; border-radius:8px;" onclick="viewFullImage('${a.image}')">` : ''}
-            <div style="background:#075E54; color:white; padding:5px; display:flex; justify-content:space-between;" onclick="confirmAlert('${id}')">
-                <span>${a.emoji} ${a.name}</span><span>👍 <span id="confirm-${id}">${a.confirmations||1}</span></span>
-                ${isAdminMap ? `<button onclick="event.stopPropagation(); deleteAlert('${id}')" style="background:red; border:none; border-radius:10px;">🗑️</button>` : ''}
-            </div>
-            <div id="chatAlert-${id}" style="background:#E5DDD5; max-height:120px; overflow-y:auto; padding:5px;"></div>
-            <div style="display:flex; padding:5px;"><input id="inputAlert-${id}" placeholder="Comentar..." style="flex:1;"><button onclick="sendAlertComment('${id}')">➔</button></div>
-        `);
-        alertsOnMap[id] = marker;
+        let iconHtml=`<div style="background:${a.color}; width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; box-shadow:0 0 8px ${a.color}; animation:pulse-marker 1s infinite;">${a.emoji}</div>`;
+        let marker=L.marker([a.lat,a.lng],{ icon:L.divIcon({ html:iconHtml, iconSize:[40,40], iconAnchor:[20,20] }) }).addTo(map);
+        marker.on('popupopen',()=>loadAlertChat(id));
+        marker.bindPopup(`${a.image?`<img src="${a.image}" style="width:100%; height:80px; object-fit:cover; border-radius:8px;" onclick="viewFullImage('${a.image}')">`:''}<div style="background:#075E54; color:white; padding:5px; display:flex; justify-content:space-between;" onclick="confirmAlert('${id}')"><span>${a.emoji} ${a.name}</span><span>👍 <span id="confirm-${id}">${a.confirmations||1}</span></span>${isAdminMap?`<button onclick="event.stopPropagation(); deleteAlert('${id}')" style="background:red; border:none; border-radius:10px;">🗑️</button>`:''}</div><div id="chatAlert-${id}" style="background:#E5DDD5; max-height:120px; overflow-y:auto; padding:5px;"></div><div style="display:flex; padding:5px;"><input id="inputAlert-${id}" placeholder="Comentar..." style="flex:1;"><button onclick="sendAlertComment('${id}')">➔</button></div>`);
+        alertsOnMap[id]=marker;
     });
 }
-function viewFullImage(img) { let m=document.createElement('div'); m.style.cssText='position:fixed; top:0; left:0; right:0; bottom:0; background:black; display:flex; align-items:center; justify-content:center; z-index:20000;'; m.innerHTML=`<img src="${img}" style="max-width:90%;">`; m.onclick=()=>m.remove(); document.body.appendChild(m); }
-function confirmAlert(id) { db.ref(`alerts/${id}/confirmations`).transaction(c=>(c||1)+1); showToast("👍 Confirmado"); }
-function loadAlertChat(id) { db.ref(`chats/alert_${id}`).on('value', snap => { let div=document.getElementById(`chatAlert-${id}`); if(!div)return; let msgs=snap.val(); if(!msgs){div.innerHTML='';return;} let html=''; Object.entries(msgs).sort((a,b)=>a[1].timestamp-b[1].timestamp).forEach(([mid,msg])=>{ let isMe=msg.user===userName; html+=`<div style="margin:3px; padding:4px; border-radius:12px; background:${isMe?'#DCF8C6':'white'}; max-width:90%;"><strong>${msg.user}</strong><br>${msg.text}<br><small>${new Date(msg.timestamp).toLocaleTimeString()}</small></div>`; }); div.innerHTML=html; }); }
-async function sendAlertComment(id) { let input=document.getElementById(`inputAlert-${id}`); if(!input.value.trim())return; await db.ref(`chats/alert_${id}`).push({ user:userName, text:input.value, timestamp:Date.now() }); input.value=''; }
-async function deleteAlert(id) { if(confirm("Apagar?")) { await db.ref(`alerts/${id}`).remove(); if(alertsOnMap[id]) map.removeLayer(alertsOnMap[id]); delete alertsOnMap[id]; showToast("Removido"); } }
+function viewFullImage(img){ let m=document.createElement('div'); m.style.cssText='position:fixed; top:0; left:0; right:0; bottom:0; background:black; display:flex; align-items:center; justify-content:center; z-index:20000;'; m.innerHTML=`<img src="${img}" style="max-width:90%;">`; m.onclick=()=>m.remove(); document.body.appendChild(m); }
+function confirmAlert(id){ db.ref(`alerts/${id}/confirmations`).transaction(c=>(c||1)+1); showToast("👍 Confirmado"); }
+function loadAlertChat(id){ db.ref(`chats/alert_${id}`).on('value',snap=>{ let div=document.getElementById(`chatAlert-${id}`); if(!div)return; let msgs=snap.val(); if(!msgs){div.innerHTML='';return;} let html=''; Object.entries(msgs).sort((a,b)=>a[1].timestamp-b[1].timestamp).forEach(([mid,msg])=>{ let isMe=msg.user===userName; html+=`<div style="margin:3px; padding:4px; border-radius:12px; background:${isMe?'#DCF8C6':'white'}; max-width:90%;"><strong>${msg.user}</strong><br>${msg.text}<br><small>${new Date(msg.timestamp).toLocaleTimeString()}</small></div>`; }); div.innerHTML=html; }); }
+async function sendAlertComment(id){ let input=document.getElementById(`inputAlert-${id}`); if(!input.value.trim())return; await db.ref(`chats/alert_${id}`).push({ user:userName, text:input.value, timestamp:Date.now() }); input.value=''; }
+async function deleteAlert(id){ if(confirm("Apagar?")){ await db.ref(`alerts/${id}`).remove(); if(alertsOnMap[id]) map.removeLayer(alertsOnMap[id]); delete alertsOnMap[id]; showToast("Removido"); } }
+function setupAdminMapMode(){
+    if(!map) return;
+    map.on('click',(e)=>{
+        if(!isAdminMap) return;
+        adminClickCount++;
+        if(adminClickCount===1){
+            adminFirstPos=e.latlng;
+            if(tempMarker) map.removeLayer(tempMarker);
+            tempMarker=L.marker(adminFirstPos,{ draggable:true, icon:L.divIcon({ html:'<div style="background:#ffd700; width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px;">📍</div>', iconSize:[34,34], iconAnchor:[17,17] }) }).addTo(map);
+            tempMarker.on('dragend',()=>{ adminFirstPos=tempMarker.getLatLng(); showToast("Posição ajustada"); });
+            showToast("⚠️ Clique NOVAMENTE no alfinete");
+            adminClickTimeout=setTimeout(()=>{ adminClickCount=0; if(tempMarker) map.removeLayer(tempMarker); showToast("Cancelado"); },10000);
+        } else if(adminClickCount===2){
+            clearTimeout(adminClickTimeout);
+            let markerPos=tempMarker?tempMarker.getLatLng():adminFirstPos;
+            if(markerPos && Math.hypot(markerPos.lat-e.latlng.lat, markerPos.lng-e.latlng.lng)<0.0005) showAdminAlertDropdown(markerPos.lat,markerPos.lng);
+            else showToast("❌ Clique no alfinete");
+            adminClickCount=0;
+        }
+    });
+}
+function showAdminAlertDropdown(lat,lng){
+    let modal=document.createElement('div'); modal.style.cssText='position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.95); z-index:20000; display:flex; align-items:center; justify-content:center;';
+    let container=document.createElement('div'); container.style.cssText='background:#1a1a1a; border-radius:20px; width:90%; max-width:320px; max-height:75vh; overflow:auto; border:2px solid #00aaff; padding:12px;';
+    container.innerHTML=`<h3 style="color:#00aaff; text-align:center; margin-bottom:8px;">📌 NOVO ALERTA</h3><div id="adminAlertSelector" style="display:grid; grid-template-columns:repeat(2,1fr); gap:8px;"></div><button id="cancelAdminAlert" style="margin-top:10px; width:100%; padding:6px; background:#e53935; border:none; border-radius:20px; color:white;">CANCELAR</button>`;
+    modal.appendChild(container); document.body.appendChild(modal);
+    let grid=container.querySelector('#adminAlertSelector');
+    alertTypes.forEach(alert=>{
+        let card=document.createElement('div'); card.style.cssText=`background:#2a2a2a; border-radius:10px; padding:6px; text-align:center; cursor:pointer; border-top:2px solid ${alert.color}`;
+        card.innerHTML=`<div style="font-size:20px;">${alert.emoji}</div><div style="color:white; font-size:8px;">${alert.name}</div>`;
+        card.onclick=async()=>{ let id=Date.now(); await db.ref(`alerts/${id}`).set({ ...alert, lat, lng, timestamp:id, creator:userName+" (ADMIN)", confirmations:1 }); showToast(`✅ Alerta ${alert.name} criado`); document.body.removeChild(modal); if(tempMarker) map.removeLayer(tempMarker); adminClickCount=0; openMapModal(); };
+        grid.appendChild(card);
+    });
+    container.querySelector('#cancelAdminAlert').onclick=()=>{ if(tempMarker) map.removeLayer(tempMarker); document.body.removeChild(modal); adminClickCount=0; };
+}
 
 // ==================== ALERTAS (15) ====================
-function buildAlertGrid() {
-    let grid = document.getElementById('alertGrid');
-    grid.innerHTML = '';
-    alertTypes.forEach(alert => {
-        let card = document.createElement('div');
-        card.className = 'alert-card';
-        card.style.borderTop = `3px solid ${alert.color}`;
-        card.innerHTML = `<div class="alert-emoji">${alert.emoji}</div><div class="alert-name">${alert.name}</div>`;
-        card.onclick = () => createAlert(alert);
+function buildAlertGrid(){
+    let grid=document.getElementById('alertGrid'); grid.innerHTML='';
+    alertTypes.forEach(alert=>{
+        let card=document.createElement('div'); card.className='alert-card'; card.style.borderTop=`3px solid ${alert.color}`;
+        card.innerHTML=`<div class="alert-emoji">${alert.emoji}</div><div class="alert-name">${alert.name}</div>`;
+        card.onclick=()=>createAlert(alert);
         grid.appendChild(card);
     });
 }
-async function createAlert(alert) {
-    if(!userLocation) { showToast("Aguardando localização..."); return; }
-    try {
-        let stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-        let overlay = document.createElement('div');
-        overlay.style.cssText = 'position:fixed; top:0; left:0; right:0; bottom:0; background:#000; z-index:20000; display:flex; flex-direction:column; align-items:center; justify-content:center;';
-        let video = document.createElement('video'); video.autoplay = true; video.srcObject = stream;
-        video.style.width = '80%'; video.style.maxWidth = '260px'; video.style.borderRadius = '12px';
-        let btnPhoto = document.createElement('button'); btnPhoto.innerText = '📷 TIRAR FOTO'; btnPhoto.style.cssText = 'margin:10px; padding:6px 16px; background:#ffd700; border:none; border-radius:30px;';
-        let btnSkip = document.createElement('button'); btnSkip.innerText = '⏭️ PULAR'; btnSkip.style.cssText = 'margin:10px; padding:6px 16px; background:#444; color:white; border:none; border-radius:30px;';
-        let btnClose = document.createElement('button'); btnClose.innerText = '✕'; btnClose.style.cssText = 'position:absolute; top:15px; right:15px; background:red; border:none; border-radius:50%; width:32px; height:32px; color:white;';
+async function createAlert(alert){
+    if(!userLocation){ showToast("Aguardando localização..."); return; }
+    try{
+        let stream=await navigator.mediaDevices.getUserMedia({ video:{ facingMode:'environment' } });
+        let overlay=document.createElement('div'); overlay.style.cssText='position:fixed; top:0; left:0; right:0; bottom:0; background:#000; z-index:20000; display:flex; flex-direction:column; align-items:center; justify-content:center;';
+        let video=document.createElement('video'); video.autoplay=true; video.srcObject=stream; video.style.width='80%'; video.style.maxWidth='260px'; video.style.borderRadius='12px';
+        let btnPhoto=document.createElement('button'); btnPhoto.innerText='📷 TIRAR FOTO'; btnPhoto.style.cssText='margin:10px; padding:6px 16px; background:#ffd700; border:none; border-radius:30px;';
+        let btnSkip=document.createElement('button'); btnSkip.innerText='⏭️ PULAR'; btnSkip.style.cssText='margin:10px; padding:6px 16px; background:#444; color:white; border:none; border-radius:30px;';
+        let btnClose=document.createElement('button'); btnClose.innerText='✕'; btnClose.style.cssText='position:absolute; top:15px; right:15px; background:red; border:none; border-radius:50%; width:32px; height:32px; color:white;';
         overlay.appendChild(video); overlay.appendChild(btnPhoto); overlay.appendChild(btnSkip); overlay.appendChild(btnClose);
         document.body.appendChild(overlay);
-        btnPhoto.onclick = () => {
-            let canvas = document.createElement('canvas'); canvas.width = video.videoWidth; canvas.height = video.videoHeight;
-            canvas.getContext('2d').drawImage(video, 0, 0);
-            canvas.toBlob(async blob => {
-                let reader = new FileReader();
-                reader.onloadend = async () => {
-                    let id = Date.now();
-                    await db.ref(`alerts/${id}`).set({ ...alert, lat: userLocation[0], lng: userLocation[1], timestamp: id, creator: userName, confirmations: 1, image: reader.result });
-                    stream.getTracks().forEach(t => t.stop());
-                    document.body.removeChild(overlay);
-                    showToast("✅ Alerta enviado!");
-                    closeAlertModal();
-                    openMapModal();
-                    setTimeout(() => { if(map && userLocation) map.setView(userLocation, 13); }, 500);
-                };
+        btnPhoto.onclick=()=>{
+            let canvas=document.createElement('canvas'); canvas.width=video.videoWidth; canvas.height=video.videoHeight;
+            canvas.getContext('2d').drawImage(video,0,0);
+            canvas.toBlob(async blob=>{
+                let reader=new FileReader();
+                reader.onloadend=async()=>{ let id=Date.now(); await db.ref(`alerts/${id}`).set({ ...alert, lat:userLocation[0], lng:userLocation[1], timestamp:id, creator:userName, confirmations:1, image:reader.result }); stream.getTracks().forEach(t=>t.stop()); document.body.removeChild(overlay); showToast("✅ Alerta enviado!"); closeAlertModal(); openMapModal(); setTimeout(()=>{ if(map && userLocation) map.setView(userLocation,13); },500); };
                 reader.readAsDataURL(blob);
-            }, 'image/jpeg', 0.6);
+            },'image/jpeg',0.6);
         };
-        btnSkip.onclick = async () => {
-            let id = Date.now();
-            await db.ref(`alerts/${id}`).set({ ...alert, lat: userLocation[0], lng: userLocation[1], timestamp: id, creator: userName, confirmations: 1 });
-            stream.getTracks().forEach(t => t.stop());
-            document.body.removeChild(overlay);
-            showToast(`⚠️ ${alert.name} reportado!`);
-            closeAlertModal();
-            openMapModal();
-            setTimeout(() => { if(map && userLocation) map.setView(userLocation, 13); }, 500);
-        };
-        btnClose.onclick = () => { stream.getTracks().forEach(t => t.stop()); document.body.removeChild(overlay); };
-    } catch(e) {
-        let id = Date.now();
-        await db.ref(`alerts/${id}`).set({ ...alert, lat: userLocation[0], lng: userLocation[1], timestamp: id, creator: userName, confirmations: 1 });
-        showToast(`⚠️ ${alert.name} reportado!`);
-        closeAlertModal();
-        openMapModal();
-        setTimeout(() => { if(map && userLocation) map.setView(userLocation, 13); }, 500);
+        btnSkip.onclick=async()=>{ let id=Date.now(); await db.ref(`alerts/${id}`).set({ ...alert, lat:userLocation[0], lng:userLocation[1], timestamp:id, creator:userName, confirmations:1 }); stream.getTracks().forEach(t=>t.stop()); document.body.removeChild(overlay); showToast(`⚠️ ${alert.name} reportado!`); closeAlertModal(); openMapModal(); setTimeout(()=>{ if(map && userLocation) map.setView(userLocation,13); },500); };
+        btnClose.onclick=()=>{ stream.getTracks().forEach(t=>t.stop()); document.body.removeChild(overlay); };
+    }catch(e){
+        let id=Date.now(); await db.ref(`alerts/${id}`).set({ ...alert, lat:userLocation[0], lng:userLocation[1], timestamp:id, creator:userName, confirmations:1 }); showToast(`⚠️ ${alert.name} reportado!`); closeAlertModal(); openMapModal(); setTimeout(()=>{ if(map && userLocation) map.setView(userLocation,13); },500);
     }
 }
-function openMapModal() { document.getElementById('mapModal').classList.add('visible'); if(map) map.invalidateSize(); else initMap(); }
-function closeMapModal() { document.getElementById('mapModal').classList.remove('visible'); }
-function openAlertModal() { document.getElementById('alertModal').classList.add('visible'); }
-function closeAlertModal() { document.getElementById('alertModal').classList.remove('visible'); }
-function openChatModal() { document.getElementById('chatModal').classList.add('visible'); loadChatMessages(); }
-function closeChatModal() { document.getElementById('chatModal').classList.remove('visible'); document.getElementById('emojiPicker').classList.remove('show'); replyTo=null; document.getElementById('replyPreview').classList.remove('show'); }
+function openMapModal(){ document.getElementById('mapModal').classList.add('visible'); if(map) map.invalidateSize(); else initMap(); }
+function closeMapModal(){ document.getElementById('mapModal').classList.remove('visible'); }
+function openAlertModal(){ document.getElementById('alertModal').classList.add('visible'); }
+function closeAlertModal(){ document.getElementById('alertModal').classList.remove('visible'); }
+function openChatModal(){ document.getElementById('chatModal').classList.add('visible'); loadChatMessages(); }
+function closeChatModal(){ document.getElementById('chatModal').classList.remove('visible'); document.getElementById('emojiPicker').classList.remove('show'); currentReply=null; document.getElementById('replyPreview').classList.remove('show'); }
 
-// ==================== CHAT WHATSAPP ====================
-let currentReply = null;
-function loadChatMessages() {
+// ==================== CHAT ====================
+function loadChatMessages(){
     db.ref('chat_global').off();
-    db.ref('chat_global').on('value', snap => {
-        let msgs = snap.val();
-        let container = document.getElementById('chatMessages');
-        if(!msgs) { container.innerHTML = '<div style="text-align:center; padding:20px;">Nenhuma mensagem</div>'; return; }
-        let html = '';
-        Object.entries(msgs).sort((a,b)=>a[1].timestamp-b[1].timestamp).forEach(([mid, msg]) => {
-            let isMe = msg.user === userName;
-            let time = new Date(msg.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-            html += `
-                <div class="msg ${isMe ? 'me' : 'other'}" data-id="${mid}" data-user="${msg.user}" data-text="${escapeHtml(msg.text)}">
-                    <div class="msg-content" onclick="selectChatMessage(this, '${mid}', 'chat_global')">
-                        <div class="msg-sender">${msg.user}</div>
-                        <div class="msg-text">${escapeHtml(msg.text)}</div>
-                        <div class="msg-time">${time}</div>
-                    </div>
-                </div>
-            `;
+    db.ref('chat_global').on('value',snap=>{
+        let msgs=snap.val(); let container=document.getElementById('chatMessages');
+        if(!msgs){ container.innerHTML='<div style="text-align:center; padding:20px;">Nenhuma mensagem</div>'; return; }
+        let html='';
+        Object.entries(msgs).sort((a,b)=>a[1].timestamp-b[1].timestamp).forEach(([mid,msg])=>{
+            let isMe=msg.user===userName; let time=new Date(msg.timestamp).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+            html+=`<div class="msg ${isMe?'me':'other'}" data-id="${mid}" data-user="${msg.user}" data-text="${escapeHtml(msg.text)}"><div class="msg-content" onclick="selectChatMessage(this,'${mid}','chat_global')"><div class="msg-sender">${msg.user}</div><div class="msg-text">${escapeHtml(msg.text)}</div><div class="msg-time">${time}</div></div></div>`;
         });
-        container.innerHTML = html;
-        container.scrollTop = container.scrollHeight;
+        container.innerHTML=html; container.scrollTop=container.scrollHeight;
     });
 }
-function selectChatMessage(el, id, type) {
-    let wrapper = el.closest('.msg');
-    selectedMsg = { id, type, element: wrapper, user: wrapper.dataset.user, text: wrapper.dataset.text };
-    let menu = document.getElementById('contextMenu');
-    let rect = el.getBoundingClientRect();
-    menu.style.left = rect.left + 'px';
-    menu.style.top = rect.bottom + 'px';
-    menu.classList.add('show');
-}
-document.getElementById('replyMsg').addEventListener('click', () => {
-    if(selectedMsg.user && selectedMsg.text) {
-        currentReply = `${selectedMsg.user}: "${selectedMsg.text.substring(0,40)}${selectedMsg.text.length>40?'...':''}"`;
-        document.getElementById('replyText').innerHTML = `Respondendo ${selectedMsg.user}`;
-        document.getElementById('replyPreview').classList.add('show');
-        document.getElementById('chatInput').focus();
-        document.getElementById('contextMenu').classList.remove('show');
-        selectedMsg = {};
-    }
-});
-document.getElementById('deleteMsg').addEventListener('click', async () => {
-    if(!selectedMsg.id) return;
-    let isAdmin = isAdminChat;
-    let isOwner = selectedMsg.user === userName;
-    if(isAdmin || isOwner) {
-        if(confirm("Apagar mensagem?")) {
-            await db.ref(`${selectedMsg.type}/${selectedMsg.id}`).remove();
-            showToast("Mensagem apagada");
-        }
-    } else showToast("Você só pode apagar suas próprias mensagens");
-    document.getElementById('contextMenu').classList.remove('show');
-    selectedMsg = {};
-});
-document.getElementById('emojiMsg').addEventListener('click', () => {
-    document.getElementById('emojiPicker').classList.toggle('show');
-    document.getElementById('contextMenu').classList.remove('show');
-});
-document.getElementById('cancelReplyBtn').addEventListener('click', () => { currentReply = null; document.getElementById('replyPreview').classList.remove('show'); });
-document.getElementById('sendMsgBtn').addEventListener('click', sendChatMsg);
-document.getElementById('chatInput').addEventListener('keypress', (e) => { if(e.key === 'Enter') sendChatMsg(); });
-function sendChatMsg() {
-    let input = document.getElementById('chatInput');
-    if(!input.value.trim()) return;
-    let msg = { user: userName, text: input.value.trim(), timestamp: Date.now() };
-    if(currentReply) { msg.replyTo = currentReply; currentReply = null; document.getElementById('replyPreview').classList.remove('show'); }
-    db.ref('chat_global').push(msg);
-    input.value = '';
-    showToast("✓ Enviada");
-}
-function escapeHtml(t) { let d=document.createElement('div'); d.textContent=t; return d.innerHTML; }
+function selectChatMessage(el,id,type){ let wrapper=el.closest('.msg'); selectedMsg={ id,type,element:wrapper, user:wrapper.dataset.user, text:wrapper.dataset.text }; let menu=document.getElementById('contextMenu'); let rect=el.getBoundingClientRect(); menu.style.left=rect.left+'px'; menu.style.top=rect.bottom+'px'; menu.classList.add('show'); }
+document.getElementById('replyMsg').addEventListener('click',()=>{ if(selectedMsg.user && selectedMsg.text){ currentReply=`${selectedMsg.user}: "${selectedMsg.text.substring(0,40)}${selectedMsg.text.length>40?'...':''}"`; document.getElementById('replyText').innerHTML=`Respondendo ${selectedMsg.user}`; document.getElementById('replyPreview').classList.add('show'); document.getElementById('chatInput').focus(); document.getElementById('contextMenu').classList.remove('show'); selectedMsg={}; } });
+document.getElementById('deleteMsg').addEventListener('click',async()=>{ if(!selectedMsg.id) return; let isAdmin=isAdminChat; let isOwner=selectedMsg.user===userName; if(isAdmin || isOwner){ if(confirm("Apagar mensagem?")){ await db.ref(`${selectedMsg.type}/${selectedMsg.id}`).remove(); showToast("Mensagem apagada"); } } else showToast("Você só pode apagar suas próprias mensagens"); document.getElementById('contextMenu').classList.remove('show'); selectedMsg={}; });
+document.getElementById('emojiMsg').addEventListener('click',()=>{ document.getElementById('emojiPicker').classList.toggle('show'); document.getElementById('contextMenu').classList.remove('show'); });
+document.getElementById('cancelReplyBtn').addEventListener('click',()=>{ currentReply=null; document.getElementById('replyPreview').classList.remove('show'); });
+document.getElementById('sendMsgBtn').addEventListener('click',sendChatMsg);
+document.getElementById('chatInput').addEventListener('keypress',(e)=>{ if(e.key==='Enter') sendChatMsg(); });
+function sendChatMsg(){ let input=document.getElementById('chatInput'); if(!input.value.trim()) return; let msg={ user:userName, text:input.value.trim(), timestamp:Date.now() }; if(currentReply){ msg.replyTo=currentReply; currentReply=null; document.getElementById('replyPreview').classList.remove('show'); } db.ref('chat_global').push(msg); input.value=''; showToast("✓ Enviada"); }
+function escapeHtml(t){ let d=document.createElement('div'); d.textContent=t; return d.innerHTML; }
 
-// ==================== ADMIN ====================
-function enableAdminMap() { let pwd=prompt("Senha:"); if(pwd==='277'){ isAdminMap=true; document.getElementById('adminBadge').style.display='flex'; showToast("ADMIN MAPA"); } else showToast("Senha errada"); }
-function enableAdminChat() { let pwd=prompt("Senha:"); if(pwd==='277'){ isAdminChat=true; showToast("ADMIN CHAT"); } else showToast("Senha errada"); }
-function disableAdmin() { isAdminMap=false; isAdminChat=false; document.getElementById('adminBadge').style.display='none'; showToast("Admin off"); }
-document.getElementById('adminGear').addEventListener('click', () => document.getElementById('adminPanel').classList.toggle('show'));
-document.getElementById('adminMapBtn').addEventListener('click', () => { enableAdminMap(); document.getElementById('adminPanel').classList.remove('show'); });
-document.getElementById('adminChatBtn').addEventListener('click', () => { enableAdminChat(); document.getElementById('adminPanel').classList.remove('show'); });
-document.getElementById('exitAdminBtn').addEventListener('click', () => { disableAdmin(); document.getElementById('adminPanel').classList.remove('show'); });
-
-// ==================== BOTÕES RÁPIDOS DE ESTAÇÃO ====================
-function saveQuickStation(cityId, cityName) {
-    if(quickStations.some(s => s.id === cityId)) return;
-    if(quickStations.length >= 5) quickStations.shift();
-    quickStations.push({ id: cityId, name: cityName });
-    localStorage.setItem('quickStations', JSON.stringify(quickStations));
+// ==================== BOTÕES RÁPIDOS ====================
+function saveQuickStation(cityId,cityName){
+    if(quickStations.some(s=>s.id===cityId)) return;
+    if(quickStations.length>=5) quickStations.shift();
+    quickStations.push({ id:cityId, name:cityName });
+    localStorage.setItem('quickStations',JSON.stringify(quickStations));
     renderQuickButtons();
 }
-function removeQuickStation(idx) {
-    quickStations.splice(idx, 1);
-    localStorage.setItem('quickStations', JSON.stringify(quickStations));
-    renderQuickButtons();
-}
-function renderQuickButtons() {
-    const container = document.getElementById('quickButtons');
-    container.innerHTML = '';
-    for(let i=0; i<5; i++) {
-        let btn = document.createElement('div');
-        btn.className = 'quick-btn';
-        if(quickStations[i]) {
-            btn.innerText = quickStations[i].name.length > 10 ? quickStations[i].name.substring(0,8)+'…' : quickStations[i].name;
-            btn.classList.add('saved');
-            btn.onclick = () => {
-                changeStation(quickStations[i].id, quickStations[i].name);
-            };
-            btn.oncontextmenu = (e) => {
-                e.preventDefault();
-                if(confirm(`Remover ${quickStations[i].name} dos favoritos?`)) removeQuickStation(i);
-            };
-        } else {
-            btn.innerText = `+ ${i+1}`;
-            btn.onclick = () => {
-                let cityName = cities.find(c => normalizeId(c) === currentStation);
-                saveQuickStation(currentStation, cityName);
-            };
-        }
+function removeQuickStation(idx){ quickStations.splice(idx,1); localStorage.setItem('quickStations',JSON.stringify(quickStations)); renderQuickButtons(); }
+function renderQuickButtons(){
+    let container=document.getElementById('quickButtons'); container.innerHTML='';
+    for(let i=0;i<5;i++){
+        let btn=document.createElement('div'); btn.className='quick-btn';
+        if(quickStations[i]){ btn.innerText=quickStations[i].name.length>10?quickStations[i].name.substring(0,8)+'…':quickStations[i].name; btn.classList.add('saved'); btn.onclick=()=>{ changeStation(quickStations[i].id,quickStations[i].name); }; btn.oncontextmenu=(e)=>{ e.preventDefault(); if(confirm(`Remover ${quickStations[i].name} dos favoritos?`)) removeQuickStation(i); }; }
+        else{ btn.innerText=`+ ${i+1}`; btn.onclick=()=>{ let cityName=cities.find(c=>normalizeId(c)===currentStation); saveQuickStation(currentStation,cityName); }; }
         container.appendChild(btn);
     }
 }
 
+// ==================== ADMIN ====================
+function enableAdminMap(){ let pwd=prompt("Senha:"); if(pwd==='277'){ isAdminMap=true; document.getElementById('adminBadge').style.display='flex'; showToast("ADMIN MAPA"); } else showToast("Senha errada"); }
+function enableAdminChat(){ let pwd=prompt("Senha:"); if(pwd==='277'){ isAdminChat=true; showToast("ADMIN CHAT"); } else showToast("Senha errada"); }
+function disableAdmin(){ isAdminMap=false; isAdminChat=false; document.getElementById('adminBadge').style.display='none'; showToast("Admin off"); }
+document.getElementById('adminGear').addEventListener('click',()=>document.getElementById('adminPanel').classList.toggle('show'));
+document.getElementById('adminMapBtn').addEventListener('click',()=>{ enableAdminMap(); document.getElementById('adminPanel').classList.remove('show'); });
+document.getElementById('adminChatBtn').addEventListener('click',()=>{ enableAdminChat(); document.getElementById('adminPanel').classList.remove('show'); });
+document.getElementById('exitAdminBtn').addEventListener('click',()=>{ disableAdmin(); document.getElementById('adminPanel').classList.remove('show'); });
+
 // ==================== EVENTOS UI ====================
-document.getElementById('openMapBtn').onclick = openMapModal;
-document.getElementById('openAlertBtn').onclick = openAlertModal;
-document.getElementById('openChatBtn').onclick = openChatModal;
-document.getElementById('closeMapModal').onclick = closeMapModal;
-document.getElementById('closeAlertModal').onclick = closeAlertModal;
-document.getElementById('closeChatModalBtn').onclick = closeChatModal;
-document.getElementById('closeChatBtn').onclick = closeChatModal;
-document.getElementById('mapAlertBtn').onclick = openAlertModal;
-document.getElementById('recenterBtn').onclick = recenter;
+document.getElementById('openMapBtn').onclick=openMapModal;
+document.getElementById('openAlertBtn').onclick=openAlertModal;
+document.getElementById('openChatBtn').onclick=openChatModal;
+document.getElementById('closeMapModal').onclick=closeMapModal;
+document.getElementById('closeAlertModal').onclick=closeAlertModal;
+document.getElementById('closeChatModalBtn').onclick=closeChatModal;
+document.getElementById('closeChatBtn').onclick=closeChatModal;
+document.getElementById('mapAlertBtn').onclick=openAlertModal;
+document.getElementById('recenterBtn').onclick=recenter;
 
 // Emoji picker
-const emojiPicker = document.getElementById('emojiPicker');
-document.getElementById('chatEmojiBtn').addEventListener('click', (e) => { e.stopPropagation(); emojiPicker.classList.toggle('show'); });
-emojiPicker.addEventListener('emoji-click', (e) => { document.getElementById('chatInput').value += e.detail.unicode; emojiPicker.classList.remove('show'); });
-document.addEventListener('click', (e) => { if(!emojiPicker.contains(e.target) && e.target.id !== 'chatEmojiBtn') emojiPicker.classList.remove('show'); });
+const emojiPicker=document.getElementById('emojiPicker');
+document.getElementById('chatEmojiBtn').addEventListener('click',(e)=>{ e.stopPropagation(); emojiPicker.classList.toggle('show'); });
+emojiPicker.addEventListener('emoji-click',(e)=>{ document.getElementById('chatInput').value+=e.detail.unicode; emojiPicker.classList.remove('show'); });
+document.addEventListener('click',(e)=>{ if(!emojiPicker.contains(e.target) && e.target.id!=='chatEmojiBtn') emojiPicker.classList.remove('show'); });
 
 // ==================== INICIALIZAÇÃO ====================
 buildDropdown();
