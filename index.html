@@ -22,7 +22,8 @@
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
+            align-items: center;
+            padding: 0;
         }
 
         /* Rádio principal - tela cheia */
@@ -102,6 +103,15 @@
             font-size: 9px;
             font-weight: bold;
             animation: pulse-red 1s infinite;
+        }
+        .online-count-header {
+            background: #00aaff;
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: bold;
+            margin-left: 8px;
         }
 
         /* S-Meter */
@@ -186,6 +196,10 @@
             color: #ffd700;
             margin-top: 4px;
         }
+        /* Botão MUDO ativo fica vermelho */
+        .toggle-switch.mute-active {
+            background: #e53935;
+        }
 
         /* Seletor de estação */
         .station-area {
@@ -226,86 +240,45 @@
         .station-option.active { background: #00aaff; color: white; }
         .station-count { background: #333; padding: 2px 8px; border-radius: 20px; font-size: 10px; }
 
-        /* Status online */
-        .online-badge {
-            background: #0a0a0a;
-            margin: 8px 16px;
-            padding: 8px;
-            border-radius: 40px;
-            text-align: center;
-            border-left: 3px solid #ffd700;
-        }
-        .online-count {
-            background: #00aaff;
-            display: inline-block;
-            padding: 4px 16px;
-            border-radius: 30px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        /* Botão PTT */
-        .ptt-area {
-            text-align: center;
-            margin: 12px 16px;
-            padding: 12px;
-            background: #1a1a1a;
-            border-radius: 80px;
-            border: 1px solid #00aaff;
-        }
-        .ptt {
-            width: 100px;
-            height: 100px;
-            background: radial-gradient(circle at 35% 35%, #3a3a3a, #1a1a1a);
-            border: 3px solid #555;
-            border-radius: 50%;
-            margin: 0 auto;
+        /* Botões rápidos de estação */
+        .quick-buttons {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin: 8px 16px;
+        }
+        .quick-btn {
+            flex: 1;
+            background: #252525;
+            border: 1px solid #00aaff;
+            border-radius: 30px;
+            padding: 5px 0;
+            font-size: 9px;
+            font-weight: bold;
+            color: #ccc;
+            text-align: center;
             cursor: pointer;
             transition: 0.1s;
         }
-        .ptt i { font-size: 36px; color: #888; }
-        .ptt span { font-size: 12px; color: #888; margin-top: 4px; }
-        .ptt.active {
-            background: radial-gradient(circle at 35% 35%, #e53935, #8b0000);
-            border-color: #ffd700;
-            animation: pulse 1s infinite;
-        }
-        .ptt.active i, .ptt.active span { color: white; }
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 #e53935; }
-            50% { box-shadow: 0 0 0 15px rgba(229,57,53,0.3); }
-            100% { box-shadow: 0 0 0 0 rgba(229,57,53,0); }
+        .quick-btn.saved {
+            background: #00aaff;
+            color: white;
         }
 
-        .timer {
-            font-family: monospace;
-            font-size: 12px;
-            color: #ffd700;
-            background: #000;
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 30px;
-            margin-top: 8px;
-        }
-
-        /* Ações */
-        .actions {
+        /* Área dos botões principais (MAPA, ALERTA, CHAT) - agora acima do PTT */
+        .action-bar {
             display: flex;
-            gap: 10px;
-            margin: 12px 16px 20px;
+            gap: 12px;
+            margin: 8px 16px;
         }
         .action {
             flex: 1;
             background: #252525;
             border: 1px solid #00aaff;
             border-radius: 40px;
-            padding: 8px;
+            padding: 10px;
             text-align: center;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: bold;
             color: #ccc;
             cursor: pointer;
@@ -315,6 +288,60 @@
             gap: 6px;
         }
         .action i { color: #ffd700; }
+
+        /* Botão PTT maior */
+        .ptt-area {
+            text-align: center;
+            margin: 8px 16px 16px;
+            padding: 12px;
+            background: #1a1a1a;
+            border-radius: 80px;
+            border: 1px solid #00aaff;
+        }
+        .ptt {
+            width: 140px;
+            height: 140px;
+            background: radial-gradient(circle at 35% 35%, #3a3a3a, #1a1a1a);
+            border: 4px solid #555;
+            border-radius: 50%;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+        .ptt i { font-size: 52px; color: #888; }
+        .ptt span { font-size: 14px; color: #888; margin-top: 6px; }
+        .ptt.active {
+            background: radial-gradient(circle at 35% 35%, #e53935, #8b0000);
+            border-color: #ffd700;
+            animation: pulse 1s infinite;
+        }
+        .ptt.active i, .ptt.active span { color: white; }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 #e53935; }
+            50% { box-shadow: 0 0 0 18px rgba(229,57,53,0.3); }
+            100% { box-shadow: 0 0 0 0 rgba(229,57,53,0); }
+        }
+
+        .timer {
+            font-family: monospace;
+            font-size: 13px;
+            color: #ffd700;
+            background: #000;
+            display: inline-block;
+            padding: 4px 16px;
+            border-radius: 30px;
+            margin-top: 8px;
+        }
+        .speaking-alert {
+            font-size: 9px;
+            color: #e53935;
+            margin-top: 5px;
+            display: none;
+        }
 
         /* Admin gear */
         .admin-gear {
@@ -330,6 +357,7 @@
             justify-content: center;
             cursor: pointer;
             border: 1px solid #ffd700;
+            z-index: 10;
         }
         .admin-gear i { color: #ffd700; font-size: 14px; }
         .admin-panel {
@@ -403,8 +431,8 @@
             background: #00aaff;
             border: none;
             border-radius: 40px;
-            padding: 6px;
-            font-size: 11px;
+            padding: 8px;
+            font-size: 12px;
             font-weight: bold;
             color: white;
             display: flex;
@@ -414,22 +442,26 @@
             cursor: pointer;
         }
 
+        /* Alertas com ícones redondos e sem bordas quadradas */
         .alert-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            padding: 16px;
+            gap: 12px;
+            padding: 20px;
         }
         .alert-card {
             background: #1f1f40;
-            border-radius: 16px;
-            padding: 10px 5px;
+            border-radius: 60px;
+            padding: 12px 5px;
             text-align: center;
             cursor: pointer;
-            border: 1px solid #00aaff;
+            transition: 0.1s;
+            border: none;
+            box-shadow: 0 0 5px rgba(0,170,255,0.3);
         }
-        .alert-emoji { font-size: 28px; }
-        .alert-name { font-size: 10px; color: white; }
+        .alert-card:hover { transform: scale(1.02); background: #2a2a60; }
+        .alert-emoji { font-size: 32px; }
+        .alert-name { font-size: 11px; color: white; margin-top: 4px; }
 
         /* Chat WhatsApp */
         .chat-messages {
@@ -540,6 +572,24 @@
             z-index: 2000;
         }
 
+        /* Marcadores do mapa - redondos, sem bordas */
+        .map-marker-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.5);
+            animation: pulse-marker 1.5s infinite;
+        }
+        @keyframes pulse-marker {
+            0% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.9; }
+        }
+
         @keyframes pulse-red {
             0%,100%{opacity:1}50%{opacity:0.6}
         }
@@ -559,7 +609,10 @@
                 <span style="font-size:8px;">FREQUÊNCIA</span>
                 <div class="freq">27.7 MHz</div>
             </div>
-            <div class="live"><i class="fas fa-circle"></i> AO VIVO</div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+                <div class="live"><i class="fas fa-circle"></i> AO VIVO</div>
+                <div class="online-count-header" id="onlineCountHeader">0 online</div>
+            </div>
         </div>
         <div class="smeter" id="smeterBox">
             <div class="meter-labels"><span>1</span><span>3</span><span>5</span><span>7</span><span>9</span><span>+</span></div>
@@ -594,26 +647,24 @@
         <div class="station-dropdown" id="stationDropdown"></div>
     </div>
 
-    <!-- Online badge -->
-    <div class="online-badge">
-        <div class="online-count" id="onlineCount">0 online <i class="fas fa-users"></i></div>
+    <!-- Botões rápidos de estação (salvar até 5) -->
+    <div class="quick-buttons" id="quickButtons"></div>
+
+    <!-- Ações principais (acima do PTT) -->
+    <div class="action-bar">
+        <div class="action" id="openMapBtn"><i class="fas fa-map-marked-alt"></i> MAPA</div>
+        <div class="action" id="openAlertBtn"><i class="fas fa-exclamation-triangle"></i> ALERTA</div>
+        <div class="action" id="openChatBtn"><i class="fas fa-comment-dots"></i> CHAT</div>
     </div>
 
-    <!-- PTT -->
+    <!-- PTT maior -->
     <div class="ptt-area">
         <div class="ptt off" id="pttButton">
             <i class="fas fa-microphone-slash"></i>
             <span>PTT</span>
         </div>
-        <div id="speakingAlert" style="font-size:9px; color:#e53935; margin-top:5px; display:none;">📢 Alguém está falando...</div>
+        <div class="speaking-alert" id="speakingAlert">📢 Alguém está falando...</div>
         <div class="timer" id="timerDisplay" style="display:none;"></div>
-    </div>
-
-    <!-- Ações -->
-    <div class="actions">
-        <div class="action" id="openMapBtn"><i class="fas fa-map-marked-alt"></i> MAPA</div>
-        <div class="action" id="openAlertBtn"><i class="fas fa-exclamation-triangle"></i> ALERTA</div>
-        <div class="action" id="openChatBtn"><i class="fas fa-comment-dots"></i> CHAT</div>
     </div>
 
     <div class="admin-gear" id="adminGear"><i class="fas fa-cog"></i></div>
@@ -716,6 +767,7 @@ let mediaRecorder, isTransmitting = false, audioStream, chunks = [], recordSec =
 let audioListener, currentAudio, speakingListener;
 let selectedMsg = { id: null, type: null, element: null, text: null, user: null };
 let replyTo = null;
+let quickStations = JSON.parse(localStorage.getItem('quickStations') || '[]'); // max 5
 
 // ==================== UTILS ====================
 function normalizeId(str) { return str.toLowerCase().replace(/ /g, '_').normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
@@ -728,17 +780,18 @@ function showToast(msg) {
 }
 
 // ==================== SWITCHES ====================
-document.getElementById('muteSwitch').addEventListener('click', function() {
+const muteSwitch = document.getElementById('muteSwitch');
+muteSwitch.addEventListener('click', function() {
     isMuted = !isMuted;
-    if(isMuted) { this.classList.add('active'); document.getElementById('muteStatus').innerText = 'LIG'; if(currentAudio) currentAudio.pause(); }
-    else { this.classList.remove('active'); document.getElementById('muteStatus').innerText = 'DESL'; }
+    if(isMuted) { this.classList.add('active', 'mute-active'); document.getElementById('muteStatus').innerText = 'LIG'; if(currentAudio) currentAudio.pause(); }
+    else { this.classList.remove('active', 'mute-active'); document.getElementById('muteStatus').innerText = 'DESL'; }
 });
-document.getElementById('ledSwitch').addEventListener('click', function() {
+const ledSwitch = document.getElementById('ledSwitch');
+ledSwitch.addEventListener('click', function() {
     isLedActive = !isLedActive;
     if(isLedActive) { this.classList.add('active'); document.getElementById('ledStatus').innerText = 'LIG'; document.getElementById('smeterBox').style.opacity = '1'; }
     else { this.classList.remove('active'); document.getElementById('ledStatus').innerText = 'DESL'; document.getElementById('smeterBox').style.opacity = '0.3'; }
 });
-
 function animateSMeter(val=5) {
     if(!isLedActive) return;
     let bars = document.querySelectorAll('.bar');
@@ -753,7 +806,7 @@ function animateSMeter(val=5) {
 }
 setInterval(() => { if(!isTransmitting && isLedActive) animateSMeter(Math.floor(Math.random()*9)); }, 800);
 
-// ==================== ESTAÇÕES ====================
+// ==================== ESTAÇÕES E CONTAGEM ====================
 function buildDropdown() {
     let menu = document.getElementById('stationDropdown');
     menu.innerHTML = '';
@@ -789,7 +842,9 @@ function loadCounts() {
             let count = snap.val() ? Object.keys(snap.val()).length : 0;
             let badge = document.getElementById(`count-${id}`);
             if(badge) badge.innerText = count;
-            if(id === currentStation) document.getElementById('onlineCount').innerHTML = `${count} online <i class="fas fa-users"></i>`;
+            if(id === currentStation) {
+                document.getElementById('onlineCountHeader').innerHTML = `${count} online <i class="fas fa-users"></i>`;
+            }
         });
     });
 }
@@ -881,10 +936,11 @@ function loadAlerts() {
         let a = snap.val(), id = snap.key;
         if(Date.now() - a.timestamp > 20*60*1000) { db.ref(`alerts/${id}`).remove(); return; }
         if(alertsOnMap[id] || !map) return;
-        let marker = L.marker([a.lat, a.lng], { icon: L.divIcon({ html: `<div style="background:${a.color}; width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; animation:pulse-marker 1s infinite;">${a.emoji}</div>`, iconSize: [34,34], iconAnchor: [17,17] }) }).addTo(map);
+        let iconHtml = `<div style="background:${a.color}; width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; box-shadow:0 0 8px ${a.color}; animation:pulse-marker 1s infinite;">${a.emoji}</div>`;
+        let marker = L.marker([a.lat, a.lng], { icon: L.divIcon({ html: iconHtml, iconSize: [40,40], iconAnchor: [20,20] }) }).addTo(map);
         marker.on('popupopen', () => loadAlertChat(id));
         marker.bindPopup(`
-            ${a.image ? `<img src="${a.image}" style="width:100%; height:80px; object-fit:cover;" onclick="viewFullImage('${a.image}')">` : ''}
+            ${a.image ? `<img src="${a.image}" style="width:100%; height:80px; object-fit:cover; border-radius:8px;" onclick="viewFullImage('${a.image}')">` : ''}
             <div style="background:#075E54; color:white; padding:5px; display:flex; justify-content:space-between;" onclick="confirmAlert('${id}')">
                 <span>${a.emoji} ${a.name}</span><span>👍 <span id="confirm-${id}">${a.confirmations||1}</span></span>
                 ${isAdminMap ? `<button onclick="event.stopPropagation(); deleteAlert('${id}')" style="background:red; border:none; border-radius:10px;">🗑️</button>` : ''}
@@ -1057,6 +1113,46 @@ document.getElementById('adminMapBtn').addEventListener('click', () => { enableA
 document.getElementById('adminChatBtn').addEventListener('click', () => { enableAdminChat(); document.getElementById('adminPanel').classList.remove('show'); });
 document.getElementById('exitAdminBtn').addEventListener('click', () => { disableAdmin(); document.getElementById('adminPanel').classList.remove('show'); });
 
+// ==================== BOTÕES RÁPIDOS DE ESTAÇÃO ====================
+function saveQuickStation(cityId, cityName) {
+    if(quickStations.some(s => s.id === cityId)) return;
+    if(quickStations.length >= 5) quickStations.shift();
+    quickStations.push({ id: cityId, name: cityName });
+    localStorage.setItem('quickStations', JSON.stringify(quickStations));
+    renderQuickButtons();
+}
+function removeQuickStation(idx) {
+    quickStations.splice(idx, 1);
+    localStorage.setItem('quickStations', JSON.stringify(quickStations));
+    renderQuickButtons();
+}
+function renderQuickButtons() {
+    const container = document.getElementById('quickButtons');
+    container.innerHTML = '';
+    for(let i=0; i<5; i++) {
+        let btn = document.createElement('div');
+        btn.className = 'quick-btn';
+        if(quickStations[i]) {
+            btn.innerText = quickStations[i].name.length > 10 ? quickStations[i].name.substring(0,8)+'…' : quickStations[i].name;
+            btn.classList.add('saved');
+            btn.onclick = () => {
+                changeStation(quickStations[i].id, quickStations[i].name);
+            };
+            btn.oncontextmenu = (e) => {
+                e.preventDefault();
+                if(confirm(`Remover ${quickStations[i].name} dos favoritos?`)) removeQuickStation(i);
+            };
+        } else {
+            btn.innerText = `+ ${i+1}`;
+            btn.onclick = () => {
+                let cityName = cities.find(c => normalizeId(c) === currentStation);
+                saveQuickStation(currentStation, cityName);
+            };
+        }
+        container.appendChild(btn);
+    }
+}
+
 // ==================== EVENTOS UI ====================
 document.getElementById('openMapBtn').onclick = openMapModal;
 document.getElementById('openAlertBtn').onclick = openAlertModal;
@@ -1081,6 +1177,7 @@ setupAudio();
 buildAlertGrid();
 checkSpeaking();
 initMap();
+renderQuickButtons();
 showToast(`🎙️ ${userName}`);
 </script>
 </body>
