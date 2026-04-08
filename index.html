@@ -3,383 +3,357 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>RÁDIO PX 277 | CB Radio</title>
+    <title>RÁDIO PX 277 | ANOS 90</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emoji-picker-element@1.18.3/dist/index.css"/>
     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@1.18.3/dist/index.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
-            background: #050508;
+            background: #0a0a0a;
             font-family: 'Inter', sans-serif;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: flex-start;
-            padding: 0;
-            margin: 0;
         }
 
-        .radio-cb {
+        /* Rádio principal - tela cheia */
+        .radio-90s {
             width: 100%;
             max-width: 100%;
-            background: linear-gradient(145deg, #1c1c1c, #0a0a0a);
-            border-radius: 0;
-            overflow-x: hidden;
+            background: linear-gradient(145deg, #1a1a1a, #0c0c0c);
             position: relative;
+            overflow-x: hidden;
+            border-radius: 0;
         }
 
-        .radio-cb::before {
+        /* Faixa metálica */
+        .radio-90s::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            height: 3px;
-            background: linear-gradient(135deg, #e8e8e8, #b0b0b0, #888);
+            height: 4px;
+            background: linear-gradient(90deg, #c0c0c0, #f0f0f0, #a0a0a0);
             z-index: 1;
         }
 
-        /* ===== HEADER ===== */
-        .cb-header {
-            background: linear-gradient(145deg, #222, #111);
-            padding: 12px 12px 10px;
+        /* Cabeçalho */
+        .header {
+            background: #111;
+            padding: 12px 16px 8px;
             text-align: center;
-            border-bottom: 2px solid #0a84ff;
+            border-bottom: 2px solid #00aaff;
         }
-
         .brand {
-            font-size: 8px;
+            font-size: 9px;
             letter-spacing: 2px;
-            color: #0a84ff;
-            margin-bottom: 3px;
+            color: #00aaff;
         }
-
-        .cb-header h1 {
-            font-size: 18px;
-            font-weight: 800;
+        .header h1 {
+            font-size: 20px;
             background: linear-gradient(135deg, #ffd700, #ffaa00);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
         }
-
-        .cb-header h1 i { color: #ff4444; margin: 0 2px; }
-
-        /* Display */
-        .digital-display {
-            background: #050505;
-            border-radius: 12px;
-            padding: 8px;
-            margin-top: 8px;
-            border: 1px solid #0a84ff;
+        .header h1 i {
+            color: #ff4444;
         }
 
-        .freq-display {
+        /* Display digital */
+        .display {
+            background: #000;
+            margin: 12px 16px;
+            border-radius: 16px;
+            padding: 10px;
+            border: 1px solid #00aaff;
+            box-shadow: inset 0 0 8px rgba(0,170,255,0.2);
+        }
+        .freq-row {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: baseline;
             flex-wrap: wrap;
-            gap: 6px;
+            gap: 8px;
         }
-
-        .freq-number {
+        .freq {
             font-family: 'Orbitron', monospace;
-            font-size: 16px;
+            font-size: 20px;
             font-weight: bold;
             color: #00ff88;
-            text-shadow: 0 0 3px #00ff88;
             background: #080808;
-            padding: 3px 8px;
-            border-radius: 8px;
+            padding: 4px 10px;
+            border-radius: 10px;
         }
-
-        .freq-label { font-size: 7px; color: #00ff88; }
-        .live-badge-cb {
-            display: inline-flex;
-            align-items: center;
-            gap: 3px;
+        .live {
             background: #e53935;
-            padding: 3px 8px;
-            border-radius: 16px;
-            font-size: 7px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 9px;
+            font-weight: bold;
             animation: pulse-red 1s infinite;
         }
 
         /* S-Meter */
-        .s-meter {
-            margin-top: 6px;
+        .smeter {
+            margin-top: 10px;
             background: #080808;
-            border-radius: 6px;
-            padding: 4px;
+            border-radius: 8px;
+            padding: 6px;
         }
-        .s-meter-label {
+        .meter-labels {
             display: flex;
             justify-content: space-between;
-            font-size: 5px;
-            color: #0a84ff;
-            margin-bottom: 2px;
+            font-size: 6px;
+            color: #00aaff;
+            padding: 0 2px;
         }
         .meter-bars {
             display: flex;
             gap: 2px;
-            height: 18px;
+            height: 20px;
         }
-        .meter-bar {
+        .bar {
             flex: 1;
             background: #1a1a1a;
             border-radius: 2px;
-            transition: all 0.1s;
         }
-        .meter-bar.active { background: linear-gradient(180deg, #00ff88, #00cc66); }
-        .meter-bar.warning { background: linear-gradient(180deg, #ffaa00, #ff8800); }
-        .meter-bar.danger { background: linear-gradient(180deg, #ff4444, #cc0000); }
+        .bar.active { background: #00ff88; }
+        .bar.warning { background: #ffaa00; }
+        .bar.danger { background: #ff4444; }
 
-        /* Knobs */
-        .station-area {
-            padding: 8px 12px;
-            background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
-            border-bottom: 1px solid #0a84ff;
-        }
-        .knob-row {
+        /* Painel de botões estilo disjuntor */
+        .switch-panel {
+            background: #1a1a1a;
+            margin: 8px 16px;
+            padding: 12px;
+            border-radius: 24px;
             display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
+            justify-content: space-around;
+            gap: 16px;
+            border: 1px solid #333;
         }
-        .knob {
-            flex: 1;
+        .switch-item {
             text-align: center;
-            min-width: 50px;
+            flex: 1;
         }
-        .knob-label {
-            font-size: 6px;
-            color: #0a84ff;
-            margin-bottom: 2px;
+        .switch-label {
+            font-size: 9px;
+            color: #aaa;
+            margin-bottom: 6px;
         }
-        .knob-circle {
-            width: 34px;
-            height: 34px;
-            background: radial-gradient(circle at 30% 30%, #3a3a3a, #1a1a1a);
-            border-radius: 50%;
+        .toggle-switch {
+            width: 50px;
+            height: 28px;
+            background: #333;
+            border-radius: 30px;
             margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             cursor: pointer;
-            border: 1px solid #555;
-            transition: all 0.2s;
-        }
-        .knob-circle i { font-size: 14px; color: #0a84ff; }
-        .knob-value { font-size: 7px; color: #ffd700; margin-top: 2px; }
-
-        /* Mudo ativo */
-        .knob-circle.mute-active { background: radial-gradient(circle at 30% 30%, #e53935, #8b0000); border-color: #ffd700; }
-        .knob-circle.mute-active i { color: white; }
-        .knob-circle.led-active { background: radial-gradient(circle at 30% 30%, #00ff88, #008844); border-color: #ffd700; }
-        .knob-circle.led-active i { color: white; }
-
-        /* Selector */
-        .station-selector {
-            flex: 2;
-            min-width: 120px;
             position: relative;
+            transition: all 0.2s;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
         }
-        .selector-trigger {
-            width: 100%;
-            background: #0a0a0a;
-            border: 1px solid #0a84ff;
-            border-radius: 40px;
-            padding: 6px 10px;
+        .toggle-switch::after {
+            content: '';
+            width: 24px;
+            height: 24px;
+            background: #888;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 3px;
+            transition: 0.2s;
+        }
+        .toggle-switch.active {
+            background: #00aaff;
+        }
+        .toggle-switch.active::after {
+            left: 23px;
+            background: white;
+        }
+        .switch-value {
+            font-size: 8px;
             color: #ffd700;
-            font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
+            margin-top: 4px;
+        }
+
+        /* Seletor de estação */
+        .station-area {
+            margin: 8px 16px;
+        }
+        .station-selector {
+            background: #0a0a0a;
+            border: 1px solid #00aaff;
+            border-radius: 40px;
+            padding: 8px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            cursor: pointer;
+            color: #ffd700;
+            font-size: 13px;
         }
         .station-dropdown {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
             background: #1a1a1a;
-            border: 1px solid #0a84ff;
-            border-radius: 10px;
-            margin-top: 4px;
+            border: 1px solid #00aaff;
+            border-radius: 16px;
+            margin-top: 6px;
             max-height: 200px;
             overflow-y: auto;
-            z-index: 200;
             display: none;
+            z-index: 200;
         }
         .station-dropdown.open { display: block; }
         .station-option {
-            padding: 6px 10px;
-            color: #ccc;
-            cursor: pointer;
+            padding: 8px 12px;
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #2a2a2a;
-            font-size: 10px;
+            color: #ccc;
+            border-bottom: 1px solid #333;
+            font-size: 12px;
+            cursor: pointer;
         }
-        .station-option:hover { background: #2a2a2a; color: #0a84ff; }
-        .station-option.active { background: linear-gradient(145deg, #0a84ff, #0066cc); color: white; }
-        .station-count { background: rgba(0,0,0,0.5); border-radius: 20px; padding: 1px 6px; font-size: 8px; }
+        .station-option.active { background: #00aaff; color: white; }
+        .station-count { background: #333; padding: 2px 8px; border-radius: 20px; font-size: 10px; }
 
-        /* Status atual */
-        .current-highlight {
-            background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
-            margin: 6px 12px;
-            padding: 6px 12px;
+        /* Status online */
+        .online-badge {
+            background: #0a0a0a;
+            margin: 8px 16px;
+            padding: 8px;
             border-radius: 40px;
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
+            text-align: center;
             border-left: 3px solid #ffd700;
-            border-right: 1px solid #0a84ff;
         }
-        .city-online {
-            background: linear-gradient(145deg, #0a84ff, #0066cc);
-            border-radius: 25px;
-            padding: 3px 10px;
-            font-size: 10px;
+        .online-count {
+            background: #00aaff;
+            display: inline-block;
+            padding: 4px 16px;
+            border-radius: 30px;
+            font-size: 12px;
             font-weight: bold;
-            color: white;
         }
 
-        /* PTT */
-        .mic-panel {
+        /* Botão PTT */
+        .ptt-area {
             text-align: center;
-            padding: 10px;
-            margin: 4px 12px;
-            background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
-            border-radius: 60px;
-            border: 1px solid #0a84ff;
+            margin: 12px 16px;
+            padding: 12px;
+            background: #1a1a1a;
+            border-radius: 80px;
+            border: 1px solid #00aaff;
         }
-        .ptt-button {
+        .ptt {
             width: 100px;
             height: 100px;
-            border-radius: 50%;
             background: radial-gradient(circle at 35% 35%, #3a3a3a, #1a1a1a);
             border: 3px solid #555;
-            color: #888;
-            font-size: 16px;
-            cursor: pointer;
+            border-radius: 50%;
+            margin: 0 auto;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 4px;
-            margin: 0 auto;
+            cursor: pointer;
+            transition: 0.1s;
         }
-        .ptt-button i { font-size: 32px; }
-        .ptt-button span { font-size: 10px; letter-spacing: 1px; }
-        .ptt-button.active {
+        .ptt i { font-size: 36px; color: #888; }
+        .ptt span { font-size: 12px; color: #888; margin-top: 4px; }
+        .ptt.active {
             background: radial-gradient(circle at 35% 35%, #e53935, #8b0000);
             border-color: #ffd700;
-            color: white;
-            animation: ptt-pulse 1.2s infinite;
+            animation: pulse 1s infinite;
         }
-        @keyframes ptt-pulse {
+        .ptt.active i, .ptt.active span { color: white; }
+        @keyframes pulse {
             0% { box-shadow: 0 0 0 0 #e53935; }
-            50% { box-shadow: 0 0 0 12px rgba(229,57,53,0.3); }
+            50% { box-shadow: 0 0 0 15px rgba(229,57,53,0.3); }
             100% { box-shadow: 0 0 0 0 rgba(229,57,53,0); }
         }
-        .timer-display {
-            margin-top: 6px;
-            font-size: 10px;
-            font-family: 'Orbitron', monospace;
+
+        .timer {
+            font-family: monospace;
+            font-size: 12px;
             color: #ffd700;
-            background: #0a0a0a;
-            padding: 3px 10px;
-            border-radius: 20px;
+            background: #000;
             display: inline-block;
-        }
-        .someone-speaking {
-            background: #e53935;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 20px;
-            font-size: 7px;
-            margin-top: 4px;
-            display: inline-block;
-            animation: pulse-red 1s infinite;
+            padding: 4px 12px;
+            border-radius: 30px;
+            margin-top: 8px;
         }
 
         /* Ações */
-        .action-grid {
+        .actions {
             display: flex;
-            gap: 6px;
-            padding: 8px 12px 14px;
-            flex-wrap: wrap;
+            gap: 10px;
+            margin: 12px 16px 20px;
         }
-        .action-card {
+        .action {
             flex: 1;
-            background: linear-gradient(145deg, #252525, #181818);
-            border: 1px solid #0a84ff;
+            background: #252525;
+            border: 1px solid #00aaff;
             border-radius: 40px;
-            padding: 6px;
+            padding: 8px;
+            text-align: center;
+            font-size: 11px;
+            font-weight: bold;
             color: #ccc;
-            font-size: 10px;
-            font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 5px;
-            min-width: 65px;
+            gap: 6px;
         }
-        .action-card i { color: #ffd700; font-size: 11px; }
-        .action-card:hover { background: #2a2a2a; border-color: #ffd700; transform: translateY(-1px); }
+        .action i { color: #ffd700; }
 
-        /* Admin */
+        /* Admin gear */
         .admin-gear {
             position: absolute;
-            top: 8px;
-            right: 10px;
-            background: #1a1a1a;
-            width: 26px;
-            height: 26px;
+            top: 12px;
+            right: 16px;
+            background: #222;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             border: 1px solid #ffd700;
-            z-index: 10;
         }
-        .admin-gear i { color: #ffd700; font-size: 12px; }
+        .admin-gear i { color: #ffd700; font-size: 14px; }
         .admin-panel {
             position: absolute;
-            top: 40px;
-            right: 10px;
+            top: 48px;
+            right: 16px;
             background: #1a1a1a;
-            border-radius: 10px;
-            padding: 5px;
+            border-radius: 12px;
+            padding: 6px;
             display: none;
             flex-direction: column;
             gap: 4px;
-            z-index: 100;
             border: 1px solid #ffd700;
-            min-width: 110px;
+            z-index: 100;
         }
         .admin-panel.show { display: flex; }
         .admin-panel button {
             background: #2a2a2a;
             border: none;
-            padding: 5px 8px;
+            padding: 6px 12px;
             border-radius: 20px;
             color: white;
+            font-size: 10px;
             cursor: pointer;
-            font-size: 9px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
         }
 
         /* MODAIS */
@@ -396,9 +370,9 @@
         }
         .modal-full.visible, .modal-alert.visible, .modal-chat.visible { display: flex; }
 
-        .modal-header, .alert-header, .chat-header {
+        .modal-header {
             background: #075E54;
-            padding: 10px 14px;
+            padding: 12px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -407,16 +381,14 @@
         .modal-close {
             background: #e53935;
             border: none;
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
-            color: white;
             cursor: pointer;
         }
 
         .map-container { flex: 1; position: relative; }
         #map { height: 100%; width: 100%; }
-
         .map-buttons {
             position: absolute;
             bottom: 15px;
@@ -426,78 +398,57 @@
             gap: 8px;
             z-index: 1001;
         }
-        .map-btn-custom {
+        .map-btn {
             flex: 1;
-            background: #0a84ff;
-            color: white;
+            background: #00aaff;
             border: none;
             border-radius: 40px;
-            padding: 6px 12px;
-            font-size: 10px;
+            padding: 6px;
+            font-size: 11px;
             font-weight: bold;
-            cursor: pointer;
+            color: white;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 5px;
-        }
-        .recenter-btn {
-            background: #ffd700;
-            color: #000;
-        }
-
-        .admin-status {
-            position: absolute;
-            top: 8px;
-            left: 8px;
-            background: #ffd700;
-            color: #000;
-            padding: 2px 8px;
-            border-radius: 16px;
-            font-size: 8px;
-            display: none;
-            z-index: 1001;
+            cursor: pointer;
         }
 
         .alert-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            padding: 12px;
+            gap: 10px;
+            padding: 16px;
         }
-        .alert-item {
+        .alert-card {
             background: #1f1f40;
-            border-radius: 12px;
-            padding: 8px 4px;
+            border-radius: 16px;
+            padding: 10px 5px;
             text-align: center;
             cursor: pointer;
-            border: 1px solid #0a84ff;
-            transition: all 0.2s;
+            border: 1px solid #00aaff;
         }
-        .alert-item:hover { transform: scale(1.02); border-color: #ffd700; }
-        .alert-emoji { font-size: 22px; }
-        .alert-name { font-size: 8px; color: white; margin-top: 2px; }
+        .alert-emoji { font-size: 28px; }
+        .alert-name { font-size: 10px; color: white; }
 
-        /* Chat */
-        .chat-messages-area {
+        /* Chat WhatsApp */
+        .chat-messages {
             flex: 1;
             overflow-y: auto;
             padding: 10px;
             background: #E5DDD5;
         }
         .chat-input-area {
-            display: flex;
-            flex-direction: column;
             background: #F0F0F0;
             border-top: 1px solid #ddd;
         }
         .reply-preview {
             display: none;
             background: #E8E8E8;
-            padding: 4px 10px;
-            font-size: 9px;
-            margin: 3px 10px 0;
-            border-radius: 8px;
+            padding: 5px 12px;
+            font-size: 11px;
+            margin: 4px 10px 0;
+            border-radius: 10px;
             align-items: center;
             justify-content: space-between;
         }
@@ -506,315 +457,230 @@
             display: flex;
             padding: 8px 10px;
             gap: 8px;
-            align-items: center;
         }
         .input-row input {
             flex: 1;
-            padding: 8px 12px;
+            padding: 10px 14px;
             border-radius: 25px;
             border: none;
-            font-size: 12px;
-            outline: none;
+            font-size: 13px;
         }
         .input-row button {
             background: #075E54;
             border: none;
-            width: 34px;
-            height: 34px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
             color: white;
             cursor: pointer;
         }
-        .msg-bubble {
-            display: flex;
+        .msg {
             margin-bottom: 8px;
+            display: flex;
         }
-        .msg-bubble.me { justify-content: flex-end; }
-        .msg-bubble.other { justify-content: flex-start; }
+        .msg.me { justify-content: flex-end; }
+        .msg.other { justify-content: flex-start; }
         .msg-content {
             max-width: 75%;
-            padding: 6px 10px;
-            border-radius: 16px;
-            word-wrap: break-word;
+            padding: 8px 12px;
+            border-radius: 18px;
+            background: white;
         }
-        .msg-bubble.me .msg-content { background: #DCF8C6; border-bottom-right-radius: 3px; }
-        .msg-bubble.other .msg-content { background: white; border-bottom-left-radius: 3px; }
-        .msg-sender { font-size: 9px; font-weight: bold; color: #075E54; }
-        .msg-text { font-size: 11px; }
-        .msg-meta { display: flex; justify-content: flex-end; gap: 3px; margin-top: 2px; }
-        .msg-time { font-size: 8px; color: #888; }
+        .msg.me .msg-content { background: #DCF8C6; border-bottom-right-radius: 3px; }
+        .msg.other .msg-content { border-bottom-left-radius: 3px; }
+        .msg-sender { font-size: 10px; font-weight: bold; color: #075E54; }
+        .msg-text { font-size: 12px; }
+        .msg-time { font-size: 9px; color: #888; text-align: right; margin-top: 3px; }
 
         .context-menu {
             position: fixed;
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            padding: 4px 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            padding: 6px 0;
             z-index: 10000;
             display: none;
-            min-width: 120px;
+            min-width: 130px;
         }
         .context-menu.show { display: block; }
-        .context-menu-item {
-            padding: 6px 14px;
+        .context-item {
+            padding: 8px 16px;
             cursor: pointer;
             display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 11px;
+            gap: 10px;
+            font-size: 12px;
         }
-        .context-menu-item:hover { background: #f0f0f0; }
-
-        .popup-alert {
-            background: #E5DDD5;
-            border-radius: 12px;
-            max-width: 260px;
-            overflow: hidden;
-            border: 1px solid #0a84ff;
-        }
-        .popup-alert-img { width: 100%; height: 80px; object-fit: cover; }
-        .popup-alert-header {
-            padding: 5px 8px;
-            background: #075E54;
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            font-size: 10px;
-        }
-        .popup-alert-chat { padding: 5px; max-height: 140px; overflow-y: auto; background: #E5DDD5; }
-        .popup-chat-msg {
-            margin: 4px 0;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 9px;
-            max-width: 90%;
-        }
-        .popup-chat-msg.me { background: #DCF8C6; margin-left: auto; }
-        .popup-chat-msg.other { background: white; }
-        .popup-chat-input-row {
-            display: flex;
-            padding: 4px;
-            gap: 4px;
-        }
-        .popup-chat-input-row input {
-            flex: 1;
-            padding: 4px 8px;
-            border-radius: 20px;
-            border: none;
-            font-size: 9px;
-        }
-        .popup-chat-input-row button {
-            background: #075E54;
-            border: none;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            color: white;
-            cursor: pointer;
-        }
-
-        .audio-player-container {
-            position: fixed;
-            bottom: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #1a1a1a;
-            border: 1px solid #0a84ff;
-            border-radius: 50px;
-            padding: 5px 12px;
-            z-index: 2000;
-            display: none;
-            align-items: center;
-            gap: 8px;
-            min-width: 200px;
-        }
-        .audio-speaker-icon {
-            background: #e53935;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .audio-sender { font-size: 10px; font-weight: bold; color: #ffd700; }
-        .audio-station { font-size: 7px; color: #aaa; }
+        .context-item:hover { background: #f0f0f0; }
 
         emoji-picker {
             position: fixed;
-            bottom: 60px;
+            bottom: 70px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 10001;
             display: none;
             width: 90%;
-            max-width: 280px;
-            height: 320px;
+            max-width: 300px;
+            height: 350px;
         }
         emoji-picker.show { display: block; }
 
-        .map-marker-icon {
-            display: flex;
+        .audio-notify {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a1a;
+            border: 1px solid #00aaff;
+            border-radius: 50px;
+            padding: 6px 16px;
+            display: none;
             align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            animation: pulse-marker 1.5s ease-in-out infinite;
+            gap: 10px;
+            z-index: 2000;
         }
-        @keyframes pulse-marker {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.15); }
-            100% { transform: scale(1); }
+
+        @keyframes pulse-red {
+            0%,100%{opacity:1}50%{opacity:0.6}
         }
-        .leaflet-marker-icon { background: transparent !important; border: none !important; }
-        @keyframes pulse-red { 0%,100%{opacity:1}50%{opacity:0.6} }
     </style>
 </head>
 <body>
 
-<div class="radio-cb">
-    <div class="cb-header">
-        <div class="brand">CB RADIO • PROFESSIONAL SERIES</div>
+<div class="radio-90s">
+    <div class="header">
+        <div class="brand">CB RADIO • CLASSIC SERIES</div>
         <h1><i class="fas fa-microphone-alt"></i> PX 277 <i class="fas fa-broadcast-tower"></i></h1>
-        
-        <div class="digital-display">
-            <div class="freq-display">
-                <div>
-                    <span class="freq-label">FREQUÊNCIA</span>
-                    <div class="freq-number">27.7 MHz</div>
-                </div>
-                <div class="live-badge-cb"><i class="fas fa-circle"></i> AO VIVO</div>
+    </div>
+
+    <div class="display">
+        <div class="freq-row">
+            <div>
+                <span style="font-size:8px;">FREQUÊNCIA</span>
+                <div class="freq">27.7 MHz</div>
             </div>
-            <div class="s-meter" id="sMeterContainer">
-                <div class="s-meter-label"><span>1</span><span>3</span><span>5</span><span>7</span><span>9</span><span>+</span></div>
-                <div class="meter-bars" id="sMeter">
-                    <div class="meter-bar"></div><div class="meter-bar"></div><div class="meter-bar"></div>
-                    <div class="meter-bar"></div><div class="meter-bar"></div><div class="meter-bar"></div>
-                    <div class="meter-bar"></div><div class="meter-bar"></div><div class="meter-bar"></div>
-                </div>
+            <div class="live"><i class="fas fa-circle"></i> AO VIVO</div>
+        </div>
+        <div class="smeter" id="smeterBox">
+            <div class="meter-labels"><span>1</span><span>3</span><span>5</span><span>7</span><span>9</span><span>+</span></div>
+            <div class="meter-bars" id="meterBars">
+                <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                <div class="bar"></div><div class="bar"></div><div class="bar"></div>
             </div>
         </div>
     </div>
 
+    <!-- Botões disjuntor -->
+    <div class="switch-panel">
+        <div class="switch-item">
+            <div class="switch-label">MUDO</div>
+            <div class="toggle-switch" id="muteSwitch"></div>
+            <div class="switch-value" id="muteStatus">DESL</div>
+        </div>
+        <div class="switch-item">
+            <div class="switch-label">LED</div>
+            <div class="toggle-switch active" id="ledSwitch"></div>
+            <div class="switch-value" id="ledStatus">LIG</div>
+        </div>
+    </div>
+
+    <!-- Seletor estação -->
     <div class="station-area">
-        <div class="knob-row">
-            <div class="knob">
-                <div class="knob-label">MUDO</div>
-                <div class="knob-circle" id="muteBtn"><i class="fas fa-volume-mute"></i></div>
-                <div class="knob-value" id="muteStatus">OFF</div>
-            </div>
-            <div class="knob">
-                <div class="knob-label">LED</div>
-                <div class="knob-circle" id="ledBtn"><i class="fas fa-lightbulb"></i></div>
-                <div class="knob-value" id="ledStatus">ON</div>
-            </div>
-            <div class="station-selector">
-                <div class="selector-trigger" id="selectorTrigger">
-                    <span id="selectedCityName">Curitiba</span>
-                    <i class="fas fa-chevron-down"></i>
-                </div>
-                <div class="station-dropdown" id="stationDropdown"></div>
-            </div>
+        <div class="station-selector" id="selectorTrigger">
+            <span id="selectedCityName">Curitiba</span>
+            <i class="fas fa-chevron-down"></i>
         </div>
+        <div class="station-dropdown" id="stationDropdown"></div>
     </div>
 
-    <div class="current-highlight">
-        <div class="city-online" id="currentCityOnline">0 online <i class="fas fa-users"></i></div>
+    <!-- Online badge -->
+    <div class="online-badge">
+        <div class="online-count" id="onlineCount">0 online <i class="fas fa-users"></i></div>
     </div>
 
-    <div class="mic-panel">
-        <button class="ptt-button off" id="pxButton">
+    <!-- PTT -->
+    <div class="ptt-area">
+        <div class="ptt off" id="pttButton">
             <i class="fas fa-microphone-slash"></i>
             <span>PTT</span>
-        </button>
-        <div id="speakingIndicator" class="someone-speaking" style="display:none;">📢 Alguém está falando...</div>
-        <div class="timer-display" id="timerDisplay" style="display: none;"></div>
+        </div>
+        <div id="speakingAlert" style="font-size:9px; color:#e53935; margin-top:5px; display:none;">📢 Alguém está falando...</div>
+        <div class="timer" id="timerDisplay" style="display:none;"></div>
     </div>
 
-    <div class="action-grid">
-        <div class="action-card map-btn" onclick="openMapModal()"><i class="fas fa-map-marked-alt"></i> MAPA</div>
-        <div class="action-card" onclick="openAlertModal()"><i class="fas fa-exclamation-triangle"></i> ALERTA</div>
-        <div class="action-card" onclick="openChatModal()"><i class="fas fa-comment-dots"></i> CHAT</div>
+    <!-- Ações -->
+    <div class="actions">
+        <div class="action" id="openMapBtn"><i class="fas fa-map-marked-alt"></i> MAPA</div>
+        <div class="action" id="openAlertBtn"><i class="fas fa-exclamation-triangle"></i> ALERTA</div>
+        <div class="action" id="openChatBtn"><i class="fas fa-comment-dots"></i> CHAT</div>
     </div>
 
-    <div class="admin-gear" id="adminGearBtn">
-        <i class="fas fa-cog"></i>
-    </div>
+    <div class="admin-gear" id="adminGear"><i class="fas fa-cog"></i></div>
     <div class="admin-panel" id="adminPanel">
-        <button id="enableAdminMapBtn"><i class="fas fa-map-marked-alt"></i> ADMIN MAPA</button>
-        <button id="enableAdminChatBtn"><i class="fas fa-comment-dots"></i> ADMIN CHAT</button>
-        <button id="disableAdminBtn"><i class="fas fa-power-off"></i> SAIR</button>
+        <button id="adminMapBtn">ADMIN MAPA</button>
+        <button id="adminChatBtn">ADMIN CHAT</button>
+        <button id="exitAdminBtn">SAIR ADMIN</button>
     </div>
 </div>
 
 <!-- MODAIS -->
 <div class="modal-full" id="mapModal">
     <div class="modal-header">
-        <span><i class="fas fa-map"></i> MAPA BR-277</span>
-        <button class="modal-close" onclick="closeMapModal()">✕</button>
+        <span>MAP</span>
+        <button class="modal-close" id="closeMapModal">✕</button>
     </div>
     <div class="map-container">
         <div id="map"></div>
         <div class="map-buttons">
-            <button class="map-btn-custom" onclick="openAlertModalFromMap()"><i class="fas fa-exclamation-triangle"></i> ALERTAS</button>
-            <button class="map-btn-custom recenter-btn" onclick="recenterMap()"><i class="fas fa-location-arrow"></i> MINHA POSIÇÃO</button>
+            <button class="map-btn" id="mapAlertBtn"><i class="fas fa-exclamation-triangle"></i> ALERTAS</button>
+            <button class="map-btn" id="recenterBtn"><i class="fas fa-location-arrow"></i> MINHA POSIÇÃO</button>
         </div>
-        <div id="adminStatusBadge" class="admin-status">MODO ADMIN</div>
+        <div id="adminBadge" style="position:absolute; top:10px; left:10px; background:#ffd700; color:#000; padding:2px 8px; border-radius:20px; font-size:9px; display:none;">ADMIN</div>
     </div>
 </div>
 
 <div class="modal-alert" id="alertModal">
-    <div class="alert-card">
-        <div class="alert-header">
-            <span><i class="fas fa-exclamation-triangle"></i> REPORTAR OCORRÊNCIA</span>
-            <span onclick="closeAlertModal()" style="cursor:pointer;">✕</span>
-        </div>
-        <div class="alert-grid" id="alertGrid"></div>
+    <div class="modal-header">
+        <span>REPORTAR OCORRÊNCIA</span>
+        <button class="modal-close" id="closeAlertModal">✕</button>
     </div>
+    <div class="alert-grid" id="alertGrid"></div>
 </div>
 
 <div class="modal-chat" id="chatModal">
-    <div class="chat-header">
-        <div style="display:flex; align-items:center; gap:8px;">
-            <i class="fas fa-arrow-left" onclick="closeChatModal()" style="cursor:pointer;"></i>
-            <div>
-                <h3 style="font-size:12px;"><i class="fas fa-globe"></i> Chat Geral</h3>
-                <p style="font-size:8px;">Rádio PX 277</p>
-            </div>
+    <div class="modal-header">
+        <div style="display:flex; gap:10px; align-items:center;">
+            <i class="fas fa-arrow-left" id="closeChatBtn" style="cursor:pointer;"></i>
+            <span>CHAT GERAL</span>
         </div>
-        <span onclick="closeChatModal()" style="cursor:pointer; font-size:14px;">✕</span>
+        <button class="modal-close" id="closeChatModalBtn">✕</button>
     </div>
-    <div class="chat-messages-area" id="chatMessagesArea"></div>
+    <div class="chat-messages" id="chatMessages"></div>
     <div class="chat-input-area">
         <div class="reply-preview" id="replyPreview">
-            <span id="replyPreviewText"></span>
-            <button class="cancel-reply" onclick="cancelReply()">✕</button>
+            <span id="replyText"></span>
+            <button id="cancelReplyBtn">✕</button>
         </div>
         <div class="input-row">
-            <button class="emoji-btn" id="chatEmojiBtn"><i class="fas fa-smile"></i></button>
+            <button id="chatEmojiBtn"><i class="fas fa-smile"></i></button>
             <input type="text" id="chatInput" placeholder="Digite sua mensagem...">
-            <button onclick="sendChatMsg()"><i class="fas fa-paper-plane"></i></button>
+            <button id="sendMsgBtn"><i class="fas fa-paper-plane"></i></button>
         </div>
     </div>
 </div>
 
 <div class="context-menu" id="contextMenu">
-    <div class="context-menu-item" id="contextReply"><i class="fas fa-reply"></i> Responder</div>
-    <div class="context-menu-item" id="contextDelete"><i class="fas fa-trash-alt"></i> Apagar</div>
-    <div class="context-menu-item" id="contextEmoji"><i class="fas fa-smile"></i> Emoji</div>
-</div>
-
-<div class="long-press-menu" id="longPressMenu">
-    <div class="context-menu-item" id="longPressDelete"><i class="fas fa-trash-alt"></i> Apagar Alerta</div>
+    <div class="context-item" id="replyMsg"><i class="fas fa-reply"></i> Responder</div>
+    <div class="context-item" id="deleteMsg"><i class="fas fa-trash-alt"></i> Apagar</div>
+    <div class="context-item" id="emojiMsg"><i class="fas fa-smile"></i> Emoji</div>
 </div>
 
 <emoji-picker id="emojiPicker"></emoji-picker>
 
-<div class="audio-player-container" id="audioPlayerContainer">
-    <div class="audio-speaker-icon"><i class="fas fa-bullhorn"></i></div>
-    <div class="audio-info">
-        <div class="audio-sender" id="audioSender">Motorista</div>
-        <div class="audio-station" id="audioStation">Curitiba</div>
-    </div>
+<div class="audio-notify" id="audioNotify">
+    <div style="background:#e53935; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center;"><i class="fas fa-bullhorn"></i></div>
+    <div><span id="audioSender"></span><br><span id="audioStation" style="font-size:10px;"></span></div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -822,249 +688,90 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-// ==================== FIREBASE ====================
-const firebaseConfig = {
-    databaseURL: "https://gps-br277-default-rtdb.firebaseio.com"
-};
+// ==================== CONFIG ====================
+const firebaseConfig = { databaseURL: "https://gps-br277-default-rtdb.firebaseio.com" };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-const cities = [
-    "Guarapuava", "Palmeira", "Porto Amazonas", "Ponta Grossa", "São Luiz",
-    "Campo Largo", "Curitiba", "Alm. Tamandaré", "Fazenda Rio Grande", "Tijucas do Sul",
-    "Guaratuba", "Morretes", "Paranaguá", "São José", "Colombo",
-    "Araucária", "Piraquara", "Campina Grande", "Quatro Barras", "Cajati"
-];
+const cities = ["Guarapuava","Palmeira","Porto Amazonas","Ponta Grossa","São Luiz","Campo Largo","Curitiba","Alm. Tamandaré","Fazenda Rio Grande","Tijucas do Sul","Guaratuba","Morretes","Paranaguá","São José","Colombo","Araucária","Piraquara","Campina Grande","Quatro Barras","Cajati"];
 
 const alertTypes = [
-    { name: 'ACIDENTE', emoji: '💥', color: '#e53935', type: 'acidente' },
-    { name: 'OBRAS', emoji: '🚧', color: '#ff9800', type: 'obras' },
-    { name: 'PANE MECÂNICA', emoji: '🔧', color: '#795548', type: 'pane' },
-    { name: 'ANIMAL NA PISTA', emoji: '🐂', color: '#9c27b0', type: 'animal' },
-    { name: 'VEÍCULO ENGUIÇADO', emoji: '🚗💨', color: '#ff5722', type: 'enguicado' },
-    { name: 'BARREIRA', emoji: '⛰️', color: '#8b4513', type: 'barreira' },
-    { name: 'NEBLINA', emoji: '🌫️', color: '#00acc1', type: 'neblina' },
-    { name: 'CONGESTIONAMENTO', emoji: '🔴', color: '#f44336', type: 'congest' },
-    { name: 'ALAGAMENTO', emoji: '💧', color: '#2196f3', type: 'alagamento' },
-    { name: 'BLOQUEIO TOTAL', emoji: '⛔', color: '#b71c1c', type: 'bloqueio' },
-    { name: 'PERIGO', emoji: '⚠️', color: '#ff5722', type: 'perigo' },
-    { name: 'DESVIO', emoji: '🔄', color: '#3f51b5', type: 'desvio' },
-    { name: 'CARGA PERIGOSA', emoji: '📦', color: '#8bc34a', type: 'carga' },
-    { name: 'GRANIZO', emoji: '🧊', color: '#00bcd4', type: 'granizo' },
-    { name: 'MANIFESTAÇÃO', emoji: '📢', color: '#ff4081', type: 'manifest' }
+    { name: 'ACIDENTE', emoji: '💥', color: '#e53935' }, { name: 'OBRAS', emoji: '🚧', color: '#ff9800' },
+    { name: 'PANE MECÂNICA', emoji: '🔧', color: '#795548' }, { name: 'ANIMAL NA PISTA', emoji: '🐂', color: '#9c27b0' },
+    { name: 'VEÍCULO ENGUIÇADO', emoji: '🚗💨', color: '#ff5722' }, { name: 'BARREIRA', emoji: '⛰️', color: '#8b4513' },
+    { name: 'NEBLINA', emoji: '🌫️', color: '#00acc1' }, { name: 'CONGESTIONAMENTO', emoji: '🔴', color: '#f44336' },
+    { name: 'ALAGAMENTO', emoji: '💧', color: '#2196f3' }, { name: 'BLOQUEIO TOTAL', emoji: '⛔', color: '#b71c1c' },
+    { name: 'PERIGO', emoji: '⚠️', color: '#ff5722' }, { name: 'DESVIO', emoji: '🔄', color: '#3f51b5' },
+    { name: 'CARGA PERIGOSA', emoji: '📦', color: '#8bc34a' }, { name: 'GRANIZO', emoji: '🧊', color: '#00bcd4' },
+    { name: 'MANIFESTAÇÃO', emoji: '📢', color: '#ff4081' }
 ];
 
-let userName = localStorage.getItem('px_user');
-if (!userName) {
-    userName = prompt("🎙️ Seu nome:", "Caminhoneiro");
-    if (!userName) userName = "Caminhoneiro";
-    localStorage.setItem('px_user', userName);
-}
-
+let userName = localStorage.getItem('px_user') || prompt("Seu nome:", "Caminhoneiro");
+localStorage.setItem('px_user', userName);
 let currentStation = localStorage.getItem('px_station') || 'curitiba';
-let mediaRecorder = null;
-let isTransmitting = false;
-let audioStream = null;
-let audioChunks = [];
-let recordInterval = null;
-let recordSeconds = 0;
-let map = null;
-let userLocation = null;
-let userMarker = null;
-let alertsOnMap = {};
-let audioListener = null;
-let currentAudio = null;
-let currentAudioTimeout = null;
-let speakingListener = null;
+let isMuted = false, isLedActive = true;
+let isAdminMap = false, isAdminChat = false;
+let map, userMarker, userLocation, alertsOnMap = {};
+let mediaRecorder, isTransmitting = false, audioStream, chunks = [], recordSec = 0, timerInterval;
+let audioListener, currentAudio, speakingListener;
+let selectedMsg = { id: null, type: null, element: null, text: null, user: null };
+let replyTo = null;
 
-// Controles
-let isMuted = false;
-let isLedActive = true;
-
-// Admin
-let isAdminMapMode = false;
-let isAdminChatMode = false;
-let tempMarker = null;
-let adminClickCount = 0;
-let adminClickTimeout = null;
-let adminFirstPos = null;
-
-let selectedMsgId = null;
-let selectedMsgChatType = null;
-let selectedMsgElement = null;
-let selectedMsgText = null;
-let selectedMsgUser = null;
-let currentReplyTo = null;
-let longPressTimer = null;
-let longPressTarget = null;
-
-function normalizeId(str) {
-    return str.toLowerCase().replace(/ /g, '_').replace(/ã/g, 'a').replace(/ç/g, 'c').replace(/á/g, 'a').replace(/â/g, 'a').replace(/é/g, 'e').replace(/ê/g, 'e').replace(/í/g, 'i').replace(/ó/g, 'o').replace(/ô/g, 'o').replace(/ú/g, 'u');
+// ==================== UTILS ====================
+function normalizeId(str) { return str.toLowerCase().replace(/ /g, '_').normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
+function showToast(msg) {
+    let t = document.createElement('div');
+    t.innerText = msg;
+    t.style.cssText = 'position:fixed; bottom:70px; left:50%; transform:translateX(-50%); background:#00aaff; color:white; padding:5px 15px; border-radius:30px; z-index:13000; font-size:11px;';
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 2000);
 }
 
-// Controles Mudo e LED
-document.getElementById('muteBtn').addEventListener('click', () => {
+// ==================== SWITCHES ====================
+document.getElementById('muteSwitch').addEventListener('click', function() {
     isMuted = !isMuted;
-    const btn = document.getElementById('muteBtn');
-    const status = document.getElementById('muteStatus');
-    if (isMuted) {
-        btn.classList.add('mute-active');
-        status.innerText = 'ON';
-        status.style.color = '#e53935';
-        // Parar qualquer áudio tocando
-        if (currentAudio) {
-            currentAudio.pause();
-            currentAudio = null;
-        }
-    } else {
-        btn.classList.remove('mute-active');
-        status.innerText = 'OFF';
-        status.style.color = '#ffd700';
-    }
+    if(isMuted) { this.classList.add('active'); document.getElementById('muteStatus').innerText = 'LIG'; if(currentAudio) currentAudio.pause(); }
+    else { this.classList.remove('active'); document.getElementById('muteStatus').innerText = 'DESL'; }
 });
-
-document.getElementById('ledBtn').addEventListener('click', () => {
+document.getElementById('ledSwitch').addEventListener('click', function() {
     isLedActive = !isLedActive;
-    const btn = document.getElementById('ledBtn');
-    const status = document.getElementById('ledStatus');
-    const sMeter = document.getElementById('sMeterContainer');
-    if (isLedActive) {
-        btn.classList.remove('led-active');
-        status.innerText = 'ON';
-        sMeter.style.opacity = '1';
-    } else {
-        btn.classList.add('led-active');
-        status.innerText = 'OFF';
-        sMeter.style.opacity = '0.3';
-    }
+    if(isLedActive) { this.classList.add('active'); document.getElementById('ledStatus').innerText = 'LIG'; document.getElementById('smeterBox').style.opacity = '1'; }
+    else { this.classList.remove('active'); document.getElementById('ledStatus').innerText = 'DESL'; document.getElementById('smeterBox').style.opacity = '0.3'; }
 });
 
-function animateSMeter(strength = 5) {
-    if (!isLedActive) return;
-    const bars = document.querySelectorAll('.meter-bar');
-    bars.forEach((bar, idx) => {
-        bar.classList.remove('active', 'warning', 'danger');
-        if (idx < strength) {
-            if (idx >= 7) bar.classList.add('danger');
-            else if (idx >= 5) bar.classList.add('warning');
-            else bar.classList.add('active');
+function animateSMeter(val=5) {
+    if(!isLedActive) return;
+    let bars = document.querySelectorAll('.bar');
+    bars.forEach((b,i) => {
+        b.classList.remove('active','warning','danger');
+        if(i < val) {
+            if(i>=7) b.classList.add('danger');
+            else if(i>=5) b.classList.add('warning');
+            else b.classList.add('active');
         }
     });
 }
-setInterval(() => { if (!isTransmitting && isLedActive) animateSMeter(Math.floor(Math.random() * 9)); }, 800);
+setInterval(() => { if(!isTransmitting && isLedActive) animateSMeter(Math.floor(Math.random()*9)); }, 800);
 
-// Admin
-function enableAdminMapMode() {
-    const pwd = prompt("🔐 SENHA (277):");
-    if (pwd === "277") {
-        isAdminMapMode = true;
-        showToast("👑 ADMIN MAPA");
-        if (map) map.getContainer().style.cursor = "crosshair";
-        document.getElementById('adminStatusBadge').style.display = 'flex';
-    } else showToast("❌ Senha incorreta");
-}
-function enableAdminChatMode() {
-    const pwd = prompt("🔐 SENHA (277):");
-    if (pwd === "277") {
-        isAdminChatMode = true;
-        showToast("👑 ADMIN CHAT");
-    } else showToast("❌ Senha incorreta");
-}
-function disableAdminMode() {
-    isAdminMapMode = isAdminChatMode = false;
-    if (tempMarker && map) map.removeLayer(tempMarker);
-    if (map) map.getContainer().style.cursor = "";
-    document.getElementById('adminStatusBadge').style.display = 'none';
-    showToast("Admin desativado");
-    document.getElementById('adminPanel').classList.remove('show');
-}
-async function deleteAlertFromMap(alertId) {
-    if (!isAdminMapMode) { showToast("❌ Ative ADMIN MAPA"); return; }
-    if (confirm("⚠️ Apagar alerta?")) {
-        await db.ref(`alerts/${alertId}`).remove();
-        if (alertsOnMap[alertId]) map.removeLayer(alertsOnMap[alertId]);
-        delete alertsOnMap[alertId];
-        showToast("✅ Alerta removido");
-    }
-}
-async function deleteChatMessage(chatType, msgId) {
-    if (!isAdminChatMode) { showToast("❌ Ative ADMIN CHAT"); return; }
-    if (confirm("⚠️ Apagar mensagem?")) {
-        await db.ref(`${chatType}/${msgId}`).remove();
-        showToast("✅ Mensagem apagada");
-        document.getElementById('contextMenu').classList.remove('show');
-    }
-}
-function showAdminAlertDropdown(lat, lng) {
-    const modal = document.createElement('div');
-    modal.style.cssText = 'position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.95); z-index:20000; display:flex; align-items:center; justify-content:center;';
-    const container = document.createElement('div');
-    container.style.cssText = 'background:#1a1a1a; border-radius:20px; width:90%; max-width:320px; max-height:75vh; overflow:auto; border:2px solid #0a84ff; padding:12px;';
-    container.innerHTML = `<h3 style="color:#0a84ff; text-align:center; margin-bottom:8px; font-size:14px;">📌 NOVO ALERTA</h3><div id="adminAlertSelector" style="display:grid; grid-template-columns:repeat(2,1fr); gap:6px;"></div><button id="cancelAdminAlert" style="margin-top:10px; width:100%; padding:6px; background:#e53935; border:none; border-radius:20px; color:white;">CANCELAR</button>`;
-    modal.appendChild(container);
-    document.body.appendChild(modal);
-    const grid = container.querySelector('#adminAlertSelector');
-    alertTypes.forEach(alert => {
-        const card = document.createElement('div');
-        card.style.cssText = `background:#2a2a2a; border-radius:10px; padding:6px; text-align:center; cursor:pointer; border-top:2px solid ${alert.color}`;
-        card.innerHTML = `<div style="font-size:20px;">${alert.emoji}</div><div style="color:white; font-size:8px;">${alert.name}</div>`;
-        card.onclick = async () => {
-            const id = Date.now();
-            await db.ref(`alerts/${id}`).set({ ...alert, lat, lng, timestamp: id, creator: userName + " (ADMIN)", confirmations: 1 });
-            showToast(`✅ Alerta ${alert.name} criado`);
-            document.body.removeChild(modal);
-            if (tempMarker) map.removeLayer(tempMarker);
-            adminClickCount = 0;
-            openMapModal();
-        };
-        grid.appendChild(card);
-    });
-    container.querySelector('#cancelAdminAlert').onclick = () => {
-        if (tempMarker) map.removeLayer(tempMarker);
-        document.body.removeChild(modal);
-        adminClickCount = 0;
-    };
-}
-function setupAdminMode() {
-    if (!map) return;
-    map.on('click', (e) => {
-        if (!isAdminMapMode) return;
-        adminClickCount++;
-        if (adminClickCount === 1) {
-            adminFirstPos = e.latlng;
-            if (tempMarker) map.removeLayer(tempMarker);
-            tempMarker = L.marker(adminFirstPos, { draggable: true, icon: L.divIcon({ html: '<div style="background:#ffd700; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:16px;">📍</div>', iconSize: [28,28], iconAnchor: [14,14] }) }).addTo(map);
-            tempMarker.on('dragend', () => { adminFirstPos = tempMarker.getLatLng(); showToast("Posição ajustada"); });
-            showToast("⚠️ Clique NOVAMENTE");
-            adminClickTimeout = setTimeout(() => { adminClickCount = 0; if(tempMarker) map.removeLayer(tempMarker); showToast("Cancelado"); }, 10000);
-        } else if (adminClickCount === 2) {
-            clearTimeout(adminClickTimeout);
-            const markerPos = tempMarker ? tempMarker.getLatLng() : adminFirstPos;
-            if (markerPos && Math.hypot(markerPos.lat - e.latlng.lat, markerPos.lng - e.latlng.lng) < 0.0005) showAdminAlertDropdown(markerPos.lat, markerPos.lng);
-            else showToast("❌ Clique no alfinete");
-            adminClickCount = 0;
-        }
-    });
-}
-
-// Estações
+// ==================== ESTAÇÕES ====================
 function buildDropdown() {
-    const menu = document.getElementById('stationDropdown');
+    let menu = document.getElementById('stationDropdown');
     menu.innerHTML = '';
     cities.forEach(city => {
-        const id = normalizeId(city);
-        const opt = document.createElement('div');
+        let id = normalizeId(city);
+        let opt = document.createElement('div');
         opt.className = 'station-option';
-        if (id === currentStation) opt.classList.add('active');
+        if(id === currentStation) opt.classList.add('active');
         opt.innerHTML = `<span>${city}</span><span class="station-count" id="count-${id}">0</span>`;
         opt.onclick = () => { changeStation(id, city); closeDropdown(); };
         menu.appendChild(opt);
     });
 }
-function toggleDropdown() { document.getElementById('stationDropdown').classList.toggle('open'); document.getElementById('selectorTrigger').classList.toggle('open'); }
-function closeDropdown() { document.getElementById('stationDropdown').classList.remove('open'); document.getElementById('selectorTrigger').classList.remove('open'); }
+function toggleDropdown() { document.getElementById('stationDropdown').classList.toggle('open'); }
+function closeDropdown() { document.getElementById('stationDropdown').classList.remove('open'); }
 document.getElementById('selectorTrigger').addEventListener('click', (e) => { e.stopPropagation(); toggleDropdown(); });
-document.addEventListener('click', (e) => { if (!e.target.closest('.station-selector')) closeDropdown(); });
+document.addEventListener('click', (e) => { if(!e.target.closest('.station-selector')) closeDropdown(); });
+
 function changeStation(id, name) {
     currentStation = id;
     localStorage.setItem('px_station', id);
@@ -1072,187 +779,309 @@ function changeStation(id, name) {
     event.target.closest('.station-option').classList.add('active');
     document.getElementById('selectedCityName').innerText = name;
     db.ref(`stations/${id}/users/${userName}`).set({ name: userName, timestamp: Date.now() });
-    cities.forEach(c => { const oid = normalizeId(c); if (oid !== id) db.ref(`stations/${oid}/users/${userName}`).remove(); });
-    setupAudio(); checkSpeakingStatus(); showToast(`📻 ${name}`);
+    cities.forEach(c => { let oid = normalizeId(c); if(oid !== id) db.ref(`stations/${oid}/users/${userName}`).remove(); });
+    setupAudio(); checkSpeaking(); showToast(`📻 ${name}`);
 }
 function loadCounts() {
     cities.forEach(city => {
-        const id = normalizeId(city);
-        db.ref(`stations/${id}/users`).on('value', (snap) => {
-            const count = snap.val() ? Object.keys(snap.val()).length : 0;
-            const badge = document.getElementById(`count-${id}`);
-            if (badge) badge.innerText = count;
-            if (id === currentStation) document.getElementById('currentCityOnline').innerHTML = `${count} online <i class="fas fa-users"></i>`;
+        let id = normalizeId(city);
+        db.ref(`stations/${id}/users`).on('value', snap => {
+            let count = snap.val() ? Object.keys(snap.val()).length : 0;
+            let badge = document.getElementById(`count-${id}`);
+            if(badge) badge.innerText = count;
+            if(id === currentStation) document.getElementById('onlineCount').innerHTML = `${count} online <i class="fas fa-users"></i>`;
         });
     });
 }
-function checkSpeakingStatus() {
-    if (speakingListener) db.ref(`stations/${currentStation}/speaking`).off('value', speakingListener);
-    speakingListener = db.ref(`stations/${currentStation}/speaking`).on('value', (snap) => {
-        const speaker = snap.val();
-        const indicator = document.getElementById('speakingIndicator');
-        if (speaker && speaker.user !== userName) {
-            indicator.style.display = 'block';
-            indicator.innerHTML = `📢 ${speaker.user} falando...`;
-            setTimeout(() => { if (indicator.style.display === 'block') indicator.style.display = 'none'; }, 2000);
-        } else {
-            indicator.style.display = 'none';
-        }
+function checkSpeaking() {
+    if(speakingListener) db.ref(`stations/${currentStation}/speaking`).off();
+    speakingListener = db.ref(`stations/${currentStation}/speaking`).on('value', snap => {
+        let s = snap.val();
+        let div = document.getElementById('speakingAlert');
+        if(s && s.user !== userName) { div.style.display = 'block'; div.innerText = `📢 ${s.user} está falando...`; setTimeout(() => div.style.display = 'none', 2000); }
+        else div.style.display = 'none';
     });
 }
+
+// ==================== ÁUDIO ====================
 function setupAudio() {
-    if (audioListener) db.ref(`stations/${currentStation}/audios`).off('child_added', audioListener);
-    audioListener = db.ref(`stations/${currentStation}/audios`).on('child_added', (snap) => {
-        const data = snap.val();
-        if (data && data.sender !== userName && !isMuted) {
-            if (currentAudio) { currentAudio.pause(); if (currentAudioTimeout) clearTimeout(currentAudioTimeout); }
+    if(audioListener) db.ref(`stations/${currentStation}/audios`).off();
+    audioListener = db.ref(`stations/${currentStation}/audios`).on('child_added', snap => {
+        let data = snap.val();
+        if(data && data.sender !== userName && !isMuted) {
+            if(currentAudio) currentAudio.pause();
             currentAudio = new Audio(data.audio);
-            currentAudio.play().catch(e => console.log);
+            currentAudio.play();
             document.getElementById('audioSender').innerHTML = `<i class="fas fa-user"></i> ${data.sender}`;
             document.getElementById('audioStation').innerHTML = `<i class="fas fa-radio"></i> ${data.station}`;
-            document.getElementById('audioPlayerContainer').style.display = 'flex';
-            currentAudioTimeout = setTimeout(() => { document.getElementById('audioPlayerContainer').style.display = 'none'; }, 3000);
-            currentAudio.onended = () => { document.getElementById('audioPlayerContainer').style.display = 'none'; };
+            document.getElementById('audioNotify').style.display = 'flex';
+            setTimeout(() => document.getElementById('audioNotify').style.display = 'none', 3000);
         }
     });
 }
-const pxButton = document.getElementById('pxButton');
-async function startTransmission() {
-    if (isTransmitting) return;
+const ptt = document.getElementById('pttButton');
+async function startTx() {
+    if(isTransmitting) return;
     try {
-        audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        mediaRecorder = new MediaRecorder(audioStream);
-        audioChunks = []; recordSeconds = 0;
+        let stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        chunks = []; recordSec = 0;
         db.ref(`stations/${currentStation}/speaking`).set({ user: userName, timestamp: Date.now() });
-        mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
+        mediaRecorder.ondataavailable = e => { if(e.data.size) chunks.push(e.data); };
         mediaRecorder.onstop = async () => {
-            if (audioChunks.length > 0) {
-                const blob = new Blob(audioChunks, { type: 'audio/webm' });
-                const reader = new FileReader();
+            if(chunks.length) {
+                let blob = new Blob(chunks, { type: 'audio/webm' });
+                let reader = new FileReader();
                 reader.onloadend = async () => {
-                    const cityName = cities.find(c => normalizeId(c) === currentStation);
-                    const snapshot = await db.ref(`stations/${currentStation}/audios`).once('value');
-                    if (snapshot.val()) Object.keys(snapshot.val()).forEach(key => db.ref(`stations/${currentStation}/audios/${key}`).remove());
-                    await db.ref(`stations/${currentStation}/audios`).push({ sender: userName, station: cityName, audio: reader.result, timestamp: Date.now(), duration: recordSeconds });
+                    let cityName = cities.find(c => normalizeId(c) === currentStation);
+                    let snap = await db.ref(`stations/${currentStation}/audios`).once('value');
+                    if(snap.val()) Object.keys(snap.val()).forEach(k => db.ref(`stations/${currentStation}/audios/${k}`).remove());
+                    await db.ref(`stations/${currentStation}/audios`).push({ sender: userName, station: cityName, audio: reader.result, timestamp: Date.now(), duration: recordSec });
                     setTimeout(() => db.ref(`stations/${currentStation}/speaking`).remove(), 1000);
                 };
                 reader.readAsDataURL(blob);
             }
-            if (audioStream) audioStream.getTracks().forEach(t => t.stop());
+            if(audioStream) audioStream.getTracks().forEach(t => t.stop());
         };
         mediaRecorder.start(100);
         isTransmitting = true;
-        pxButton.classList.remove('off');
-        pxButton.classList.add('active');
-        pxButton.innerHTML = '<i class="fas fa-microphone"></i><span>PTT</span>';
+        ptt.classList.add('active');
+        ptt.innerHTML = '<i class="fas fa-microphone"></i><span>PTT</span>';
         document.getElementById('timerDisplay').style.display = 'block';
-        if (isLedActive) animateSMeter(9);
-        recordInterval = setInterval(() => { recordSeconds++; document.getElementById('timerDisplay').innerHTML = `⏱️ ${recordSeconds}s`; }, 1000);
-    } catch(e) { alert("🎤 Permita acesso ao microfone"); }
+        if(isLedActive) animateSMeter(9);
+        timerInterval = setInterval(() => { recordSec++; document.getElementById('timerDisplay').innerHTML = `⏱️ ${recordSec}s`; }, 1000);
+    } catch(e) { alert("Permita microfone"); }
 }
-function stopTransmission() {
-    if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop();
-    if (recordInterval) clearInterval(recordInterval);
+function stopTx() {
+    if(mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop();
+    if(timerInterval) clearInterval(timerInterval);
     isTransmitting = false;
     db.ref(`stations/${currentStation}/speaking`).remove();
-    pxButton.classList.remove('active');
-    pxButton.classList.add('off');
-    pxButton.innerHTML = '<i class="fas fa-microphone-slash"></i><span>PTT</span>';
+    ptt.classList.remove('active');
+    ptt.innerHTML = '<i class="fas fa-microphone-slash"></i><span>PTT</span>';
     document.getElementById('timerDisplay').style.display = 'none';
-    document.getElementById('timerDisplay').innerHTML = '';
-    if (isLedActive) animateSMeter(3);
+    if(isLedActive) animateSMeter(3);
 }
-pxButton.addEventListener('click', () => { if (isTransmitting) stopTransmission(); else startTransmission(); });
+ptt.addEventListener('click', () => { if(isTransmitting) stopTx(); else startTx(); });
 
-// Mapa
+// ==================== MAPA ====================
 function initMap() {
     map = L.map('map').setView([-25.4284, -49.2733], 12);
     L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(map);
-    if (navigator.geolocation) navigator.geolocation.watchPosition(pos => {
+    if(navigator.geolocation) navigator.geolocation.watchPosition(pos => {
         userLocation = [pos.coords.latitude, pos.coords.longitude];
-        if (!userMarker) userMarker = L.marker(userLocation, { icon: L.divIcon({ html: '<div style="font-size:26px;">🚛</div>', iconSize: [26,26], iconAnchor: [13,13] }) }).addTo(map);
+        if(!userMarker) userMarker = L.marker(userLocation, { icon: L.divIcon({ html: '<div style="font-size:28px;">🚛</div>', iconSize: [28,28], iconAnchor: [14,14] }) }).addTo(map);
         else userMarker.setLatLng(userLocation);
     });
-    loadAlertsOnMap();
-    setupAdminMode();
+    loadAlerts();
 }
-function recenterMap() { if (userLocation) { map.setView(userLocation, 14); showToast("📍 Recentralizado"); } else showToast("⏳ Aguardando..."); }
-function openAlertModalFromMap() { openAlertModal(); }
-function loadAlertsOnMap() {
-    db.ref('alerts').on('child_added', (snap) => {
-        const alert = snap.val(), id = snap.key;
-        if (Date.now() - alert.timestamp > 20*60*1000) { db.ref(`alerts/${id}`).remove(); return; }
-        if (alertsOnMap[id] || !map) return;
-        const marker = L.marker([alert.lat, alert.lng], { icon: L.divIcon({ html: `<div class="map-marker-icon" style="background:${alert.color}; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:18px;">${alert.emoji}</div>`, iconSize: [32,32], iconAnchor: [16,16] }) }).addTo(map);
-        marker.on('mousedown', () => { longPressTimer = setTimeout(() => { if(isAdminMapMode){ document.getElementById('longPressMenu').style.left = event.clientX+'px'; document.getElementById('longPressMenu').style.top = event.clientY+'px'; document.getElementById('longPressMenu').classList.add('show'); longPressTarget = id; } }, 500); });
-        marker.on('mouseup', () => { if(longPressTimer) clearTimeout(longPressTimer); });
-        let imgHtml = alert.image ? `<img src="${alert.image}" class="popup-alert-img" onclick="event.stopPropagation(); viewFullImage('${alert.image}')">` : '';
-        const popupDiv = document.createElement('div');
-        popupDiv.className = 'popup-alert';
-        popupDiv.innerHTML = `${imgHtml}<div class="popup-alert-header" onclick="confirmAlert('${id}')"><span>${alert.emoji} ${alert.name}</span><span>👍 <span id="confirm-count-${id}">${alert.confirmations||1}</span></span>${isAdminMapMode?`<button onclick="event.stopPropagation(); deleteAlertFromMap('${id}')" style="background:#e53935; border:none; border-radius:10px; padding:1px 5px; color:white;">🗑️</button>`:''}</div><div class="popup-alert-chat" id="alert-chat-${id}"></div><div class="popup-chat-input"><div class="popup-chat-input-row"><input type="text" id="alert-input-${id}" placeholder="Comentar..."><button onclick="sendAlertMsg('${id}')">➔</button></div></div>`;
-        marker.bindPopup(popupDiv);
+function recenter() { if(userLocation) map.setView(userLocation, 14); else showToast("Aguardando localização"); }
+function loadAlerts() {
+    db.ref('alerts').on('child_added', snap => {
+        let a = snap.val(), id = snap.key;
+        if(Date.now() - a.timestamp > 20*60*1000) { db.ref(`alerts/${id}`).remove(); return; }
+        if(alertsOnMap[id] || !map) return;
+        let marker = L.marker([a.lat, a.lng], { icon: L.divIcon({ html: `<div style="background:${a.color}; width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; animation:pulse-marker 1s infinite;">${a.emoji}</div>`, iconSize: [34,34], iconAnchor: [17,17] }) }).addTo(map);
         marker.on('popupopen', () => loadAlertChat(id));
+        marker.bindPopup(`
+            ${a.image ? `<img src="${a.image}" style="width:100%; height:80px; object-fit:cover;" onclick="viewFullImage('${a.image}')">` : ''}
+            <div style="background:#075E54; color:white; padding:5px; display:flex; justify-content:space-between;" onclick="confirmAlert('${id}')">
+                <span>${a.emoji} ${a.name}</span><span>👍 <span id="confirm-${id}">${a.confirmations||1}</span></span>
+                ${isAdminMap ? `<button onclick="event.stopPropagation(); deleteAlert('${id}')" style="background:red; border:none; border-radius:10px;">🗑️</button>` : ''}
+            </div>
+            <div id="chatAlert-${id}" style="background:#E5DDD5; max-height:120px; overflow-y:auto; padding:5px;"></div>
+            <div style="display:flex; padding:5px;"><input id="inputAlert-${id}" placeholder="Comentar..." style="flex:1;"><button onclick="sendAlertComment('${id}')">➔</button></div>
+        `);
         alertsOnMap[id] = marker;
     });
 }
-function viewFullImage(img) { const m=document.createElement('div'); m.style.cssText='position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.95); z-index:30000; display:flex; align-items:center; justify-content:center;'; m.innerHTML=`<img src="${img}" style="max-width:90%; max-height:90%; border-radius:10px;">`; m.onclick=()=>m.remove(); document.body.appendChild(m); }
+function viewFullImage(img) { let m=document.createElement('div'); m.style.cssText='position:fixed; top:0; left:0; right:0; bottom:0; background:black; display:flex; align-items:center; justify-content:center; z-index:20000;'; m.innerHTML=`<img src="${img}" style="max-width:90%;">`; m.onclick=()=>m.remove(); document.body.appendChild(m); }
 function confirmAlert(id) { db.ref(`alerts/${id}/confirmations`).transaction(c=>(c||1)+1); showToast("👍 Confirmado"); }
-function loadAlertChat(id) { db.ref(`chats/alert_${id}`).off(); db.ref(`chats/alert_${id}`).on('value',(snap)=>{ const chatDiv=document.getElementById(`alert-chat-${id}`); if(!chatDiv)return; const msgs=snap.val(); if(!msgs){chatDiv.innerHTML='<div style="text-align:center; padding:5px;">Nenhum comentário</div>';return;} let html=''; Object.entries(msgs).sort((a,b)=>a[1].timestamp-b[1].timestamp).forEach(([msgId,msg])=>{ const isMe=msg.user===userName; const time=new Date(msg.timestamp).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}); html+=`<div class="popup-chat-msg ${isMe?'me':'other'}"><strong>${msg.user}</strong><br>${escapeHtml(msg.text)}<br><small>${time}</small></div>`; }); chatDiv.innerHTML=html; chatDiv.scrollTop=chatDiv.scrollHeight; }); }
-async function sendAlertMsg(id){ const input=document.getElementById(`alert-input-${id}`); if(!input.value.trim())return; await db.ref(`chats/alert_${id}`).push({ user: userName, text: input.value.trim(), timestamp: Date.now() }); input.value=''; }
-function openMapModal(){ document.getElementById('mapModal').classList.add('visible'); setTimeout(()=>{ if(map)map.invalidateSize(); else initMap(); },100); }
-function closeMapModal(){ document.getElementById('mapModal').classList.remove('visible'); }
+function loadAlertChat(id) { db.ref(`chats/alert_${id}`).on('value', snap => { let div=document.getElementById(`chatAlert-${id}`); if(!div)return; let msgs=snap.val(); if(!msgs){div.innerHTML='';return;} let html=''; Object.entries(msgs).sort((a,b)=>a[1].timestamp-b[1].timestamp).forEach(([mid,msg])=>{ let isMe=msg.user===userName; html+=`<div style="margin:3px; padding:4px; border-radius:12px; background:${isMe?'#DCF8C6':'white'}; max-width:90%;"><strong>${msg.user}</strong><br>${msg.text}<br><small>${new Date(msg.timestamp).toLocaleTimeString()}</small></div>`; }); div.innerHTML=html; }); }
+async function sendAlertComment(id) { let input=document.getElementById(`inputAlert-${id}`); if(!input.value.trim())return; await db.ref(`chats/alert_${id}`).push({ user:userName, text:input.value, timestamp:Date.now() }); input.value=''; }
+async function deleteAlert(id) { if(confirm("Apagar?")) { await db.ref(`alerts/${id}`).remove(); if(alertsOnMap[id]) map.removeLayer(alertsOnMap[id]); delete alertsOnMap[id]; showToast("Removido"); } }
 
-// Alertas
-function buildAlertGrid(){ const grid=document.getElementById('alertGrid'); grid.innerHTML=''; alertTypes.forEach(alert=>{ const card=document.createElement('div'); card.className='alert-item'; card.style.borderTop=`2px solid ${alert.color}`; card.innerHTML=`<div class="alert-emoji">${alert.emoji}</div><div class="alert-name">${alert.name}</div>`; card.onclick=()=>createAlertWithPhoto(alert); grid.appendChild(card); }); }
-async function createAlertWithPhoto(alert){ if(!userLocation){showToast("📍 Aguardando...");return;} 
-    try{ const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}}); 
-    const overlay=document.createElement('div'); overlay.style.cssText='position:fixed; top:0; left:0; right:0; bottom:0; background:#000; z-index:10000; display:flex; flex-direction:column; align-items:center; justify-content:center;'; 
-    const video=document.createElement('video'); video.style.cssText='width:80%; max-width:240px; border-radius:10px;'; video.autoplay=true; video.srcObject=stream; 
-    const btnPhoto=document.createElement('button'); btnPhoto.style.cssText='margin:6px; padding:5px 14px; background:#ffd700; border:none; border-radius:20px; font-size:11px; cursor:pointer;'; btnPhoto.innerHTML='📷 TIRAR FOTO'; 
-    const btnSkip=document.createElement('button'); btnSkip.style.cssText='margin:6px; padding:5px 14px; background:#444; border:none; border-radius:20px; color:white; cursor:pointer;'; btnSkip.innerHTML='⏭️ PULAR'; 
-    const btnClose=document.createElement('button'); btnClose.style.cssText='position:absolute; top:10px; right:10px; width:28px; height:28px; background:#e53935; border:none; border-radius:50%; color:white; font-size:12px; cursor:pointer;'; btnClose.innerHTML='✕'; 
-    overlay.appendChild(video); overlay.appendChild(btnPhoto); overlay.appendChild(btnSkip); overlay.appendChild(btnClose); document.body.appendChild(overlay); 
-    btnPhoto.onclick=()=>{ const canvas=document.createElement('canvas'); canvas.width=video.videoWidth; canvas.height=video.videoHeight; canvas.getContext('2d').drawImage(video,0,0); canvas.toBlob(async(blob)=>{ const reader=new FileReader(); reader.onloadend=async()=>{ const id=Date.now(); await db.ref(`alerts/${id}`).set({...alert, lat:userLocation[0], lng:userLocation[1], timestamp:id, creator:userName, confirmations:1, image:reader.result}); stream.getTracks().forEach(t=>t.stop()); document.body.removeChild(overlay); showToast('✅ Alerta enviado!'); closeAlertModal(); openMapModal(); }; reader.readAsDataURL(blob); },'image/jpeg',0.5); }; 
-    btnSkip.onclick=async()=>{ const id=Date.now(); await db.ref(`alerts/${id}`).set({...alert, lat:userLocation[0], lng:userLocation[1], timestamp:id, creator:userName, confirmations:1}); stream.getTracks().forEach(t=>t.stop()); document.body.removeChild(overlay); showToast(`⚠️ ${alert.name} reportado!`); closeAlertModal(); openMapModal(); }; 
-    btnClose.onclick=()=>{ stream.getTracks().forEach(t=>t.stop()); document.body.removeChild(overlay); }; }catch(e){ const id=Date.now(); await db.ref(`alerts/${id}`).set({...alert, lat:userLocation[0], lng:userLocation[1], timestamp:id, creator:userName, confirmations:1}); showToast(`⚠️ ${alert.name} reportado!`); closeAlertModal(); openMapModal(); } 
+// ==================== ALERTAS (15) ====================
+function buildAlertGrid() {
+    let grid = document.getElementById('alertGrid');
+    grid.innerHTML = '';
+    alertTypes.forEach(alert => {
+        let card = document.createElement('div');
+        card.className = 'alert-card';
+        card.style.borderTop = `3px solid ${alert.color}`;
+        card.innerHTML = `<div class="alert-emoji">${alert.emoji}</div><div class="alert-name">${alert.name}</div>`;
+        card.onclick = () => createAlert(alert);
+        grid.appendChild(card);
+    });
 }
-function openAlertModal(){ document.getElementById('alertModal').classList.add('visible'); }
-function closeAlertModal(){ document.getElementById('alertModal').classList.remove('visible'); }
+async function createAlert(alert) {
+    if(!userLocation) { showToast("Aguardando localização..."); return; }
+    try {
+        let stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+        let overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed; top:0; left:0; right:0; bottom:0; background:#000; z-index:20000; display:flex; flex-direction:column; align-items:center; justify-content:center;';
+        let video = document.createElement('video'); video.autoplay = true; video.srcObject = stream;
+        video.style.width = '80%'; video.style.maxWidth = '260px'; video.style.borderRadius = '12px';
+        let btnPhoto = document.createElement('button'); btnPhoto.innerText = '📷 TIRAR FOTO'; btnPhoto.style.cssText = 'margin:10px; padding:6px 16px; background:#ffd700; border:none; border-radius:30px;';
+        let btnSkip = document.createElement('button'); btnSkip.innerText = '⏭️ PULAR'; btnSkip.style.cssText = 'margin:10px; padding:6px 16px; background:#444; color:white; border:none; border-radius:30px;';
+        let btnClose = document.createElement('button'); btnClose.innerText = '✕'; btnClose.style.cssText = 'position:absolute; top:15px; right:15px; background:red; border:none; border-radius:50%; width:32px; height:32px; color:white;';
+        overlay.appendChild(video); overlay.appendChild(btnPhoto); overlay.appendChild(btnSkip); overlay.appendChild(btnClose);
+        document.body.appendChild(overlay);
+        btnPhoto.onclick = () => {
+            let canvas = document.createElement('canvas'); canvas.width = video.videoWidth; canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            canvas.toBlob(async blob => {
+                let reader = new FileReader();
+                reader.onloadend = async () => {
+                    let id = Date.now();
+                    await db.ref(`alerts/${id}`).set({ ...alert, lat: userLocation[0], lng: userLocation[1], timestamp: id, creator: userName, confirmations: 1, image: reader.result });
+                    stream.getTracks().forEach(t => t.stop());
+                    document.body.removeChild(overlay);
+                    showToast("✅ Alerta enviado!");
+                    closeAlertModal();
+                    openMapModal();
+                    setTimeout(() => { if(map && userLocation) map.setView(userLocation, 13); }, 500);
+                };
+                reader.readAsDataURL(blob);
+            }, 'image/jpeg', 0.6);
+        };
+        btnSkip.onclick = async () => {
+            let id = Date.now();
+            await db.ref(`alerts/${id}`).set({ ...alert, lat: userLocation[0], lng: userLocation[1], timestamp: id, creator: userName, confirmations: 1 });
+            stream.getTracks().forEach(t => t.stop());
+            document.body.removeChild(overlay);
+            showToast(`⚠️ ${alert.name} reportado!`);
+            closeAlertModal();
+            openMapModal();
+            setTimeout(() => { if(map && userLocation) map.setView(userLocation, 13); }, 500);
+        };
+        btnClose.onclick = () => { stream.getTracks().forEach(t => t.stop()); document.body.removeChild(overlay); };
+    } catch(e) {
+        let id = Date.now();
+        await db.ref(`alerts/${id}`).set({ ...alert, lat: userLocation[0], lng: userLocation[1], timestamp: id, creator: userName, confirmations: 1 });
+        showToast(`⚠️ ${alert.name} reportado!`);
+        closeAlertModal();
+        openMapModal();
+        setTimeout(() => { if(map && userLocation) map.setView(userLocation, 13); }, 500);
+    }
+}
+function openMapModal() { document.getElementById('mapModal').classList.add('visible'); if(map) map.invalidateSize(); else initMap(); }
+function closeMapModal() { document.getElementById('mapModal').classList.remove('visible'); }
+function openAlertModal() { document.getElementById('alertModal').classList.add('visible'); }
+function closeAlertModal() { document.getElementById('alertModal').classList.remove('visible'); }
+function openChatModal() { document.getElementById('chatModal').classList.add('visible'); loadChatMessages(); }
+function closeChatModal() { document.getElementById('chatModal').classList.remove('visible'); document.getElementById('emojiPicker').classList.remove('show'); replyTo=null; document.getElementById('replyPreview').classList.remove('show'); }
 
-// Chat
-function openChatModal(){ document.getElementById('chatModal').classList.add('visible'); loadChatMessages(); }
-function closeChatModal(){ document.getElementById('chatModal').classList.remove('visible'); document.getElementById('emojiPicker').classList.remove('show'); cancelReply(); }
-function cancelReply(){ currentReplyTo=null; document.getElementById('replyPreview').classList.remove('show'); document.getElementById('chatInput').placeholder='Digite sua mensagem...'; }
-function loadChatMessages(){ db.ref('chat_global').off(); db.ref('chat_global').on('value',(snap)=>{ const msgs=snap.val(); const container=document.getElementById('chatMessagesArea'); if(!msgs){container.innerHTML='<div style="text-align:center; padding:12px;">Nenhuma mensagem</div>';return;} let html=''; Object.entries(msgs).sort((a,b)=>a[1].timestamp-b[1].timestamp).forEach(([msgId,msg])=>{ const isMe=msg.user===userName; const time=new Date(msg.timestamp).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}); html+=`<div class="msg-bubble ${isMe?'me':'other'}"><div class="msg-content" onclick="selectMessage(this,'${msgId}','chat_global')"><div class="msg-sender">${msg.user}</div><div class="msg-text">${escapeHtml(msg.text)}</div><div class="msg-meta"><span class="msg-time">${time}</span></div></div></div>`; }); container.innerHTML=html; container.scrollTop=container.scrollHeight; }); }
-function selectMessage(el,msgId,chatType){ document.querySelectorAll('.msg-content').forEach(e=>e.classList.remove('selected')); el.classList.add('selected'); selectedMsgId=msgId; selectedMsgChatType=chatType; selectedMsgElement=el.closest('.msg-wrapper'); selectedMsgUser=selectedMsgElement?.querySelector('.msg-sender')?.innerText; selectedMsgText=selectedMsgElement?.querySelector('.msg-text')?.innerText; const menu=document.getElementById('contextMenu'); const rect=el.getBoundingClientRect(); menu.style.left=rect.left+'px'; menu.style.top=rect.bottom+'px'; menu.classList.add('show'); }
-function sendChatMsg(){ const input=document.getElementById('chatInput'); if(!input.value.trim())return; let msgData={user:userName, text:input.value.trim(), timestamp:Date.now()}; if(currentReplyTo){ msgData.replyTo=currentReplyTo; cancelReply(); } db.ref('chat_global').push(msgData); input.value=''; showToast("✓ Enviada"); }
+// ==================== CHAT WHATSAPP ====================
+let currentReply = null;
+function loadChatMessages() {
+    db.ref('chat_global').off();
+    db.ref('chat_global').on('value', snap => {
+        let msgs = snap.val();
+        let container = document.getElementById('chatMessages');
+        if(!msgs) { container.innerHTML = '<div style="text-align:center; padding:20px;">Nenhuma mensagem</div>'; return; }
+        let html = '';
+        Object.entries(msgs).sort((a,b)=>a[1].timestamp-b[1].timestamp).forEach(([mid, msg]) => {
+            let isMe = msg.user === userName;
+            let time = new Date(msg.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+            html += `
+                <div class="msg ${isMe ? 'me' : 'other'}" data-id="${mid}" data-user="${msg.user}" data-text="${escapeHtml(msg.text)}">
+                    <div class="msg-content" onclick="selectChatMessage(this, '${mid}', 'chat_global')">
+                        <div class="msg-sender">${msg.user}</div>
+                        <div class="msg-text">${escapeHtml(msg.text)}</div>
+                        <div class="msg-time">${time}</div>
+                    </div>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+        container.scrollTop = container.scrollHeight;
+    });
+}
+function selectChatMessage(el, id, type) {
+    let wrapper = el.closest('.msg');
+    selectedMsg = { id, type, element: wrapper, user: wrapper.dataset.user, text: wrapper.dataset.text };
+    let menu = document.getElementById('contextMenu');
+    let rect = el.getBoundingClientRect();
+    menu.style.left = rect.left + 'px';
+    menu.style.top = rect.bottom + 'px';
+    menu.classList.add('show');
+}
+document.getElementById('replyMsg').addEventListener('click', () => {
+    if(selectedMsg.user && selectedMsg.text) {
+        currentReply = `${selectedMsg.user}: "${selectedMsg.text.substring(0,40)}${selectedMsg.text.length>40?'...':''}"`;
+        document.getElementById('replyText').innerHTML = `Respondendo ${selectedMsg.user}`;
+        document.getElementById('replyPreview').classList.add('show');
+        document.getElementById('chatInput').focus();
+        document.getElementById('contextMenu').classList.remove('show');
+        selectedMsg = {};
+    }
+});
+document.getElementById('deleteMsg').addEventListener('click', async () => {
+    if(!selectedMsg.id) return;
+    let isAdmin = isAdminChat;
+    let isOwner = selectedMsg.user === userName;
+    if(isAdmin || isOwner) {
+        if(confirm("Apagar mensagem?")) {
+            await db.ref(`${selectedMsg.type}/${selectedMsg.id}`).remove();
+            showToast("Mensagem apagada");
+        }
+    } else showToast("Você só pode apagar suas próprias mensagens");
+    document.getElementById('contextMenu').classList.remove('show');
+    selectedMsg = {};
+});
+document.getElementById('emojiMsg').addEventListener('click', () => {
+    document.getElementById('emojiPicker').classList.toggle('show');
+    document.getElementById('contextMenu').classList.remove('show');
+});
+document.getElementById('cancelReplyBtn').addEventListener('click', () => { currentReply = null; document.getElementById('replyPreview').classList.remove('show'); });
+document.getElementById('sendMsgBtn').addEventListener('click', sendChatMsg);
+document.getElementById('chatInput').addEventListener('keypress', (e) => { if(e.key === 'Enter') sendChatMsg(); });
+function sendChatMsg() {
+    let input = document.getElementById('chatInput');
+    if(!input.value.trim()) return;
+    let msg = { user: userName, text: input.value.trim(), timestamp: Date.now() };
+    if(currentReply) { msg.replyTo = currentReply; currentReply = null; document.getElementById('replyPreview').classList.remove('show'); }
+    db.ref('chat_global').push(msg);
+    input.value = '';
+    showToast("✓ Enviada");
+}
+function escapeHtml(t) { let d=document.createElement('div'); d.textContent=t; return d.innerHTML; }
 
-// Emojis
-const emojiPickerGlobal = document.getElementById('emojiPicker');
-const chatInput = document.getElementById('chatInput');
-document.getElementById('chatEmojiBtn').addEventListener('click', (e) => { e.stopPropagation(); emojiPickerGlobal.classList.toggle('show'); });
-emojiPickerGlobal.addEventListener('emoji-click', (e) => { chatInput.value += e.detail.unicode; emojiPickerGlobal.classList.remove('show'); chatInput.focus(); });
-chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') { e.preventDefault(); sendChatMsg(); } });
+// ==================== ADMIN ====================
+function enableAdminMap() { let pwd=prompt("Senha:"); if(pwd==='277'){ isAdminMap=true; document.getElementById('adminBadge').style.display='flex'; showToast("ADMIN MAPA"); } else showToast("Senha errada"); }
+function enableAdminChat() { let pwd=prompt("Senha:"); if(pwd==='277'){ isAdminChat=true; showToast("ADMIN CHAT"); } else showToast("Senha errada"); }
+function disableAdmin() { isAdminMap=false; isAdminChat=false; document.getElementById('adminBadge').style.display='none'; showToast("Admin off"); }
+document.getElementById('adminGear').addEventListener('click', () => document.getElementById('adminPanel').classList.toggle('show'));
+document.getElementById('adminMapBtn').addEventListener('click', () => { enableAdminMap(); document.getElementById('adminPanel').classList.remove('show'); });
+document.getElementById('adminChatBtn').addEventListener('click', () => { enableAdminChat(); document.getElementById('adminPanel').classList.remove('show'); });
+document.getElementById('exitAdminBtn').addEventListener('click', () => { disableAdmin(); document.getElementById('adminPanel').classList.remove('show'); });
 
-// Context Menu
-document.getElementById('contextReply').addEventListener('click',()=>{ if(selectedMsgUser && selectedMsgText){ currentReplyTo=`${selectedMsgUser}: "${selectedMsgText.substring(0,40)}${selectedMsgText.length>40?'...':''}"`; document.getElementById('replyPreviewText').innerHTML=`Respondendo ${selectedMsgUser}`; document.getElementById('replyPreview').classList.add('show'); chatInput.focus(); document.getElementById('contextMenu').classList.remove('show'); selectedMsgId=null; } });
-document.getElementById('contextDelete').addEventListener('click',async()=>{ if(selectedMsgId && selectedMsgChatType) await deleteChatMessage(selectedMsgChatType, selectedMsgId); document.getElementById('contextMenu').classList.remove('show'); });
-document.getElementById('contextEmoji').addEventListener('click',()=>{ emojiPickerGlobal.classList.toggle('show'); document.getElementById('contextMenu').classList.remove('show'); });
-document.getElementById('longPressDelete').addEventListener('click',()=>{ if(longPressTarget){ deleteAlertFromMap(longPressTarget); document.getElementById('longPressMenu').classList.remove('show'); longPressTarget=null; } });
-document.addEventListener('click',()=>{ document.getElementById('contextMenu').classList.remove('show'); document.getElementById('longPressMenu').classList.remove('show'); });
-function escapeHtml(t){ const d=document.createElement('div'); d.textContent=t; return d.innerHTML; }
-function showToast(m){ const t=document.createElement('div'); t.style.cssText='position:fixed; bottom:60px; left:50%; transform:translateX(-50%); background:#0a84ff; color:white; padding:4px 12px; border-radius:20px; z-index:13000; font-size:10px; white-space:nowrap;'; t.innerText=m; document.body.appendChild(t); setTimeout(()=>t.remove(),2000); }
+// ==================== EVENTOS UI ====================
+document.getElementById('openMapBtn').onclick = openMapModal;
+document.getElementById('openAlertBtn').onclick = openAlertModal;
+document.getElementById('openChatBtn').onclick = openChatModal;
+document.getElementById('closeMapModal').onclick = closeMapModal;
+document.getElementById('closeAlertModal').onclick = closeAlertModal;
+document.getElementById('closeChatModalBtn').onclick = closeChatModal;
+document.getElementById('closeChatBtn').onclick = closeChatModal;
+document.getElementById('mapAlertBtn').onclick = openAlertModal;
+document.getElementById('recenterBtn').onclick = recenter;
 
-// Admin Panel
-document.getElementById('adminGearBtn').addEventListener('click',()=>{ document.getElementById('adminPanel').classList.toggle('show'); });
-document.getElementById('enableAdminMapBtn').addEventListener('click',()=>{ enableAdminMapMode(); document.getElementById('adminPanel').classList.remove('show'); });
-document.getElementById('enableAdminChatBtn').addEventListener('click',()=>{ enableAdminChatMode(); document.getElementById('adminPanel').classList.remove('show'); });
-document.getElementById('disableAdminBtn').addEventListener('click',()=>{ disableAdminMode(); document.getElementById('adminPanel').classList.remove('show'); });
+// Emoji picker
+const emojiPicker = document.getElementById('emojiPicker');
+document.getElementById('chatEmojiBtn').addEventListener('click', (e) => { e.stopPropagation(); emojiPicker.classList.toggle('show'); });
+emojiPicker.addEventListener('emoji-click', (e) => { document.getElementById('chatInput').value += e.detail.unicode; emojiPicker.classList.remove('show'); });
+document.addEventListener('click', (e) => { if(!emojiPicker.contains(e.target) && e.target.id !== 'chatEmojiBtn') emojiPicker.classList.remove('show'); });
 
-window.addEventListener('beforeunload',()=>{ if(userName) db.ref(`stations/${currentStation}/users/${userName}`).remove(); if(isTransmitting) stopTransmission(); db.ref(`stations/${currentStation}/speaking`).remove(); });
-
-function init(){ buildDropdown(); loadCounts(); setupAudio(); buildAlertGrid(); checkSpeakingStatus(); showToast(`🎙️ Bem-vindo, ${userName}!`); }
-init();
+// ==================== INICIALIZAÇÃO ====================
+buildDropdown();
+loadCounts();
+setupAudio();
+buildAlertGrid();
+checkSpeaking();
+initMap();
+showToast(`🎙️ ${userName}`);
 </script>
 </body>
 </html>
