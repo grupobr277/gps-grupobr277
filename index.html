@@ -2,289 +2,359 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>RÁDIO PX 277 | CB Radio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RÁDIO PX 277 | Comunicação Profissional</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emoji-picker-element@1.18.3/dist/index.css"/>
-    <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@1.18.3/dist/index.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            background: #0a0a0a;
-            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at 20% 30%, #0a0a1a, #050510);
+            font-family: 'Segoe UI', 'Poppins', 'Inter', sans-serif;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 0;
+            padding: 20px;
         }
-        .radio-90s {
+
+        .radio-px {
+            max-width: 550px;
             width: 100%;
-            max-width: 100%;
-            background: linear-gradient(145deg, #1a1a1a, #0c0c0c);
+            background: linear-gradient(145deg, #13132a, #0c0c1f);
+            border-radius: 60px;
+            box-shadow: 0 30px 50px rgba(0,0,0,0.6), inset 0 1px 2px rgba(255,255,255,0.08);
+            overflow: hidden;
+            border: 1px solid rgba(0, 191, 255, 0.25);
             position: relative;
-            overflow-x: hidden;
-            border-radius: 0;
         }
-        .radio-90s::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #c0c0c0, #f0f0f0, #a0a0a0);
-            z-index: 1;
-        }
-        .header {
-            background: #111;
-            padding: 12px 16px 8px;
+
+        .px-header {
+            background: linear-gradient(135deg, #0f0f25, #0a0a1a);
+            padding: 20px 24px 16px;
             text-align: center;
-            border-bottom: 2px solid #00aaff;
+            border-bottom: 2px solid #00BFFF;
+            position: relative;
         }
-        .brand { font-size: 9px; letter-spacing: 2px; color: #00aaff; }
-        .header h1 { font-size: 20px; background: linear-gradient(135deg, #ffd700, #ffaa00); -webkit-background-clip: text; background-clip: text; color: transparent; }
-        .header h1 i { color: #ff4444; }
-        .display {
-            background: #000;
-            margin: 12px 16px;
-            border-radius: 16px;
-            padding: 10px;
-            border: 1px solid #00aaff;
+
+        .px-header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 2px;
         }
-        .freq-row {
-            display: flex;
-            justify-content: space-between;
+
+        .px-header h1 i {
+            background: none;
+            -webkit-background-clip: unset;
+            color: #00BFFF;
+            margin: 0 8px;
+        }
+
+        .live-badge {
+            display: inline-flex;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        .freq {
-            font-family: 'Orbitron', monospace;
-            font-size: 20px;
-            font-weight: bold;
-            color: #00ff88;
-            background: #080808;
-            padding: 4px 10px;
-            border-radius: 10px;
-        }
-        .live {
+            gap: 6px;
             background: #e53935;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 9px;
+            padding: 4px 12px;
+            border-radius: 40px;
+            margin-top: 8px;
+            font-size: 11px;
             font-weight: bold;
             animation: pulse-red 1s infinite;
         }
-        .online-count-header {
-            background: #00aaff;
-            display: inline-block;
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 10px;
-            font-weight: bold;
-            margin-left: 8px;
+
+        @keyframes pulse-red {
+            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 #e53935; }
+            50% { opacity: 0.7; box-shadow: 0 0 0 8px rgba(229,57,53,0.3); }
         }
-        .smeter {
+
+        .px-status {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
             margin-top: 10px;
-            background: #080808;
-            border-radius: 8px;
-            padding: 6px;
         }
-        .meter-labels { display: flex; justify-content: space-between; font-size: 6px; color: #00aaff; padding: 0 2px; }
-        .meter-bars { display: flex; gap: 2px; height: 20px; }
-        .bar { flex: 1; background: #1a1a1a; border-radius: 2px; }
-        .bar.active { background: #00ff88; }
-        .bar.warning { background: #ffaa00; }
-        .bar.danger { background: #ff4444; }
-        .switch-panel {
-            background: #1a1a1a;
-            margin: 8px 16px;
-            padding: 12px;
-            border-radius: 24px;
-            display: flex;
-            justify-content: space-around;
-            gap: 16px;
-            border: 1px solid #333;
-        }
-        .switch-item { text-align: center; flex: 1; }
-        .switch-label { font-size: 9px; color: #aaa; margin-bottom: 6px; }
-        .toggle-switch {
-            width: 50px;
-            height: 28px;
-            background: #333;
-            border-radius: 30px;
-            margin: 0 auto;
-            cursor: pointer;
-            position: relative;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
-        }
-        .toggle-switch::after {
-            content: '';
-            width: 24px;
-            height: 24px;
-            background: #888;
-            border-radius: 50%;
-            position: absolute;
-            top: 2px;
-            left: 3px;
-            transition: 0.2s;
-        }
-        .toggle-switch.active { background: #00aaff; }
-        .toggle-switch.active::after { left: 23px; background: white; }
-        .toggle-switch.mute-active { background: #e53935; }
-        .switch-value { font-size: 8px; color: #ffd700; margin-top: 4px; }
-        .station-area { margin: 8px 16px; }
-        .station-selector {
-            background: #0a0a0a;
-            border: 1px solid #00aaff;
+
+        .freq-box {
+            background: #050510;
+            padding: 5px 18px;
             border-radius: 40px;
-            padding: 8px 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            color: #ffd700;
-            font-size: 13px;
+            border: 1px solid #00ff88;
         }
-        .station-dropdown {
-            background: #1a1a1a;
-            border: 1px solid #00aaff;
-            border-radius: 16px;
-            margin-top: 6px;
-            max-height: 200px;
-            overflow-y: auto;
-            display: none;
-            z-index: 200;
-        }
-        .station-dropdown.open { display: block; }
-        .station-option {
-            padding: 8px 12px;
-            display: flex;
-            justify-content: space-between;
-            color: #ccc;
-            border-bottom: 1px solid #333;
-            font-size: 12px;
-            cursor: pointer;
-        }
-        .station-option.active { background: #00aaff; color: white; }
-        .station-count { background: #333; padding: 2px 8px; border-radius: 20px; font-size: 10px; }
-        .quick-buttons {
-            display: flex;
-            justify-content: space-between;
-            gap: 8px;
-            margin: 8px 16px;
-        }
-        .quick-btn {
-            flex: 1;
-            background: #252525;
-            border: 1px solid #00aaff;
-            border-radius: 30px;
-            padding: 5px 0;
-            font-size: 9px;
-            font-weight: bold;
-            color: #ccc;
-            text-align: center;
-            cursor: pointer;
-        }
-        .quick-btn.saved { background: #00aaff; color: white; }
-        .action-bar {
-            display: flex;
-            gap: 12px;
-            margin: 8px 16px;
-        }
-        .action {
-            flex: 1;
-            background: #252525;
-            border: 1px solid #00aaff;
-            border-radius: 40px;
-            padding: 10px;
-            text-align: center;
-            font-size: 12px;
-            font-weight: bold;
-            color: #ccc;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-        .action i { color: #ffd700; }
-        .ptt-area {
-            text-align: center;
-            margin: 8px 16px 16px;
-            padding: 12px;
-            background: #1a1a1a;
-            border-radius: 80px;
-            border: 1px solid #00aaff;
-        }
-        .ptt {
-            width: 140px;
-            height: 140px;
-            background: radial-gradient(circle at 35% 35%, #3a3a3a, #1a1a1a);
-            border: 4px solid #555;
-            border-radius: 50%;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-        .ptt i { font-size: 52px; color: #888; }
-        .ptt span { font-size: 14px; color: #888; margin-top: 6px; }
-        .ptt.active {
-            background: radial-gradient(circle at 35% 35%, #e53935, #8b0000);
-            border-color: #ffd700;
-            animation: pulse 1s infinite;
-        }
-        .ptt.active i, .ptt.active span { color: white; }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 #e53935; } 50% { box-shadow: 0 0 0 18px rgba(229,57,53,0.3); } 100% { box-shadow: 0 0 0 0 rgba(229,57,53,0); } }
-        .timer {
+
+        .freq-box span {
+            color: #00ff88;
             font-family: monospace;
             font-size: 13px;
-            color: #ffd700;
-            background: #000;
-            display: inline-block;
-            padding: 4px 16px;
-            border-radius: 30px;
-            margin-top: 8px;
+            font-weight: bold;
         }
-        .speaking-alert { font-size: 9px; color: #e53935; margin-top: 5px; display: none; }
-        .admin-gear {
+
+        .station-area {
+            padding: 16px 20px 8px;
+        }
+
+        .station-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            color: #888;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        .station-selector {
+            position: relative;
+        }
+
+        .selector-trigger {
+            width: 100%;
+            background: #1a1a35;
+            border: 2px solid #2a2a55;
+            border-radius: 60px;
+            padding: 14px 20px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+        }
+
+        .selector-trigger:hover {
+            border-color: #00BFFF;
+            background: #202040;
+        }
+
+        .station-dropdown {
             position: absolute;
-            top: 12px;
-            right: 16px;
-            background: #222;
-            width: 30px;
-            height: 30px;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #151530;
+            border: 2px solid #00BFFF;
+            border-radius: 25px;
+            margin-top: 8px;
+            max-height: 280px;
+            overflow-y: auto;
+            z-index: 200;
+            display: none;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+        }
+
+        .station-dropdown.open {
+            display: block;
+        }
+
+        .station-option {
+            padding: 12px 20px;
+            color: #ccc;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #252550;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .station-option:hover {
+            background: #202050;
+            color: #00BFFF;
+        }
+
+        .station-option.active {
+            background: linear-gradient(145deg, #00BFFF, #0066cc);
+            color: white;
+        }
+
+        .station-count {
+            background: rgba(0,0,0,0.5);
+            border-radius: 30px;
+            padding: 3px 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .current-highlight {
+            background: linear-gradient(135deg, #0f0f25, #080818);
+            margin: 12px 20px;
+            padding: 14px 20px;
+            border-radius: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-left: 5px solid #ffd700;
+            border-right: 1px solid #2a2a55;
+        }
+
+        .city-online {
+            background: #00BFFF;
+            border-radius: 40px;
+            padding: 10px 24px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #0f0f25;
+            text-align: center;
+        }
+
+        .mic-panel {
+            text-align: center;
+            padding: 25px 20px;
+            margin: 10px 20px;
+            background: linear-gradient(145deg, #0f0f25, #0a0a1a);
+            border-radius: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .px-button {
+            width: 160px;
+            height: 160px;
             border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #2a2a4a, #1a1a35);
+            border: 4px solid #3a3a6a;
+            color: #888;
+            font-size: 28px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .px-button i {
+            font-size: 48px;
+        }
+
+        .px-button span {
+            font-size: 16px;
+            letter-spacing: 2px;
+        }
+
+        .px-button.active {
+            background: radial-gradient(circle at 35% 35%, #e53935, #8b0000);
+            border-color: #ffd700;
+            color: white;
+            animation: px-pulse 1.2s infinite;
+        }
+
+        @keyframes px-pulse {
+            0% { box-shadow: 0 0 0 0 #e53935; }
+            50% { box-shadow: 0 0 0 25px rgba(229,57,53,0.3); }
+            100% { box-shadow: 0 0 0 0 rgba(229,57,53,0); }
+        }
+
+        .px-button.off {
+            background: radial-gradient(circle at 35% 35%, #2a2a4a, #1a1a35);
+            border-color: #3a3a6a;
+            color: #666;
+            animation: none;
+        }
+
+        .px-status-text {
+            margin-top: 20px;
+            font-size: 16px;
+            font-weight: 700;
+            padding: 10px 25px;
+            border-radius: 40px;
+            display: inline-block;
+        }
+
+        .px-status-text.off {
+            background: #1a1a35;
+            color: #888;
+        }
+
+        .px-status-text.on {
+            background: #e53935;
+            color: white;
+            animation: status-pulse 1s infinite;
+        }
+
+        @keyframes status-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .timer-display {
+            margin-top: 15px;
+            font-size: 18px;
+            font-family: monospace;
+            color: #ffd700;
+            font-weight: bold;
+            background: #1a1a35;
+            padding: 8px 20px;
+            border-radius: 40px;
+        }
+
+        .action-grid {
+            display: flex;
+            gap: 15px;
+            padding: 15px 20px 25px;
+            flex-wrap: wrap;
+        }
+
+        .action-card {
+            flex: 1;
+            background: #151530;
+            border: 2px solid #2a2a55;
+            border-radius: 50px;
+            padding: 14px;
+            color: #ccc;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            border: 1px solid #ffd700;
-            z-index: 10;
+            gap: 10px;
+            transition: all 0.3s;
+            min-width: 100px;
         }
-        .admin-gear i { color: #ffd700; font-size: 14px; }
-        .admin-panel {
-            position: absolute;
-            top: 48px;
-            right: 16px;
-            background: #1a1a1a;
-            border-radius: 12px;
-            padding: 6px;
-            display: none;
-            flex-direction: column;
-            gap: 4px;
-            border: 1px solid #ffd700;
-            z-index: 100;
+
+        .action-card.map-btn {
+            border: 2px solid #00BFFF;
+            background: linear-gradient(135deg, #1a1a35, #151530);
         }
-        .admin-panel.show { display: flex; }
-        .admin-panel button { background: #2a2a2a; border: none; padding: 6px 12px; border-radius: 20px; color: white; font-size: 10px; cursor: pointer; }
-        .modal-full, .modal-alert, .modal-chat {
+
+        .action-card.admin-btn {
+            border: 2px solid #ffd700;
+            background: linear-gradient(135deg, #2a2a4a, #1a1a35);
+        }
+
+        .action-card.admin-btn i {
+            color: #ffd700;
+        }
+
+        .action-card.exit-admin {
+            border: 2px solid #e53935;
+        }
+
+        .action-card.exit-admin i {
+            color: #e53935;
+        }
+
+        .action-card:hover {
+            background: #202050;
+            border-color: #00BFFF;
+            transform: translateY(-2px);
+        }
+
+        .modal-full {
             position: fixed;
             top: 0;
             left: 0;
@@ -295,529 +365,1510 @@
             display: none;
             flex-direction: column;
         }
-        .modal-full.visible, .modal-alert.visible, .modal-chat.visible { display: flex; }
-        .modal-header { background: #075E54; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; color: white; }
-        .modal-close { background: #e53935; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; }
-        .map-container { flex: 1; position: relative; }
-        #map { height: 100%; width: 100%; }
-        .map-buttons {
-            position: absolute;
-            bottom: 15px;
-            left: 15px;
-            right: 15px;
+
+        .modal-full.visible { display: flex; }
+
+        .modal-header {
+            background: #0f0f25;
+            padding: 15px 20px;
             display: flex;
-            gap: 8px;
-            z-index: 1001;
-        }
-        .map-btn {
-            flex: 1;
-            background: #00aaff;
-            border: none;
-            border-radius: 40px;
-            padding: 8px;
-            font-size: 12px;
-            font-weight: bold;
-            color: white;
-            display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            gap: 5px;
+            color: white;
+            border-bottom: 2px solid #00BFFF;
+            font-size: 16px;
+        }
+
+        .modal-close {
+            background: #e53935;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: white;
+            font-size: 20px;
             cursor: pointer;
         }
+
+        .map-container {
+            flex: 1;
+            position: relative;
+        }
+
+        #map {
+            height: 100%;
+            width: 100%;
+        }
+
+        .recenter-btn {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: #00BFFF;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 18px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1001;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .admin-status {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: #ffd700;
+            color: #0f0f25;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            z-index: 1001;
+            display: none;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .modal-alert {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.95);
+            z-index: 1100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-alert.visible { display: flex; }
+
+        .alert-card {
+            background: #13132a;
+            border-radius: 40px;
+            width: 100%;
+            max-width: 400px;
+            max-height: 85vh;
+            overflow: hidden;
+            border: 2px solid #00BFFF;
+        }
+
+        .alert-header {
+            background: #00BFFF;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            color: white;
+            font-weight: bold;
+        }
+
         .alert-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 12px;
             padding: 20px;
         }
-        .alert-card {
+
+        .alert-item {
             background: #1f1f40;
-            border-radius: 60px;
-            padding: 12px 5px;
+            border-radius: 20px;
+            padding: 14px 8px;
             text-align: center;
             cursor: pointer;
-            border: none;
-            box-shadow: 0 0 5px rgba(0,170,255,0.3);
+            transition: all 0.2s;
+            border: 1px solid #3a3a6a;
         }
-        .alert-emoji { font-size: 32px; }
-        .alert-name { font-size: 11px; color: white; margin-top: 4px; }
-        .chat-messages {
+
+        .alert-emoji { font-size: 34px; }
+        .alert-name { font-size: 11px; color: white; margin-top: 6px; font-weight: 600; }
+
+        /* ==================== CHAT ESTILO WHATSAPP ==================== */
+        .modal-chat {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #0a0a15;
+            z-index: 1200;
+            display: none;
+            flex-direction: column;
+        }
+
+        .modal-chat.visible { display: flex; }
+
+        .chat-header {
+            background: #075E54;
+            padding: 15px 20px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 16px;
+            font-weight: 600;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .chat-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chat-header-left i {
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .chat-header-info h3 {
+            font-size: 16px;
+            margin: 0;
+        }
+
+        .chat-header-info p {
+            font-size: 11px;
+            margin: 2px 0 0;
+            opacity: 0.8;
+        }
+
+        .chat-messages-area {
             flex: 1;
             overflow-y: auto;
-            padding: 10px;
+            padding: 15px;
             background: #E5DDD5;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.05"><path d="M10,10 L90,10 M10,30 L90,30 M10,50 L90,50 M10,70 L90,70 M10,90 L90,90 M10,10 L10,90 M30,10 L30,90 M50,10 L50,90 M70,10 L70,90 M90,10 L90,90" stroke="%23000" stroke-width="1"/></svg>');
+            background-repeat: repeat;
         }
+
         .chat-input-area {
+            display: flex;
+            padding: 10px 15px;
             background: #F0F0F0;
+            gap: 10px;
+            align-items: center;
             border-top: 1px solid #ddd;
         }
-        .reply-preview {
-            display: none;
-            background: #E8E8E8;
-            padding: 5px 12px;
-            font-size: 11px;
-            margin: 4px 10px 0;
-            border-radius: 10px;
-            align-items: center;
-            justify-content: space-between;
+
+        .chat-input-area input {
+            flex: 1;
+            padding: 12px 15px;
+            border-radius: 25px;
+            border: none;
+            background: white;
+            font-size: 14px;
+            outline: none;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
-        .reply-preview.show { display: flex; }
-        .input-row { display: flex; padding: 8px 10px; gap: 8px; }
-        .input-row input { flex: 1; padding: 10px 14px; border-radius: 25px; border: none; font-size: 13px; }
-        .input-row button { background: #075E54; border: none; width: 38px; height: 38px; border-radius: 50%; color: white; cursor: pointer; }
-        .msg { margin-bottom: 8px; display: flex; }
-        .msg.me { justify-content: flex-end; }
-        .msg.other { justify-content: flex-start; }
+
+        .chat-input-area input:focus {
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .chat-input-area button {
+            background: #075E54;
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .chat-input-area button:hover {
+            background: #054a42;
+        }
+
+        /* Balões de mensagem estilo WhatsApp */
+        .msg-bubble {
+            display: flex;
+            margin-bottom: 12px;
+        }
+
+        .msg-bubble.me {
+            justify-content: flex-end;
+        }
+
+        .msg-bubble.other {
+            justify-content: flex-start;
+        }
+
         .msg-content {
             max-width: 75%;
             padding: 8px 12px;
             border-radius: 18px;
-            background: white;
+            position: relative;
+            word-wrap: break-word;
         }
-        .msg.me .msg-content { background: #DCF8C6; border-bottom-right-radius: 3px; }
-        .msg.other .msg-content { border-bottom-left-radius: 3px; }
-        .msg-sender { font-size: 10px; font-weight: bold; color: #075E54; }
-        .msg-text { font-size: 12px; }
-        .msg-time { font-size: 9px; color: #888; text-align: right; margin-top: 3px; }
-        .context-menu {
-            position: fixed;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            padding: 6px 0;
-            z-index: 10000;
-            display: none;
-            min-width: 130px;
+
+        .msg-bubble.me .msg-content {
+            background: #DCF8C6;
+            border-bottom-right-radius: 4px;
         }
-        .context-menu.show { display: block; }
-        .context-item { padding: 8px 16px; cursor: pointer; display: flex; gap: 10px; font-size: 12px; }
-        .context-item:hover { background: #f0f0f0; }
-        emoji-picker {
+
+        .msg-bubble.other .msg-content {
+            background: white;
+            border-bottom-left-radius: 4px;
+        }
+
+        .msg-sender {
+            font-size: 12px;
+            font-weight: bold;
+            color: #075E54;
+            margin-bottom: 4px;
+        }
+
+        .msg-text {
+            font-size: 13px;
+            line-height: 1.4;
+            color: #111;
+        }
+
+        .msg-meta {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 6px;
+            margin-top: 4px;
+        }
+
+        .msg-time {
+            font-size: 10px;
+            color: #888;
+        }
+
+        .msg-status {
+            font-size: 10px;
+            color: #4FC3F7;
+        }
+
+        /* Popup de alerta com chat WhatsApp */
+        .popup-alert {
+            background: #E5DDD5;
+            border-radius: 20px;
+            max-width: 320px;
+            overflow: hidden;
+            border: 1px solid #ddd;
+        }
+        .popup-alert-img { width: 100%; height: 120px; object-fit: cover; }
+        .popup-alert-header { 
+            padding: 10px 12px; 
+            background: #075E54; 
+            color: white; 
+            display: flex; 
+            justify-content: space-between; 
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .popup-alert-chat { 
+            padding: 10px; 
+            max-height: 200px; 
+            overflow-y: auto; 
+            background: #E5DDD5;
+        }
+        .popup-chat-msg {
+            margin: 8px 0;
+            padding: 8px 12px;
+            border-radius: 16px;
+            font-size: 11px;
+            max-width: 90%;
+        }
+        .popup-chat-msg.me {
+            background: #DCF8C6;
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+        .popup-chat-msg.other {
+            background: white;
+            border-bottom-left-radius: 4px;
+        }
+        .popup-chat-msg strong {
+            color: #075E54;
+            font-size: 10px;
+        }
+        .popup-chat-input {
+            display: flex;
+            padding: 8px;
+            gap: 5px;
+            background: #F0F0F0;
+            border-top: 1px solid #ddd;
+        }
+        .popup-chat-input input {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 20px;
+            border: none;
+            background: white;
+            font-size: 12px;
+        }
+        .popup-chat-input button {
+            background: #075E54;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+        }
+
+        .audio-player-container {
             position: fixed;
-            bottom: 70px;
+            bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
-            z-index: 10001;
-            display: none;
-            width: 90%;
-            max-width: 300px;
-            height: 350px;
-        }
-        emoji-picker.show { display: block; }
-        .audio-notify {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #1a1a1a;
-            border: 1px solid #00aaff;
-            border-radius: 50px;
-            padding: 6px 16px;
+            background: linear-gradient(135deg, #1a1a35, #0f0f25);
+            border: 2px solid #00BFFF;
+            border-radius: 60px;
+            padding: 12px 25px;
+            z-index: 2000;
             display: none;
             align-items: center;
-            gap: 10px;
-            z-index: 2000;
+            gap: 15px;
+            min-width: 280px;
+            animation: slideUp 0.3s ease;
         }
-        .map-marker-icon {
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        .audio-speaker-icon {
+            background: #e53935;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            animation: pulse-marker 1.5s infinite;
+            animation: pulse-speaker 1s infinite;
         }
-        @keyframes pulse-marker { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
-        @keyframes pulse-red { 0%,100%{opacity:1}50%{opacity:0.6} }
-        .admin-badge {
-            position: absolute; top: 10px; left: 10px; background: #ffd700; color: #000; padding: 2px 8px; border-radius: 20px; font-size: 9px; display: none; z-index: 1001;
+
+        @keyframes pulse-speaker {
+            0%, 100% { box-shadow: 0 0 0 0 #e53935; }
+            50% { box-shadow: 0 0 0 10px rgba(229,57,53,0.3); }
+        }
+
+        .audio-info {
+            flex: 1;
+        }
+
+        .audio-sender {
+            font-size: 16px;
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .audio-station {
+            font-size: 11px;
+            color: #aaa;
+        }
+
+        .audio-wave span {
+            width: 3px;
+            height: 20px;
+            background: #00BFFF;
+            display: inline-block;
+            animation: wave 0.8s infinite ease;
+        }
+
+        @keyframes wave {
+            0%, 100% { height: 8px; }
+            50% { height: 25px; }
+        }
+
+        .someone-speaking {
+            background: #e53935;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            margin-top: 8px;
+            animation: pulse-red 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .admin-marker {
+            animation: bounce 0.5s ease infinite;
+        }
+
+        /* Scrollbar WhatsApp style */
+        .chat-messages-area::-webkit-scrollbar {
+            width: 6px;
+        }
+        .chat-messages-area::-webkit-scrollbar-track {
+            background: #E5DDD5;
+        }
+        .chat-messages-area::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 10px;
         }
     </style>
 </head>
 <body>
 
-<div class="radio-90s">
-    <div class="header">
-        <div class="brand">CB RADIO • CLASSIC SERIES</div>
-        <h1><i class="fas fa-microphone-alt"></i> PX 277 <i class="fas fa-broadcast-tower"></i></h1>
-    </div>
-
-    <div class="display">
-        <div class="freq-row">
-            <div><span style="font-size:8px;">FREQUÊNCIA</span><div class="freq">27.7 MHz</div></div>
-            <div style="display: flex; align-items: center; gap: 6px;">
-                <div class="live"><i class="fas fa-circle"></i> AO VIVO</div>
-                <div class="online-count-header" id="onlineCountHeader">0 online</div>
-            </div>
+<div class="radio-px">
+    <div class="px-header">
+        <h1><i class="fas fa-microphone-alt"></i> RÁDIO PX 277 <i class="fas fa-broadcast-tower"></i></h1>
+        <div class="live-badge"><i class="fas fa-circle"></i> AO VIVO</div>
+        <div class="px-status">
+            <div class="freq-box"><span>📡 FREQ: 27.7 MHz</span></div>
         </div>
-        <div class="smeter" id="smeterBox">
-            <div class="meter-labels"><span>1</span><span>3</span><span>5</span><span>7</span><span>9</span><span>+</span></div>
-            <div class="meter-bars" id="meterBars">
-                <div class="bar"></div><div class="bar"></div><div class="bar"></div>
-                <div class="bar"></div><div class="bar"></div><div class="bar"></div>
-                <div class="bar"></div><div class="bar"></div><div class="bar"></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="switch-panel">
-        <div class="switch-item"><div class="switch-label">MUDO</div><div class="toggle-switch" id="muteSwitch"></div><div class="switch-value" id="muteStatus">DESL</div></div>
-        <div class="switch-item"><div class="switch-label">LED</div><div class="toggle-switch active" id="ledSwitch"></div><div class="switch-value" id="ledStatus">LIG</div></div>
     </div>
 
     <div class="station-area">
-        <div class="station-selector" id="selectorTrigger"><span id="selectedCityName">Curitiba</span><i class="fas fa-chevron-down"></i></div>
-        <div class="station-dropdown" id="stationDropdown"></div>
+        <div class="station-label"><i class="fas fa-map-marker-alt"></i> SELECIONE SUA ESTAÇÃO</div>
+        <div class="station-selector">
+            <div class="selector-trigger" id="selectorTrigger">
+                <span id="selectedCityName">Curitiba</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="station-dropdown" id="stationDropdown"></div>
+        </div>
     </div>
 
-    <div class="quick-buttons" id="quickButtons"></div>
-
-    <div class="action-bar">
-        <div class="action" id="openMapBtn"><i class="fas fa-map-marked-alt"></i> MAPA</div>
-        <div class="action" id="openAlertBtn"><i class="fas fa-exclamation-triangle"></i> ALERTA</div>
-        <div class="action" id="openChatBtn"><i class="fas fa-comment-dots"></i> CHAT</div>
+    <div class="current-highlight">
+        <div class="city-online" id="currentCityOnline">0 online <i class="fas fa-users"></i></div>
     </div>
 
-    <div class="ptt-area">
-        <div class="ptt off" id="pttButton"><i class="fas fa-microphone-slash"></i><span>PTT</span></div>
-        <div class="speaking-alert" id="speakingAlert">📢 Alguém está falando...</div>
-        <div class="timer" id="timerDisplay" style="display:none;"></div>
+    <div class="mic-panel">
+        <button class="px-button off" id="pxButton">
+            <i class="fas fa-microphone-slash"></i>
+            <span>PX (FALAR)</span>
+        </button>
+        <div class="px-status-text off" id="pxStatusText">🔴 MICROFONE DESLIGADO</div>
+        <div id="speakingIndicator" class="someone-speaking" style="display:none;">📢 Alguém está falando...</div>
+        <div class="timer-display" id="timerDisplay" style="display: none;"></div>
     </div>
 
-    <div class="admin-gear" id="adminGear"><i class="fas fa-cog"></i></div>
-    <div class="admin-panel" id="adminPanel">
-        <button id="adminMapBtn">ADMIN MAPA</button>
-        <button id="adminChatBtn">ADMIN CHAT</button>
-        <button id="exitAdminBtn">SAIR ADMIN</button>
+    <div class="action-grid">
+        <div class="action-card map-btn" onclick="openMapModal()"><i class="fas fa-map-marked-alt"></i> MAPA</div>
+        <div class="action-card" onclick="openAlertModal()"><i class="fas fa-exclamation-triangle"></i> ALERTA</div>
+        <div class="action-card" onclick="openChatModal()"><i class="fas fa-comment-dots"></i> CHAT GERAL</div>
+        <div class="action-card" onclick="openStationChatModal()"><i class="fas fa-users"></i> CHAT ESTAÇÃO</div>
+        <div class="action-card admin-btn" onclick="enableAdminMode()"><i class="fas fa-user-shield"></i> ADMIN</div>
+        <div class="action-card exit-admin" onclick="disableAdminMode()"><i class="fas fa-power-off"></i> SAIR</div>
     </div>
 </div>
 
 <!-- MODAIS -->
 <div class="modal-full" id="mapModal">
-    <div class="modal-header"><span>MAPA BR-277</span><button class="modal-close" id="closeMapModal">✕</button></div>
-    <div class="map-container"><div id="map"></div><div class="map-buttons"><button class="map-btn" id="mapAlertBtn"><i class="fas fa-exclamation-triangle"></i> ALERTAS</button><button class="map-btn" id="recenterBtn"><i class="fas fa-location-arrow"></i> MINHA POSIÇÃO</button></div><div id="adminBadge" class="admin-badge">ADMIN</div></div>
+    <div class="modal-header">
+        <span><i class="fas fa-map"></i> MAPA BR-277 - OCORRÊNCIAS</span>
+        <button class="modal-close" onclick="closeMapModal()">✕</button>
+    </div>
+    <div class="map-container">
+        <div id="map"></div>
+        <button class="recenter-btn" onclick="recenterMap()"><i class="fas fa-location-arrow"></i> Recentralizar</button>
+        <div id="adminStatusBadge" class="admin-status"><i class="fas fa-user-shield"></i> MODO ADMIN ATIVO</div>
+    </div>
 </div>
 
 <div class="modal-alert" id="alertModal">
-    <div class="modal-header"><span>REPORTAR OCORRÊNCIA</span><button class="modal-close" id="closeAlertModal">✕</button></div>
-    <div class="alert-grid" id="alertGrid"></div>
+    <div class="alert-card">
+        <div class="alert-header">
+            <span><i class="fas fa-exclamation-triangle"></i> REPORTAR OCORRÊNCIA</span>
+            <span onclick="closeAlertModal()" style="cursor:pointer;">✕</span>
+        </div>
+        <div class="alert-grid" id="alertGrid"></div>
+    </div>
 </div>
 
+<!-- CHAT GERAL (WhatsApp Style) -->
 <div class="modal-chat" id="chatModal">
-    <div class="modal-header"><div style="display:flex; gap:10px;"><i class="fas fa-arrow-left" id="closeChatBtn" style="cursor:pointer;"></i><span>CHAT GERAL</span></div><button class="modal-close" id="closeChatModalBtn">✕</button></div>
-    <div class="chat-messages" id="chatMessages"></div>
-    <div class="chat-input-area"><div class="reply-preview" id="replyPreview"><span id="replyText"></span><button id="cancelReplyBtn">✕</button></div><div class="input-row"><button id="chatEmojiBtn"><i class="fas fa-smile"></i></button><input type="text" id="chatInput" placeholder="Digite sua mensagem..."><button id="sendMsgBtn"><i class="fas fa-paper-plane"></i></button></div></div>
+    <div class="chat-header">
+        <div class="chat-header-left">
+            <i class="fas fa-arrow-left" onclick="closeChatModal()" style="cursor:pointer;"></i>
+            <div class="chat-header-info">
+                <h3><i class="fas fa-globe"></i> Chat Geral</h3>
+                <p>Rádio PX 277 - Todos</p>
+            </div>
+        </div>
+        <span onclick="closeChatModal()" style="cursor:pointer; font-size:20px;">✕</span>
+    </div>
+    <div class="chat-messages-area" id="chatMessagesArea"></div>
+    <div class="chat-input-area">
+        <input type="text" id="chatInput" placeholder="Digite sua mensagem...">
+        <button onclick="sendChatMsg()"><i class="fas fa-paper-plane"></i></button>
+    </div>
 </div>
 
-<div class="context-menu" id="contextMenu"><div class="context-item" id="replyMsg"><i class="fas fa-reply"></i> Responder</div><div class="context-item" id="deleteMsg"><i class="fas fa-trash-alt"></i> Apagar</div><div class="context-item" id="emojiMsg"><i class="fas fa-smile"></i> Emoji</div></div>
+<!-- CHAT POR ESTAÇÃO (WhatsApp Style) -->
+<div class="modal-chat" id="stationChatModal">
+    <div class="chat-header">
+        <div class="chat-header-left">
+            <i class="fas fa-arrow-left" onclick="closeStationChatModal()" style="cursor:pointer;"></i>
+            <div class="chat-header-info">
+                <h3 id="stationChatTitle"><i class="fas fa-radio"></i> Estação</h3>
+                <p id="stationChatSubtitle">Conversa local</p>
+            </div>
+        </div>
+        <span onclick="closeStationChatModal()" style="cursor:pointer; font-size:20px;">✕</span>
+    </div>
+    <div class="chat-messages-area" id="stationChatMessagesArea"></div>
+    <div class="chat-input-area">
+        <input type="text" id="stationChatInput" placeholder="Digite sua mensagem...">
+        <button onclick="sendStationChatMsg()"><i class="fas fa-paper-plane"></i></button>
+    </div>
+</div>
 
-<emoji-picker id="emojiPicker"></emoji-picker>
-
-<div class="audio-notify" id="audioNotify"><div style="background:#e53935; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center;"><i class="fas fa-bullhorn"></i></div><div><span id="audioSender"></span><br><span id="audioStation" style="font-size:10px;"></span></div></div>
+<div class="audio-player-container" id="audioPlayerContainer">
+    <div class="audio-speaker-icon"><i class="fas fa-bullhorn"></i></div>
+    <div class="audio-info">
+        <div class="audio-sender" id="audioSender">Motorista</div>
+        <div class="audio-station" id="audioStation">Curitiba</div>
+    </div>
+    <div class="audio-wave">
+        <span></span><span></span><span></span><span></span><span></span>
+    </div>
+</div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-// ==================== CONFIG ====================
-const firebaseConfig = { databaseURL: "https://gps-br277-default-rtdb.firebaseio.com" };
+// ==================== FIREBASE ====================
+const firebaseConfig = {
+    databaseURL: "https://gps-br277-default-rtdb.firebaseio.com"
+};
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-const cities = ["Guarapuava","Palmeira","Porto Amazonas","Ponta Grossa","São Luiz","Campo Largo","Curitiba","Alm. Tamandaré","Fazenda Rio Grande","Tijucas do Sul","Guaratuba","Morretes","Paranaguá","São José","Colombo","Araucária","Piraquara","Campina Grande","Quatro Barras","Cajati"];
-
-const alertTypes = [
-    { name: 'ACIDENTE', emoji: '💥', color: '#e53935' }, { name: 'OBRAS', emoji: '🚧', color: '#ff9800' },
-    { name: 'PANE MECÂNICA', emoji: '🔧', color: '#795548' }, { name: 'ANIMAL NA PISTA', emoji: '🐂', color: '#9c27b0' },
-    { name: 'VEÍCULO ENGUIÇADO', emoji: '🚗💨', color: '#ff5722' }, { name: 'BARREIRA', emoji: '⛰️', color: '#8b4513' },
-    { name: 'NEBLINA', emoji: '🌫️', color: '#00acc1' }, { name: 'CONGESTIONAMENTO', emoji: '🔴', color: '#f44336' },
-    { name: 'ALAGAMENTO', emoji: '💧', color: '#2196f3' }, { name: 'BLOQUEIO TOTAL', emoji: '⛔', color: '#b71c1c' },
-    { name: 'PERIGO', emoji: '⚠️', color: '#ff5722' }, { name: 'DESVIO', emoji: '🔄', color: '#3f51b5' },
-    { name: 'CARGA PERIGOSA', emoji: '📦', color: '#8bc34a' }, { name: 'GRANIZO', emoji: '🧊', color: '#00bcd4' },
-    { name: 'MANIFESTAÇÃO', emoji: '📢', color: '#ff4081' }
+// ==================== 20 CIDADES ====================
+const cities = [
+    "Guarapuava", "Palmeira", "Porto Amazonas", "Ponta Grossa", "São Luiz",
+    "Campo Largo", "Curitiba", "Alm. Tamandaré", "Fazenda Rio Grande", "Tijucas do Sul",
+    "Guaratuba", "Morretes", "Paranaguá", "São José", "Colombo",
+    "Araucária", "Piraquara", "Campina Grande", "Quatro Barras", "Cajati"
 ];
 
-let userName = localStorage.getItem('px_user') || prompt("Seu nome:", "Caminhoneiro");
-localStorage.setItem('px_user', userName);
+// ==================== 15 ALERTAS ====================
+const alertTypes = [
+    { name: 'ACIDENTE', emoji: '💥', color: '#e53935', type: 'acidente' },
+    { name: 'OBRAS', emoji: '🚧', color: '#ff9800', type: 'obras' },
+    { name: 'PANE MECÂNICA', emoji: '🔧', color: '#795548', type: 'pane' },
+    { name: 'ANIMAL NA PISTA', emoji: '🐂', color: '#9c27b0', type: 'animal' },
+    { name: 'VEÍCULO ENGUIÇADO', emoji: '🚗💨', color: '#ff5722', type: 'enguicado' },
+    { name: 'BARREIRA', emoji: '⛰️', color: '#8b4513', type: 'barreira' },
+    { name: 'NEBLINA', emoji: '🌫️', color: '#00acc1', type: 'neblina' },
+    { name: 'CONGESTIONAMENTO', emoji: '🔴', color: '#f44336', type: 'congest' },
+    { name: 'ALAGAMENTO', emoji: '💧', color: '#2196f3', type: 'alagamento' },
+    { name: 'BLOQUEIO TOTAL', emoji: '⛔', color: '#b71c1c', type: 'bloqueio' },
+    { name: 'PERIGO', emoji: '⚠️', color: '#ff5722', type: 'perigo' },
+    { name: 'DESVIO', emoji: '🔄', color: '#3f51b5', type: 'desvio' },
+    { name: 'CARGA PERIGOSA', emoji: '📦', color: '#8bc34a', type: 'carga' },
+    { name: 'GRANIZO', emoji: '🧊', color: '#00bcd4', type: 'granizo' },
+    { name: 'MANIFESTAÇÃO', emoji: '📢', color: '#ff4081', type: 'manifest' }
+];
+
+// ==================== VARIÁVEIS ====================
+let userName = localStorage.getItem('px_user');
+if (!userName) {
+    userName = prompt("🎙️ Digite seu nome para entrar no RÁDIO PX 277:", "Motorista");
+    if (!userName) userName = "Motorista";
+    localStorage.setItem('px_user', userName);
+}
+
 let currentStation = localStorage.getItem('px_station') || 'curitiba';
-let isMuted = false, isLedActive = true;
-let isAdminMap = false, isAdminChat = false;
-let map, userMarker, userLocation, alertsOnMap = {};
-let mediaRecorder, isTransmitting = false, audioStream, chunks = [], recordSec = 0, timerInterval;
-let audioListener, currentAudio, speakingListener;
-let selectedMsg = { id: null, type: null, element: null, text: null, user: null };
-let currentReply = null;
-let quickStations = JSON.parse(localStorage.getItem('quickStations') || '[]');
-let tempMarker = null, adminClickCount = 0, adminClickTimeout = null, adminFirstPos = null;
+let mediaRecorder = null;
+let isTransmitting = false;
+let audioStream = null;
+let audioChunks = [];
+let recordInterval = null;
+let recordSeconds = 0;
+let map = null;
+let userLocation = null;
+let userMarker = null;
+let alertsOnMap = {};
+let audioListener = null;
+let currentAudio = null;
+let currentAudioTimeout = null;
+let speakingListener = null;
 
-function normalizeId(str) { return str.toLowerCase().replace(/ /g, '_').normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
-function showToast(msg) { let t=document.createElement('div'); t.innerText=msg; t.style.cssText='position:fixed; bottom:70px; left:50%; transform:translateX(-50%); background:#00aaff; color:white; padding:5px 15px; border-radius:30px; z-index:13000; font-size:11px;'; document.body.appendChild(t); setTimeout(()=>t.remove(),2000); }
+// ==================== MODO ADMIN ====================
+let isAdminMode = false;
+let tempMarker = null;
+let adminClickCount = 0;
+let adminClickTimeout = null;
+let adminFirstPos = null;
 
-// ==================== SWITCHES ====================
-document.getElementById('muteSwitch').addEventListener('click', function() { isMuted=!isMuted; if(isMuted){ this.classList.add('active','mute-active'); document.getElementById('muteStatus').innerText='LIG'; if(currentAudio) currentAudio.pause(); } else { this.classList.remove('active','mute-active'); document.getElementById('muteStatus').innerText='DESL'; } });
-document.getElementById('ledSwitch').addEventListener('click', function() { isLedActive=!isLedActive; if(isLedActive){ this.classList.add('active'); document.getElementById('ledStatus').innerText='LIG'; document.getElementById('smeterBox').style.opacity='1'; } else { this.classList.remove('active'); document.getElementById('ledStatus').innerText='DESL'; document.getElementById('smeterBox').style.opacity='0.3'; } });
-function animateSMeter(val=5) { if(!isLedActive) return; let bars=document.querySelectorAll('.bar'); bars.forEach((b,i)=>{ b.classList.remove('active','warning','danger'); if(i<val){ if(i>=7) b.classList.add('danger'); else if(i>=5) b.classList.add('warning'); else b.classList.add('active'); } }); }
-setInterval(()=>{ if(!isTransmitting && isLedActive) animateSMeter(Math.floor(Math.random()*9)); },800);
+function normalizeId(str) {
+    return str.toLowerCase()
+        .replace(/ /g, '_')
+        .replace(/ã/g, 'a')
+        .replace(/ç/g, 'c')
+        .replace(/á/g, 'a')
+        .replace(/â/g, 'a')
+        .replace(/é/g, 'e')
+        .replace(/ê/g, 'e')
+        .replace(/í/g, 'i')
+        .replace(/ó/g, 'o')
+        .replace(/ô/g, 'o')
+        .replace(/ú/g, 'u')
+        .replace(/\./g, '');
+}
 
-// ==================== ESTAÇÕES ====================
-function buildDropdown() {
-    let menu=document.getElementById('stationDropdown'); menu.innerHTML='';
-    cities.forEach(city=>{ let id=normalizeId(city); let opt=document.createElement('div'); opt.className='station-option'; if(id===currentStation) opt.classList.add('active'); opt.innerHTML=`<span>${city}</span><span class="station-count" id="count-${id}">0</span>`; opt.onclick=()=>{ changeStation(id,city); closeDropdown(); }; menu.appendChild(opt); });
+// ==================== FUNÇÕES ADMIN ====================
+function enableAdminMode() {
+    const password = prompt("🔐 SENHA ADMINISTRATIVA:\n\nDigite a senha para ativar o modo administrador:");
+    if (password === "277") {
+        isAdminMode = true;
+        showToast("👑 MODO ADMIN ATIVADO! Clique 2x no mapa para criar alerta");
+        
+        if (map) {
+            map.getContainer().style.cursor = "crosshair";
+            const badge = document.getElementById('adminStatusBadge');
+            if (badge) badge.style.display = "flex";
+        }
+    } else {
+        showToast("❌ Senha incorreta! Modo ADMIN não ativado.");
+    }
 }
-function toggleDropdown() { document.getElementById('stationDropdown').classList.toggle('open'); }
-function closeDropdown() { document.getElementById('stationDropdown').classList.remove('open'); }
-document.getElementById('selectorTrigger').addEventListener('click',(e)=>{ e.stopPropagation(); toggleDropdown(); });
-document.addEventListener('click',(e)=>{ if(!e.target.closest('.station-selector')) closeDropdown(); });
-function changeStation(id,name){
-    currentStation=id; localStorage.setItem('px_station',id);
-    document.querySelectorAll('.station-option').forEach(opt=>opt.classList.remove('active'));
-    event.target.closest('.station-option').classList.add('active');
-    document.getElementById('selectedCityName').innerText=name;
-    db.ref(`stations/${id}/users/${userName}`).set({ name:userName, timestamp:Date.now() });
-    cities.forEach(c=>{ let oid=normalizeId(c); if(oid!==id) db.ref(`stations/${oid}/users/${userName}`).remove(); });
-    setupAudio(); checkSpeaking(); showToast(`📻 ${name}`);
+
+function disableAdminMode() {
+    isAdminMode = false;
+    adminClickCount = 0;
+    if (adminClickTimeout) clearTimeout(adminClickTimeout);
+    
+    if (tempMarker) {
+        map.removeLayer(tempMarker);
+        tempMarker = null;
+    }
+    
+    if (map) {
+        map.getContainer().style.cursor = "";
+        const badge = document.getElementById('adminStatusBadge');
+        if (badge) badge.style.display = "none";
+    }
+    showToast("Modo ADMIN desativado");
 }
-function loadCounts(){
-    cities.forEach(city=>{ let id=normalizeId(city); db.ref(`stations/${id}/users`).on('value',snap=>{ let count=snap.val()?Object.keys(snap.val()).length:0; let badge=document.getElementById(`count-${id}`); if(badge) badge.innerText=count; if(id===currentStation) document.getElementById('onlineCountHeader').innerHTML=`${count} online <i class="fas fa-users"></i>`; }); });
-}
-function checkSpeaking(){
-    if(speakingListener) db.ref(`stations/${currentStation}/speaking`).off();
-    speakingListener=db.ref(`stations/${currentStation}/speaking`).on('value',snap=>{ let s=snap.val(); let div=document.getElementById('speakingAlert'); if(s && s.user!==userName){ div.style.display='block'; div.innerText=`📢 ${s.user} está falando...`; setTimeout(()=>div.style.display='none',2000); } else div.style.display='none'; });
-}
-function setupAudio(){
-    if(audioListener) db.ref(`stations/${currentStation}/audios`).off();
-    audioListener=db.ref(`stations/${currentStation}/audios`).on('child_added',snap=>{ let data=snap.val(); if(data && data.sender!==userName && !isMuted){ if(currentAudio) currentAudio.pause(); currentAudio=new Audio(data.audio); currentAudio.play(); document.getElementById('audioSender').innerHTML=`<i class="fas fa-user"></i> ${data.sender}`; document.getElementById('audioStation').innerHTML=`<i class="fas fa-radio"></i> ${data.station}`; document.getElementById('audioNotify').style.display='flex'; setTimeout(()=>document.getElementById('audioNotify').style.display='none',3000); } });
-}
-const ptt=document.getElementById('pttButton');
-async function startTx(){
-    if(isTransmitting) return;
-    try{
-        let stream=await navigator.mediaDevices.getUserMedia({ audio:true });
-        mediaRecorder=new MediaRecorder(stream);
-        chunks=[]; recordSec=0;
-        db.ref(`stations/${currentStation}/speaking`).set({ user:userName, timestamp:Date.now() });
-        mediaRecorder.ondataavailable=e=>{ if(e.data.size) chunks.push(e.data); };
-        mediaRecorder.onstop=async()=>{
-            if(chunks.length){
-                let blob=new Blob(chunks,{ type:'audio/webm' });
-                let reader=new FileReader();
-                reader.onloadend=async()=>{
-                    let cityName=cities.find(c=>normalizeId(c)===currentStation);
-                    let snap=await db.ref(`stations/${currentStation}/audios`).once('value');
-                    if(snap.val()) Object.keys(snap.val()).forEach(k=>db.ref(`stations/${currentStation}/audios/${k}`).remove());
-                    await db.ref(`stations/${currentStation}/audios`).push({ sender:userName, station:cityName, audio:reader.result, timestamp:Date.now(), duration:recordSec });
-                    setTimeout(()=>db.ref(`stations/${currentStation}/speaking`).remove(),1000);
-                };
-                reader.readAsDataURL(blob);
+
+function showAdminAlertDropdown(lat, lng) {
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.95);
+        z-index: 20000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Segoe UI', sans-serif;
+    `;
+    
+    const container = document.createElement('div');
+    container.style.cssText = `
+        background: linear-gradient(145deg, #13132a, #0c0c1f);
+        border-radius: 40px;
+        width: 90%;
+        max-width: 420px;
+        max-height: 85vh;
+        overflow: hidden;
+        border: 2px solid #ffd700;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    `;
+    
+    container.innerHTML = `
+        <div style="background: #ffd700; padding: 15px 20px; text-align: center;">
+            <h3 style="color: #0f0f25; margin: 0;"><i class="fas fa-crown"></i> CRIAR ALERTA ADMIN</h3>
+            <p style="color: #0f0f25; margin: 5px 0 0; font-size: 12px;">📍 ${lat.toFixed(5)}, ${lng.toFixed(5)}</p>
+        </div>
+        <div style="padding: 15px;">
+            <div style="background: #1a1a35; border-radius: 20px; padding: 10px; margin-bottom: 15px; text-align: center;">
+                <i class="fas fa-arrows-alt" style="color: #ffd700;"></i>
+                <span style="color: #ccc; margin-left: 8px;">Você pode arrastar o alfinete amarelo no mapa</span>
+            </div>
+            <div style="color: white; margin-bottom: 10px; font-size: 14px;">⚠️ SELECIONE O TIPO DE OCORRÊNCIA:</div>
+            <div id="adminAlertSelector" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; max-height: 380px; overflow-y: auto; padding: 5px;"></div>
+        </div>
+        <div style="display: flex; gap: 10px; padding: 15px; border-top: 1px solid #2a2a55;">
+            <button id="cancelAdminAlert" style="flex:1; padding: 12px; background: #e53935; border: none; border-radius: 40px; color: white; font-weight: bold; cursor: pointer;">CANCELAR</button>
+        </div>
+    `;
+    
+    modal.appendChild(container);
+    document.body.appendChild(modal);
+    
+    const grid = container.querySelector('#adminAlertSelector');
+    alertTypes.forEach(alert => {
+        const card = document.createElement('div');
+        card.style.cssText = `
+            background: #1f1f40;
+            border-radius: 20px;
+            padding: 12px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-top: 4px solid ${alert.color};
+        `;
+        card.innerHTML = `
+            <div style="font-size: 32px;">${alert.emoji}</div>
+            <div style="color: white; font-size: 11px; margin-top: 5px; font-weight: bold;">${alert.name}</div>
+        `;
+        card.onclick = async () => {
+            const id = Date.now();
+            await db.ref(`alerts/${id}`).set({
+                ...alert,
+                lat: lat,
+                lng: lng,
+                timestamp: id,
+                creator: userName + " (ADMIN)",
+                confirmations: 1,
+                status: 'active'
+            });
+            showToast(`✅ Alerta ${alert.name} criado com sucesso!`);
+            document.body.removeChild(modal);
+            
+            if (tempMarker) {
+                map.removeLayer(tempMarker);
+                tempMarker = null;
             }
-            if(audioStream) audioStream.getTracks().forEach(t=>t.stop());
+            adminClickCount = 0;
         };
-        mediaRecorder.start(100);
-        isTransmitting=true;
-        ptt.classList.add('active');
-        ptt.innerHTML='<i class="fas fa-microphone"></i><span>PTT</span>';
-        document.getElementById('timerDisplay').style.display='block';
-        if(isLedActive) animateSMeter(9);
-        timerInterval=setInterval(()=>{ recordSec++; document.getElementById('timerDisplay').innerHTML=`⏱️ ${recordSec}s`; },1000);
-    }catch(e){ alert("Permita microfone"); }
-}
-function stopTx(){
-    if(mediaRecorder && mediaRecorder.state==='recording') mediaRecorder.stop();
-    if(timerInterval) clearInterval(timerInterval);
-    isTransmitting=false;
-    db.ref(`stations/${currentStation}/speaking`).remove();
-    ptt.classList.remove('active');
-    ptt.innerHTML='<i class="fas fa-microphone-slash"></i><span>PTT</span>';
-    document.getElementById('timerDisplay').style.display='none';
-    if(isLedActive) animateSMeter(3);
-}
-ptt.addEventListener('click',()=>{ if(isTransmitting) stopTx(); else startTx(); });
-
-// ==================== MAPA + ADMIN (ALFINETE) ====================
-function initMap(){
-    map=L.map('map').setView([-25.4284,-49.2733],12);
-    L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(map);
-    if(navigator.geolocation) navigator.geolocation.watchPosition(pos=>{ userLocation=[pos.coords.latitude,pos.coords.longitude]; if(!userMarker) userMarker=L.marker(userLocation,{ icon:L.divIcon({ html:'<div style="font-size:28px;">🚛</div>', iconSize:[28,28], iconAnchor:[14,14] }) }).addTo(map); else userMarker.setLatLng(userLocation); });
-    loadAlerts();
-    setupAdminMapMode();
-}
-function recenter(){ if(userLocation) map.setView(userLocation,14); else showToast("Aguardando localização"); }
-function loadAlerts(){
-    db.ref('alerts').on('child_added',snap=>{
-        let a=snap.val(), id=snap.key;
-        if(Date.now()-a.timestamp>20*60*1000){ db.ref(`alerts/${id}`).remove(); return; }
-        if(alertsOnMap[id] || !map) return;
-        let iconHtml=`<div style="background:${a.color}; width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; box-shadow:0 0 8px ${a.color}; animation:pulse-marker 1s infinite;">${a.emoji}</div>`;
-        let marker=L.marker([a.lat,a.lng],{ icon:L.divIcon({ html:iconHtml, iconSize:[40,40], iconAnchor:[20,20] }) }).addTo(map);
-        marker.on('popupopen',()=>loadAlertChat(id));
-        marker.bindPopup(`${a.image?`<img src="${a.image}" style="width:100%; height:80px; object-fit:cover; border-radius:8px;" onclick="viewFullImage('${a.image}')">`:''}<div style="background:#075E54; color:white; padding:5px; display:flex; justify-content:space-between;" onclick="confirmAlert('${id}')"><span>${a.emoji} ${a.name}</span><span>👍 <span id="confirm-${id}">${a.confirmations||1}</span></span>${isAdminMap?`<button onclick="event.stopPropagation(); deleteAlert('${id}')" style="background:red; border:none; border-radius:10px;">🗑️</button>`:''}</div><div id="chatAlert-${id}" style="background:#E5DDD5; max-height:120px; overflow-y:auto; padding:5px;"></div><div style="display:flex; padding:5px;"><input id="inputAlert-${id}" placeholder="Comentar..." style="flex:1;"><button onclick="sendAlertComment('${id}')">➔</button></div>`);
-        alertsOnMap[id]=marker;
+        card.onmouseover = () => { card.style.transform = 'scale(1.02)'; card.style.background = '#2a2a60'; };
+        card.onmouseout = () => { card.style.transform = 'scale(1)'; card.style.background = '#1f1f40'; };
+        grid.appendChild(card);
     });
+    
+    container.querySelector('#cancelAdminAlert').onclick = () => {
+        if (tempMarker) {
+            map.removeLayer(tempMarker);
+            tempMarker = null;
+        }
+        document.body.removeChild(modal);
+        adminClickCount = 0;
+    };
 }
-function viewFullImage(img){ let m=document.createElement('div'); m.style.cssText='position:fixed; top:0; left:0; right:0; bottom:0; background:black; display:flex; align-items:center; justify-content:center; z-index:20000;'; m.innerHTML=`<img src="${img}" style="max-width:90%;">`; m.onclick=()=>m.remove(); document.body.appendChild(m); }
-function confirmAlert(id){ db.ref(`alerts/${id}/confirmations`).transaction(c=>(c||1)+1); showToast("👍 Confirmado"); }
-function loadAlertChat(id){ db.ref(`chats/alert_${id}`).on('value',snap=>{ let div=document.getElementById(`chatAlert-${id}`); if(!div)return; let msgs=snap.val(); if(!msgs){div.innerHTML='';return;} let html=''; Object.entries(msgs).sort((a,b)=>a[1].timestamp-b[1].timestamp).forEach(([mid,msg])=>{ let isMe=msg.user===userName; html+=`<div style="margin:3px; padding:4px; border-radius:12px; background:${isMe?'#DCF8C6':'white'}; max-width:90%;"><strong>${msg.user}</strong><br>${msg.text}<br><small>${new Date(msg.timestamp).toLocaleTimeString()}</small></div>`; }); div.innerHTML=html; }); }
-async function sendAlertComment(id){ let input=document.getElementById(`inputAlert-${id}`); if(!input.value.trim())return; await db.ref(`chats/alert_${id}`).push({ user:userName, text:input.value, timestamp:Date.now() }); input.value=''; }
-async function deleteAlert(id){ if(confirm("Apagar?")){ await db.ref(`alerts/${id}`).remove(); if(alertsOnMap[id]) map.removeLayer(alertsOnMap[id]); delete alertsOnMap[id]; showToast("Removido"); } }
-function setupAdminMapMode(){
-    if(!map) return;
-    map.on('click',(e)=>{
-        if(!isAdminMap) return;
+
+function setupAdminMode() {
+    if (!map) return;
+    
+    map.on('click', (e) => {
+        if (!isAdminMode) return;
+        
         adminClickCount++;
-        if(adminClickCount===1){
-            adminFirstPos=e.latlng;
-            if(tempMarker) map.removeLayer(tempMarker);
-            tempMarker=L.marker(adminFirstPos,{ draggable:true, icon:L.divIcon({ html:'<div style="background:#ffd700; width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px;">📍</div>', iconSize:[34,34], iconAnchor:[17,17] }) }).addTo(map);
-            tempMarker.on('dragend',()=>{ adminFirstPos=tempMarker.getLatLng(); showToast("Posição ajustada"); });
-            showToast("⚠️ Clique NOVAMENTE no alfinete");
-            adminClickTimeout=setTimeout(()=>{ adminClickCount=0; if(tempMarker) map.removeLayer(tempMarker); showToast("Cancelado"); },10000);
-        } else if(adminClickCount===2){
+        
+        if (adminClickCount === 1) {
+            adminFirstPos = e.latlng;
+            
+            if (tempMarker) map.removeLayer(tempMarker);
+            
+            tempMarker = L.marker(adminFirstPos, {
+                draggable: true,
+                icon: L.divIcon({
+                    html: '<div style="background:#ffd700; width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:26px; border:3px solid white; box-shadow:0 0 20px rgba(255,215,0,0.8);">📍</div>',
+                    iconSize: [44, 44],
+                    iconAnchor: [22, 22]
+                })
+            }).addTo(map);
+            
+            tempMarker.on('dragend', () => {
+                const newPos = tempMarker.getLatLng();
+                adminFirstPos = newPos;
+                showToast(`📍 Posição ajustada: ${newPos.lat.toFixed(5)}, ${newPos.lng.toFixed(5)}`);
+            });
+            
+            showToast("⚠️ Clique NOVAMENTE no alfinete para criar alerta");
+            
+            adminClickTimeout = setTimeout(() => {
+                adminClickCount = 0;
+                adminFirstPos = null;
+                if (tempMarker) {
+                    map.removeLayer(tempMarker);
+                    tempMarker = null;
+                }
+                showToast("❌ Criação de alerta cancelada");
+            }, 10000);
+            
+        } else if (adminClickCount === 2) {
             clearTimeout(adminClickTimeout);
-            let markerPos=tempMarker?tempMarker.getLatLng():adminFirstPos;
-            if(markerPos && Math.hypot(markerPos.lat-e.latlng.lat, markerPos.lng-e.latlng.lng)<0.0005) showAdminAlertDropdown(markerPos.lat,markerPos.lng);
-            else showToast("❌ Clique no alfinete");
-            adminClickCount=0;
+            
+            const markerPos = tempMarker ? tempMarker.getLatLng() : adminFirstPos;
+            
+            if (markerPos) {
+                const secondPos = e.latlng;
+                const distance = Math.hypot(markerPos.lat - secondPos.lat, markerPos.lng - secondPos.lng);
+                
+                if (distance < 0.0005) {
+                    showAdminAlertDropdown(markerPos.lat, markerPos.lng);
+                } else {
+                    showToast("❌ Clique no alfinete amarelo para criar o alerta");
+                    adminClickCount = 1;
+                    adminFirstPos = markerPos;
+                    adminClickTimeout = setTimeout(() => {
+                        adminClickCount = 0;
+                        adminFirstPos = null;
+                        if (tempMarker) {
+                            map.removeLayer(tempMarker);
+                            tempMarker = null;
+                        }
+                    }, 10000);
+                    return;
+                }
+            }
+            
+            adminClickCount = 0;
         }
     });
 }
-function showAdminAlertDropdown(lat,lng){
-    let modal=document.createElement('div'); modal.style.cssText='position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.95); z-index:20000; display:flex; align-items:center; justify-content:center;';
-    let container=document.createElement('div'); container.style.cssText='background:#1a1a1a; border-radius:20px; width:90%; max-width:320px; max-height:75vh; overflow:auto; border:2px solid #00aaff; padding:12px;';
-    container.innerHTML=`<h3 style="color:#00aaff; text-align:center; margin-bottom:8px;">📌 NOVO ALERTA</h3><div id="adminAlertSelector" style="display:grid; grid-template-columns:repeat(2,1fr); gap:8px;"></div><button id="cancelAdminAlert" style="margin-top:10px; width:100%; padding:6px; background:#e53935; border:none; border-radius:20px; color:white;">CANCELAR</button>`;
-    modal.appendChild(container); document.body.appendChild(modal);
-    let grid=container.querySelector('#adminAlertSelector');
-    alertTypes.forEach(alert=>{
-        let card=document.createElement('div'); card.style.cssText=`background:#2a2a2a; border-radius:10px; padding:6px; text-align:center; cursor:pointer; border-top:2px solid ${alert.color}`;
-        card.innerHTML=`<div style="font-size:20px;">${alert.emoji}</div><div style="color:white; font-size:8px;">${alert.name}</div>`;
-        card.onclick=async()=>{ let id=Date.now(); await db.ref(`alerts/${id}`).set({ ...alert, lat, lng, timestamp:id, creator:userName+" (ADMIN)", confirmations:1 }); showToast(`✅ Alerta ${alert.name} criado`); document.body.removeChild(modal); if(tempMarker) map.removeLayer(tempMarker); adminClickCount=0; openMapModal(); };
-        grid.appendChild(card);
-    });
-    container.querySelector('#cancelAdminAlert').onclick=()=>{ if(tempMarker) map.removeLayer(tempMarker); document.body.removeChild(modal); adminClickCount=0; };
-}
 
-// ==================== ALERTAS (15) ====================
-function buildAlertGrid(){
-    let grid=document.getElementById('alertGrid'); grid.innerHTML='';
-    alertTypes.forEach(alert=>{
-        let card=document.createElement('div'); card.className='alert-card'; card.style.borderTop=`3px solid ${alert.color}`;
-        card.innerHTML=`<div class="alert-emoji">${alert.emoji}</div><div class="alert-name">${alert.name}</div>`;
-        card.onclick=()=>createAlert(alert);
-        grid.appendChild(card);
-    });
-}
-async function createAlert(alert){
-    if(!userLocation){ showToast("Aguardando localização..."); return; }
-    try{
-        let stream=await navigator.mediaDevices.getUserMedia({ video:{ facingMode:'environment' } });
-        let overlay=document.createElement('div'); overlay.style.cssText='position:fixed; top:0; left:0; right:0; bottom:0; background:#000; z-index:20000; display:flex; flex-direction:column; align-items:center; justify-content:center;';
-        let video=document.createElement('video'); video.autoplay=true; video.srcObject=stream; video.style.width='80%'; video.style.maxWidth='260px'; video.style.borderRadius='12px';
-        let btnPhoto=document.createElement('button'); btnPhoto.innerText='📷 TIRAR FOTO'; btnPhoto.style.cssText='margin:10px; padding:6px 16px; background:#ffd700; border:none; border-radius:30px;';
-        let btnSkip=document.createElement('button'); btnSkip.innerText='⏭️ PULAR'; btnSkip.style.cssText='margin:10px; padding:6px 16px; background:#444; color:white; border:none; border-radius:30px;';
-        let btnClose=document.createElement('button'); btnClose.innerText='✕'; btnClose.style.cssText='position:absolute; top:15px; right:15px; background:red; border:none; border-radius:50%; width:32px; height:32px; color:white;';
-        overlay.appendChild(video); overlay.appendChild(btnPhoto); overlay.appendChild(btnSkip); overlay.appendChild(btnClose);
-        document.body.appendChild(overlay);
-        btnPhoto.onclick=()=>{
-            let canvas=document.createElement('canvas'); canvas.width=video.videoWidth; canvas.height=video.videoHeight;
-            canvas.getContext('2d').drawImage(video,0,0);
-            canvas.toBlob(async blob=>{
-                let reader=new FileReader();
-                reader.onloadend=async()=>{ let id=Date.now(); await db.ref(`alerts/${id}`).set({ ...alert, lat:userLocation[0], lng:userLocation[1], timestamp:id, creator:userName, confirmations:1, image:reader.result }); stream.getTracks().forEach(t=>t.stop()); document.body.removeChild(overlay); showToast("✅ Alerta enviado!"); closeAlertModal(); openMapModal(); setTimeout(()=>{ if(map && userLocation) map.setView(userLocation,13); },500); };
-                reader.readAsDataURL(blob);
-            },'image/jpeg',0.6);
+// ==================== DROPDOWN ESTAÇÕES ====================
+function buildDropdown() {
+    const menu = document.getElementById('stationDropdown');
+    menu.innerHTML = '';
+    
+    cities.forEach(city => {
+        const id = normalizeId(city);
+        const option = document.createElement('div');
+        option.className = 'station-option';
+        if (id === currentStation) option.classList.add('active');
+        option.innerHTML = `
+            <span>${city}</span>
+            <span class="station-count" id="count-${id}">0</span>
+        `;
+        option.onclick = (e) => {
+            changeStation(id, city);
+            closeDropdown();
         };
-        btnSkip.onclick=async()=>{ let id=Date.now(); await db.ref(`alerts/${id}`).set({ ...alert, lat:userLocation[0], lng:userLocation[1], timestamp:id, creator:userName, confirmations:1 }); stream.getTracks().forEach(t=>t.stop()); document.body.removeChild(overlay); showToast(`⚠️ ${alert.name} reportado!`); closeAlertModal(); openMapModal(); setTimeout(()=>{ if(map && userLocation) map.setView(userLocation,13); },500); };
-        btnClose.onclick=()=>{ stream.getTracks().forEach(t=>t.stop()); document.body.removeChild(overlay); };
-    }catch(e){
-        let id=Date.now(); await db.ref(`alerts/${id}`).set({ ...alert, lat:userLocation[0], lng:userLocation[1], timestamp:id, creator:userName, confirmations:1 }); showToast(`⚠️ ${alert.name} reportado!`); closeAlertModal(); openMapModal(); setTimeout(()=>{ if(map && userLocation) map.setView(userLocation,13); },500);
-    }
-}
-function openMapModal(){ document.getElementById('mapModal').classList.add('visible'); if(map) map.invalidateSize(); else initMap(); }
-function closeMapModal(){ document.getElementById('mapModal').classList.remove('visible'); }
-function openAlertModal(){ document.getElementById('alertModal').classList.add('visible'); }
-function closeAlertModal(){ document.getElementById('alertModal').classList.remove('visible'); }
-function openChatModal(){ document.getElementById('chatModal').classList.add('visible'); loadChatMessages(); }
-function closeChatModal(){ document.getElementById('chatModal').classList.remove('visible'); document.getElementById('emojiPicker').classList.remove('show'); currentReply=null; document.getElementById('replyPreview').classList.remove('show'); }
-
-// ==================== CHAT ====================
-function loadChatMessages(){
-    db.ref('chat_global').off();
-    db.ref('chat_global').on('value',snap=>{
-        let msgs=snap.val(); let container=document.getElementById('chatMessages');
-        if(!msgs){ container.innerHTML='<div style="text-align:center; padding:20px;">Nenhuma mensagem</div>'; return; }
-        let html='';
-        Object.entries(msgs).sort((a,b)=>a[1].timestamp-b[1].timestamp).forEach(([mid,msg])=>{
-            let isMe=msg.user===userName; let time=new Date(msg.timestamp).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-            html+=`<div class="msg ${isMe?'me':'other'}" data-id="${mid}" data-user="${msg.user}" data-text="${escapeHtml(msg.text)}"><div class="msg-content" onclick="selectChatMessage(this,'${mid}','chat_global')"><div class="msg-sender">${msg.user}</div><div class="msg-text">${escapeHtml(msg.text)}</div><div class="msg-time">${time}</div></div></div>`;
-        });
-        container.innerHTML=html; container.scrollTop=container.scrollHeight;
+        menu.appendChild(option);
     });
 }
-function selectChatMessage(el,id,type){ let wrapper=el.closest('.msg'); selectedMsg={ id,type,element:wrapper, user:wrapper.dataset.user, text:wrapper.dataset.text }; let menu=document.getElementById('contextMenu'); let rect=el.getBoundingClientRect(); menu.style.left=rect.left+'px'; menu.style.top=rect.bottom+'px'; menu.classList.add('show'); }
-document.getElementById('replyMsg').addEventListener('click',()=>{ if(selectedMsg.user && selectedMsg.text){ currentReply=`${selectedMsg.user}: "${selectedMsg.text.substring(0,40)}${selectedMsg.text.length>40?'...':''}"`; document.getElementById('replyText').innerHTML=`Respondendo ${selectedMsg.user}`; document.getElementById('replyPreview').classList.add('show'); document.getElementById('chatInput').focus(); document.getElementById('contextMenu').classList.remove('show'); selectedMsg={}; } });
-document.getElementById('deleteMsg').addEventListener('click',async()=>{ if(!selectedMsg.id) return; let isAdmin=isAdminChat; let isOwner=selectedMsg.user===userName; if(isAdmin || isOwner){ if(confirm("Apagar mensagem?")){ await db.ref(`${selectedMsg.type}/${selectedMsg.id}`).remove(); showToast("Mensagem apagada"); } } else showToast("Você só pode apagar suas próprias mensagens"); document.getElementById('contextMenu').classList.remove('show'); selectedMsg={}; });
-document.getElementById('emojiMsg').addEventListener('click',()=>{ document.getElementById('emojiPicker').classList.toggle('show'); document.getElementById('contextMenu').classList.remove('show'); });
-document.getElementById('cancelReplyBtn').addEventListener('click',()=>{ currentReply=null; document.getElementById('replyPreview').classList.remove('show'); });
-document.getElementById('sendMsgBtn').addEventListener('click',sendChatMsg);
-document.getElementById('chatInput').addEventListener('keypress',(e)=>{ if(e.key==='Enter') sendChatMsg(); });
-function sendChatMsg(){ let input=document.getElementById('chatInput'); if(!input.value.trim()) return; let msg={ user:userName, text:input.value.trim(), timestamp:Date.now() }; if(currentReply){ msg.replyTo=currentReply; currentReply=null; document.getElementById('replyPreview').classList.remove('show'); } db.ref('chat_global').push(msg); input.value=''; showToast("✓ Enviada"); }
-function escapeHtml(t){ let d=document.createElement('div'); d.textContent=t; return d.innerHTML; }
 
-// ==================== BOTÕES RÁPIDOS ====================
-function saveQuickStation(cityId,cityName){
-    if(quickStations.some(s=>s.id===cityId)) return;
-    if(quickStations.length>=5) quickStations.shift();
-    quickStations.push({ id:cityId, name:cityName });
-    localStorage.setItem('quickStations',JSON.stringify(quickStations));
-    renderQuickButtons();
+function toggleDropdown() {
+    const menu = document.getElementById('stationDropdown');
+    const trigger = document.getElementById('selectorTrigger');
+    menu.classList.toggle('open');
+    trigger.classList.toggle('open');
 }
-function removeQuickStation(idx){ quickStations.splice(idx,1); localStorage.setItem('quickStations',JSON.stringify(quickStations)); renderQuickButtons(); }
-function renderQuickButtons(){
-    let container=document.getElementById('quickButtons'); container.innerHTML='';
-    for(let i=0;i<5;i++){
-        let btn=document.createElement('div'); btn.className='quick-btn';
-        if(quickStations[i]){ btn.innerText=quickStations[i].name.length>10?quickStations[i].name.substring(0,8)+'…':quickStations[i].name; btn.classList.add('saved'); btn.onclick=()=>{ changeStation(quickStations[i].id,quickStations[i].name); }; btn.oncontextmenu=(e)=>{ e.preventDefault(); if(confirm(`Remover ${quickStations[i].name} dos favoritos?`)) removeQuickStation(i); }; }
-        else{ btn.innerText=`+ ${i+1}`; btn.onclick=()=>{ let cityName=cities.find(c=>normalizeId(c)===currentStation); saveQuickStation(currentStation,cityName); }; }
-        container.appendChild(btn);
+
+function closeDropdown() {
+    document.getElementById('stationDropdown').classList.remove('open');
+    document.getElementById('selectorTrigger').classList.remove('open');
+}
+
+document.getElementById('selectorTrigger').addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleDropdown();
+});
+
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.station-selector')) closeDropdown();
+});
+
+function changeStation(id, name) {
+    currentStation = id;
+    localStorage.setItem('px_station', id);
+    
+    document.querySelectorAll('.station-option').forEach(opt => opt.classList.remove('active'));
+    event.target.closest('.station-option').classList.add('active');
+    
+    document.getElementById('selectedCityName').innerText = name;
+    
+    db.ref(`stations/${id}/users/${userName}`).set({ name: userName, timestamp: Date.now() });
+    
+    cities.forEach(c => {
+        const otherId = normalizeId(c);
+        if (otherId !== id) {
+            db.ref(`stations/${otherId}/users/${userName}`).remove();
+        }
+    });
+    
+    setupAudio();
+    checkSpeakingStatus();
+    showToast(`📻 Você sintonizou ${name}`);
+}
+
+function loadCounts() {
+    cities.forEach(city => {
+        const id = normalizeId(city);
+        db.ref(`stations/${id}/users`).on('value', (snap) => {
+            const users = snap.val();
+            const count = users ? Object.keys(users).length : 0;
+            const badge = document.getElementById(`count-${id}`);
+            if (badge) badge.innerText = count;
+            if (id === currentStation) {
+                document.getElementById('currentCityOnline').innerHTML = `${count} online <i class="fas fa-users"></i>`;
+                document.getElementById('stationChatSubtitle').innerHTML = `${count} participantes online`;
+            }
+        });
+    });
+}
+
+function checkSpeakingStatus() {
+    if (speakingListener) {
+        db.ref(`stations/${currentStation}/speaking`).off('value', speakingListener);
+    }
+    
+    speakingListener = db.ref(`stations/${currentStation}/speaking`).on('value', (snap) => {
+        const speaker = snap.val();
+        const indicator = document.getElementById('speakingIndicator');
+        if (speaker && speaker.user !== userName) {
+            indicator.style.display = 'block';
+            indicator.innerHTML = `📢 ${speaker.user} está falando...`;
+            setTimeout(() => {
+                if (indicator.style.display === 'block') indicator.style.display = 'none';
+            }, 2000);
+        } else if (speaker && speaker.user === userName) {
+            indicator.style.display = 'none';
+        } else {
+            indicator.style.display = 'none';
+        }
+    });
+}
+
+function setupAudio() {
+    if (audioListener) {
+        db.ref(`stations/${currentStation}/audios`).off('child_added', audioListener);
+    }
+    
+    audioListener = db.ref(`stations/${currentStation}/audios`).on('child_added', (snap) => {
+        const data = snap.val();
+        if (data && data.sender !== userName) {
+            if (currentAudio) {
+                currentAudio.pause();
+                if (currentAudioTimeout) clearTimeout(currentAudioTimeout);
+            }
+            
+            currentAudio = new Audio(data.audio);
+            currentAudio.play().catch(e => console.log);
+            
+            const audioContainer = document.getElementById('audioPlayerContainer');
+            document.getElementById('audioSender').innerHTML = `<i class="fas fa-user"></i> ${data.sender}`;
+            document.getElementById('audioStation').innerHTML = `<i class="fas fa-radio"></i> ${data.station}`;
+            audioContainer.style.display = 'flex';
+            
+            if (currentAudioTimeout) clearTimeout(currentAudioTimeout);
+            currentAudioTimeout = setTimeout(() => {
+                audioContainer.style.display = 'none';
+            }, 3000);
+            
+            currentAudio.onended = () => {
+                audioContainer.style.display = 'none';
+            };
+        }
+    });
+}
+
+const pxButton = document.getElementById('pxButton');
+const pxStatusText = document.getElementById('pxStatusText');
+const timerDisplay = document.getElementById('timerDisplay');
+
+async function startTransmission() {
+    if (isTransmitting) return;
+    
+    try {
+        audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(audioStream);
+        audioChunks = [];
+        recordSeconds = 0;
+        
+        db.ref(`stations/${currentStation}/speaking`).set({ user: userName, timestamp: Date.now() });
+        
+        mediaRecorder.ondataavailable = e => {
+            if (e.data.size > 0) audioChunks.push(e.data);
+        };
+        
+        mediaRecorder.onstop = async () => {
+            if (audioChunks.length > 0) {
+                const blob = new Blob(audioChunks, { type: 'audio/webm' });
+                const reader = new FileReader();
+                reader.onloadend = async () => {
+                    const cityName = cities.find(c => normalizeId(c) === currentStation);
+                    
+                    const snapshot = await db.ref(`stations/${currentStation}/audios`).once('value');
+                    const audios = snapshot.val();
+                    if (audios) {
+                        const keys = Object.keys(audios);
+                        keys.forEach(key => {
+                            db.ref(`stations/${currentStation}/audios/${key}`).remove();
+                        });
+                    }
+                    
+                    await db.ref(`stations/${currentStation}/audios`).push({
+                        sender: userName,
+                        station: cityName,
+                        audio: reader.result,
+                        timestamp: Date.now(),
+                        duration: recordSeconds
+                    });
+                    
+                    setTimeout(() => {
+                        db.ref(`stations/${currentStation}/speaking`).remove();
+                    }, 1000);
+                };
+                reader.readAsDataURL(blob);
+            }
+            if (audioStream) audioStream.getTracks().forEach(t => t.stop());
+        };
+        
+        mediaRecorder.start(100);
+        isTransmitting = true;
+        
+        pxButton.classList.remove('off');
+        pxButton.classList.add('active');
+        pxButton.innerHTML = '<i class="fas fa-microphone"></i><span>FALANDO</span>';
+        pxStatusText.className = 'px-status-text on';
+        pxStatusText.innerHTML = '🎤 TRANSMITINDO...';
+        timerDisplay.style.display = 'block';
+        
+        recordInterval = setInterval(() => {
+            recordSeconds++;
+            timerDisplay.innerHTML = `⏱️ ${recordSeconds}s`;
+        }, 1000);
+        
+    } catch(e) {
+        alert("🎤 Permita o acesso ao microfone para usar o rádio!");
     }
 }
 
-// ==================== ADMIN ====================
-function enableAdminMap(){ let pwd=prompt("Senha:"); if(pwd==='277'){ isAdminMap=true; document.getElementById('adminBadge').style.display='flex'; showToast("ADMIN MAPA"); } else showToast("Senha errada"); }
-function enableAdminChat(){ let pwd=prompt("Senha:"); if(pwd==='277'){ isAdminChat=true; showToast("ADMIN CHAT"); } else showToast("Senha errada"); }
-function disableAdmin(){ isAdminMap=false; isAdminChat=false; document.getElementById('adminBadge').style.display='none'; showToast("Admin off"); }
-document.getElementById('adminGear').addEventListener('click',()=>document.getElementById('adminPanel').classList.toggle('show'));
-document.getElementById('adminMapBtn').addEventListener('click',()=>{ enableAdminMap(); document.getElementById('adminPanel').classList.remove('show'); });
-document.getElementById('adminChatBtn').addEventListener('click',()=>{ enableAdminChat(); document.getElementById('adminPanel').classList.remove('show'); });
-document.getElementById('exitAdminBtn').addEventListener('click',()=>{ disableAdmin(); document.getElementById('adminPanel').classList.remove('show'); });
+function stopTransmission() {
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+        mediaRecorder.stop();
+    }
+    if (recordInterval) clearInterval(recordInterval);
+    isTransmitting = false;
+    
+    db.ref(`stations/${currentStation}/speaking`).remove();
+    
+    pxButton.classList.remove('active');
+    pxButton.classList.add('off');
+    pxButton.innerHTML = '<i class="fas fa-microphone-slash"></i><span>PX (FALAR)</span>';
+    pxStatusText.className = 'px-status-text off';
+    pxStatusText.innerHTML = '🔴 MICROFONE DESLIGADO';
+    timerDisplay.style.display = 'none';
+    timerDisplay.innerHTML = '';
+}
 
-// ==================== EVENTOS UI ====================
-document.getElementById('openMapBtn').onclick=openMapModal;
-document.getElementById('openAlertBtn').onclick=openAlertModal;
-document.getElementById('openChatBtn').onclick=openChatModal;
-document.getElementById('closeMapModal').onclick=closeMapModal;
-document.getElementById('closeAlertModal').onclick=closeAlertModal;
-document.getElementById('closeChatModalBtn').onclick=closeChatModal;
-document.getElementById('closeChatBtn').onclick=closeChatModal;
-document.getElementById('mapAlertBtn').onclick=openAlertModal;
-document.getElementById('recenterBtn').onclick=recenter;
+pxButton.addEventListener('click', () => {
+    if (isTransmitting) {
+        stopTransmission();
+    } else {
+        startTransmission();
+    }
+});
 
-// Emoji picker
-const emojiPicker=document.getElementById('emojiPicker');
-document.getElementById('chatEmojiBtn').addEventListener('click',(e)=>{ e.stopPropagation(); emojiPicker.classList.toggle('show'); });
-emojiPicker.addEventListener('emoji-click',(e)=>{ document.getElementById('chatInput').value+=e.detail.unicode; emojiPicker.classList.remove('show'); });
-document.addEventListener('click',(e)=>{ if(!emojiPicker.contains(e.target) && e.target.id!=='chatEmojiBtn') emojiPicker.classList.remove('show'); });
+// ==================== MAPA ====================
+let clusterMarkers = {};
 
-// ==================== INICIALIZAÇÃO ====================
-buildDropdown();
-loadCounts();
-setupAudio();
-buildAlertGrid();
-checkSpeaking();
-initMap();
-renderQuickButtons();
-showToast(`🎙️ ${userName}`);
+function initMap() {
+    map = L.map('map').setView([-25.4284, -49.2733], 12);
+    L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(map);
+    
+    if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(pos => {
+            userLocation = [pos.coords.latitude, pos.coords.longitude];
+            if (!userMarker) {
+                userMarker = L.marker(userLocation, {
+                    icon: L.divIcon({ html: '<div style="font-size:34px;">🚛</div>', iconSize: [34, 34], iconAnchor: [17, 17] })
+                }).addTo(map);
+            } else {
+                userMarker.setLatLng(userLocation);
+            }
+        });
+    }
+    
+    loadAlertsOnMap();
+    setupAdminMode();
+}
+
+function recenterMap() {
+    if (userLocation) {
+        map.setView(userLocation, 14);
+        showToast("📍 Mapa recentralizado na sua posição");
+    } else {
+        showToast("⏳ Aguardando sua localização...");
+    }
+}
+
+function loadAlertsOnMap() {
+    db.ref('alerts').on('child_added', (snap) => {
+        const alert = snap.val();
+        const id = snap.key;
+        
+        const now = Date.now();
+        if (now - alert.timestamp > 20 * 60 * 1000) {
+            db.ref(`alerts/${id}`).remove();
+            return;
+        }
+        
+        if (alertsOnMap[id] || !map) return;
+        
+        const lat = alert.lat;
+        const lng = alert.lng;
+        let groupKey = null;
+        
+        for (let key in clusterMarkers) {
+            const marker = clusterMarkers[key];
+            const distance = Math.hypot(marker.lat - lat, marker.lng - lng);
+            if (distance < 0.002) {
+                groupKey = key;
+                break;
+            }
+        }
+        
+        if (groupKey) {
+            clusterMarkers[groupKey].count++;
+            clusterMarkers[groupKey].alerts.push(alert);
+            const marker = alertsOnMap[groupKey];
+            if (marker) {
+                marker.setIcon(L.divIcon({
+                    html: `<div style="background:#e53935; width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:bold; color:white; border:3px solid white; box-shadow:0 0 15px red;">${clusterMarkers[groupKey].count}</div>`,
+                    iconSize: [48, 48],
+                    iconAnchor: [24, 24]
+                }));
+            }
+        } else {
+            clusterMarkers[id] = { lat, lng, count: 1, alerts: [alert] };
+            
+            const marker = L.marker([lat, lng], {
+                icon: L.divIcon({
+                    html: `<div style="background:${alert.color}; width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; border:3px solid white; box-shadow:0 0 15px ${alert.color};">${alert.emoji}</div>`,
+                    iconSize: [42, 42],
+                    iconAnchor: [21, 21]
+                })
+            }).addTo(map);
+            
+            let imgHtml = '';
+            if (alert.image) imgHtml = `<img src="${alert.image}" class="popup-alert-img">`;
+            
+            const popupDiv = document.createElement('div');
+            popupDiv.className = 'popup-alert';
+            popupDiv.innerHTML = `
+                ${imgHtml}
+                <div class="popup-alert-header" onclick="confirmAlert('${id}')">
+                    <span>${alert.emoji} ${alert.name}</span>
+                    <span>👍 <span id="confirm-count-${id}">${alert.confirmations || 1}</span></span>
+                </div>
+                <div class="popup-alert-chat" id="alert-chat-${id}"></div>
+                <div class="popup-chat-input">
+                    <input type="text" id="alert-input-${id}" placeholder="Digite um comentário...">
+                    <button onclick="sendAlertMsg('${id}')">➔</button>
+                </div>
+            `;
+            
+            marker.bindPopup(popupDiv);
+            marker.on('popupopen', () => loadAlertChat(id));
+            alertsOnMap[id] = marker;
+        }
+    });
+}
+
+function confirmAlert(id) {
+    db.ref(`alerts/${id}/confirmations`).transaction((current) => {
+        return (current || 1) + 1;
+    });
+    showToast("👍 Ocorrência confirmada!");
+}
+
+function loadAlertChat(id) {
+    db.ref(`chats/alert_${id}`).on('value', (snap) => {
+        const chatDiv = document.getElementById(`alert-chat-${id}`);
+        if (!chatDiv) return;
+        const msgs = snap.val();
+        if (!msgs) { chatDiv.innerHTML = '<div style="text-align:center; color:#888; padding:10px;">Nenhum comentário</div>'; return; }
+        
+        let html = '';
+        Object.values(msgs).sort((a,b) => a.timestamp - b.timestamp).forEach(msg => {
+            const isMe = msg.user === userName;
+            const time = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            html += `<div class="popup-chat-msg ${isMe ? 'me' : 'other'}">
+                        <strong>${msg.user}</strong><br>${msg.text}<br>
+                        <small style="font-size:9px; color:#888;">${time}</small>
+                     </div>`;
+        });
+        chatDiv.innerHTML = html;
+        chatDiv.scrollTop = chatDiv.scrollHeight;
+    });
+    
+    db.ref(`alerts/${id}/confirmations`).on('value', (snap) => {
+        const countSpan = document.getElementById(`confirm-count-${id}`);
+        if (countSpan) countSpan.innerText = snap.val() || 1;
+    });
+}
+
+function sendAlertMsg(id) {
+    const input = document.getElementById(`alert-input-${id}`);
+    if (!input.value.trim()) return;
+    db.ref(`chats/alert_${id}`).push({ user: userName, text: input.value.trim(), timestamp: Date.now() });
+    input.value = '';
+}
+
+function openMapModal() {
+    document.getElementById('mapModal').classList.add('visible');
+    setTimeout(() => {
+        if (map) map.invalidateSize();
+        else initMap();
+    }, 100);
+}
+
+function closeMapModal() {
+    document.getElementById('mapModal').classList.remove('visible');
+}
+
+// ==================== ALERTAS ====================
+function buildAlertGrid() {
+    const grid = document.getElementById('alertGrid');
+    grid.innerHTML = '';
+    
+    alertTypes.forEach(alert => {
+        const card = document.createElement('div');
+        card.className = 'alert-item';
+        card.style.borderTop = `4px solid ${alert.color}`;
+        card.innerHTML = `<div class="alert-emoji">${alert.emoji}</div><div class="alert-name">${alert.name}</div>`;
+        card.onclick = () => createAlertWithPhoto(alert);
+        grid.appendChild(card);
+    });
+}
+
+async function createAlertWithPhoto(alert) {
+    if (!userLocation) { showToast("📍 Aguardando localização..."); return; }
+    
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+        
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:#000; z-index:10000; display:flex; flex-direction:column; align-items:center; justify-content:center;';
+        
+        const video = document.createElement('video');
+        video.style.cssText = 'width:90%; max-width:350px; border-radius:20px;';
+        video.autoplay = true;
+        video.srcObject = stream;
+        
+        const btnPhoto = document.createElement('button');
+        btnPhoto.style.cssText = 'margin:15px; padding:12px 25px; background:#ffd700; border:none; border-radius:40px; font-size:16px; font-weight:700; cursor:pointer;';
+        btnPhoto.innerHTML = '📷 TIRAR FOTO';
+        
+        const btnSkip = document.createElement('button');
+        btnSkip.style.cssText = 'margin:15px; padding:12px 25px; background:#444; border:none; border-radius:40px; color:white; cursor:pointer;';
+        btnSkip.innerHTML = '⏭️ PULAR';
+        
+        const btnClose = document.createElement('button');
+        btnClose.style.cssText = 'position:absolute; top:15px; right:15px; width:40px; height:40px; background:#e53935; border:none; border-radius:50%; color:white; font-size:18px; cursor:pointer;';
+        btnClose.innerHTML = '✕';
+        
+        overlay.appendChild(video);
+        overlay.appendChild(btnPhoto);
+        overlay.appendChild(btnSkip);
+        overlay.appendChild(btnClose);
+        document.body.appendChild(overlay);
+        
+        btnPhoto.onclick = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            
+            canvas.toBlob(async (blob) => {
+                const reader = new FileReader();
+                reader.onloadend = async () => {
+                    const id = Date.now();
+                    await db.ref(`alerts/${id}`).set({
+                        ...alert,
+                        lat: userLocation[0],
+                        lng: userLocation[1],
+                        timestamp: id,
+                        creator: userName,
+                        confirmations: 1,
+                        image: reader.result
+                    });
+                    stream.getTracks().forEach(t => t.stop());
+                    document.body.removeChild(overlay);
+                    showToast('✅ Alerta com foto enviado!');
+                    closeAlertModal();
+                };
+                reader.readAsDataURL(blob);
+            }, 'image/jpeg', 0.6);
+        };
+        
+        btnSkip.onclick = async () => {
+            const id = Date.now();
+            await db.ref(`alerts/${id}`).set({
+                ...alert,
+                lat: userLocation[0],
+                lng: userLocation[1],
+                timestamp: id,
+                creator: userName,
+                confirmations: 1
+            });
+            stream.getTracks().forEach(t => t.stop());
+            document.body.removeChild(overlay);
+            showToast(`⚠️ ${alert.name} reportado!`);
+            closeAlertModal();
+        };
+        
+        btnClose.onclick = () => {
+            stream.getTracks().forEach(t => t.stop());
+            document.body.removeChild(overlay);
+        };
+        
+    } catch(e) {
+        const id = Date.now();
+        await db.ref(`alerts/${id}`).set({
+            ...alert,
+            lat: userLocation[0],
+            lng: userLocation[1],
+            timestamp: id,
+            creator: userName,
+            confirmations: 1
+        });
+        showToast(`⚠️ ${alert.name} reportado!`);
+        closeAlertModal();
+    }
+}
+
+function openAlertModal() { document.getElementById('alertModal').classList.add('visible'); }
+function closeAlertModal() { document.getElementById('alertModal').classList.remove('visible'); }
+
+// ==================== CHAT GERAL (WhatsApp Style) ====================
+function openChatModal() { 
+    document.getElementById('chatModal').classList.add('visible'); 
+    loadChatMessages(); 
+}
+
+function closeChatModal() { 
+    document.getElementById('chatModal').classList.remove('visible'); 
+}
+
+function loadChatMessages() {
+    db.ref('chat_global').off();
+    db.ref('chat_global').on('value', (snap) => {
+        const msgs = snap.val();
+        const container = document.getElementById('chatMessagesArea');
+        if (!msgs) { container.innerHTML = '<div style="text-align:center; color:#888; padding:20px;">Nenhuma mensagem</div>'; return; }
+        
+        let html = '';
+        Object.values(msgs).sort((a,b) => a.timestamp - b.timestamp).forEach(msg => {
+            const isMe = msg.user === userName;
+            const time = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            html += `
+                <div class="msg-bubble ${isMe ? 'me' : 'other'}">
+                    <div class="msg-content">
+                        <div class="msg-sender">${msg.user}</div>
+                        <div class="msg-text">${escapeHtml(msg.text)}</div>
+                        <div class="msg-meta">
+                            <span class="msg-time">${time}</span>
+                            ${isMe ? '<span class="msg-status"><i class="fas fa-check-double"></i></span>' : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+        container.scrollTop = container.scrollHeight;
+    });
+}
+
+// ==================== CHAT POR ESTAÇÃO (WhatsApp Style) ====================
+function openStationChatModal() {
+    const cityName = cities.find(c => normalizeId(c) === currentStation);
+    document.getElementById('stationChatTitle').innerHTML = `<i class="fas fa-radio"></i> ${cityName}`;
+    document.getElementById('stationChatModal').classList.add('visible');
+    loadStationChatMessages();
+}
+
+function closeStationChatModal() {
+    document.getElementById('stationChatModal').classList.remove('visible');
+}
+
+function loadStationChatMessages() {
+    db.ref(`chats/station_${currentStation}`).off();
+    db.ref(`chats/station_${currentStation}`).on('value', (snap) => {
+        const msgs = snap.val();
+        const container = document.getElementById('stationChatMessagesArea');
+        if (!msgs) { container.innerHTML = '<div style="text-align:center; color:#888; padding:20px;">Nenhuma mensagem</div>'; return; }
+        
+        let html = '';
+        Object.values(msgs).sort((a,b) => a.timestamp - b.timestamp).forEach(msg => {
+            const isMe = msg.user === userName;
+            const time = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            html += `
+                <div class="msg-bubble ${isMe ? 'me' : 'other'}">
+                    <div class="msg-content">
+                        <div class="msg-sender">${msg.user}</div>
+                        <div class="msg-text">${escapeHtml(msg.text)}</div>
+                        <div class="msg-meta">
+                            <span class="msg-time">${time}</span>
+                            ${isMe ? '<span class="msg-status"><i class="fas fa-check-double"></i></span>' : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+        container.scrollTop = container.scrollHeight;
+    });
+}
+
+function sendStationChatMsg() {
+    const input = document.getElementById('stationChatInput');
+    if (!input.value.trim()) return;
+    db.ref(`chats/station_${currentStation}`).push({ 
+        user: userName, 
+        text: input.value.trim(), 
+        timestamp: Date.now() 
+    });
+    input.value = '';
+    showToast("✓ Mensagem enviada para a estação");
+}
+
+function sendChatMsg() {
+    const input = document.getElementById('chatInput');
+    if (!input.value.trim()) return;
+    db.ref('chat_global').push({ user: userName, text: input.value.trim(), timestamp: Date.now() });
+    input.value = '';
+    showToast("✓ Mensagem enviada");
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// ==================== UTILIDADES ====================
+function showToast(msg) {
+    const toast = document.createElement('div');
+    toast.style.cssText = 'position:fixed; bottom:100px; left:50%; transform:translateX(-50%); background:#00BFFF; color:white; padding:8px 20px; border-radius:40px; z-index:13000; font-weight:bold; font-size:14px; white-space:nowrap;';
+    toast.innerText = msg;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 2000);
+}
+
+// ==================== LIMPAR AO SAIR ====================
+window.addEventListener('beforeunload', () => {
+    if (userName) db.ref(`stations/${currentStation}/users/${userName}`).remove();
+    if (isTransmitting) stopTransmission();
+    db.ref(`stations/${currentStation}/speaking`).remove();
+});
+
+// ==================== INICIAR ====================
+function init() {
+    buildDropdown();
+    loadCounts();
+    setupAudio();
+    buildAlertGrid();
+    checkSpeakingStatus();
+    showToast(`🎙️ Bem-vindo, ${userName}!`);
+}
+
+init();
 </script>
 </body>
 </html>
