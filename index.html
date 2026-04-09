@@ -167,19 +167,6 @@
             z-index: 200;
         }
         .station-dropdown.open { display: block; }
-        .search-city {
-            padding: 8px 12px;
-            border-bottom: 1px solid #333;
-        }
-        .search-city input {
-            width: 100%;
-            padding: 6px 10px;
-            border-radius: 20px;
-            border: 1px solid #00aaff;
-            background: #0a0a0a;
-            color: white;
-            font-size: 12px;
-        }
         .station-option {
             padding: 8px 12px;
             display: flex;
@@ -277,30 +264,6 @@
         }
         .speaking-alert { font-size: 9px; color: #e53935; margin-top: 5px; display: none; }
 
-        .route-panel {
-            background: #1a1a1a;
-            margin: 8px 16px;
-            padding: 8px;
-            border-radius: 40px;
-            display: flex;
-            gap: 8px;
-            border: 1px solid #00aaff;
-        }
-        .route-panel select, .route-panel button {
-            flex: 1;
-            background: #0a0a0a;
-            border: 1px solid #00aaff;
-            border-radius: 30px;
-            padding: 6px;
-            color: #ffd700;
-            font-size: 10px;
-        }
-        .route-panel button {
-            background: #00aaff;
-            color: white;
-            cursor: pointer;
-        }
-
         .admin-gear {
             position: absolute;
             top: 12px;
@@ -358,6 +321,7 @@
             display: flex;
             gap: 8px;
             z-index: 1001;
+            flex-wrap: wrap;
         }
         .map-btn {
             flex: 1;
@@ -376,6 +340,35 @@
         }
         .admin-badge {
             position: absolute; top: 10px; left: 10px; background: #ffd700; color: #000; padding: 2px 8px; border-radius: 20px; font-size: 9px; display: none; z-index: 1001;
+        }
+        .search-control {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #1a1a1a;
+            border-radius: 40px;
+            padding: 5px 12px;
+            display: flex;
+            gap: 8px;
+            z-index: 1001;
+            border: 1px solid #00aaff;
+        }
+        .search-control input {
+            background: #0a0a0a;
+            border: none;
+            color: white;
+            padding: 6px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+        .search-control button {
+            background: #00aaff;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            color: white;
+            cursor: pointer;
         }
 
         .alert-grid {
@@ -434,29 +427,17 @@
         }
         .msg.me .msg-content { background: #DCF8C6; border-bottom-right-radius: 3px; }
         .msg.other .msg-content { border-bottom-left-radius: 3px; }
-        .msg-sender { font-size: 10px; font-weight: bold; color: #075E54; }
+        .msg-sender { font-size: 10px; font-weight: bold; margin-bottom: 2px; }
         .msg-text { font-size: 12px; }
         .msg-time { font-size: 9px; color: #888; text-align: right; margin-top: 3px; }
-        /* Foto do usuário no chat */
-        .msg-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: #075E54;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 8px;
-            overflow: hidden;
-        }
-        .msg-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .msg-avatar i { color: white; font-size: 16px; }
-        .msg-with-avatar { display: flex; align-items: flex-start; }
-        .msg-content-wrapper { flex: 1; }
+        
+        /* Cores diferentes para cada usuário no chat */
+        .msg-sender[data-color="0"] { color: #075E54; }
+        .msg-sender[data-color="1"] { color: #e53935; }
+        .msg-sender[data-color="2"] { color: #ff9800; }
+        .msg-sender[data-color="3"] { color: #2196f3; }
+        .msg-sender[data-color="4"] { color: #9c27b0; }
+        .msg-sender[data-color="5"] { color: #795548; }
 
         .context-menu {
             position: fixed;
@@ -500,7 +481,7 @@
             z-index: 2000;
         }
 
-        /* Ícones do mapa - SEM BORDA QUADRADA */
+        /* Ícones do mapa - SEM BORDA, apenas círculo pulsante */
         .map-marker-icon {
             display: flex;
             align-items: center;
@@ -509,22 +490,25 @@
             width: 44px;
             height: 44px;
             border-radius: 50%;
-            background: rgba(0,0,0,0.4);
             animation: pulse-marker 1.5s infinite;
             box-shadow: none;
             border: none;
+            background: transparent;
         }
-        @keyframes pulse-marker { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
+        @keyframes pulse-marker { 
+            0% { transform: scale(1); } 
+            50% { transform: scale(1.2); } 
+            100% { transform: scale(1); } 
+        }
         @keyframes pulse-red { 0%,100%{opacity:1}50%{opacity:0.6} }
         
-        /* Carro animado */
-        .car-animation {
-            position: absolute;
-            font-size: 32px;
-            z-index: 1000;
-            filter: drop-shadow(0 0 5px #ffd700);
-            transition: all 0.05s linear;
-            pointer-events: none;
+        /* Foto do alerta arredondada */
+        .popup-alert-img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 16px;
+            margin-bottom: 8px;
         }
     </style>
 </head>
@@ -562,25 +546,12 @@
     <div class="station-area">
         <div class="station-selector" id="selectorTrigger"><span id="selectedCityName">Curitiba</span><i class="fas fa-chevron-down"></i></div>
         <div class="station-dropdown" id="stationDropdown">
-            <div class="search-city"><input type="text" id="citySearch" placeholder="🔍 Pesquisar cidade..."></div>
             <div id="cityList"></div>
         </div>
     </div>
 
+    <!-- 5 Botões de Estações Favoritas -->
     <div class="quick-buttons" id="quickButtons"></div>
-
-    <!-- Painel de rota -->
-    <div class="route-panel">
-        <select id="routeFrom">
-            <option value="Curitiba">Curitiba</option>
-        </select>
-        <i class="fas fa-arrow-right" style="color:#00aaff; align-self:center;"></i>
-        <select id="routeTo">
-            <option value="Maringá">Maringá</option>
-        </select>
-        <button id="drawRouteBtn"><i class="fas fa-route"></i> TRAÇAR</button>
-        <button id="animateCarBtn" style="background:#ffd700; color:#000;"><i class="fas fa-car"></i> CARRO</button>
-    </div>
 
     <div class="action-bar">
         <div class="action" id="openMapBtn"><i class="fas fa-map-marked-alt"></i> MAPA</div>
@@ -605,7 +576,18 @@
 <!-- MODAIS -->
 <div class="modal-full" id="mapModal">
     <div class="modal-header"><span>MAPA BR-277</span><button class="modal-close" id="closeMapModal">✕</button></div>
-    <div class="map-container"><div id="map"></div><div class="map-buttons"><button class="map-btn" id="mapAlertBtn"><i class="fas fa-exclamation-triangle"></i> ALERTAS</button><button class="map-btn" id="recenterBtn"><i class="fas fa-location-arrow"></i> MINHA POSIÇÃO</button></div><div id="adminBadge" class="admin-badge">ADMIN</div></div>
+    <div class="map-container">
+        <div id="map"></div>
+        <div class="search-control">
+            <input type="text" id="citySearchMap" placeholder="🔍 Pesquisar cidade...">
+            <button id="searchCityBtn"><i class="fas fa-search"></i></button>
+        </div>
+        <div class="map-buttons">
+            <button class="map-btn" id="mapAlertBtn"><i class="fas fa-exclamation-triangle"></i> ALERTAS</button>
+            <button class="map-btn" id="recenterBtn"><i class="fas fa-location-arrow"></i> MINHA POSIÇÃO</button>
+        </div>
+        <div id="adminBadge" class="admin-badge">ADMIN</div>
+    </div>
 </div>
 
 <div class="modal-alert" id="alertModal">
@@ -628,8 +610,6 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css"/>
 
 <script>
 // ==================== CONFIG ====================
@@ -637,19 +617,7 @@ const firebaseConfig = { databaseURL: "https://gps-br277-default-rtdb.firebaseio
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-const cities = ["Guarapuava","Palmeira","Porto Amazonas","Ponta Grossa","São Luiz","Campo Largo","Curitiba","Alm. Tamandaré","Fazenda Rio Grande","Tijucas do Sul","Guaratuba","Morretes","Paranaguá","São José","Colombo","Araucária","Piraquara","Campina Grande","Quatro Barras","Cajati","Maringá","Londrina","Cascavel","Foz do Iguaçu"];
-
-// Coordenadas aproximadas para rotas
-const cityCoords = {
-    "Curitiba": [-25.4284, -49.2733],
-    "Maringá": [-23.4253, -51.9386],
-    "Londrina": [-23.3107, -51.1625],
-    "Cascavel": [-24.9555, -53.4553],
-    "Foz do Iguaçu": [-25.5402, -54.5858],
-    "Ponta Grossa": [-25.0951, -50.1619],
-    "Guarapuava": [-25.3951, -51.4624],
-    "Paranaguá": [-25.5161, -48.5225]
-};
+const cities = ["Guarapuava","Palmeira","Porto Amazonas","Ponta Grossa","São Luiz","Campo Largo","Curitiba","Alm. Tamandaré","Fazenda Rio Grande","Tijucas do Sul","Guaratuba","Morretes","Paranaguá","São José","Colombo","Araucária","Piraquara","Campina Grande","Quatro Barras","Cajati"];
 
 const alertTypes = [
     { name: 'ACIDENTE', emoji: '💥', color: '#e53935' }, { name: 'OBRAS', emoji: '🚧', color: '#ff9800' },
@@ -674,16 +642,15 @@ let selectedMsg = { id: null, type: null, element: null, text: null, user: null 
 let currentReply = null;
 let quickStations = JSON.parse(localStorage.getItem('quickStations') || '[]');
 let tempMarker = null, adminClickCount = 0, adminClickTimeout = null, adminFirstPos = null;
-let currentRoute = null;
-let carAnimationInterval = null;
-let carMarker = null;
+let userColors = {};
 
-// Fotos de perfil simuladas
-const userAvatars = {
-    "Caminhoneiro": "🚛",
-    "Motorista": "🚗",
-    "Admin": "👮"
-};
+function getColorForUser(username) {
+    if (!userColors[username]) {
+        const colors = ['#075E54', '#e53935', '#ff9800', '#2196f3', '#9c27b0', '#795548'];
+        userColors[username] = colors[Object.keys(userColors).length % colors.length];
+    }
+    return userColors[username];
+}
 
 function normalizeId(str) { return str.toLowerCase().replace(/ /g, '_').normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
 function showToast(msg) { let t=document.createElement('div'); t.innerText=msg; t.style.cssText='position:fixed; bottom:70px; left:50%; transform:translateX(-50%); background:#00aaff; color:white; padding:5px 15px; border-radius:30px; z-index:13000; font-size:11px;'; document.body.appendChild(t); setTimeout(()=>t.remove(),2000); }
@@ -694,27 +661,19 @@ document.getElementById('ledSwitch').addEventListener('click', function() { isLe
 function animateSMeter(val=5) { if(!isLedActive) return; let bars=document.querySelectorAll('.bar'); bars.forEach((b,i)=>{ b.classList.remove('active','warning','danger'); if(i<val){ if(i>=7) b.classList.add('danger'); else if(i>=5) b.classList.add('warning'); else b.classList.add('active'); } }); }
 setInterval(()=>{ if(!isTransmitting && isLedActive) animateSMeter(Math.floor(Math.random()*9)); },800);
 
-// ==================== ESTAÇÕES COM PESQUISA ====================
-function buildDropdownWithSearch() {
+// ==================== ESTAÇÕES ====================
+function buildDropdown() {
     const cityListDiv = document.getElementById('cityList');
-    const searchInput = document.getElementById('citySearch');
-    
-    function renderCities(filter = '') {
-        cityListDiv.innerHTML = '';
-        const filtered = cities.filter(c => c.toLowerCase().includes(filter.toLowerCase()));
-        filtered.forEach(city => {
-            const id = normalizeId(city);
-            const opt = document.createElement('div');
-            opt.className = 'station-option';
-            if (id === currentStation) opt.classList.add('active');
-            opt.innerHTML = `<span>${city}</span><span class="station-count" id="count-${id}">0</span>`;
-            opt.onclick = () => { changeStation(id, city); closeDropdown(); };
-            cityListDiv.appendChild(opt);
-        });
-    }
-    
-    searchInput.addEventListener('input', (e) => renderCities(e.target.value));
-    renderCities();
+    cityListDiv.innerHTML = '';
+    cities.forEach(city => {
+        const id = normalizeId(city);
+        const opt = document.createElement('div');
+        opt.className = 'station-option';
+        if (id === currentStation) opt.classList.add('active');
+        opt.innerHTML = `<span>${city}</span><span class="station-count" id="count-${id}">0</span>`;
+        opt.onclick = () => { changeStation(id, city); closeDropdown(); };
+        cityListDiv.appendChild(opt);
+    });
 }
 
 function toggleDropdown() { document.getElementById('stationDropdown').classList.toggle('open'); }
@@ -728,9 +687,6 @@ function changeStation(id,name){
     db.ref(`stations/${id}/users/${userName}`).set({ name:userName, timestamp:Date.now() });
     cities.forEach(c=>{ let oid=normalizeId(c); if(oid!==id) db.ref(`stations/${oid}/users/${userName}`).remove(); });
     setupAudio(); checkSpeaking(); showToast(`📻 ${name}`);
-    // Atualizar selects de rota
-    document.getElementById('routeFrom').innerHTML = cities.map(c => `<option ${c===name?'selected':''}>${c}</option>`).join('');
-    document.getElementById('routeTo').innerHTML = cities.map(c => `<option ${c==='Maringá'?'selected':''}>${c}</option>`).join('');
 }
 
 function loadCounts(){
@@ -791,82 +747,54 @@ ptt.addEventListener('click',()=>{ if(isTransmitting) stopTx(); else startTx(); 
 
 // ==================== MAPA ====================
 function initMap(){
-    map=L.map('map').setView([-25.4284,-49.2733],7);
+    map=L.map('map').setView([-25.4284,-49.2733],12);
     L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(map);
     if(navigator.geolocation) navigator.geolocation.watchPosition(pos=>{ userLocation=[pos.coords.latitude,pos.coords.longitude]; if(!userMarker) userMarker=L.marker(userLocation,{ icon:L.divIcon({ html:'<div style="font-size:28px;">🚛</div>', iconSize:[28,28], iconAnchor:[14,14] }) }).addTo(map); else userMarker.setLatLng(userLocation); });
     loadAlerts();
     setupAdminMap();
-    // Preencher selects de rota
-    document.getElementById('routeFrom').innerHTML = cities.map(c => `<option ${c===currentStation.split('_').join(' ')?'selected':''}>${c}</option>`).join('');
-    document.getElementById('routeTo').innerHTML = cities.map(c => `<option ${c==='Maringá'?'selected':''}>${c}</option>`).join('');
 }
-function recenter(){ if(userLocation) map.setView(userLocation,12); else showToast("Aguardando localização"); }
+function recenter(){ if(userLocation) map.setView(userLocation,14); else showToast("Aguardando localização"); }
 
-// ==================== ROTA E ANIMAÇÃO DO CARRO ====================
-function drawRoute() {
-    const from = document.getElementById('routeFrom').value;
-    const to = document.getElementById('routeTo').value;
-    if (!cityCoords[from] || !cityCoords[to]) {
-        showToast("Coordenadas não disponíveis para esta rota");
-        return;
-    }
-    if (currentRoute) map.removeControl(currentRoute);
-    currentRoute = L.Routing.control({
-        waypoints: [L.latLng(cityCoords[from][0], cityCoords[from][1]), L.latLng(cityCoords[to][0], cityCoords[to][1])],
-        routeWhileDragging: false,
-        show: false,
-        lineOptions: { styles: [{ color: '#00aaff', weight: 4, opacity: 0.8 }] }
-    }).addTo(map);
-    showToast(`🛣️ Rota: ${from} → ${to}`);
-}
-
-function animateCar() {
-    if (carAnimationInterval) clearInterval(carAnimationInterval);
-    if (carMarker) map.removeLayer(carMarker);
-    const from = document.getElementById('routeFrom').value;
-    const to = document.getElementById('routeTo').value;
-    if (!cityCoords[from] || !cityCoords[to]) { showToast("Coordenadas não disponíveis"); return; }
-    
-    const start = cityCoords[from];
-    const end = cityCoords[to];
-    const steps = 100;
-    let step = 0;
-    const latStep = (end[0] - start[0]) / steps;
-    const lngStep = (end[1] - start[1]) / steps;
-    
-    carMarker = L.marker([start[0], start[1]], {
-        icon: L.divIcon({ html: '<div style="font-size:32px;">🚗💨</div>', iconSize: [32,32], iconAnchor: [16,16] })
-    }).addTo(map);
-    
-    carAnimationInterval = setInterval(() => {
-        if (step >= steps) {
-            clearInterval(carAnimationInterval);
-            showToast("✅ Viagem concluída!");
-            return;
+// Pesquisa de cidade no mapa
+function searchCity() {
+    const cityName = document.getElementById('citySearchMap').value;
+    if (!cityName) return;
+    const city = cities.find(c => c.toLowerCase().includes(cityName.toLowerCase()));
+    if (city) {
+        const coords = cityCoords[city];
+        if (coords) {
+            map.setView(coords, 12);
+            showToast(`📍 Centralizado em ${city}`);
+        } else {
+            showToast(`Coordenadas de ${city} não disponíveis`);
         }
-        step++;
-        const newLat = start[0] + (latStep * step);
-        const newLng = start[1] + (lngStep * step);
-        carMarker.setLatLng([newLat, newLng]);
-        map.panTo([newLat, newLng]);
-    }, 50);
+    } else {
+        showToast("Cidade não encontrada");
+    }
 }
+document.getElementById('searchCityBtn').addEventListener('click', searchCity);
+document.getElementById('citySearchMap').addEventListener('keypress', (e) => { if(e.key === 'Enter') searchCity(); });
 
-document.getElementById('drawRouteBtn').addEventListener('click', drawRoute);
-document.getElementById('animateCarBtn').addEventListener('click', animateCar);
+// Coordenadas das cidades
+const cityCoords = {
+    "Curitiba": [-25.4284, -49.2733], "Guarapuava": [-25.3951, -51.4624], "Ponta Grossa": [-25.0951, -50.1619],
+    "Paranaguá": [-25.5161, -48.5225], "Maringá": [-23.4253, -51.9386], "Londrina": [-23.3107, -51.1625],
+    "Cascavel": [-24.9555, -53.4553], "Foz do Iguaçu": [-25.5402, -54.5858]
+};
 
 function loadAlerts(){
     db.ref('alerts').on('child_added',snap=>{
         let a=snap.val(), id=snap.key;
         if(Date.now()-a.timestamp>20*60*1000){ db.ref(`alerts/${id}`).remove(); return; }
         if(alertsOnMap[id] || !map) return;
-        let iconHtml=`<div class="map-marker-icon" style="background:${a.color}; box-shadow:0 0 10px ${a.color};">${a.emoji}</div>`;
+        // Ícone sem borda, apenas círculo com emoji
+        let iconHtml=`<div class="map-marker-icon" style="background:${a.color}; box-shadow:0 0 12px ${a.color};">${a.emoji}</div>`;
         let marker=L.marker([a.lat,a.lng],{ icon:L.divIcon({ html:iconHtml, iconSize:[44,44], iconAnchor:[22,22] }) }).addTo(map);
         marker.bindPopup(`
-            ${a.image?`<img src="${a.image}" style="width:100%; height:80px; object-fit:cover; border-radius:12px;" onclick="viewFullImage('${a.image}')">`:''}
+            ${a.image?`<img src="${a.image}" class="popup-alert-img" onclick="viewFullImage('${a.image}')">`:''}
             <div style="background:#075E54; color:white; padding:8px; display:flex; justify-content:space-between; border-radius:12px;" onclick="confirmAlert('${id}')">
                 <span>${a.emoji} ${a.name}</span><span>👍 <span id="confirm-${id}">${a.confirmations||1}</span></span>
-                ${isAdminMap?`<button onclick="event.stopPropagation(); deleteAlert('${id}')" style="background:red; border:none; border-radius:10px;">🗑️</button>`:''}
+                ${isAdminMap?`<button onclick="event.stopPropagation(); deleteAlert('${id}')" style="background:red; border:none; border-radius:10px; padding:2px 6px;">🗑️</button>`:''}
             </div>
             <div id="chatAlert-${id}" style="background:#E5DDD5; max-height:120px; overflow-y:auto; padding:8px; border-radius:12px;"></div>
             <div style="display:flex; padding:8px; gap:5px;"><input id="inputAlert-${id}" placeholder="Comentar..." style="flex:1; padding:6px; border-radius:20px; border:none;"><button onclick="sendAlertComment('${id}')" style="background:#075E54; border:none; border-radius:50%; width:30px;">➔</button></div>
@@ -877,7 +805,7 @@ function loadAlerts(){
 }
 function viewFullImage(img){ let m=document.createElement('div'); m.style.cssText='position:fixed; top:0; left:0; right:0; bottom:0; background:black; display:flex; align-items:center; justify-content:center; z-index:20000;'; m.innerHTML=`<img src="${img}" style="max-width:90%; border-radius:16px;">`; m.onclick=()=>m.remove(); document.body.appendChild(m); }
 function confirmAlert(id){ db.ref(`alerts/${id}/confirmations`).transaction(c=>(c||1)+1); showToast("👍 Confirmado"); }
-function loadAlertChat(id){ db.ref(`chats/alert_${id}`).on('value',snap=>{ let div=document.getElementById(`chatAlert-${id}`); if(!div)return; let msgs=snap.val(); if(!msgs){div.innerHTML='';return;} let html=''; Object.entries(msgs).sort((a,b)=>a[1].timestamp-b[1].timestamp).forEach(([mid,msg])=>{ let isMe=msg.user===userName; html+=`<div style="margin:5px; padding:6px; border-radius:12px; background:${isMe?'#DCF8C6':'white'}; max-width:90%;"><strong>${msg.user}</strong><br>${msg.text}<br><small>${new Date(msg.timestamp).toLocaleTimeString()}</small></div>`; }); div.innerHTML=html; }); }
+function loadAlertChat(id){ db.ref(`chats/alert_${id}`).on('value',snap=>{ let div=document.getElementById(`chatAlert-${id}`); if(!div)return; let msgs=snap.val(); if(!msgs){div.innerHTML='';return;} let html=''; Object.entries(msgs).sort((a,b)=>a[1].timestamp-b[1].timestamp).forEach(([mid,msg])=>{ let isMe=msg.user===userName; html+=`<div style="margin:5px; padding:6px; border-radius:12px; background:${isMe?'#DCF8C6':'white'}; max-width:90%;"><strong style="color:${getColorForUser(msg.user)}">${msg.user}</strong><br>${msg.text}<br><small>${new Date(msg.timestamp).toLocaleTimeString()}</small></div>`; }); div.innerHTML=html; }); }
 async function sendAlertComment(id){ let input=document.getElementById(`inputAlert-${id}`); if(!input.value.trim())return; await db.ref(`chats/alert_${id}`).push({ user:userName, text:input.value, timestamp:Date.now() }); input.value=''; }
 async function deleteAlert(id){ if(confirm("Apagar?")){ await db.ref(`alerts/${id}`).remove(); if(alertsOnMap[id]) map.removeLayer(alertsOnMap[id]); delete alertsOnMap[id]; showToast("Removido"); } }
 function setupAdminMap(){
@@ -968,7 +896,7 @@ function closeAlertModal(){ document.getElementById('alertModal').classList.remo
 function openChatModal(){ document.getElementById('chatModal').classList.add('visible'); loadChatMessages(); }
 function closeChatModal(){ document.getElementById('chatModal').classList.remove('visible'); document.getElementById('emojiPicker').classList.remove('show'); currentReply=null; document.getElementById('replyPreview').classList.remove('show'); }
 
-// ==================== CHAT COM AVATAR ====================
+// ==================== CHAT COM CORES POR USUÁRIO ====================
 function loadChatMessages(){
     db.ref('chat_global').off();
     db.ref('chat_global').on('value',snap=>{
@@ -977,18 +905,13 @@ function loadChatMessages(){
         let html='';
         Object.entries(msgs).sort((a,b)=>a[1].timestamp-b[1].timestamp).forEach(([mid,msg])=>{
             let isMe=msg.user===userName; let time=new Date(msg.timestamp).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-            let avatar = userAvatars[msg.user] || '👤';
+            let userColor = getColorForUser(msg.user);
             html+=`
                 <div class="msg ${isMe?'me':'other'}" data-id="${mid}" data-user="${msg.user}" data-text="${escapeHtml(msg.text)}">
-                    <div class="msg-with-avatar">
-                        <div class="msg-avatar"><i class="fas fa-user-circle"></i></div>
-                        <div class="msg-content-wrapper">
-                            <div class="msg-content" onclick="selectChatMessage(this,'${mid}','chat_global')">
-                                <div class="msg-sender">${msg.user}</div>
-                                <div class="msg-text">${escapeHtml(msg.text)}</div>
-                                <div class="msg-time">${time}</div>
-                            </div>
-                        </div>
+                    <div class="msg-content" onclick="selectChatMessage(this,'${mid}','chat_global')">
+                        <div class="msg-sender" style="color:${userColor}">${msg.user}</div>
+                        <div class="msg-text">${escapeHtml(msg.text)}</div>
+                        <div class="msg-time">${time}</div>
                     </div>
                 </div>
             `;
@@ -1006,7 +929,7 @@ document.getElementById('chatInput').addEventListener('keypress',(e)=>{ if(e.key
 function sendChatMsg(){ let input=document.getElementById('chatInput'); if(!input.value.trim()) return; let msg={ user:userName, text:input.value.trim(), timestamp:Date.now() }; if(currentReply){ msg.replyTo=currentReply; currentReply=null; document.getElementById('replyPreview').classList.remove('show'); } db.ref('chat_global').push(msg); input.value=''; showToast("✓ Enviada"); }
 function escapeHtml(t){ let d=document.createElement('div'); d.textContent=t; return d.innerHTML; }
 
-// ==================== BOTÕES RÁPIDOS ====================
+// ==================== BOTÕES RÁPIDOS (5 FAVORITOS) ====================
 function saveQuickStation(cityId,cityName){
     if(quickStations.some(s=>s.id===cityId)) return;
     if(quickStations.length>=5) quickStations.shift();
@@ -1052,7 +975,7 @@ emojiPicker.addEventListener('emoji-click',(e)=>{ document.getElementById('chatI
 document.addEventListener('click',(e)=>{ if(!emojiPicker.contains(e.target) && e.target.id!=='chatEmojiBtn') emojiPicker.classList.remove('show'); });
 
 // ==================== INICIALIZAÇÃO ====================
-buildDropdownWithSearch();
+buildDropdown();
 loadCounts();
 setupAudio();
 buildAlertGrid();
