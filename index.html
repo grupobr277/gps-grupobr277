@@ -7,13 +7,15 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emoji-picker-element@1.18.3/dist/index.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css"/>
     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@1.18.3/dist/index.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            background: #0a0a0a;
+            background: #1a1a1a;
             font-family: 'Inter', sans-serif;
             min-height: 100vh;
             display: flex;
@@ -22,10 +24,11 @@
             padding: 0;
         }
 
+        /* Rádio - Cor cinza escuro */
         .radio-90s {
             width: 100%;
             max-width: 100%;
-            background: linear-gradient(145deg, #1a1a1a, #0c0c0c);
+            background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
             position: relative;
             overflow-x: hidden;
             border-radius: 0;
@@ -43,7 +46,7 @@
         }
 
         .header {
-            background: #111;
+            background: #222;
             padding: 12px 16px 8px;
             text-align: center;
             border-bottom: 2px solid #00aaff;
@@ -53,7 +56,7 @@
         .header h1 i { color: #ff4444; }
 
         .display {
-            background: #000;
+            background: #0a0a0a;
             margin: 12px 16px;
             border-radius: 16px;
             padding: 10px;
@@ -106,21 +109,21 @@
         .bar.danger { background: #ff4444; }
 
         .switch-panel {
-            background: #1a1a1a;
+            background: #2a2a2a;
             margin: 8px 16px;
             padding: 12px;
             border-radius: 24px;
             display: flex;
             justify-content: space-around;
             gap: 16px;
-            border: 1px solid #333;
+            border: 1px solid #444;
         }
         .switch-item { text-align: center; flex: 1; }
         .switch-label { font-size: 9px; color: #aaa; margin-bottom: 6px; }
         .toggle-switch {
             width: 50px;
             height: 28px;
-            background: #333;
+            background: #444;
             border-radius: 30px;
             margin: 0 auto;
             cursor: pointer;
@@ -145,7 +148,7 @@
 
         .station-area { margin: 8px 16px; }
         .station-selector {
-            background: #0a0a0a;
+            background: #1a1a1a;
             border: 1px solid #00aaff;
             border-radius: 40px;
             padding: 8px 16px;
@@ -157,7 +160,7 @@
             font-size: 13px;
         }
         .station-dropdown {
-            background: #1a1a1a;
+            background: #2a2a2a;
             border: 1px solid #00aaff;
             border-radius: 16px;
             margin-top: 6px;
@@ -172,13 +175,14 @@
             display: flex;
             justify-content: space-between;
             color: #ccc;
-            border-bottom: 1px solid #333;
+            border-bottom: 1px solid #444;
             font-size: 12px;
             cursor: pointer;
         }
         .station-option.active { background: #00aaff; color: white; }
-        .station-count { background: #333; padding: 2px 8px; border-radius: 20px; font-size: 10px; }
+        .station-count { background: #444; padding: 2px 8px; border-radius: 20px; font-size: 10px; }
 
+        /* 5 Botões de Favoritos */
         .quick-buttons {
             display: flex;
             justify-content: space-between;
@@ -187,17 +191,18 @@
         }
         .quick-btn {
             flex: 1;
-            background: #252525;
+            background: #2a2a2a;
             border: 1px solid #00aaff;
             border-radius: 30px;
-            padding: 5px 0;
-            font-size: 9px;
+            padding: 6px 0;
+            font-size: 10px;
             font-weight: bold;
             color: #ccc;
             text-align: center;
             cursor: pointer;
+            transition: all 0.2s;
         }
-        .quick-btn.saved { background: #00aaff; color: white; }
+        .quick-btn.saved { background: #00aaff; color: white; border-color: #ffd700; }
 
         .action-bar {
             display: flex;
@@ -206,7 +211,7 @@
         }
         .action {
             flex: 1;
-            background: #252525;
+            background: #2a2a2a;
             border: 1px solid #00aaff;
             border-radius: 40px;
             padding: 10px;
@@ -226,15 +231,15 @@
             text-align: center;
             margin: 8px 16px 16px;
             padding: 12px;
-            background: #1a1a1a;
+            background: #2a2a2a;
             border-radius: 80px;
             border: 1px solid #00aaff;
         }
         .ptt {
             width: 140px;
             height: 140px;
-            background: radial-gradient(circle at 35% 35%, #3a3a3a, #1a1a1a);
-            border: 4px solid #555;
+            background: radial-gradient(circle at 35% 35%, #4a4a4a, #2a2a2a);
+            border: 4px solid #666;
             border-radius: 50%;
             margin: 0 auto;
             display: flex;
@@ -243,8 +248,8 @@
             justify-content: center;
             cursor: pointer;
         }
-        .ptt i { font-size: 52px; color: #888; }
-        .ptt span { font-size: 14px; color: #888; margin-top: 6px; }
+        .ptt i { font-size: 52px; color: #999; }
+        .ptt span { font-size: 14px; color: #999; margin-top: 6px; }
         .ptt.active {
             background: radial-gradient(circle at 35% 35%, #e53935, #8b0000);
             border-color: #ffd700;
@@ -268,7 +273,7 @@
             position: absolute;
             top: 12px;
             right: 16px;
-            background: #222;
+            background: #2a2a2a;
             width: 30px;
             height: 30px;
             border-radius: 50%;
@@ -284,7 +289,7 @@
             position: absolute;
             top: 48px;
             right: 16px;
-            background: #1a1a1a;
+            background: #2a2a2a;
             border-radius: 12px;
             padding: 6px;
             display: none;
@@ -294,7 +299,7 @@
             z-index: 100;
         }
         .admin-panel.show { display: flex; }
-        .admin-panel button { background: #2a2a2a; border: none; padding: 6px 12px; border-radius: 20px; color: white; font-size: 10px; cursor: pointer; }
+        .admin-panel button { background: #3a3a3a; border: none; padding: 6px 12px; border-radius: 20px; color: white; font-size: 10px; cursor: pointer; }
 
         .modal-full, .modal-alert, .modal-chat {
             position: fixed;
@@ -360,6 +365,7 @@
             padding: 6px;
             border-radius: 20px;
             font-size: 12px;
+            width: 150px;
         }
         .search-control button {
             background: #00aaff;
@@ -370,6 +376,27 @@
             color: white;
             cursor: pointer;
         }
+        .search-results {
+            position: absolute;
+            top: 50px;
+            right: 10px;
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 5px;
+            max-width: 200px;
+            z-index: 1002;
+            display: none;
+            border: 1px solid #00aaff;
+        }
+        .search-results.show { display: block; }
+        .search-result-item {
+            padding: 6px 10px;
+            color: white;
+            cursor: pointer;
+            border-bottom: 1px solid #333;
+            font-size: 11px;
+        }
+        .search-result-item:hover { background: #00aaff; }
 
         .alert-grid {
             display: grid;
@@ -430,14 +457,6 @@
         .msg-sender { font-size: 10px; font-weight: bold; margin-bottom: 2px; }
         .msg-text { font-size: 12px; }
         .msg-time { font-size: 9px; color: #888; text-align: right; margin-top: 3px; }
-        
-        /* Cores diferentes para cada usuário no chat */
-        .msg-sender[data-color="0"] { color: #075E54; }
-        .msg-sender[data-color="1"] { color: #e53935; }
-        .msg-sender[data-color="2"] { color: #ff9800; }
-        .msg-sender[data-color="3"] { color: #2196f3; }
-        .msg-sender[data-color="4"] { color: #9c27b0; }
-        .msg-sender[data-color="5"] { color: #795548; }
 
         .context-menu {
             position: fixed;
@@ -471,7 +490,7 @@
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
-            background: #1a1a1a;
+            background: #2a2a2a;
             border: 1px solid #00aaff;
             border-radius: 50px;
             padding: 6px 16px;
@@ -502,13 +521,17 @@
         }
         @keyframes pulse-red { 0%,100%{opacity:1}50%{opacity:0.6} }
         
-        /* Foto do alerta arredondada */
         .popup-alert-img {
             width: 100%;
             height: 100px;
             object-fit: cover;
             border-radius: 16px;
             margin-bottom: 8px;
+        }
+
+        /* Rota azul */
+        .leaflet-routing-container {
+            display: none;
         }
     </style>
 </head>
@@ -582,6 +605,7 @@
             <input type="text" id="citySearchMap" placeholder="🔍 Pesquisar cidade...">
             <button id="searchCityBtn"><i class="fas fa-search"></i></button>
         </div>
+        <div class="search-results" id="searchResults"></div>
         <div class="map-buttons">
             <button class="map-btn" id="mapAlertBtn"><i class="fas fa-exclamation-triangle"></i> ALERTAS</button>
             <button class="map-btn" id="recenterBtn"><i class="fas fa-location-arrow"></i> MINHA POSIÇÃO</button>
@@ -642,6 +666,7 @@ let selectedMsg = { id: null, type: null, element: null, text: null, user: null 
 let currentReply = null;
 let quickStations = JSON.parse(localStorage.getItem('quickStations') || '[]');
 let tempMarker = null, adminClickCount = 0, adminClickTimeout = null, adminFirstPos = null;
+let currentRoute = null;
 let userColors = {};
 
 function getColorForUser(username) {
@@ -755,39 +780,72 @@ function initMap(){
 }
 function recenter(){ if(userLocation) map.setView(userLocation,14); else showToast("Aguardando localização"); }
 
-// Pesquisa de cidade no mapa
-function searchCity() {
-    const cityName = document.getElementById('citySearchMap').value;
-    if (!cityName) return;
-    const city = cities.find(c => c.toLowerCase().includes(cityName.toLowerCase()));
-    if (city) {
-        const coords = cityCoords[city];
-        if (coords) {
-            map.setView(coords, 12);
-            showToast(`📍 Centralizado em ${city}`);
-        } else {
-            showToast(`Coordenadas de ${city} não disponíveis`);
-        }
-    } else {
-        showToast("Cidade não encontrada");
-    }
-}
-document.getElementById('searchCityBtn').addEventListener('click', searchCity);
-document.getElementById('citySearchMap').addEventListener('keypress', (e) => { if(e.key === 'Enter') searchCity(); });
-
 // Coordenadas das cidades
 const cityCoords = {
     "Curitiba": [-25.4284, -49.2733], "Guarapuava": [-25.3951, -51.4624], "Ponta Grossa": [-25.0951, -50.1619],
-    "Paranaguá": [-25.5161, -48.5225], "Maringá": [-23.4253, -51.9386], "Londrina": [-23.3107, -51.1625],
-    "Cascavel": [-24.9555, -53.4553], "Foz do Iguaçu": [-25.5402, -54.5858]
+    "Paranaguá": [-25.5161, -48.5225], "Campo Largo": [-25.4585, -49.5293], "São José": [-25.5344, -49.2037],
+    "Maringá": [-23.4253, -51.9386], "Londrina": [-23.3107, -51.1625], "Cascavel": [-24.9555, -53.4553],
+    "Foz do Iguaçu": [-25.5402, -54.5858]
 };
+
+// Pesquisa de cidade no mapa com sugestões e traçado de rota
+function searchCity() {
+    const searchTerm = document.getElementById('citySearchMap').value.toLowerCase();
+    const resultsDiv = document.getElementById('searchResults');
+    resultsDiv.innerHTML = '';
+    
+    if (searchTerm.length < 2) {
+        resultsDiv.classList.remove('show');
+        return;
+    }
+    
+    const matches = cities.filter(c => c.toLowerCase().includes(searchTerm));
+    if (matches.length === 0) {
+        resultsDiv.classList.remove('show');
+        return;
+    }
+    
+    resultsDiv.classList.add('show');
+    matches.forEach(city => {
+        const item = document.createElement('div');
+        item.className = 'search-result-item';
+        item.textContent = city;
+        item.onclick = () => {
+            if (cityCoords[city]) {
+                map.setView(cityCoords[city], 12);
+                // Traçar rota azul da posição atual para a cidade
+                if (currentRoute) map.removeControl(currentRoute);
+                if (userLocation) {
+                    currentRoute = L.Routing.control({
+                        waypoints: [L.latLng(userLocation[0], userLocation[1]), L.latLng(cityCoords[city][0], cityCoords[city][1])],
+                        routeWhileDragging: false,
+                        show: false,
+                        lineOptions: { styles: [{ color: '#00aaff', weight: 5, opacity: 0.9 }] }
+                    }).addTo(map);
+                    showToast(`🛣️ Rota traçada para ${city}`);
+                } else {
+                    showToast(`📍 Centralizado em ${city}`);
+                }
+                resultsDiv.classList.remove('show');
+                document.getElementById('citySearchMap').value = city;
+            } else {
+                showToast(`Coordenadas de ${city} não disponíveis`);
+            }
+        };
+        resultsDiv.appendChild(item);
+    });
+}
+
+document.getElementById('searchCityBtn').addEventListener('click', searchCity);
+document.getElementById('citySearchMap').addEventListener('input', searchCity);
+document.getElementById('citySearchMap').addEventListener('keypress', (e) => { if(e.key === 'Enter') searchCity(); });
 
 function loadAlerts(){
     db.ref('alerts').on('child_added',snap=>{
         let a=snap.val(), id=snap.key;
         if(Date.now()-a.timestamp>20*60*1000){ db.ref(`alerts/${id}`).remove(); return; }
         if(alertsOnMap[id] || !map) return;
-        // Ícone sem borda, apenas círculo com emoji
+        // Ícone sem borda - apenas círculo com emoji e sombra
         let iconHtml=`<div class="map-marker-icon" style="background:${a.color}; box-shadow:0 0 12px ${a.color};">${a.emoji}</div>`;
         let marker=L.marker([a.lat,a.lng],{ icon:L.divIcon({ html:iconHtml, iconSize:[44,44], iconAnchor:[22,22] }) }).addTo(map);
         marker.bindPopup(`
@@ -808,6 +866,7 @@ function confirmAlert(id){ db.ref(`alerts/${id}/confirmations`).transaction(c=>(
 function loadAlertChat(id){ db.ref(`chats/alert_${id}`).on('value',snap=>{ let div=document.getElementById(`chatAlert-${id}`); if(!div)return; let msgs=snap.val(); if(!msgs){div.innerHTML='';return;} let html=''; Object.entries(msgs).sort((a,b)=>a[1].timestamp-b[1].timestamp).forEach(([mid,msg])=>{ let isMe=msg.user===userName; html+=`<div style="margin:5px; padding:6px; border-radius:12px; background:${isMe?'#DCF8C6':'white'}; max-width:90%;"><strong style="color:${getColorForUser(msg.user)}">${msg.user}</strong><br>${msg.text}<br><small>${new Date(msg.timestamp).toLocaleTimeString()}</small></div>`; }); div.innerHTML=html; }); }
 async function sendAlertComment(id){ let input=document.getElementById(`inputAlert-${id}`); if(!input.value.trim())return; await db.ref(`chats/alert_${id}`).push({ user:userName, text:input.value, timestamp:Date.now() }); input.value=''; }
 async function deleteAlert(id){ if(confirm("Apagar?")){ await db.ref(`alerts/${id}`).remove(); if(alertsOnMap[id]) map.removeLayer(alertsOnMap[id]); delete alertsOnMap[id]; showToast("Removido"); } }
+
 function setupAdminMap(){
     if(!map) return;
     map.on('click',(e)=>{
@@ -831,14 +890,23 @@ function setupAdminMap(){
 }
 function showAdminAlertDropdown(lat,lng){
     let modal=document.createElement('div'); modal.style.cssText='position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.95); z-index:20000; display:flex; align-items:center; justify-content:center;';
-    let container=document.createElement('div'); container.style.cssText='background:#1a1a1a; border-radius:20px; width:90%; max-width:320px; max-height:75vh; overflow:auto; border:2px solid #ffd700; padding:12px;';
+    let container=document.createElement('div'); container.style.cssText='background:#2a2a2a; border-radius:20px; width:90%; max-width:320px; max-height:75vh; overflow:auto; border:2px solid #ffd700; padding:12px;';
     container.innerHTML=`<h3 style="color:#ffd700; text-align:center; margin-bottom:8px;">📌 NOVO ALERTA ADMIN</h3><div id="adminAlertSelector" style="display:grid; grid-template-columns:repeat(2,1fr); gap:8px;"></div><button id="cancelAdminAlert" style="margin-top:10px; width:100%; padding:6px; background:#e53935; border:none; border-radius:20px; color:white;">CANCELAR</button>`;
     modal.appendChild(container); document.body.appendChild(modal);
     let grid=container.querySelector('#adminAlertSelector');
     alertTypes.forEach(alert=>{
-        let card=document.createElement('div'); card.style.cssText=`background:#2a2a2a; border-radius:10px; padding:6px; text-align:center; cursor:pointer; border-top:2px solid ${alert.color}`;
+        let card=document.createElement('div'); card.style.cssText=`background:#3a3a3a; border-radius:10px; padding:6px; text-align:center; cursor:pointer; border-top:2px solid ${alert.color}`;
         card.innerHTML=`<div style="font-size:20px;">${alert.emoji}</div><div style="color:white; font-size:8px;">${alert.name}</div>`;
-        card.onclick=async()=>{ let id=Date.now(); await db.ref(`alerts/${id}`).set({ ...alert, lat, lng, timestamp:id, creator:userName+" (ADMIN)", confirmations:1 }); showToast(`✅ Alerta ${alert.name} criado`); document.body.removeChild(modal); if(tempMarker) map.removeLayer(tempMarker); adminClickCount=0; };
+        card.onclick=async()=>{ 
+            let id=Date.now(); 
+            // Usar as coordenadas do alfinete (lat, lng) não a localização do usuário
+            await db.ref(`alerts/${id}`).set({ ...alert, lat: lat, lng: lng, timestamp:id, creator:userName+" (ADMIN)", confirmations:1 }); 
+            showToast(`✅ Alerta ${alert.name} criado no local do alfinete`); 
+            document.body.removeChild(modal); 
+            if(tempMarker) map.removeLayer(tempMarker); 
+            adminClickCount=0;
+            openMapModal();
+        };
         grid.appendChild(card);
     });
     container.querySelector('#cancelAdminAlert').onclick=()=>{ if(tempMarker) map.removeLayer(tempMarker); document.body.removeChild(modal); adminClickCount=0; };
@@ -896,7 +964,7 @@ function closeAlertModal(){ document.getElementById('alertModal').classList.remo
 function openChatModal(){ document.getElementById('chatModal').classList.add('visible'); loadChatMessages(); }
 function closeChatModal(){ document.getElementById('chatModal').classList.remove('visible'); document.getElementById('emojiPicker').classList.remove('show'); currentReply=null; document.getElementById('replyPreview').classList.remove('show'); }
 
-// ==================== CHAT COM CORES POR USUÁRIO ====================
+// ==================== CHAT ====================
 function loadChatMessages(){
     db.ref('chat_global').off();
     db.ref('chat_global').on('value',snap=>{
@@ -949,7 +1017,7 @@ function renderQuickButtons(){
 }
 
 // ==================== ADMIN ====================
-function enableAdminMap(){ let pwd=prompt("Senha (277):"); if(pwd==='277'){ isAdminMap=true; document.getElementById('adminBadge').style.display='flex'; showToast("ADMIN MAPA ATIVADO - Clique 2x no mapa"); } else showToast("Senha errada"); }
+function enableAdminMap(){ let pwd=prompt("Senha (277):"); if(pwd==='277'){ isAdminMap=true; document.getElementById('adminBadge').style.display='flex'; showToast("ADMIN MAPA ATIVADO - Clique 2x no mapa para criar alerta"); } else showToast("Senha errada"); }
 function enableAdminChat(){ let pwd=prompt("Senha (277):"); if(pwd==='277'){ isAdminChat=true; showToast("ADMIN CHAT ATIVADO"); } else showToast("Senha errada"); }
 function disableAdmin(){ isAdminMap=false; isAdminChat=false; document.getElementById('adminBadge').style.display='none'; showToast("Admin desativado"); }
 document.getElementById('adminGear').addEventListener('click',()=>document.getElementById('adminPanel').classList.toggle('show'));
