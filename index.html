@@ -2,372 +2,1142 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prévia - Botões Vintage Rádio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>RÁDIO PX 277 | Série Retrô</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emoji-picker-element@1.18.3/dist/index.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css"/>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@1.18.3/dist/index.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            background: linear-gradient(145deg, #0a0a0a, #151515);
-            font-family: 'Segoe UI', 'Inter', 'Courier New', monospace;
+            background: linear-gradient(145deg, #0a0a0a, #121212);
+            font-family: 'Inter', sans-serif;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 0;
         }
 
-        /* Container principal */
-        .radio-panel {
-            background: linear-gradient(145deg, #1e1e1e, #121212);
-            border-radius: 28px;
-            padding: 24px 20px;
-            box-shadow: 0 20px 35px rgba(0,0,0,0.5), inset 0 1px 2px rgba(255,255,255,0.05);
-            border: 1px solid #2a2a2a;
+        /* Rádio estilo retrô anos 80/90 */
+        .radio-retro {
+            width: 100%;
+            max-width: 100%;
+            background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+            position: relative;
+            overflow-x: hidden;
+            border-radius: 0;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
         }
+
+        /* Faixa cromada superior */
+        .radio-retro::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #c0c0c0, #f0f0f0, #a0a0a0, #c0c0c0);
+            z-index: 1;
+        }
+
+        /* Faixa de madeira simulada */
+        .radio-retro::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            background: repeating-linear-gradient(45deg, #3a2a1a, #3a2a1a 10px, #4a3a2a 10px, #4a3a2a 20px);
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Cabeçalho */
+        .header {
+            background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+            padding: 12px 16px 8px;
+            text-align: center;
+            border-bottom: 3px solid #c0a030;
+            position: relative;
+        }
+        .brand {
+            font-size: 9px;
+            letter-spacing: 3px;
+            color: #c0a030;
+            font-family: monospace;
+        }
+        .header h1 {
+            font-size: 22px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 2px;
+        }
+        .header h1 i { color: #e53935; }
 
         /* Display digital */
-        .display-vintage {
+        .display-retro {
             background: #0a0a0a;
-            border-radius: 16px;
-            padding: 12px 20px;
-            margin-bottom: 25px;
-            text-align: center;
-            border: 1px solid #00aaff;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.5), 0 0 8px rgba(0,170,255,0.2);
+            margin: 12px 16px;
+            border-radius: 20px;
+            padding: 12px;
+            border: 2px solid #c0a030;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.5), 0 0 10px rgba(192,160,48,0.2);
+        }
+        .freq-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
         }
         .freq {
-            font-family: 'Orbitron', 'Courier New', monospace;
-            font-size: 28px;
+            font-family: 'Orbitron', monospace;
+            font-size: 22px;
             font-weight: bold;
             color: #00ff88;
             text-shadow: 0 0 5px #00ff88;
-            letter-spacing: 3px;
+            background: #080808;
+            padding: 4px 12px;
+            border-radius: 12px;
         }
-        .freq-label {
+        .live-badge {
+            background: #e53935;
+            padding: 4px 12px;
+            border-radius: 25px;
             font-size: 9px;
-            color: #00ff88;
-            letter-spacing: 2px;
+            font-weight: bold;
+            animation: pulse-red 1s infinite;
         }
-        .station-name {
-            font-size: 18px;
+        .online-header {
+            background: #c0a030;
+            display: inline-block;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: bold;
+            color: #1a1a1a;
+            margin-left: 8px;
+        }
+        .station-name-display {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 16px;
             font-weight: bold;
             color: #ffd700;
-            margin-top: 8px;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
+            background: #080808;
+            padding: 6px;
+            border-radius: 12px;
         }
 
-        /* Container dos botões - estilo vintage */
+        /* S-Meter */
+        .smeter {
+            margin-top: 10px;
+            background: #080808;
+            border-radius: 8px;
+            padding: 6px;
+        }
+        .meter-labels { display: flex; justify-content: space-between; font-size: 6px; color: #c0a030; padding: 0 2px; }
+        .meter-bars { display: flex; gap: 2px; height: 20px; }
+        .bar { flex: 1; background: #1a1a1a; border-radius: 2px; }
+        .bar.active { background: #00ff88; }
+        .bar.warning { background: #ffaa00; }
+        .bar.danger { background: #ff4444; }
+
+        /* Painel de botões MUDO/LED */
+        .switch-panel {
+            background: #2a2a2a;
+            margin: 8px 16px;
+            padding: 12px;
+            border-radius: 24px;
+            display: flex;
+            justify-content: space-around;
+            gap: 16px;
+            border: 1px solid #c0a030;
+        }
+        .switch-item { text-align: center; flex: 1; }
+        .switch-label { font-size: 9px; color: #c0a030; margin-bottom: 6px; }
+        .toggle-switch {
+            width: 50px;
+            height: 28px;
+            background: #444;
+            border-radius: 30px;
+            margin: 0 auto;
+            cursor: pointer;
+            position: relative;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+        }
+        .toggle-switch::after {
+            content: '';
+            width: 24px;
+            height: 24px;
+            background: #888;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 3px;
+            transition: 0.2s;
+        }
+        .toggle-switch.active { background: #00aaff; }
+        .toggle-switch.active::after { left: 23px; background: white; }
+        .toggle-switch.mute-active { background: #e53935; }
+        .switch-value { font-size: 8px; color: #ffd700; margin-top: 4px; }
+
+        /* Seletor de estação */
+        .station-area { margin: 8px 16px; }
+        .station-selector {
+            background: #1a1a1a;
+            border: 1px solid #c0a030;
+            border-radius: 40px;
+            padding: 10px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            color: #ffd700;
+            font-size: 13px;
+        }
+        .station-dropdown {
+            background: #1a1a1a;
+            border: 1px solid #c0a030;
+            border-radius: 16px;
+            margin-top: 6px;
+            max-height: 250px;
+            overflow-y: auto;
+            display: none;
+            z-index: 200;
+        }
+        .station-dropdown.open { display: block; }
+        .station-option {
+            padding: 8px 12px;
+            display: flex;
+            justify-content: space-between;
+            color: #ccc;
+            border-bottom: 1px solid #333;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .station-option.active { background: #c0a030; color: #1a1a1a; }
+        .station-count { background: #333; padding: 2px 8px; border-radius: 20px; font-size: 10px; }
+
+        /* 5 Botões Vintage - TEXTO BRANCO */
         .preset-container {
             display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            justify-content: center;
+            gap: 10px;
+            margin: 8px 16px;
+            justify-content: space-between;
         }
-
-        /* Botão vintage - efeito 3D */
         .vintage-btn {
-            width: 85px;
-            height: 85px;
+            flex: 1;
             background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
-            border-radius: 16px;
-            border: 1px solid #3a3a3a;
-            box-shadow: 0 6px 0 #0a0a0a, 0 8px 12px rgba(0,0,0,0.3);
+            border-radius: 14px;
+            border: 1px solid #c0a030;
+            box-shadow: 0 5px 0 #0a0a0a, 0 3px 8px rgba(0,0,0,0.3);
             cursor: pointer;
             transition: all 0.08s linear;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            padding: 10px 0;
             position: relative;
-            margin-bottom: 6px;
         }
-
-        /* Efeito de clique (recuo) */
         .vintage-btn:active {
             transform: translateY(3px);
-            box-shadow: 0 3px 0 #0a0a0a, 0 5px 10px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 0 #0a0a0a, 0 3px 8px rgba(0,0,0,0.3);
         }
-
-        /* LED indicador (apagado por padrão) */
         .vintage-btn .led {
             position: absolute;
-            top: 8px;
-            right: 8px;
-            width: 8px;
-            height: 8px;
+            top: 6px;
+            right: 6px;
+            width: 7px;
+            height: 7px;
             background: #333;
             border-radius: 50%;
-            transition: all 0.1s;
-            box-shadow: inset 0 0 2px rgba(0,0,0,0.5);
         }
-
-        /* LED aceso (botão ativo) */
         .vintage-btn.active .led {
             background: #00ff88;
-            box-shadow: 0 0 6px #00ff88;
+            box-shadow: 0 0 5px #00ff88;
             animation: pulse-led 1.2s infinite;
         }
-
         @keyframes pulse-led {
             0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(0.8); }
+            50% { opacity: 0.4; transform: scale(0.8); }
             100% { opacity: 1; transform: scale(1); }
         }
-
-        /* Número do preset */
-        .preset-num {
-            font-size: 22px;
+        .vintage-btn .preset-num {
+            font-size: 18px;
             font-weight: bold;
             color: #888;
             font-family: monospace;
-            letter-spacing: 1px;
         }
-
-        /* Nome da cidade (só aparece no botão ativo) */
-        .preset-city {
+        .vintage-btn .preset-city {
             font-size: 9px;
             font-weight: bold;
-            margin-top: 6px;
+            margin-top: 4px;
             text-align: center;
-            max-width: 70px;
+            max-width: 60px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            color: #ffffff;
         }
-
-        /* Botão ativo (estação selecionada) */
         .vintage-btn.active {
             background: linear-gradient(145deg, #2a4a6a, #1a3a5a);
             border-color: #00aaff;
-            box-shadow: 0 6px 0 #0a2a3a, 0 0 12px rgba(0,170,255,0.3);
+            box-shadow: 0 5px 0 #0a2a3a, 0 0 10px rgba(0,170,255,0.3);
         }
+        .vintage-btn.active .preset-num { color: #ffd700; }
+        .vintage-btn.active .preset-city { color: #ffffff; }
+        .vintage-btn.empty { opacity: 0.7; }
+        .vintage-btn.empty .preset-city { color: #ffffff; font-style: italic; }
 
-        .vintage-btn.active .preset-num {
-            color: #ffd700;
+        /* Botões de ação */
+        .action-bar {
+            display: flex;
+            gap: 12px;
+            margin: 8px 16px;
         }
-
-        .vintage-btn.active .preset-city {
-            color: #00aaff;
-        }
-
-        /* Botão vazio (sem estação salva) */
-        .vintage-btn.empty {
-            opacity: 0.6;
-        }
-
-        .vintage-btn.empty .preset-city {
-            color: #555;
-            font-style: italic;
-        }
-
-        /* Seletor de estação */
-        .selector-area {
-            margin-bottom: 25px;
+        .action {
+            flex: 1;
+            background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+            border: 1px solid #c0a030;
+            border-radius: 40px;
+            padding: 10px;
             text-align: center;
-        }
-        .station-selector {
-            background: #0a0a0a;
-            border: 1px solid #00aaff;
-            border-radius: 60px;
-            padding: 12px 24px;
-            display: inline-flex;
-            align-items: center;
-            gap: 20px;
-            cursor: pointer;
-            color: #ffd700;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: bold;
-        }
-        .station-dropdown {
-            background: #1a1a1a;
-            border: 1px solid #00aaff;
-            border-radius: 20px;
-            margin-top: 8px;
-            max-height: 250px;
-            overflow-y: auto;
-            display: none;
-            position: absolute;
-            width: 220px;
-            z-index: 100;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-        .station-dropdown.open { display: block; }
-        .station-option {
-            padding: 10px 16px;
             color: #ccc;
             cursor: pointer;
-            border-bottom: 1px solid #333;
-            font-size: 13px;
-            transition: 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
-        .station-option:hover { background: #00aaff; color: white; }
+        .action i { color: #ffd700; }
 
-        .info-text {
+        /* Botão PTT */
+        .ptt-area {
             text-align: center;
-            margin-top: 20px;
-            font-size: 10px;
-            color: #666;
+            margin: 8px 16px 20px;
+            padding: 12px;
+            background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+            border-radius: 80px;
+            border: 1px solid #c0a030;
         }
-        .info-text span { color: #ffd700; }
+        .ptt {
+            width: 140px;
+            height: 140px;
+            background: radial-gradient(circle at 35% 35%, #4a4a4a, #2a2a2a);
+            border: 4px solid #666;
+            border-radius: 50%;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .ptt i { font-size: 52px; color: #999; }
+        .ptt span { font-size: 14px; color: #999; margin-top: 6px; }
+        .ptt.active {
+            background: radial-gradient(circle at 35% 35%, #e53935, #8b0000);
+            border-color: #ffd700;
+            animation: pulse 1s infinite;
+        }
+        .ptt.active i, .ptt.active span { color: white; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 #e53935; } 50% { box-shadow: 0 0 0 18px rgba(229,57,53,0.3); } 100% { box-shadow: 0 0 0 0 rgba(229,57,53,0); } }
+        .timer {
+            font-family: monospace;
+            font-size: 13px;
+            color: #ffd700;
+            background: #000;
+            display: inline-block;
+            padding: 4px 16px;
+            border-radius: 30px;
+            margin-top: 8px;
+        }
+        .speaking-alert { font-size: 9px; color: #e53935; margin-top: 5px; display: none; }
 
-        button {
-            background: none;
-            border: none;
+        /* Admin */
+        .admin-gear {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            background: #2a2a2a;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 1px solid #ffd700;
+            z-index: 10;
         }
+        .admin-gear i { color: #ffd700; font-size: 14px; }
+        .admin-panel {
+            position: absolute;
+            top: 48px;
+            right: 16px;
+            background: #2a2a2a;
+            border-radius: 12px;
+            padding: 6px;
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            border: 1px solid #ffd700;
+            z-index: 100;
+        }
+        .admin-panel.show { display: flex; }
+        .admin-panel button { background: #3a3a3a; border: none; padding: 6px 12px; border-radius: 20px; color: white; font-size: 10px; cursor: pointer; }
+
+        /* MODAIS */
+        .modal-full, .modal-alert, .modal-chat {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.96);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+        }
+        .modal-full.visible, .modal-alert.visible, .modal-chat.visible { display: flex; }
+        .modal-header { background: #075E54; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; color: white; }
+        .modal-close { background: #e53935; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; }
+
+        .map-container { flex: 1; position: relative; }
+        #map { height: 100%; width: 100%; }
+        .map-buttons {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            right: 15px;
+            display: flex;
+            gap: 8px;
+            z-index: 1001;
+            flex-wrap: wrap;
+        }
+        .map-btn {
+            flex: 1;
+            background: #00aaff;
+            border: none;
+            border-radius: 40px;
+            padding: 8px;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+        .admin-badge {
+            position: absolute; top: 10px; left: 10px; background: #ffd700; color: #000; padding: 2px 8px; border-radius: 20px; font-size: 9px; display: none; z-index: 1001;
+        }
+        .search-control {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #1a1a1a;
+            border-radius: 40px;
+            padding: 5px 12px;
+            display: flex;
+            gap: 8px;
+            z-index: 1001;
+            border: 1px solid #00aaff;
+        }
+        .search-control input {
+            background: #0a0a0a;
+            border: none;
+            color: white;
+            padding: 6px;
+            border-radius: 20px;
+            font-size: 12px;
+            width: 150px;
+        }
+        .search-control button {
+            background: #00aaff;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            color: white;
+            cursor: pointer;
+        }
+        .search-results {
+            position: absolute;
+            top: 50px;
+            right: 10px;
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 5px;
+            max-width: 200px;
+            z-index: 1002;
+            display: none;
+            border: 1px solid #00aaff;
+        }
+        .search-results.show { display: block; }
+        .search-result-item {
+            padding: 6px 10px;
+            color: white;
+            cursor: pointer;
+            border-bottom: 1px solid #333;
+            font-size: 11px;
+        }
+        .search-result-item:hover { background: #00aaff; }
+
+        .alert-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            padding: 20px;
+            background: transparent;
+        }
+        .alert-card {
+            background: #1f1f40;
+            border-radius: 60px;
+            padding: 14px 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.1s;
+            border: none;
+            box-shadow: 0 0 5px rgba(192,160,48,0.3);
+        }
+        .alert-card:hover { transform: scale(1.02); background: #2a2a60; }
+        .alert-emoji { font-size: 32px; }
+        .alert-name { font-size: 11px; color: white; margin-top: 4px; font-weight: 600; }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            background: #E5DDD5;
+        }
+        .chat-input-area {
+            background: #F0F0F0;
+            border-top: 1px solid #ddd;
+        }
+        .reply-preview {
+            display: none;
+            background: #E8E8E8;
+            padding: 5px 12px;
+            font-size: 11px;
+            margin: 4px 10px 0;
+            border-radius: 10px;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .reply-preview.show { display: flex; }
+        .input-row { display: flex; padding: 8px 10px; gap: 8px; }
+        .input-row input { flex: 1; padding: 10px 14px; border-radius: 25px; border: none; font-size: 13px; }
+        .input-row button { background: #075E54; border: none; width: 38px; height: 38px; border-radius: 50%; color: white; cursor: pointer; }
+        .msg { margin-bottom: 8px; display: flex; }
+        .msg.me { justify-content: flex-end; }
+        .msg.other { justify-content: flex-start; }
+        .msg-content {
+            max-width: 75%;
+            padding: 8px 12px;
+            border-radius: 18px;
+            background: white;
+        }
+        .msg.me .msg-content { background: #DCF8C6; border-bottom-right-radius: 3px; }
+        .msg.other .msg-content { border-bottom-left-radius: 3px; }
+        .msg-sender { font-size: 10px; font-weight: bold; margin-bottom: 2px; }
+        .msg-text { font-size: 12px; }
+        .msg-time { font-size: 9px; color: #888; text-align: right; margin-top: 3px; }
+
+        .context-menu {
+            position: fixed;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            padding: 6px 0;
+            z-index: 10000;
+            display: none;
+            min-width: 130px;
+        }
+        .context-menu.show { display: block; }
+        .context-item { padding: 8px 16px; cursor: pointer; display: flex; gap: 10px; font-size: 12px; }
+        .context-item:hover { background: #f0f0f0; }
+
+        emoji-picker {
+            position: fixed;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10001;
+            display: none;
+            width: 90%;
+            max-width: 300px;
+            height: 350px;
+        }
+        emoji-picker.show { display: block; }
+
+        .audio-notify {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2a2a2a;
+            border: 1px solid #00aaff;
+            border-radius: 50px;
+            padding: 6px 16px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            z-index: 2000;
+        }
+
+        .map-marker-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            animation: pulse-marker 1.5s infinite;
+            box-shadow: none;
+            border: none;
+            background: transparent;
+        }
+        @keyframes pulse-marker { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+        
+        .popup-alert-img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 16px;
+            margin-bottom: 8px;
+        }
+
+        .leaflet-routing-container { display: none; }
     </style>
 </head>
 <body>
-    <div class="radio-panel">
-        <!-- Display -->
-        <div class="display-vintage">
-            <div class="freq-label">FREQUÊNCIA</div>
-            <div class="freq">27.7 MHz</div>
-            <div class="station-name" id="currentStationDisplay">📻 CURITIBA</div>
-        </div>
 
-        <!-- Seletor de estação -->
-        <div class="selector-area" style="position: relative;">
-            <div class="station-selector" id="selectorTrigger">
-                <span id="selectedCityName">Curitiba</span>
-                <i class="fas fa-chevron-down"></i>
-            </div>
-            <div class="station-dropdown" id="stationDropdown">
-                <div class="station-option" data-city="Curitiba">📡 Curitiba</div>
-                <div class="station-option" data-city="Ponta Grossa">📡 Ponta Grossa</div>
-                <div class="station-option" data-city="Guarapuava">📡 Guarapuava</div>
-                <div class="station-option" data-city="Paranaguá">📡 Paranaguá</div>
-                <div class="station-option" data-city="Campo Largo">📡 Campo Largo</div>
-                <div class="station-option" data-city="São José">📡 São José</div>
-                <div class="station-option" data-city="Maringá">📡 Maringá</div>
-                <div class="station-option" data-city="Londrina">📡 Londrina</div>
+<div class="radio-retro">
+    <div class="header">
+        <div class="brand">CB RADIO • RETRO SERIES</div>
+        <h1><i class="fas fa-microphone-alt"></i> PX 277 <i class="fas fa-broadcast-tower"></i></h1>
+    </div>
+
+    <div class="display-retro">
+        <div class="freq-row">
+            <div><span style="font-size:8px;">FREQUÊNCIA</span><div class="freq">27.7 MHz</div></div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+                <div class="live-badge"><i class="fas fa-circle"></i> AO VIVO</div>
+                <div class="online-header" id="onlineCountHeader">0 online</div>
             </div>
         </div>
-
-        <!-- 5 botões vintage -->
-        <div class="preset-container" id="presetContainer"></div>
-
-        <div class="info-text">
-            💡 <span>Clique</span> em um botão vazio (+1 a +5) para salvar a estação<br>
-            💡 <span>Clique</span> em um botão salvo para ativá-lo (os outros desativam)<br>
-            💡 <span>Clique direito</span> em um botão salvo para remover
+        <div class="station-name-display" id="stationNameDisplay">📻 CURITIBA</div>
+        <div class="smeter" id="smeterBox">
+            <div class="meter-labels"><span>1</span><span>3</span><span>5</span><span>7</span><span>9</span><span>+</span></div>
+            <div class="meter-bars" id="meterBars">
+                <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            </div>
         </div>
     </div>
 
-    <script>
-        // Cidades
-        const cities = ["Curitiba", "Ponta Grossa", "Guarapuava", "Paranaguá", "Campo Largo", "São José", "Maringá", "Londrina"];
-        let currentCity = "Curitiba";
-        let quickStations = JSON.parse(localStorage.getItem('vintagePresets') || '[]');
-        let activePresetIndex = null; // Qual botão está ativo (somente 1 por vez)
+    <div class="switch-panel">
+        <div class="switch-item"><div class="switch-label">MUDO</div><div class="toggle-switch" id="muteSwitch"></div><div class="switch-value" id="muteStatus">DESL</div></div>
+        <div class="switch-item"><div class="switch-label">LED</div><div class="toggle-switch active" id="ledSwitch"></div><div class="switch-value" id="ledStatus">LIG</div></div>
+    </div>
 
-        function renderPresetButtons() {
-            const container = document.getElementById('presetContainer');
-            container.innerHTML = '';
-            
-            for (let i = 0; i < 5; i++) {
-                const btn = document.createElement('div');
-                btn.className = 'vintage-btn';
-                
-                if (quickStations[i]) {
-                    // Botão com estação salva
-                    btn.innerHTML = `
-                        <div class="led"></div>
-                        <div class="preset-num">${i + 1}</div>
-                        <div class="preset-city">${quickStations[i].name}</div>
-                    `;
-                    
-                    // Verifica se este é o botão ativo
-                    if (activePresetIndex === i) {
-                        btn.classList.add('active');
-                        document.getElementById('currentStationDisplay').innerHTML = `📻 ${quickStations[i].name.toUpperCase()}`;
-                        currentCity = quickStations[i].name;
-                        document.getElementById('selectedCityName').innerText = currentCity;
-                    }
-                    
-                    // Clique para ativar este preset (APENAS ESTE FICA ATIVO)
-                    btn.onclick = () => {
-                        // Remove active de todos
-                        document.querySelectorAll('.vintage-btn').forEach(b => b.classList.remove('active'));
-                        btn.classList.add('active');
-                        activePresetIndex = i;
-                        currentCity = quickStations[i].name;
-                        document.getElementById('currentStationDisplay').innerHTML = `📻 ${currentCity.toUpperCase()}`;
-                        document.getElementById('selectedCityName').innerText = currentCity;
-                        // Efeito visual
-                        btn.style.transform = 'translateY(3px)';
-                        setTimeout(() => btn.style.transform = '', 100);
-                        alert(`📻 Estação alterada para: ${currentCity}`);
-                    };
-                    
-                    // Clique direito para remover
-                    btn.oncontextmenu = (e) => {
-                        e.preventDefault();
-                        if (confirm(`Remover ${quickStations[i].name} dos favoritos?`)) {
-                            quickStations.splice(i, 1);
-                            if (activePresetIndex === i) activePresetIndex = null;
-                            else if (activePresetIndex > i) activePresetIndex--;
-                            localStorage.setItem('vintagePresets', JSON.stringify(quickStations));
-                            renderPresetButtons();
-                        }
-                    };
-                } else {
-                    // Botão vazio
-                    btn.classList.add('empty');
-                    btn.innerHTML = `
-                        <div class="led"></div>
-                        <div class="preset-num">+${i + 1}</div>
-                        <div class="preset-city">vazio</div>
-                    `;
-                    
-                    btn.onclick = () => {
-                        if (quickStations.length >= 5) {
-                            alert("⚠️ Limite de 5 favoritos atingido! Clique com botão direito em um botão salvo para remover.");
-                            return;
-                        }
-                        if (quickStations.some(s => s.name === currentCity)) {
-                            alert(`⚠️ ${currentCity} já está salvo nos favoritos!`);
-                            return;
-                        }
-                        quickStations.push({ id: currentCity, name: currentCity });
-                        localStorage.setItem('vintagePresets', JSON.stringify(quickStations));
-                        renderPresetButtons();
-                        alert(`✅ ${currentCity} salvo no PRESET ${i + 1}!`);
-                    };
-                }
-                container.appendChild(btn);
+    <div class="station-area">
+        <div class="station-selector" id="selectorTrigger"><span id="selectedCityName">Curitiba</span><i class="fas fa-chevron-down"></i></div>
+        <div class="station-dropdown" id="stationDropdown"><div id="cityList"></div></div>
+    </div>
+
+    <!-- 5 Botões Vintage -->
+    <div class="preset-container" id="presetContainer"></div>
+
+    <div class="action-bar">
+        <div class="action" id="openMapBtn"><i class="fas fa-map-marked-alt"></i> MAPA</div>
+        <div class="action" id="openAlertBtn"><i class="fas fa-exclamation-triangle"></i> ALERTA</div>
+        <div class="action" id="openChatBtn"><i class="fas fa-comment-dots"></i> CHAT</div>
+    </div>
+
+    <div class="ptt-area">
+        <div class="ptt off" id="pttButton"><i class="fas fa-microphone-slash"></i><span>PTT</span></div>
+        <div class="speaking-alert" id="speakingAlert">📢 Alguém está falando...</div>
+        <div class="timer" id="timerDisplay" style="display:none;"></div>
+    </div>
+
+    <div class="admin-gear" id="adminGear"><i class="fas fa-cog"></i></div>
+    <div class="admin-panel" id="adminPanel">
+        <button id="adminMapBtn">ADMIN MAPA</button>
+        <button id="adminChatBtn">ADMIN CHAT</button>
+        <button id="exitAdminBtn">SAIR ADMIN</button>
+    </div>
+</div>
+
+<!-- MODAIS -->
+<div class="modal-full" id="mapModal">
+    <div class="modal-header"><span>MAPA BR-277</span><button class="modal-close" id="closeMapModal">✕</button></div>
+    <div class="map-container">
+        <div id="map"></div>
+        <div class="search-control"><input type="text" id="citySearchMap" placeholder="🔍 Pesquisar cidade..."><button id="searchCityBtn"><i class="fas fa-search"></i></button></div>
+        <div class="search-results" id="searchResults"></div>
+        <div class="map-buttons"><button class="map-btn" id="mapAlertBtn"><i class="fas fa-exclamation-triangle"></i> ALERTAS</button><button class="map-btn" id="recenterBtn"><i class="fas fa-location-arrow"></i> MINHA POSIÇÃO</button></div>
+        <div id="adminBadge" class="admin-badge">ADMIN</div>
+    </div>
+</div>
+
+<div class="modal-alert" id="alertModal">
+    <div class="modal-header"><span>REPORTAR OCORRÊNCIA</span><button class="modal-close" id="closeAlertModal">✕</button></div>
+    <div class="alert-grid" id="alertGrid"></div>
+</div>
+
+<div class="modal-chat" id="chatModal">
+    <div class="modal-header"><div style="display:flex; gap:10px;"><i class="fas fa-arrow-left" id="closeChatBtn" style="cursor:pointer;"></i><span>CHAT GERAL</span></div><button class="modal-close" id="closeChatModalBtn">✕</button></div>
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="chat-input-area"><div class="reply-preview" id="replyPreview"><span id="replyText"></span><button id="cancelReplyBtn">✕</button></div><div class="input-row"><button id="chatEmojiBtn"><i class="fas fa-smile"></i></button><input type="text" id="chatInput" placeholder="Digite sua mensagem..."><button id="sendMsgBtn"><i class="fas fa-paper-plane"></i></button></div></div>
+</div>
+
+<div class="context-menu" id="contextMenu"><div class="context-item" id="replyMsg"><i class="fas fa-reply"></i> Responder</div><div class="context-item" id="deleteMsg"><i class="fas fa-trash-alt"></i> Apagar</div><div class="context-item" id="emojiMsg"><i class="fas fa-smile"></i> Emoji</div></div>
+
+<emoji-picker id="emojiPicker"></emoji-picker>
+<div class="audio-notify" id="audioNotify"><div style="background:#e53935; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center;"><i class="fas fa-bullhorn"></i></div><div><span id="audioSender"></span><br><span id="audioStation" style="font-size:10px;"></span></div></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+// ==================== CONFIG ====================
+const firebaseConfig = { databaseURL: "https://gps-br277-default-rtdb.firebaseio.com" };
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+const cities = ["Guarapuava","Palmeira","Porto Amazonas","Ponta Grossa","São Luiz","Campo Largo","Curitiba","Alm. Tamandaré","Fazenda Rio Grande","Tijucas do Sul","Guaratuba","Morretes","Paranaguá","São José","Colombo","Araucária","Piraquara","Campina Grande","Quatro Barras","Cajati"];
+
+const alertTypes = [
+    { name: 'ACIDENTE', emoji: '💥', color: '#e53935' }, { name: 'OBRAS', emoji: '🚧', color: '#ff9800' },
+    { name: 'PANE MECÂNICA', emoji: '🔧', color: '#795548' }, { name: 'ANIMAL NA PISTA', emoji: '🐂', color: '#9c27b0' },
+    { name: 'VEÍCULO ENGUIÇADO', emoji: '🚗💨', color: '#ff5722' }, { name: 'BARREIRA', emoji: '⛰️', color: '#8b4513' },
+    { name: 'NEBLINA', emoji: '🌫️', color: '#00acc1' }, { name: 'CONGESTIONAMENTO', emoji: '🔴', color: '#f44336' },
+    { name: 'ALAGAMENTO', emoji: '💧', color: '#2196f3' }, { name: 'BLOQUEIO TOTAL', emoji: '⛔', color: '#b71c1c' },
+    { name: 'PERIGO', emoji: '⚠️', color: '#ff5722' }, { name: 'DESVIO', emoji: '🔄', color: '#3f51b5' },
+    { name: 'CARGA PERIGOSA', emoji: '📦', color: '#8bc34a' }, { name: 'GRANIZO', emoji: '🧊', color: '#00bcd4' },
+    { name: 'MANIFESTAÇÃO', emoji: '📢', color: '#ff4081' }
+];
+
+let userName = localStorage.getItem('px_user') || prompt("Seu nome:", "Caminhoneiro");
+localStorage.setItem('px_user', userName);
+let currentStation = localStorage.getItem('px_station') || 'curitiba';
+let isMuted = false, isLedActive = true;
+let isAdminMap = false, isAdminChat = false;
+let map, userMarker, userLocation, alertsOnMap = {};
+let mediaRecorder, isTransmitting = false, audioStream, chunks = [], recordSec = 0, timerInterval;
+let audioListener, currentAudio, speakingListener;
+let selectedMsg = { id: null, type: null, element: null, text: null, user: null };
+let currentReply = null;
+let quickStations = JSON.parse(localStorage.getItem('vintagePresets') || '[]');
+let activePresetIndex = null;
+let tempMarker = null, adminClickCount = 0, adminClickTimeout = null, adminFirstPos = null;
+let currentRoute = null;
+let userColors = {};
+
+function getColorForUser(username) {
+    if (!userColors[username]) {
+        const colors = ['#075E54', '#e53935', '#ff9800', '#2196f3', '#9c27b0', '#795548'];
+        userColors[username] = colors[Object.keys(userColors).length % colors.length];
+    }
+    return userColors[username];
+}
+
+function normalizeId(str) { return str.toLowerCase().replace(/ /g, '_').normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
+function showToast(msg) { let t=document.createElement('div'); t.innerText=msg; t.style.cssText='position:fixed; bottom:70px; left:50%; transform:translateX(-50%); background:#00aaff; color:white; padding:5px 15px; border-radius:30px; z-index:13000; font-size:11px;'; document.body.appendChild(t); setTimeout(()=>t.remove(),2000); }
+
+// ==================== SWITCHES ====================
+document.getElementById('muteSwitch').addEventListener('click', function() { isMuted=!isMuted; if(isMuted){ this.classList.add('active','mute-active'); document.getElementById('muteStatus').innerText='LIG'; if(currentAudio) currentAudio.pause(); } else { this.classList.remove('active','mute-active'); document.getElementById('muteStatus').innerText='DESL'; } });
+document.getElementById('ledSwitch').addEventListener('click', function() { isLedActive=!isLedActive; if(isLedActive){ this.classList.add('active'); document.getElementById('ledStatus').innerText='LIG'; document.getElementById('smeterBox').style.opacity='1'; } else { this.classList.remove('active'); document.getElementById('ledStatus').innerText='DESL'; document.getElementById('smeterBox').style.opacity='0.3'; } });
+function animateSMeter(val=5) { if(!isLedActive) return; let bars=document.querySelectorAll('.bar'); bars.forEach((b,i)=>{ b.classList.remove('active','warning','danger'); if(i<val){ if(i>=7) b.classList.add('danger'); else if(i>=5) b.classList.add('warning'); else b.classList.add('active'); } }); }
+setInterval(()=>{ if(!isTransmitting && isLedActive) animateSMeter(Math.floor(Math.random()*9)); },800);
+
+// ==================== ESTAÇÕES ====================
+function buildDropdown() {
+    const cityListDiv = document.getElementById('cityList');
+    cityListDiv.innerHTML = '';
+    cities.forEach(city => {
+        const id = normalizeId(city);
+        const opt = document.createElement('div');
+        opt.className = 'station-option';
+        if (id === currentStation) opt.classList.add('active');
+        opt.innerHTML = `<span>${city}</span><span class="station-count" id="count-${id}">0</span>`;
+        opt.onclick = () => { changeStation(id, city); closeDropdown(); };
+        cityListDiv.appendChild(opt);
+    });
+}
+function toggleDropdown() { document.getElementById('stationDropdown').classList.toggle('open'); }
+function closeDropdown() { document.getElementById('stationDropdown').classList.remove('open'); }
+document.getElementById('selectorTrigger').addEventListener('click',(e)=>{ e.stopPropagation(); toggleDropdown(); });
+document.addEventListener('click',(e)=>{ if(!e.target.closest('.station-selector')) closeDropdown(); });
+
+function changeStation(id,name){
+    currentStation=id; localStorage.setItem('px_station',id);
+    document.getElementById('selectedCityName').innerText=name;
+    document.getElementById('stationNameDisplay').innerHTML = `📻 ${name.toUpperCase()}`;
+    db.ref(`stations/${id}/users/${userName}`).set({ name:userName, timestamp:Date.now() });
+    cities.forEach(c=>{ let oid=normalizeId(c); if(oid!==id) db.ref(`stations/${oid}/users/${userName}`).remove(); });
+    setupAudio(); checkSpeaking(); showToast(`📻 ${name}`);
+    // Se a cidade já estiver em algum preset, ativa ele
+    const presetIdx = quickStations.findIndex(s => s.name === name);
+    if (presetIdx !== -1) {
+        activePresetIndex = presetIdx;
+    } else {
+        activePresetIndex = null;
+    }
+    renderPresetButtons();
+}
+
+function loadCounts(){
+    cities.forEach(city=>{ let id=normalizeId(city); db.ref(`stations/${id}/users`).on('value',snap=>{ let count=snap.val()?Object.keys(snap.val()).length:0; let badge=document.getElementById(`count-${id}`); if(badge) badge.innerText=count; if(id===currentStation) document.getElementById('onlineCountHeader').innerHTML=`${count} online <i class="fas fa-users"></i>`; }); });
+}
+function checkSpeaking(){
+    if(speakingListener) db.ref(`stations/${currentStation}/speaking`).off();
+    speakingListener=db.ref(`stations/${currentStation}/speaking`).on('value',snap=>{ let s=snap.val(); let div=document.getElementById('speakingAlert'); if(s && s.user!==userName){ div.style.display='block'; div.innerText=`📢 ${s.user} está falando...`; setTimeout(()=>div.style.display='none',2000); } else div.style.display='none'; });
+}
+function setupAudio(){
+    if(audioListener) db.ref(`stations/${currentStation}/audios`).off();
+    audioListener=db.ref(`stations/${currentStation}/audios`).on('child_added',snap=>{ let data=snap.val(); if(data && data.sender!==userName && !isMuted){ if(currentAudio) currentAudio.pause(); currentAudio=new Audio(data.audio); currentAudio.play(); document.getElementById('audioSender').innerHTML=`<i class="fas fa-user"></i> ${data.sender}`; document.getElementById('audioStation').innerHTML=`<i class="fas fa-radio"></i> ${data.station}`; document.getElementById('audioNotify').style.display='flex'; setTimeout(()=>document.getElementById('audioNotify').style.display='none',3000); } });
+}
+const ptt=document.getElementById('pttButton');
+async function startTx(){
+    if(isTransmitting) return;
+    try{
+        let stream=await navigator.mediaDevices.getUserMedia({ audio:true });
+        mediaRecorder=new MediaRecorder(stream);
+        chunks=[]; recordSec=0;
+        db.ref(`stations/${currentStation}/speaking`).set({ user:userName, timestamp:Date.now() });
+        mediaRecorder.ondataavailable=e=>{ if(e.data.size) chunks.push(e.data); };
+        mediaRecorder.onstop=async()=>{
+            if(chunks.length){
+                let blob=new Blob(chunks,{ type:'audio/webm' });
+                let reader=new FileReader();
+                reader.onloadend=async()=>{
+                    let cityName=cities.find(c=>normalizeId(c)===currentStation);
+                    let snap=await db.ref(`stations/${currentStation}/audios`).once('value');
+                    if(snap.val()) Object.keys(snap.val()).forEach(k=>db.ref(`stations/${currentStation}/audios/${k}`).remove());
+                    await db.ref(`stations/${currentStation}/audios`).push({ sender:userName, station:cityName, audio:reader.result, timestamp:Date.now(), duration:recordSec });
+                    setTimeout(()=>db.ref(`stations/${currentStation}/speaking`).remove(),1000);
+                };
+                reader.readAsDataURL(blob);
             }
+            if(audioStream) audioStream.getTracks().forEach(t=>t.stop());
+        };
+        mediaRecorder.start(100);
+        isTransmitting=true;
+        ptt.classList.add('active');
+        ptt.innerHTML='<i class="fas fa-microphone"></i><span>PTT</span>';
+        document.getElementById('timerDisplay').style.display='block';
+        if(isLedActive) animateSMeter(9);
+        timerInterval=setInterval(()=>{ recordSec++; document.getElementById('timerDisplay').innerHTML=`⏱️ ${recordSec}s`; },1000);
+    }catch(e){ alert("Permita microfone"); }
+}
+function stopTx(){
+    if(mediaRecorder && mediaRecorder.state==='recording') mediaRecorder.stop();
+    if(timerInterval) clearInterval(timerInterval);
+    isTransmitting=false;
+    db.ref(`stations/${currentStation}/speaking`).remove();
+    ptt.classList.remove('active');
+    ptt.innerHTML='<i class="fas fa-microphone-slash"></i><span>PTT</span>';
+    document.getElementById('timerDisplay').style.display='none';
+    if(isLedActive) animateSMeter(3);
+}
+ptt.addEventListener('click',()=>{ if(isTransmitting) stopTx(); else startTx(); });
+
+// ==================== MAPA ====================
+function initMap(){
+    map=L.map('map').setView([-25.4284,-49.2733],12);
+    L.tileLayer('https://mt1.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}').addTo(map);
+    if(navigator.geolocation) navigator.geolocation.watchPosition(pos=>{ userLocation=[pos.coords.latitude,pos.coords.longitude]; if(!userMarker) userMarker=L.marker(userLocation,{ icon:L.divIcon({ html:'<div style="font-size:28px;">🚛</div>', iconSize:[28,28], iconAnchor:[14,14] }) }).addTo(map); else userMarker.setLatLng(userLocation); });
+    loadAlerts();
+    setupAdminMap();
+}
+function recenter(){ if(userLocation) map.setView(userLocation,14); else showToast("Aguardando localização"); }
+
+const cityCoords = {
+    "Curitiba": [-25.4284, -49.2733], "Guarapuava": [-25.3951, -51.4624], "Ponta Grossa": [-25.0951, -50.1619],
+    "Paranaguá": [-25.5161, -48.5225], "Campo Largo": [-25.4585, -49.5293], "São José": [-25.5344, -49.2037]
+};
+
+function searchCity() {
+    const term = document.getElementById('citySearchMap').value.toLowerCase();
+    const resultsDiv = document.getElementById('searchResults');
+    resultsDiv.innerHTML = '';
+    if (term.length < 2) { resultsDiv.classList.remove('show'); return; }
+    const matches = cities.filter(c => c.toLowerCase().includes(term));
+    if (matches.length === 0) { resultsDiv.classList.remove('show'); return; }
+    resultsDiv.classList.add('show');
+    matches.forEach(city => {
+        const item = document.createElement('div');
+        item.className = 'search-result-item';
+        item.textContent = city;
+        item.onclick = () => {
+            if (cityCoords[city]) {
+                map.setView(cityCoords[city], 12);
+                if (currentRoute) map.removeControl(currentRoute);
+                if (userLocation) {
+                    currentRoute = L.Routing.control({
+                        waypoints: [L.latLng(userLocation[0], userLocation[1]), L.latLng(cityCoords[city][0], cityCoords[city][1])],
+                        routeWhileDragging: false, show: false,
+                        lineOptions: { styles: [{ color: '#00aaff', weight: 5 }] }
+                    }).addTo(map);
+                    showToast(`🛣️ Rota traçada para ${city}`);
+                } else showToast(`📍 Centralizado em ${city}`);
+                resultsDiv.classList.remove('show');
+                document.getElementById('citySearchMap').value = city;
+            } else showToast(`Coordenadas de ${city} não disponíveis`);
+        };
+        resultsDiv.appendChild(item);
+    });
+}
+document.getElementById('searchCityBtn').addEventListener('click', searchCity);
+document.getElementById('citySearchMap').addEventListener('input', searchCity);
+document.getElementById('citySearchMap').addEventListener('keypress', (e) => { if(e.key === 'Enter') searchCity(); });
+
+function loadAlerts(){
+    db.ref('alerts').on('child_added',snap=>{
+        let a=snap.val(), id=snap.key;
+        if(Date.now()-a.timestamp>20*60*1000){ db.ref(`alerts/${id}`).remove(); return; }
+        if(alertsOnMap[id] || !map) return;
+        let iconHtml=`<div class="map-marker-icon" style="background:${a.color}; box-shadow:0 0 12px ${a.color};">${a.emoji}</div>`;
+        let marker=L.marker([a.lat,a.lng],{ icon:L.divIcon({ html:iconHtml, iconSize:[44,44], iconAnchor:[22,22] }) }).addTo(map);
+        marker.bindPopup(`
+            ${a.image?`<img src="${a.image}" class="popup-alert-img" onclick="viewFullImage('${a.image}')">`:''}
+            <div style="background:#075E54; color:white; padding:8px; display:flex; justify-content:space-between; border-radius:12px;" onclick="confirmAlert('${id}')">
+                <span>${a.emoji} ${a.name}</span><span>👍 <span id="confirm-${id}">${a.confirmations||1}</span></span>
+                ${isAdminMap?`<button onclick="event.stopPropagation(); deleteAlert('${id}')" style="background:red; border:none; border-radius:10px; padding:2px 6px;">🗑️</button>`:''}
+            </div>
+            <div id="chatAlert-${id}" style="background:#E5DDD5; max-height:120px; overflow-y:auto; padding:8px; border-radius:12px;"></div>
+            <div style="display:flex; padding:8px; gap:5px;"><input id="inputAlert-${id}" placeholder="Comentar..." style="flex:1; padding:6px; border-radius:20px; border:none;"><button onclick="sendAlertComment('${id}')" style="background:#075E54; border:none; border-radius:50%; width:30px;">➔</button></div>
+        `);
+        marker.on('popupopen',()=>loadAlertChat(id));
+        alertsOnMap[id]=marker;
+    });
+}
+function viewFullImage(img){ let m=document.createElement('div'); m.style.cssText='position:fixed; top:0; left:0; right:0; bottom:0; background:black; display:flex; align-items:center; justify-content:center; z-index:20000;'; m.innerHTML=`<img src="${img}" style="max-width:90%; border-radius:16px;">`; m.onclick=()=>m.remove(); document.body.appendChild(m); }
+function confirmAlert(id){ db.ref(`alerts/${id}/confirmations`).transaction(c=>(c||1)+1); showToast("👍 Confirmado"); }
+function loadAlertChat(id){ db.ref(`chats/alert_${id}`).on('value',snap=>{ let div=document.getElementById(`chatAlert-${id}`); if(!div)return; let msgs=snap.val(); if(!msgs){div.innerHTML='';return;} let html=''; Object.entries(msgs).sort((a,b)=>a[1].timestamp-b[1].timestamp).forEach(([mid,msg])=>{ let isMe=msg.user===userName; html+=`<div style="margin:5px; padding:6px; border-radius:12px; background:${isMe?'#DCF8C6':'white'}; max-width:90%;"><strong style="color:${getColorForUser(msg.user)}">${msg.user}</strong><br>${msg.text}<br><small>${new Date(msg.timestamp).toLocaleTimeString()}</small></div>`; }); div.innerHTML=html; }); }
+async function sendAlertComment(id){ let input=document.getElementById(`inputAlert-${id}`); if(!input.value.trim())return; await db.ref(`chats/alert_${id}`).push({ user:userName, text:input.value, timestamp:Date.now() }); input.value=''; }
+async function deleteAlert(id){ if(confirm("Apagar?")){ await db.ref(`alerts/${id}`).remove(); if(alertsOnMap[id]) map.removeLayer(alertsOnMap[id]); delete alertsOnMap[id]; showToast("Removido"); } }
+
+function setupAdminMap(){
+    if(!map) return;
+    map.on('click',(e)=>{
+        if(!isAdminMap) return;
+        adminClickCount++;
+        if(adminClickCount===1){
+            adminFirstPos=e.latlng;
+            if(tempMarker) map.removeLayer(tempMarker);
+            tempMarker=L.marker(adminFirstPos,{ draggable:true, icon:L.divIcon({ html:'<div style="background:#ffd700; width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px;">📍</div>', iconSize:[34,34], iconAnchor:[17,17] }) }).addTo(map);
+            tempMarker.on('dragend',()=>{ adminFirstPos=tempMarker.getLatLng(); showToast("Posição ajustada"); });
+            showToast("⚠️ Clique NOVAMENTE no alfinete");
+            adminClickTimeout=setTimeout(()=>{ adminClickCount=0; if(tempMarker) map.removeLayer(tempMarker); showToast("Cancelado"); },10000);
+        } else if(adminClickCount===2){
+            clearTimeout(adminClickTimeout);
+            let markerPos=tempMarker?tempMarker.getLatLng():adminFirstPos;
+            if(markerPos && Math.hypot(markerPos.lat-e.latlng.lat, markerPos.lng-e.latlng.lng)<0.0005) showAdminAlertDropdown(markerPos.lat,markerPos.lng);
+            else showToast("❌ Clique no alfinete");
+            adminClickCount=0;
         }
+    });
+}
+function showAdminAlertDropdown(lat,lng){
+    let modal=document.createElement('div'); modal.style.cssText='position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.95); z-index:20000; display:flex; align-items:center; justify-content:center;';
+    let container=document.createElement('div'); container.style.cssText='background:#2a2a2a; border-radius:20px; width:90%; max-width:320px; max-height:75vh; overflow:auto; border:2px solid #ffd700; padding:12px;';
+    container.innerHTML=`<h3 style="color:#ffd700; text-align:center; margin-bottom:8px;">📌 NOVO ALERTA ADMIN</h3><div id="adminAlertSelector" style="display:grid; grid-template-columns:repeat(2,1fr); gap:8px;"></div><button id="cancelAdminAlert" style="margin-top:10px; width:100%; padding:6px; background:#e53935; border:none; border-radius:20px; color:white;">CANCELAR</button>`;
+    modal.appendChild(container); document.body.appendChild(modal);
+    let grid=container.querySelector('#adminAlertSelector');
+    alertTypes.forEach(alert=>{
+        let card=document.createElement('div'); card.style.cssText=`background:#3a3a3a; border-radius:10px; padding:6px; text-align:center; cursor:pointer; border-top:2px solid ${alert.color}`;
+        card.innerHTML=`<div style="font-size:20px;">${alert.emoji}</div><div style="color:white; font-size:8px;">${alert.name}</div>`;
+        card.onclick=async()=>{ let id=Date.now(); await db.ref(`alerts/${id}`).set({ ...alert, lat: lat, lng: lng, timestamp:id, creator:userName+" (ADMIN)", confirmations:1 }); showToast(`✅ Alerta ${alert.name} criado no local do alfinete`); document.body.removeChild(modal); if(tempMarker) map.removeLayer(tempMarker); adminClickCount=0; openMapModal(); };
+        grid.appendChild(card);
+    });
+    container.querySelector('#cancelAdminAlert').onclick=()=>{ if(tempMarker) map.removeLayer(tempMarker); document.body.removeChild(modal); adminClickCount=0; };
+}
 
-        // Dropdown
-        const trigger = document.getElementById('selectorTrigger');
-        const dropdown = document.getElementById('stationDropdown');
-        trigger.onclick = (e) => { e.stopPropagation(); dropdown.classList.toggle('open'); };
-        document.querySelectorAll('.station-option').forEach(opt => {
-            opt.onclick = () => {
-                currentCity = opt.dataset.city;
-                document.getElementById('selectedCityName').innerText = currentCity;
-                document.getElementById('currentStationDisplay').innerHTML = `📻 ${currentCity.toUpperCase()}`;
-                dropdown.classList.remove('open');
-                // Se a cidade selecionada já estiver em algum preset, ativa ele automaticamente
-                const presetIndex = quickStations.findIndex(s => s.name === currentCity);
-                if (presetIndex !== -1) {
-                    activePresetIndex = presetIndex;
-                } else {
-                    activePresetIndex = null;
-                }
-                renderPresetButtons();
-            };
+// ==================== ALERTAS (15) ====================
+function buildAlertGrid(){
+    let grid=document.getElementById('alertGrid');
+    if(!grid){ console.error("alertGrid não encontrado"); return; }
+    grid.innerHTML='';
+    alertTypes.forEach(alert=>{
+        let card=document.createElement('div'); card.className='alert-card'; card.style.borderTop=`3px solid ${alert.color}`;
+        card.innerHTML=`<div class="alert-emoji">${alert.emoji}</div><div class="alert-name">${alert.name}</div>`;
+        card.onclick=()=>createAlert(alert);
+        grid.appendChild(card);
+    });
+}
+async function createAlert(alert){
+    if(!userLocation){ showToast("Aguardando localização..."); return; }
+    closeAlertModal();
+    showToast(`⚠️ Reportando: ${alert.name}...`);
+    try{
+        let stream=await navigator.mediaDevices.getUserMedia({ video:{ facingMode:'environment' } });
+        let overlay=document.createElement('div'); overlay.style.cssText='position:fixed; top:0; left:0; right:0; bottom:0; background:#000; z-index:20000; display:flex; flex-direction:column; align-items:center; justify-content:center;';
+        let video=document.createElement('video'); video.autoplay=true; video.srcObject=stream; video.style.width='80%'; video.style.maxWidth='260px'; video.style.borderRadius='12px';
+        let btnPhoto=document.createElement('button'); btnPhoto.innerText='📷 TIRAR FOTO'; btnPhoto.style.cssText='margin:10px; padding:6px 16px; background:#ffd700; border:none; border-radius:30px;';
+        let btnSkip=document.createElement('button'); btnSkip.innerText='⏭️ PULAR'; btnSkip.style.cssText='margin:10px; padding:6px 16px; background:#444; color:white; border:none; border-radius:30px;';
+        let btnClose=document.createElement('button'); btnClose.innerText='✕'; btnClose.style.cssText='position:absolute; top:15px; right:15px; background:red; border:none; border-radius:50%; width:32px; height:32px; color:white;';
+        overlay.appendChild(video); overlay.appendChild(btnPhoto); overlay.appendChild(btnSkip); overlay.appendChild(btnClose);
+        document.body.appendChild(overlay);
+        btnPhoto.onclick=()=>{
+            let canvas=document.createElement('canvas'); canvas.width=video.videoWidth; canvas.height=video.videoHeight;
+            canvas.getContext('2d').drawImage(video,0,0);
+            canvas.toBlob(async blob=>{
+                let reader=new FileReader();
+                reader.onloadend=async()=>{ let id=Date.now(); await db.ref(`alerts/${id}`).set({ ...alert, lat:userLocation[0], lng:userLocation[1], timestamp:id, creator:userName, confirmations:1, image:reader.result }); stream.getTracks().forEach(t=>t.stop()); document.body.removeChild(overlay); showToast("✅ Alerta enviado!"); openMapModal(); setTimeout(()=>{ if(map && userLocation) map.setView(userLocation,13); },500); };
+                reader.readAsDataURL(blob);
+            },'image/jpeg',0.6);
+        };
+        btnSkip.onclick=async()=>{ let id=Date.now(); await db.ref(`alerts/${id}`).set({ ...alert, lat:userLocation[0], lng:userLocation[1], timestamp:id, creator:userName, confirmations:1 }); stream.getTracks().forEach(t=>t.stop()); document.body.removeChild(overlay); showToast(`⚠️ ${alert.name} reportado!`); openMapModal(); setTimeout(()=>{ if(map && userLocation) map.setView(userLocation,13); },500); };
+        btnClose.onclick=()=>{ stream.getTracks().forEach(t=>t.stop()); document.body.removeChild(overlay); };
+    }catch(e){
+        let id=Date.now(); await db.ref(`alerts/${id}`).set({ ...alert, lat:userLocation[0], lng:userLocation[1], timestamp:id, creator:userName, confirmations:1 }); showToast(`⚠️ ${alert.name} reportado!`); openMapModal(); setTimeout(()=>{ if(map && userLocation) map.setView(userLocation,13); },500);
+    }
+}
+function openMapModal(){ document.getElementById('mapModal').classList.add('visible'); if(map) map.invalidateSize(); else initMap(); }
+function closeMapModal(){ document.getElementById('mapModal').classList.remove('visible'); }
+function openAlertModal(){ document.getElementById('alertModal').classList.add('visible'); buildAlertGrid(); }
+function closeAlertModal(){ document.getElementById('alertModal').classList.remove('visible'); }
+function openChatModal(){ document.getElementById('chatModal').classList.add('visible'); loadChatMessages(); }
+function closeChatModal(){ document.getElementById('chatModal').classList.remove('visible'); document.getElementById('emojiPicker').classList.remove('show'); currentReply=null; document.getElementById('replyPreview').classList.remove('show'); }
+
+// ==================== CHAT ====================
+function loadChatMessages(){
+    db.ref('chat_global').off();
+    db.ref('chat_global').on('value',snap=>{
+        let msgs=snap.val(); let container=document.getElementById('chatMessages');
+        if(!msgs){ container.innerHTML='<div style="text-align:center; padding:20px;">Nenhuma mensagem</div>'; return; }
+        let html='';
+        Object.entries(msgs).sort((a,b)=>a[1].timestamp-b[1].timestamp).forEach(([mid,msg])=>{
+            let isMe=msg.user===userName; let time=new Date(msg.timestamp).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+            let userColor = getColorForUser(msg.user);
+            html+=`<div class="msg ${isMe?'me':'other'}" data-id="${mid}" data-user="${msg.user}" data-text="${escapeHtml(msg.text)}"><div class="msg-content" onclick="selectChatMessage(this,'${mid}','chat_global')"><div class="msg-sender" style="color:${userColor}">${msg.user}</div><div class="msg-text">${escapeHtml(msg.text)}</div><div class="msg-time">${time}</div></div></div>`;
         });
-        document.addEventListener('click', (e) => { if (!trigger.contains(e.target)) dropdown.classList.remove('open'); });
+        container.innerHTML=html; container.scrollTop=container.scrollHeight;
+    });
+}
+function selectChatMessage(el,id,type){ let wrapper=el.closest('.msg'); selectedMsg={ id,type,element:wrapper, user:wrapper.dataset.user, text:wrapper.dataset.text }; let menu=document.getElementById('contextMenu'); let rect=el.getBoundingClientRect(); menu.style.left=rect.left+'px'; menu.style.top=rect.bottom+'px'; menu.classList.add('show'); }
+document.getElementById('replyMsg').addEventListener('click',()=>{ if(selectedMsg.user && selectedMsg.text){ currentReply=`${selectedMsg.user}: "${selectedMsg.text.substring(0,40)}${selectedMsg.text.length>40?'...':''}"`; document.getElementById('replyText').innerHTML=`Respondendo ${selectedMsg.user}`; document.getElementById('replyPreview').classList.add('show'); document.getElementById('chatInput').focus(); document.getElementById('contextMenu').classList.remove('show'); selectedMsg={}; } });
+document.getElementById('deleteMsg').addEventListener('click',async()=>{ if(!selectedMsg.id) return; let isAdmin=isAdminChat; let isOwner=selectedMsg.user===userName; if(isAdmin || isOwner){ if(confirm("Apagar mensagem?")){ await db.ref(`${selectedMsg.type}/${selectedMsg.id}`).remove(); showToast("Mensagem apagada"); } } else showToast("Você só pode apagar suas próprias mensagens"); document.getElementById('contextMenu').classList.remove('show'); selectedMsg={}; });
+document.getElementById('emojiMsg').addEventListener('click',()=>{ document.getElementById('emojiPicker').classList.toggle('show'); document.getElementById('contextMenu').classList.remove('show'); });
+document.getElementById('cancelReplyBtn').addEventListener('click',()=>{ currentReply=null; document.getElementById('replyPreview').classList.remove('show'); });
+document.getElementById('sendMsgBtn').addEventListener('click',sendChatMsg);
+document.getElementById('chatInput').addEventListener('keypress',(e)=>{ if(e.key==='Enter') sendChatMsg(); });
+function sendChatMsg(){ let input=document.getElementById('chatInput'); if(!input.value.trim()) return; let msg={ user:userName, text:input.value.trim(), timestamp:Date.now() }; if(currentReply){ msg.replyTo=currentReply; currentReply=null; document.getElementById('replyPreview').classList.remove('show'); } db.ref('chat_global').push(msg); input.value=''; showToast("✓ Enviada"); }
+function escapeHtml(t){ let d=document.createElement('div'); d.textContent=t; return d.innerHTML; }
 
-        renderPresetButtons();
-        console.log("✅ Botões vintage carregados. Apenas 1 ativo por vez!");
-    </script>
+// ==================== BOTÕES VINTAGE ====================
+function renderPresetButtons() {
+    const container = document.getElementById('presetContainer');
+    container.innerHTML = '';
+    for (let i = 0; i < 5; i++) {
+        const btn = document.createElement('div');
+        btn.className = 'vintage-btn';
+        if (quickStations[i]) {
+            btn.innerHTML = `<div class="led"></div><div class="preset-num">${i+1}</div><div class="preset-city">${quickStations[i].name}</div>`;
+            if (activePresetIndex === i) btn.classList.add('active');
+            btn.onclick = () => {
+                document.querySelectorAll('.vintage-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                activePresetIndex = i;
+                const cityName = quickStations[i].name;
+                const cityId = normalizeId(cityName);
+                changeStation(cityId, cityName);
+            };
+            btn.oncontextmenu = (e) => {
+                e.preventDefault();
+                if (confirm(`Remover ${quickStations[i].name} dos favoritos?`)) {
+                    quickStations.splice(i, 1);
+                    if (activePresetIndex === i) activePresetIndex = null;
+                    else if (activePresetIndex > i) activePresetIndex--;
+                    localStorage.setItem('vintagePresets', JSON.stringify(quickStations));
+                    renderPresetButtons();
+                }
+            };
+        } else {
+            btn.classList.add('empty');
+            btn.innerHTML = `<div class="led"></div><div class="preset-num">+${i+1}</div><div class="preset-city">vazio</div>`;
+            btn.onclick = () => {
+                if (quickStations.length >= 5) {
+                    alert("⚠️ Limite de 5 favoritos atingido! Clique com botão direito em um botão salvo para remover.");
+                    return;
+                }
+                if (quickStations.some(s => s.name === currentStationName())) {
+                    alert(`⚠️ ${currentStationName()} já está salvo nos favoritos!`);
+                    return;
+                }
+                quickStations.push({ id: currentStation, name: currentStationName() });
+                localStorage.setItem('vintagePresets', JSON.stringify(quickStations));
+                renderPresetButtons();
+                alert(`✅ ${currentStationName()} salvo no PRESET ${i+1}!`);
+            };
+        }
+        container.appendChild(btn);
+    }
+}
+function currentStationName() {
+    return cities.find(c => normalizeId(c) === currentStation) || "Curitiba";
+}
+
+// ==================== ADMIN ====================
+function enableAdminMap(){ let pwd=prompt("Senha (277):"); if(pwd==='277'){ isAdminMap=true; document.getElementById('adminBadge').style.display='flex'; showToast("ADMIN MAPA ATIVADO - Clique 2x no mapa"); } else showToast("Senha errada"); }
+function enableAdminChat(){ let pwd=prompt("Senha (277):"); if(pwd==='277'){ isAdminChat=true; showToast("ADMIN CHAT ATIVADO"); } else showToast("Senha errada"); }
+function disableAdmin(){ isAdminMap=false; isAdminChat=false; document.getElementById('adminBadge').style.display='none'; showToast("Admin desativado"); }
+document.getElementById('adminGear').addEventListener('click',()=>document.getElementById('adminPanel').classList.toggle('show'));
+document.getElementById('adminMapBtn').addEventListener('click',()=>{ enableAdminMap(); document.getElementById('adminPanel').classList.remove('show'); });
+document.getElementById('adminChatBtn').addEventListener('click',()=>{ enableAdminChat(); document.getElementById('adminPanel').classList.remove('show'); });
+document.getElementById('exitAdminBtn').addEventListener('click',()=>{ disableAdmin(); document.getElementById('adminPanel').classList.remove('show'); });
+
+// ==================== EVENTOS UI ====================
+document.getElementById('openMapBtn').onclick=openMapModal;
+document.getElementById('openAlertBtn').onclick=openAlertModal;
+document.getElementById('openChatBtn').onclick=openChatModal;
+document.getElementById('closeMapModal').onclick=closeMapModal;
+document.getElementById('closeAlertModal').onclick=closeAlertModal;
+document.getElementById('closeChatModalBtn').onclick=closeChatModal;
+document.getElementById('closeChatBtn').onclick=closeChatModal;
+document.getElementById('mapAlertBtn').onclick=openAlertModal;
+document.getElementById('recenterBtn').onclick=recenter;
+
+// Emoji picker
+const emojiPicker=document.getElementById('emojiPicker');
+document.getElementById('chatEmojiBtn').addEventListener('click',(e)=>{ e.stopPropagation(); emojiPicker.classList.toggle('show'); });
+emojiPicker.addEventListener('emoji-click',(e)=>{ document.getElementById('chatInput').value+=e.detail.unicode; emojiPicker.classList.remove('show'); });
+document.addEventListener('click',(e)=>{ if(!emojiPicker.contains(e.target) && e.target.id!=='chatEmojiBtn') emojiPicker.classList.remove('show'); });
+
+// ==================== INICIALIZAÇÃO ====================
+buildDropdown();
+loadCounts();
+setupAudio();
+buildAlertGrid();
+checkSpeaking();
+initMap();
+renderPresetButtons();
+showToast(`🎙️ Bem-vindo, ${userName}`);
+</script>
 </body>
 </html>
