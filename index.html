@@ -182,7 +182,7 @@
         .station-option.active { background: #00aaff; color: white; }
         .station-count { background: #444; padding: 2px 8px; border-radius: 20px; font-size: 10px; }
 
-        /* 5 Botões de Favoritos */
+        /* 5 Botões de Favoritos - ESTILO RÁDIO ANTIGO */
         .quick-buttons {
             display: flex;
             justify-content: space-between;
@@ -500,7 +500,7 @@
             z-index: 2000;
         }
 
-        /* Ícones do mapa - SEM BORDA, apenas círculo pulsante */
+        /* Ícones do mapa - SEM BORDA */
         .map-marker-icon {
             display: flex;
             align-items: center;
@@ -519,7 +519,6 @@
             50% { transform: scale(1.2); } 
             100% { transform: scale(1); } 
         }
-        @keyframes pulse-red { 0%,100%{opacity:1}50%{opacity:0.6} }
         
         .popup-alert-img {
             width: 100%;
@@ -529,7 +528,6 @@
             margin-bottom: 8px;
         }
 
-        /* Rota azul */
         .leaflet-routing-container {
             display: none;
         }
@@ -573,7 +571,7 @@
         </div>
     </div>
 
-    <!-- 5 Botões de Estações Favoritas -->
+    <!-- 5 Botões de Estações Favoritas - VISÍVEIS -->
     <div class="quick-buttons" id="quickButtons"></div>
 
     <div class="action-bar">
@@ -783,9 +781,7 @@ function recenter(){ if(userLocation) map.setView(userLocation,14); else showToa
 // Coordenadas das cidades
 const cityCoords = {
     "Curitiba": [-25.4284, -49.2733], "Guarapuava": [-25.3951, -51.4624], "Ponta Grossa": [-25.0951, -50.1619],
-    "Paranaguá": [-25.5161, -48.5225], "Campo Largo": [-25.4585, -49.5293], "São José": [-25.5344, -49.2037],
-    "Maringá": [-23.4253, -51.9386], "Londrina": [-23.3107, -51.1625], "Cascavel": [-24.9555, -53.4553],
-    "Foz do Iguaçu": [-25.5402, -54.5858]
+    "Paranaguá": [-25.5161, -48.5225], "Campo Largo": [-25.4585, -49.5293], "São José": [-25.5344, -49.2037]
 };
 
 // Pesquisa de cidade no mapa com sugestões e traçado de rota
@@ -813,7 +809,6 @@ function searchCity() {
         item.onclick = () => {
             if (cityCoords[city]) {
                 map.setView(cityCoords[city], 12);
-                // Traçar rota azul da posição atual para a cidade
                 if (currentRoute) map.removeControl(currentRoute);
                 if (userLocation) {
                     currentRoute = L.Routing.control({
@@ -845,7 +840,6 @@ function loadAlerts(){
         let a=snap.val(), id=snap.key;
         if(Date.now()-a.timestamp>20*60*1000){ db.ref(`alerts/${id}`).remove(); return; }
         if(alertsOnMap[id] || !map) return;
-        // Ícone sem borda - apenas círculo com emoji e sombra
         let iconHtml=`<div class="map-marker-icon" style="background:${a.color}; box-shadow:0 0 12px ${a.color};">${a.emoji}</div>`;
         let marker=L.marker([a.lat,a.lng],{ icon:L.divIcon({ html:iconHtml, iconSize:[44,44], iconAnchor:[22,22] }) }).addTo(map);
         marker.bindPopup(`
@@ -899,7 +893,6 @@ function showAdminAlertDropdown(lat,lng){
         card.innerHTML=`<div style="font-size:20px;">${alert.emoji}</div><div style="color:white; font-size:8px;">${alert.name}</div>`;
         card.onclick=async()=>{ 
             let id=Date.now(); 
-            // Usar as coordenadas do alfinete (lat, lng) não a localização do usuário
             await db.ref(`alerts/${id}`).set({ ...alert, lat: lat, lng: lng, timestamp:id, creator:userName+" (ADMIN)", confirmations:1 }); 
             showToast(`✅ Alerta ${alert.name} criado no local do alfinete`); 
             document.body.removeChild(modal); 
@@ -1007,13 +1000,28 @@ function saveQuickStation(cityId,cityName){
 }
 function removeQuickStation(idx){ quickStations.splice(idx,1); localStorage.setItem('quickStations',JSON.stringify(quickStations)); renderQuickButtons(); }
 function renderQuickButtons(){
-    let container=document.getElementById('quickButtons'); container.innerHTML='';
+    let container=document.getElementById('quickButtons');
+    if(!container) return;
+    container.innerHTML='';
     for(let i=0;i<5;i++){
-        let btn=document.createElement('div'); btn.className='quick-btn';
-        if(quickStations[i]){ btn.innerText=quickStations[i].name.length>10?quickStations[i].name.substring(0,8)+'…':quickStations[i].name; btn.classList.add('saved'); btn.onclick=()=>{ changeStation(quickStations[i].id,quickStations[i].name); }; btn.oncontextmenu=(e)=>{ e.preventDefault(); if(confirm(`Remover ${quickStations[i].name} dos favoritos?`)) removeQuickStation(i); }; }
-        else{ btn.innerText=`+ ${i+1}`; btn.onclick=()=>{ let cityName=cities.find(c=>normalizeId(c)===currentStation); saveQuickStation(currentStation,cityName); }; }
+        let btn=document.createElement('div'); 
+        btn.className='quick-btn';
+        if(quickStations[i]){ 
+            btn.innerText=quickStations[i].name.length>10?quickStations[i].name.substring(0,8)+'…':quickStations[i].name; 
+            btn.classList.add('saved'); 
+            btn.onclick=()=>{ changeStation(quickStations[i].id,quickStations[i].name); }; 
+            btn.oncontextmenu=(e)=>{ e.preventDefault(); if(confirm(`Remover ${quickStations[i].name} dos favoritos?`)) removeQuickStation(i); }; 
+        } else { 
+            btn.innerText=`+ ${i+1}`; 
+            btn.onclick=()=>{ 
+                let cityName = cities.find(c => normalizeId(c) === currentStation);
+                if(cityName) saveQuickStation(currentStation,cityName);
+                else showToast("Selecione uma cidade primeiro");
+            }; 
+        }
         container.appendChild(btn);
     }
+    console.log("✅ Botões de favoritos renderizados:", quickStations.length);
 }
 
 // ==================== ADMIN ====================
@@ -1049,7 +1057,7 @@ setupAudio();
 buildAlertGrid();
 checkSpeaking();
 initMap();
-renderQuickButtons();
+renderQuickButtons(); // Chamada IMPORTANTE para os 5 botões
 showToast(`🎙️ Bem-vindo, ${userName}`);
 </script>
 </body>
