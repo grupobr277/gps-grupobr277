@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prévia - Botões de Rádio Antigo</title>
+    <title>Prévia - Botões Vintage Rádio</title>
     <style>
         * {
             margin: 0;
@@ -12,8 +12,8 @@
         }
 
         body {
-            background: #1a1a1a;
-            font-family: 'Courier New', 'Segoe UI', monospace;
+            background: linear-gradient(145deg, #0a0a0a, #151515);
+            font-family: 'Segoe UI', 'Inter', 'Courier New', monospace;
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -21,70 +21,118 @@
             padding: 20px;
         }
 
-        /* Container dos botões */
-        .radio-preset-buttons {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            justify-content: center;
-            background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
-            padding: 20px;
-            border-radius: 20px;
-            border: 1px solid #444;
-            box-shadow: inset 0 1px 3px rgba(255,255,255,0.05), 0 5px 15px rgba(0,0,0,0.3);
+        /* Container principal */
+        .radio-panel {
+            background: linear-gradient(145deg, #1e1e1e, #121212);
+            border-radius: 28px;
+            padding: 24px 20px;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.5), inset 0 1px 2px rgba(255,255,255,0.05);
+            border: 1px solid #2a2a2a;
         }
 
-        /* Botão estilo rádio antigo */
-        .radio-preset {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(145deg, #3a3a3a, #222);
-            border-radius: 12px;
-            border: 1px solid #555;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.08);
+        /* Display digital */
+        .display-vintage {
+            background: #0a0a0a;
+            border-radius: 16px;
+            padding: 12px 20px;
+            margin-bottom: 25px;
+            text-align: center;
+            border: 1px solid #00aaff;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5), 0 0 8px rgba(0,170,255,0.2);
+        }
+        .freq {
+            font-family: 'Orbitron', 'Courier New', monospace;
+            font-size: 28px;
+            font-weight: bold;
+            color: #00ff88;
+            text-shadow: 0 0 5px #00ff88;
+            letter-spacing: 3px;
+        }
+        .freq-label {
+            font-size: 9px;
+            color: #00ff88;
+            letter-spacing: 2px;
+        }
+        .station-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #ffd700;
+            margin-top: 8px;
+            letter-spacing: 1px;
+        }
+
+        /* Container dos botões - estilo vintage */
+        .preset-container {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        /* Botão vintage - efeito 3D */
+        .vintage-btn {
+            width: 85px;
+            height: 85px;
+            background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+            border-radius: 16px;
+            border: 1px solid #3a3a3a;
+            box-shadow: 0 6px 0 #0a0a0a, 0 8px 12px rgba(0,0,0,0.3);
             cursor: pointer;
-            transition: all 0.1s ease;
+            transition: all 0.08s linear;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             position: relative;
+            margin-bottom: 6px;
         }
 
-        /* LED vermelho pulsante */
-        .radio-preset::before {
-            content: '';
+        /* Efeito de clique (recuo) */
+        .vintage-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 3px 0 #0a0a0a, 0 5px 10px rgba(0,0,0,0.3);
+        }
+
+        /* LED indicador (apagado por padrão) */
+        .vintage-btn .led {
             position: absolute;
-            top: 6px;
-            right: 6px;
+            top: 8px;
+            right: 8px;
             width: 8px;
             height: 8px;
-            background: #ff0000;
-            border-radius: 50%;
-            box-shadow: 0 0 4px #ff0000;
-            animation: pulse-red 1.2s infinite;
-        }
-
-        /* LED desligado (botão vazio) */
-        .radio-preset.empty::before {
             background: #333;
-            box-shadow: none;
-            animation: none;
+            border-radius: 50%;
+            transition: all 0.1s;
+            box-shadow: inset 0 0 2px rgba(0,0,0,0.5);
         }
 
-        /* Texto do botão */
-        .preset-number {
-            font-size: 14px;
+        /* LED aceso (botão ativo) */
+        .vintage-btn.active .led {
+            background: #00ff88;
+            box-shadow: 0 0 6px #00ff88;
+            animation: pulse-led 1.2s infinite;
+        }
+
+        @keyframes pulse-led {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Número do preset */
+        .preset-num {
+            font-size: 22px;
             font-weight: bold;
-            color: #aaa;
+            color: #888;
+            font-family: monospace;
             letter-spacing: 1px;
-            margin-bottom: 4px;
         }
 
+        /* Nome da cidade (só aparece no botão ativo) */
         .preset-city {
-            font-size: 10px;
-            color: #ffd700;
+            font-size: 9px;
             font-weight: bold;
+            margin-top: 6px;
             text-align: center;
             max-width: 70px;
             overflow: hidden;
@@ -92,164 +140,191 @@
             white-space: nowrap;
         }
 
-        /* Botão ativo (com estação salva) */
-        .radio-preset.saved {
+        /* Botão ativo (estação selecionada) */
+        .vintage-btn.active {
             background: linear-gradient(145deg, #2a4a6a, #1a3a5a);
             border-color: #00aaff;
-            box-shadow: 0 0 8px rgba(0,170,255,0.3);
+            box-shadow: 0 6px 0 #0a2a3a, 0 0 12px rgba(0,170,255,0.3);
         }
 
-        .radio-preset.saved .preset-number {
+        .vintage-btn.active .preset-num {
+            color: #ffd700;
+        }
+
+        .vintage-btn.active .preset-city {
             color: #00aaff;
         }
 
-        .radio-preset.saved::before {
-            background: #ff3333;
-            box-shadow: 0 0 6px #ff3333;
+        /* Botão vazio (sem estação salva) */
+        .vintage-btn.empty {
+            opacity: 0.6;
         }
 
-        /* Efeito de clique */
-        .radio-preset:active {
-            transform: scale(0.96);
-        }
-
-        @keyframes pulse-red {
-            0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(0.8); }
-            100% { opacity: 1; transform: scale(1); }
+        .vintage-btn.empty .preset-city {
+            color: #555;
+            font-style: italic;
         }
 
         /* Seletor de estação */
+        .selector-area {
+            margin-bottom: 25px;
+            text-align: center;
+        }
         .station-selector {
             background: #0a0a0a;
             border: 1px solid #00aaff;
-            border-radius: 40px;
-            padding: 12px 20px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
+            border-radius: 60px;
+            padding: 12px 24px;
+            display: inline-flex;
             align-items: center;
+            gap: 20px;
             cursor: pointer;
             color: #ffd700;
             font-size: 14px;
-            min-width: 200px;
+            font-weight: bold;
         }
-
         .station-dropdown {
             background: #1a1a1a;
             border: 1px solid #00aaff;
-            border-radius: 16px;
-            margin-top: 5px;
-            max-height: 200px;
+            border-radius: 20px;
+            margin-top: 8px;
+            max-height: 250px;
             overflow-y: auto;
             display: none;
             position: absolute;
-            width: 200px;
+            width: 220px;
             z-index: 100;
+            left: 50%;
+            transform: translateX(-50%);
         }
-
-        .station-dropdown.open {
-            display: block;
-        }
-
+        .station-dropdown.open { display: block; }
         .station-option {
-            padding: 10px 15px;
+            padding: 10px 16px;
             color: #ccc;
             cursor: pointer;
             border-bottom: 1px solid #333;
             font-size: 13px;
+            transition: 0.1s;
         }
+        .station-option:hover { background: #00aaff; color: white; }
 
-        .station-option:hover {
-            background: #00aaff;
-            color: white;
-        }
-
-        .info {
+        .info-text {
             text-align: center;
             margin-top: 20px;
-            color: #888;
-            font-size: 11px;
+            font-size: 10px;
+            color: #666;
         }
+        .info-text span { color: #ffd700; }
 
-        .info span {
-            color: #ffd700;
+        button {
+            background: none;
+            border: none;
         }
     </style>
 </head>
 <body>
-    <div style="display: flex; flex-direction: column; align-items: center;">
+    <div class="radio-panel">
+        <!-- Display -->
+        <div class="display-vintage">
+            <div class="freq-label">FREQUÊNCIA</div>
+            <div class="freq">27.7 MHz</div>
+            <div class="station-name" id="currentStationDisplay">📻 CURITIBA</div>
+        </div>
+
         <!-- Seletor de estação -->
-        <div style="position: relative;">
+        <div class="selector-area" style="position: relative;">
             <div class="station-selector" id="selectorTrigger">
                 <span id="selectedCityName">Curitiba</span>
                 <i class="fas fa-chevron-down"></i>
             </div>
             <div class="station-dropdown" id="stationDropdown">
-                <div class="station-option" data-city="Curitiba">📻 Curitiba</div>
-                <div class="station-option" data-city="Ponta Grossa">📻 Ponta Grossa</div>
-                <div class="station-option" data-city="Guarapuava">📻 Guarapuava</div>
-                <div class="station-option" data-city="Paranaguá">📻 Paranaguá</div>
-                <div class="station-option" data-city="Campo Largo">📻 Campo Largo</div>
-                <div class="station-option" data-city="São José">📻 São José</div>
-                <div class="station-option" data-city="Maringá">📻 Maringá</div>
-                <div class="station-option" data-city="Londrina">📻 Londrina</div>
+                <div class="station-option" data-city="Curitiba">📡 Curitiba</div>
+                <div class="station-option" data-city="Ponta Grossa">📡 Ponta Grossa</div>
+                <div class="station-option" data-city="Guarapuava">📡 Guarapuava</div>
+                <div class="station-option" data-city="Paranaguá">📡 Paranaguá</div>
+                <div class="station-option" data-city="Campo Largo">📡 Campo Largo</div>
+                <div class="station-option" data-city="São José">📡 São José</div>
+                <div class="station-option" data-city="Maringá">📡 Maringá</div>
+                <div class="station-option" data-city="Londrina">📡 Londrina</div>
             </div>
         </div>
 
-        <!-- 5 botões estilo rádio antigo -->
-        <div class="radio-preset-buttons" id="quickButtons"></div>
+        <!-- 5 botões vintage -->
+        <div class="preset-container" id="presetContainer"></div>
 
-        <div class="info">
-            💡 <span>Clique</span> em um botão vazio (+1 a +5) para salvar a estação atual<br>
-            💡 <span>Clique direito</span> em um botão salvo para remover a estação
+        <div class="info-text">
+            💡 <span>Clique</span> em um botão vazio (+1 a +5) para salvar a estação<br>
+            💡 <span>Clique</span> em um botão salvo para ativá-lo (os outros desativam)<br>
+            💡 <span>Clique direito</span> em um botão salvo para remover
         </div>
     </div>
 
     <script>
-        // Cidades disponíveis
-        const citiesList = ["Curitiba", "Ponta Grossa", "Guarapuava", "Paranaguá", "Campo Largo", "São José", "Maringá", "Londrina"];
+        // Cidades
+        const cities = ["Curitiba", "Ponta Grossa", "Guarapuava", "Paranaguá", "Campo Largo", "São José", "Maringá", "Londrina"];
         let currentCity = "Curitiba";
-        let quickStations = JSON.parse(localStorage.getItem('quickStationsTest') || '[]');
+        let quickStations = JSON.parse(localStorage.getItem('vintagePresets') || '[]');
+        let activePresetIndex = null; // Qual botão está ativo (somente 1 por vez)
 
-        function renderQuickButtons() {
-            const container = document.getElementById('quickButtons');
+        function renderPresetButtons() {
+            const container = document.getElementById('presetContainer');
             container.innerHTML = '';
             
             for (let i = 0; i < 5; i++) {
                 const btn = document.createElement('div');
-                btn.className = 'radio-preset';
+                btn.className = 'vintage-btn';
                 
                 if (quickStations[i]) {
                     // Botão com estação salva
-                    btn.classList.add('saved');
                     btn.innerHTML = `
-                        <div class="preset-number">PRESET ${i + 1}</div>
+                        <div class="led"></div>
+                        <div class="preset-num">${i + 1}</div>
                         <div class="preset-city">${quickStations[i].name}</div>
                     `;
-                    btn.onclick = () => {
+                    
+                    // Verifica se este é o botão ativo
+                    if (activePresetIndex === i) {
+                        btn.classList.add('active');
+                        document.getElementById('currentStationDisplay').innerHTML = `📻 ${quickStations[i].name.toUpperCase()}`;
                         currentCity = quickStations[i].name;
-                        document.getElementById('selectedCityName').textContent = currentCity;
-                        // Efeito visual de clique
-                        btn.style.transform = 'scale(0.96)';
-                        setTimeout(() => btn.style.transform = '', 150);
+                        document.getElementById('selectedCityName').innerText = currentCity;
+                    }
+                    
+                    // Clique para ativar este preset (APENAS ESTE FICA ATIVO)
+                    btn.onclick = () => {
+                        // Remove active de todos
+                        document.querySelectorAll('.vintage-btn').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        activePresetIndex = i;
+                        currentCity = quickStations[i].name;
+                        document.getElementById('currentStationDisplay').innerHTML = `📻 ${currentCity.toUpperCase()}`;
+                        document.getElementById('selectedCityName').innerText = currentCity;
+                        // Efeito visual
+                        btn.style.transform = 'translateY(3px)';
+                        setTimeout(() => btn.style.transform = '', 100);
                         alert(`📻 Estação alterada para: ${currentCity}`);
                     };
+                    
+                    // Clique direito para remover
                     btn.oncontextmenu = (e) => {
                         e.preventDefault();
                         if (confirm(`Remover ${quickStations[i].name} dos favoritos?`)) {
                             quickStations.splice(i, 1);
-                            localStorage.setItem('quickStationsTest', JSON.stringify(quickStations));
-                            renderQuickButtons();
+                            if (activePresetIndex === i) activePresetIndex = null;
+                            else if (activePresetIndex > i) activePresetIndex--;
+                            localStorage.setItem('vintagePresets', JSON.stringify(quickStations));
+                            renderPresetButtons();
                         }
                     };
                 } else {
                     // Botão vazio
                     btn.classList.add('empty');
                     btn.innerHTML = `
-                        <div class="preset-number">+${i + 1}</div>
+                        <div class="led"></div>
+                        <div class="preset-num">+${i + 1}</div>
                         <div class="preset-city">vazio</div>
                     `;
+                    
                     btn.onclick = () => {
                         if (quickStations.length >= 5) {
                             alert("⚠️ Limite de 5 favoritos atingido! Clique com botão direito em um botão salvo para remover.");
@@ -260,8 +335,8 @@
                             return;
                         }
                         quickStations.push({ id: currentCity, name: currentCity });
-                        localStorage.setItem('quickStationsTest', JSON.stringify(quickStations));
-                        renderQuickButtons();
+                        localStorage.setItem('vintagePresets', JSON.stringify(quickStations));
+                        renderPresetButtons();
                         alert(`✅ ${currentCity} salvo no PRESET ${i + 1}!`);
                     };
                 }
@@ -269,33 +344,30 @@
             }
         }
 
-        // Dropdown de seleção de estação
+        // Dropdown
         const trigger = document.getElementById('selectorTrigger');
         const dropdown = document.getElementById('stationDropdown');
-        
-        trigger.onclick = (e) => {
-            e.stopPropagation();
-            dropdown.classList.toggle('open');
-        };
-        
+        trigger.onclick = (e) => { e.stopPropagation(); dropdown.classList.toggle('open'); };
         document.querySelectorAll('.station-option').forEach(opt => {
             opt.onclick = () => {
                 currentCity = opt.dataset.city;
-                document.getElementById('selectedCityName').textContent = currentCity;
+                document.getElementById('selectedCityName').innerText = currentCity;
+                document.getElementById('currentStationDisplay').innerHTML = `📻 ${currentCity.toUpperCase()}`;
                 dropdown.classList.remove('open');
-                // Feedback visual
-                alert(`📡 Estação selecionada: ${currentCity}`);
+                // Se a cidade selecionada já estiver em algum preset, ativa ele automaticamente
+                const presetIndex = quickStations.findIndex(s => s.name === currentCity);
+                if (presetIndex !== -1) {
+                    activePresetIndex = presetIndex;
+                } else {
+                    activePresetIndex = null;
+                }
+                renderPresetButtons();
             };
         });
-        
-        document.addEventListener('click', (e) => {
-            if (!trigger.contains(e.target)) {
-                dropdown.classList.remove('open');
-            }
-        });
+        document.addEventListener('click', (e) => { if (!trigger.contains(e.target)) dropdown.classList.remove('open'); });
 
-        renderQuickButtons();
-        console.log("✅ Prévia dos botões carregada!");
+        renderPresetButtons();
+        console.log("✅ Botões vintage carregados. Apenas 1 ativo por vez!");
     </script>
 </body>
 </html>
