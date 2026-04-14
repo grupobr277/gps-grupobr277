@@ -1,130 +1,301 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>TESTE - Botões Favoritos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prévia - Botões de Rádio Antigo</title>
     <style>
-        body { background: #1a1a1a; font-family: Arial; padding: 20px; color: white; }
-        .station-selector {
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #1a1a1a;
+            font-family: 'Courier New', 'Segoe UI', monospace;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Container dos botões */
+        .radio-preset-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid #444;
+            box-shadow: inset 0 1px 3px rgba(255,255,255,0.05), 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        /* Botão estilo rádio antigo */
+        .radio-preset {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(145deg, #3a3a3a, #222);
+            border-radius: 12px;
+            border: 1px solid #555;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.08);
+            cursor: pointer;
+            transition: all 0.1s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* LED vermelho pulsante */
+        .radio-preset::before {
+            content: '';
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 8px;
+            height: 8px;
+            background: #ff0000;
+            border-radius: 50%;
+            box-shadow: 0 0 4px #ff0000;
+            animation: pulse-red 1.2s infinite;
+        }
+
+        /* LED desligado (botão vazio) */
+        .radio-preset.empty::before {
             background: #333;
+            box-shadow: none;
+            animation: none;
+        }
+
+        /* Texto do botão */
+        .preset-number {
+            font-size: 14px;
+            font-weight: bold;
+            color: #aaa;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .preset-city {
+            font-size: 10px;
+            color: #ffd700;
+            font-weight: bold;
+            text-align: center;
+            max-width: 70px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Botão ativo (com estação salva) */
+        .radio-preset.saved {
+            background: linear-gradient(145deg, #2a4a6a, #1a3a5a);
+            border-color: #00aaff;
+            box-shadow: 0 0 8px rgba(0,170,255,0.3);
+        }
+
+        .radio-preset.saved .preset-number {
+            color: #00aaff;
+        }
+
+        .radio-preset.saved::before {
+            background: #ff3333;
+            box-shadow: 0 0 6px #ff3333;
+        }
+
+        /* Efeito de clique */
+        .radio-preset:active {
+            transform: scale(0.96);
+        }
+
+        @keyframes pulse-red {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Seletor de estação */
+        .station-selector {
+            background: #0a0a0a;
             border: 1px solid #00aaff;
             border-radius: 40px;
             padding: 12px 20px;
             margin-bottom: 20px;
-            cursor: pointer;
-        }
-        .quick-buttons {
             display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        .quick-btn {
-            flex: 1;
-            background: #2a2a2a;
-            border: 1px solid #00aaff;
-            border-radius: 30px;
-            padding: 10px 0;
-            text-align: center;
+            justify-content: space-between;
+            align-items: center;
             cursor: pointer;
+            color: #ffd700;
+            font-size: 14px;
+            min-width: 200px;
         }
-        .quick-btn.saved { background: #00aaff; color: white; }
+
         .station-dropdown {
-            background: #333;
+            background: #1a1a1a;
+            border: 1px solid #00aaff;
             border-radius: 16px;
             margin-top: 5px;
+            max-height: 200px;
+            overflow-y: auto;
             display: none;
+            position: absolute;
+            width: 200px;
+            z-index: 100;
         }
-        .station-dropdown.open { display: block; }
+
+        .station-dropdown.open {
+            display: block;
+        }
+
         .station-option {
-            padding: 10px;
-            border-bottom: 1px solid #555;
+            padding: 10px 15px;
+            color: #ccc;
             cursor: pointer;
+            border-bottom: 1px solid #333;
+            font-size: 13px;
+        }
+
+        .station-option:hover {
+            background: #00aaff;
+            color: white;
+        }
+
+        .info {
+            text-align: center;
+            margin-top: 20px;
+            color: #888;
+            font-size: 11px;
+        }
+
+        .info span {
+            color: #ffd700;
         }
     </style>
 </head>
 <body>
+    <div style="display: flex; flex-direction: column; align-items: center;">
+        <!-- Seletor de estação -->
+        <div style="position: relative;">
+            <div class="station-selector" id="selectorTrigger">
+                <span id="selectedCityName">Curitiba</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="station-dropdown" id="stationDropdown">
+                <div class="station-option" data-city="Curitiba">📻 Curitiba</div>
+                <div class="station-option" data-city="Ponta Grossa">📻 Ponta Grossa</div>
+                <div class="station-option" data-city="Guarapuava">📻 Guarapuava</div>
+                <div class="station-option" data-city="Paranaguá">📻 Paranaguá</div>
+                <div class="station-option" data-city="Campo Largo">📻 Campo Largo</div>
+                <div class="station-option" data-city="São José">📻 São José</div>
+                <div class="station-option" data-city="Maringá">📻 Maringá</div>
+                <div class="station-option" data-city="Londrina">📻 Londrina</div>
+            </div>
+        </div>
 
-<h2>TESTE - 5 Botões de Favoritos</h2>
+        <!-- 5 botões estilo rádio antigo -->
+        <div class="radio-preset-buttons" id="quickButtons"></div>
 
-<div class="station-selector" id="selectorTrigger">
-    <span id="selectedCityName">Curitiba</span>
-    <span>▼</span>
-</div>
-<div class="station-dropdown" id="stationDropdown">
-    <div class="station-option" data-city="Curitiba">Curitiba</div>
-    <div class="station-option" data-city="Ponta Grossa">Ponta Grossa</div>
-    <div class="station-option" data-city="Guarapuava">Guarapuava</div>
-    <div class="station-option" data-city="Paranaguá">Paranaguá</div>
-    <div class="station-option" data-city="Maringá">Maringá</div>
-</div>
+        <div class="info">
+            💡 <span>Clique</span> em um botão vazio (+1 a +5) para salvar a estação atual<br>
+            💡 <span>Clique direito</span> em um botão salvo para remover a estação
+        </div>
+    </div>
 
-<div class="quick-buttons" id="quickButtons"></div>
+    <script>
+        // Cidades disponíveis
+        const citiesList = ["Curitiba", "Ponta Grossa", "Guarapuava", "Paranaguá", "Campo Largo", "São José", "Maringá", "Londrina"];
+        let currentCity = "Curitiba";
+        let quickStations = JSON.parse(localStorage.getItem('quickStationsTest') || '[]');
 
-<script>
-    // Cidades disponíveis
-    const cities = ["Curitiba", "Ponta Grossa", "Guarapuava", "Paranaguá", "Maringá", "Londrina", "Cascavel"];
-    let currentCity = "Curitiba";
-    let quickStations = JSON.parse(localStorage.getItem('quickStations') || '[]');
-
-    function renderQuickButtons() {
-        const container = document.getElementById('quickButtons');
-        container.innerHTML = '';
-        for (let i = 0; i < 5; i++) {
-            const btn = document.createElement('div');
-            btn.className = 'quick-btn';
-            if (quickStations[i]) {
-                btn.textContent = quickStations[i].name;
-                btn.classList.add('saved');
-                btn.onclick = () => {
-                    currentCity = quickStations[i].name;
-                    document.getElementById('selectedCityName').textContent = currentCity;
-                    alert(`Estação alterada para: ${currentCity}`);
-                };
-                btn.oncontextmenu = (e) => {
-                    e.preventDefault();
-                    if (confirm(`Remover ${quickStations[i].name} dos favoritos?`)) {
-                        quickStations.splice(i, 1);
-                        localStorage.setItem('quickStations', JSON.stringify(quickStations));
+        function renderQuickButtons() {
+            const container = document.getElementById('quickButtons');
+            container.innerHTML = '';
+            
+            for (let i = 0; i < 5; i++) {
+                const btn = document.createElement('div');
+                btn.className = 'radio-preset';
+                
+                if (quickStations[i]) {
+                    // Botão com estação salva
+                    btn.classList.add('saved');
+                    btn.innerHTML = `
+                        <div class="preset-number">PRESET ${i + 1}</div>
+                        <div class="preset-city">${quickStations[i].name}</div>
+                    `;
+                    btn.onclick = () => {
+                        currentCity = quickStations[i].name;
+                        document.getElementById('selectedCityName').textContent = currentCity;
+                        // Efeito visual de clique
+                        btn.style.transform = 'scale(0.96)';
+                        setTimeout(() => btn.style.transform = '', 150);
+                        alert(`📻 Estação alterada para: ${currentCity}`);
+                    };
+                    btn.oncontextmenu = (e) => {
+                        e.preventDefault();
+                        if (confirm(`Remover ${quickStations[i].name} dos favoritos?`)) {
+                            quickStations.splice(i, 1);
+                            localStorage.setItem('quickStationsTest', JSON.stringify(quickStations));
+                            renderQuickButtons();
+                        }
+                    };
+                } else {
+                    // Botão vazio
+                    btn.classList.add('empty');
+                    btn.innerHTML = `
+                        <div class="preset-number">+${i + 1}</div>
+                        <div class="preset-city">vazio</div>
+                    `;
+                    btn.onclick = () => {
+                        if (quickStations.length >= 5) {
+                            alert("⚠️ Limite de 5 favoritos atingido! Clique com botão direito em um botão salvo para remover.");
+                            return;
+                        }
+                        if (quickStations.some(s => s.name === currentCity)) {
+                            alert(`⚠️ ${currentCity} já está salvo nos favoritos!`);
+                            return;
+                        }
+                        quickStations.push({ id: currentCity, name: currentCity });
+                        localStorage.setItem('quickStationsTest', JSON.stringify(quickStations));
                         renderQuickButtons();
-                    }
-                };
-            } else {
-                btn.textContent = `+ ${i + 1}`;
-                btn.onclick = () => {
-                    if (quickStations.length >= 5) {
-                        alert("Limite de 5 favoritos atingido! Clique com botão direito em um para remover.");
-                        return;
-                    }
-                    if (quickStations.some(s => s.id === currentCity)) {
-                        alert(`${currentCity} já está nos favoritos!`);
-                        return;
-                    }
-                    quickStations.push({ id: currentCity, name: currentCity });
-                    localStorage.setItem('quickStations', JSON.stringify(quickStations));
-                    renderQuickButtons();
-                };
+                        alert(`✅ ${currentCity} salvo no PRESET ${i + 1}!`);
+                    };
+                }
+                container.appendChild(btn);
             }
-            container.appendChild(btn);
         }
-    }
 
-    // Dropdown
-    const trigger = document.getElementById('selectorTrigger');
-    const dropdown = document.getElementById('stationDropdown');
-    trigger.onclick = () => dropdown.classList.toggle('open');
-    document.querySelectorAll('.station-option').forEach(opt => {
-        opt.onclick = () => {
-            currentCity = opt.dataset.city;
-            document.getElementById('selectedCityName').textContent = currentCity;
-            dropdown.classList.remove('open');
+        // Dropdown de seleção de estação
+        const trigger = document.getElementById('selectorTrigger');
+        const dropdown = document.getElementById('stationDropdown');
+        
+        trigger.onclick = (e) => {
+            e.stopPropagation();
+            dropdown.classList.toggle('open');
         };
-    });
-    document.addEventListener('click', (e) => {
-        if (!trigger.contains(e.target)) dropdown.classList.remove('open');
-    });
+        
+        document.querySelectorAll('.station-option').forEach(opt => {
+            opt.onclick = () => {
+                currentCity = opt.dataset.city;
+                document.getElementById('selectedCityName').textContent = currentCity;
+                dropdown.classList.remove('open');
+                // Feedback visual
+                alert(`📡 Estação selecionada: ${currentCity}`);
+            };
+        });
+        
+        document.addEventListener('click', (e) => {
+            if (!trigger.contains(e.target)) {
+                dropdown.classList.remove('open');
+            }
+        });
 
-    renderQuickButtons();
-    console.log("Teste carregado. Botões:", quickStations.length);
-</script>
+        renderQuickButtons();
+        console.log("✅ Prévia dos botões carregada!");
+    </script>
 </body>
 </html>
