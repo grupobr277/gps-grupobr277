@@ -15,7 +15,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            background: linear-gradient(145deg, #0a0a0a, #121212);
+            background: linear-gradient(145deg, #2a2a2a, #1e1e1e);
             font-family: 'Inter', sans-serif;
             min-height: 100vh;
             display: flex;
@@ -24,15 +24,15 @@
             padding: 0;
         }
 
-        /* Rádio estilo retrô anos 80/90 */
+        /* Rádio - Cor cinza mais claro */
         .radio-retro {
             width: 100%;
             max-width: 100%;
-            background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+            background: linear-gradient(145deg, #4a4a4a, #3a3a3a);
             position: relative;
             overflow-x: hidden;
             border-radius: 0;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
         }
 
         /* Faixa cromada superior */
@@ -47,43 +47,15 @@
             z-index: 1;
         }
 
-        /* Faixa de madeira simulada */
-        .radio-retro::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 30px;
-            background: repeating-linear-gradient(45deg, #3a2a1a, #3a2a1a 10px, #4a3a2a 10px, #4a3a2a 20px);
-            opacity: 0.3;
-            pointer-events: none;
-            z-index: 0;
-        }
-
         /* Cabeçalho */
         .header {
-            background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+            background: linear-gradient(145deg, #3a3a3a, #2a2a2a);
             padding: 12px 16px 8px;
             text-align: center;
             border-bottom: 3px solid #c0a030;
-            position: relative;
         }
-        .brand {
-            font-size: 9px;
-            letter-spacing: 3px;
-            color: #c0a030;
-            font-family: monospace;
-        }
-        .header h1 {
-            font-size: 22px;
-            font-weight: 800;
-            background: linear-gradient(135deg, #ffd700, #ffaa00);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            letter-spacing: 2px;
-        }
+        .brand { font-size: 9px; letter-spacing: 3px; color: #c0a030; font-family: monospace; }
+        .header h1 { font-size: 22px; font-weight: 800; background: linear-gradient(135deg, #ffd700, #ffaa00); -webkit-background-clip: text; background-clip: text; color: transparent; }
         .header h1 i { color: #e53935; }
 
         /* Display digital */
@@ -93,7 +65,6 @@
             border-radius: 20px;
             padding: 12px;
             border: 2px solid #c0a030;
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.5), 0 0 10px rgba(192,160,48,0.2);
         }
         .freq-row {
             display: flex;
@@ -156,33 +127,43 @@
         .bar.warning { background: #ffaa00; }
         .bar.danger { background: #ff4444; }
 
-        /* Painel de botões MUDO/LED */
-        .switch-panel {
-            background: #2a2a2a;
-            margin: 8px 16px;
-            padding: 12px;
-            border-radius: 24px;
+        /* NOVA POSIÇÃO: MUDO e LED abaixo do AO VIVO/ONLINE */
+        .status-switches {
             display: flex;
-            justify-content: space-around;
-            gap: 16px;
+            justify-content: center;
+            gap: 20px;
+            margin: 8px 16px 12px;
+            padding: 8px;
+            background: #2a2a2a;
+            border-radius: 30px;
             border: 1px solid #c0a030;
         }
-        .switch-item { text-align: center; flex: 1; }
-        .switch-label { font-size: 9px; color: #c0a030; margin-bottom: 6px; }
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #1a1a1a;
+            padding: 5px 15px;
+            border-radius: 30px;
+        }
+        .status-label {
+            font-size: 10px;
+            color: #c0a030;
+            font-weight: bold;
+        }
         .toggle-switch {
-            width: 50px;
-            height: 28px;
+            width: 40px;
+            height: 22px;
             background: #444;
             border-radius: 30px;
-            margin: 0 auto;
             cursor: pointer;
             position: relative;
             box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
         }
         .toggle-switch::after {
             content: '';
-            width: 24px;
-            height: 24px;
+            width: 18px;
+            height: 18px;
             background: #888;
             border-radius: 50%;
             position: absolute;
@@ -191,9 +172,13 @@
             transition: 0.2s;
         }
         .toggle-switch.active { background: #00aaff; }
-        .toggle-switch.active::after { left: 23px; background: white; }
+        .toggle-switch.active::after { left: 19px; background: white; }
         .toggle-switch.mute-active { background: #e53935; }
-        .switch-value { font-size: 8px; color: #ffd700; margin-top: 4px; }
+        .status-value {
+            font-size: 9px;
+            color: #ffd700;
+            min-width: 30px;
+        }
 
         /* Seletor de estação */
         .station-area { margin: 8px 16px; }
@@ -232,7 +217,7 @@
         .station-option.active { background: #c0a030; color: #1a1a1a; }
         .station-count { background: #333; padding: 2px 8px; border-radius: 20px; font-size: 10px; }
 
-        /* 5 Botões Vintage - TEXTO BRANCO */
+        /* 5 Botões Vintage - ACIMA dos botões MAPA/ALERTA/CHAT */
         .preset-container {
             display: flex;
             gap: 10px;
@@ -241,27 +226,28 @@
         }
         .vintage-btn {
             flex: 1;
-            background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+            background: linear-gradient(145deg, #3a3a3a, #2a2a2a);
             border-radius: 14px;
             border: 1px solid #c0a030;
-            box-shadow: 0 5px 0 #0a0a0a, 0 3px 8px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 0 #1a1a1a, 0 2px 6px rgba(0,0,0,0.3);
             cursor: pointer;
             transition: all 0.08s linear;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 10px 0;
+            padding: 8px 0;
             position: relative;
+            min-height: 65px;
         }
         .vintage-btn:active {
-            transform: translateY(3px);
-            box-shadow: 0 2px 0 #0a0a0a, 0 3px 8px rgba(0,0,0,0.3);
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #1a1a1a;
         }
         .vintage-btn .led {
             position: absolute;
-            top: 6px;
-            right: 6px;
+            top: 5px;
+            right: 5px;
             width: 7px;
             height: 7px;
             background: #333;
@@ -278,7 +264,7 @@
             100% { opacity: 1; transform: scale(1); }
         }
         .vintage-btn .preset-num {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
             color: #888;
             font-family: monospace;
@@ -286,7 +272,7 @@
         .vintage-btn .preset-city {
             font-size: 9px;
             font-weight: bold;
-            margin-top: 4px;
+            margin-top: 3px;
             text-align: center;
             max-width: 60px;
             overflow: hidden;
@@ -297,11 +283,11 @@
         .vintage-btn.active {
             background: linear-gradient(145deg, #2a4a6a, #1a3a5a);
             border-color: #00aaff;
-            box-shadow: 0 5px 0 #0a2a3a, 0 0 10px rgba(0,170,255,0.3);
+            box-shadow: 0 4px 0 #0a2a3a, 0 0 8px rgba(0,170,255,0.3);
         }
         .vintage-btn.active .preset-num { color: #ffd700; }
         .vintage-btn.active .preset-city { color: #ffffff; }
-        .vintage-btn.empty { opacity: 0.7; }
+        .vintage-btn.empty { opacity: 0.8; }
         .vintage-btn.empty .preset-city { color: #ffffff; font-style: italic; }
 
         /* Botões de ação */
@@ -312,7 +298,7 @@
         }
         .action {
             flex: 1;
-            background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+            background: linear-gradient(145deg, #3a3a3a, #2a2a2a);
             border: 1px solid #c0a030;
             border-radius: 40px;
             padding: 10px;
@@ -333,15 +319,15 @@
             text-align: center;
             margin: 8px 16px 20px;
             padding: 12px;
-            background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+            background: linear-gradient(145deg, #3a3a3a, #2a2a2a);
             border-radius: 80px;
             border: 1px solid #c0a030;
         }
         .ptt {
             width: 140px;
             height: 140px;
-            background: radial-gradient(circle at 35% 35%, #4a4a4a, #2a2a2a);
-            border: 4px solid #666;
+            background: radial-gradient(circle at 35% 35%, #5a5a5a, #3a3a3a);
+            border: 4px solid #777;
             border-radius: 50%;
             margin: 0 auto;
             display: flex;
@@ -350,8 +336,8 @@
             justify-content: center;
             cursor: pointer;
         }
-        .ptt i { font-size: 52px; color: #999; }
-        .ptt span { font-size: 14px; color: #999; margin-top: 6px; }
+        .ptt i { font-size: 52px; color: #aaa; }
+        .ptt span { font-size: 14px; color: #aaa; margin-top: 6px; }
         .ptt.active {
             background: radial-gradient(circle at 35% 35%, #e53935, #8b0000);
             border-color: #ffd700;
@@ -371,12 +357,11 @@
         }
         .speaking-alert { font-size: 9px; color: #e53935; margin-top: 5px; display: none; }
 
-        /* Admin */
         .admin-gear {
             position: absolute;
             top: 12px;
             right: 16px;
-            background: #2a2a2a;
+            background: #3a3a3a;
             width: 30px;
             height: 30px;
             border-radius: 50%;
@@ -392,7 +377,7 @@
             position: absolute;
             top: 48px;
             right: 16px;
-            background: #2a2a2a;
+            background: #3a3a3a;
             border-radius: 12px;
             padding: 6px;
             display: none;
@@ -402,7 +387,7 @@
             z-index: 100;
         }
         .admin-panel.show { display: flex; }
-        .admin-panel button { background: #3a3a3a; border: none; padding: 6px 12px; border-radius: 20px; color: white; font-size: 10px; cursor: pointer; }
+        .admin-panel button { background: #4a4a4a; border: none; padding: 6px 12px; border-radius: 20px; color: white; font-size: 10px; cursor: pointer; }
 
         /* MODAIS */
         .modal-full, .modal-alert, .modal-chat {
@@ -594,7 +579,7 @@
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
-            background: #2a2a2a;
+            background: #3a3a3a;
             border: 1px solid #00aaff;
             border-radius: 50px;
             padding: 6px 16px;
@@ -657,9 +642,18 @@
         </div>
     </div>
 
-    <div class="switch-panel">
-        <div class="switch-item"><div class="switch-label">MUDO</div><div class="toggle-switch" id="muteSwitch"></div><div class="switch-value" id="muteStatus">DESL</div></div>
-        <div class="switch-item"><div class="switch-label">LED</div><div class="toggle-switch active" id="ledSwitch"></div><div class="switch-value" id="ledStatus">LIG</div></div>
+    <!-- MUDO e LED - NOVA POSIÇÃO (abaixo do AO VIVO/ONLINE) -->
+    <div class="status-switches">
+        <div class="status-item">
+            <span class="status-label">MUDO</span>
+            <div class="toggle-switch" id="muteSwitch"></div>
+            <span class="status-value" id="muteStatus">DESL</span>
+        </div>
+        <div class="status-item">
+            <span class="status-label">LED</span>
+            <div class="toggle-switch active" id="ledSwitch"></div>
+            <span class="status-value" id="ledStatus">LIG</span>
+        </div>
     </div>
 
     <div class="station-area">
@@ -667,7 +661,7 @@
         <div class="station-dropdown" id="stationDropdown"><div id="cityList"></div></div>
     </div>
 
-    <!-- 5 Botões Vintage -->
+    <!-- 5 Botões Vintage - ACIMA do MAPA/ALERTA/CHAT -->
     <div class="preset-container" id="presetContainer"></div>
 
     <div class="action-bar">
@@ -800,13 +794,8 @@ function changeStation(id,name){
     db.ref(`stations/${id}/users/${userName}`).set({ name:userName, timestamp:Date.now() });
     cities.forEach(c=>{ let oid=normalizeId(c); if(oid!==id) db.ref(`stations/${oid}/users/${userName}`).remove(); });
     setupAudio(); checkSpeaking(); showToast(`📻 ${name}`);
-    // Se a cidade já estiver em algum preset, ativa ele
     const presetIdx = quickStations.findIndex(s => s.name === name);
-    if (presetIdx !== -1) {
-        activePresetIndex = presetIdx;
-    } else {
-        activePresetIndex = null;
-    }
+    if (presetIdx !== -1) { activePresetIndex = presetIdx; } else { activePresetIndex = null; }
     renderPresetButtons();
 }
 
@@ -965,12 +954,12 @@ function setupAdminMap(){
 }
 function showAdminAlertDropdown(lat,lng){
     let modal=document.createElement('div'); modal.style.cssText='position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.95); z-index:20000; display:flex; align-items:center; justify-content:center;';
-    let container=document.createElement('div'); container.style.cssText='background:#2a2a2a; border-radius:20px; width:90%; max-width:320px; max-height:75vh; overflow:auto; border:2px solid #ffd700; padding:12px;';
+    let container=document.createElement('div'); container.style.cssText='background:#3a3a3a; border-radius:20px; width:90%; max-width:320px; max-height:75vh; overflow:auto; border:2px solid #ffd700; padding:12px;';
     container.innerHTML=`<h3 style="color:#ffd700; text-align:center; margin-bottom:8px;">📌 NOVO ALERTA ADMIN</h3><div id="adminAlertSelector" style="display:grid; grid-template-columns:repeat(2,1fr); gap:8px;"></div><button id="cancelAdminAlert" style="margin-top:10px; width:100%; padding:6px; background:#e53935; border:none; border-radius:20px; color:white;">CANCELAR</button>`;
     modal.appendChild(container); document.body.appendChild(modal);
     let grid=container.querySelector('#adminAlertSelector');
     alertTypes.forEach(alert=>{
-        let card=document.createElement('div'); card.style.cssText=`background:#3a3a3a; border-radius:10px; padding:6px; text-align:center; cursor:pointer; border-top:2px solid ${alert.color}`;
+        let card=document.createElement('div'); card.style.cssText=`background:#4a4a4a; border-radius:10px; padding:6px; text-align:center; cursor:pointer; border-top:2px solid ${alert.color}`;
         card.innerHTML=`<div style="font-size:20px;">${alert.emoji}</div><div style="color:white; font-size:8px;">${alert.name}</div>`;
         card.onclick=async()=>{ let id=Date.now(); await db.ref(`alerts/${id}`).set({ ...alert, lat: lat, lng: lng, timestamp:id, creator:userName+" (ADMIN)", confirmations:1 }); showToast(`✅ Alerta ${alert.name} criado no local do alfinete`); document.body.removeChild(modal); if(tempMarker) map.removeLayer(tempMarker); adminClickCount=0; openMapModal(); };
         grid.appendChild(card);
@@ -1050,13 +1039,16 @@ document.getElementById('chatInput').addEventListener('keypress',(e)=>{ if(e.key
 function sendChatMsg(){ let input=document.getElementById('chatInput'); if(!input.value.trim()) return; let msg={ user:userName, text:input.value.trim(), timestamp:Date.now() }; if(currentReply){ msg.replyTo=currentReply; currentReply=null; document.getElementById('replyPreview').classList.remove('show'); } db.ref('chat_global').push(msg); input.value=''; showToast("✓ Enviada"); }
 function escapeHtml(t){ let d=document.createElement('div'); d.textContent=t; return d.innerHTML; }
 
-// ==================== BOTÕES VINTAGE ====================
+// ==================== BOTÕES VINTAGE (5 FAVORITOS) ====================
 function renderPresetButtons() {
     const container = document.getElementById('presetContainer');
+    if (!container) return;
     container.innerHTML = '';
+    
     for (let i = 0; i < 5; i++) {
         const btn = document.createElement('div');
         btn.className = 'vintage-btn';
+        
         if (quickStations[i]) {
             btn.innerHTML = `<div class="led"></div><div class="preset-num">${i+1}</div><div class="preset-city">${quickStations[i].name}</div>`;
             if (activePresetIndex === i) btn.classList.add('active');
@@ -1067,6 +1059,7 @@ function renderPresetButtons() {
                 const cityName = quickStations[i].name;
                 const cityId = normalizeId(cityName);
                 changeStation(cityId, cityName);
+                showToast(`📻 Estação alterada para: ${cityName}`);
             };
             btn.oncontextmenu = (e) => {
                 e.preventDefault();
@@ -1076,6 +1069,7 @@ function renderPresetButtons() {
                     else if (activePresetIndex > i) activePresetIndex--;
                     localStorage.setItem('vintagePresets', JSON.stringify(quickStations));
                     renderPresetButtons();
+                    showToast(`🗑️ Estação removida dos favoritos`);
                 }
             };
         } else {
@@ -1083,22 +1077,24 @@ function renderPresetButtons() {
             btn.innerHTML = `<div class="led"></div><div class="preset-num">+${i+1}</div><div class="preset-city">vazio</div>`;
             btn.onclick = () => {
                 if (quickStations.length >= 5) {
-                    alert("⚠️ Limite de 5 favoritos atingido! Clique com botão direito em um botão salvo para remover.");
+                    showToast("⚠️ Limite de 5 favoritos atingido! Clique com botão direito em um botão salvo para remover.");
                     return;
                 }
-                if (quickStations.some(s => s.name === currentStationName())) {
-                    alert(`⚠️ ${currentStationName()} já está salvo nos favoritos!`);
+                const currentCityName = currentStationName();
+                if (quickStations.some(s => s.name === currentCityName)) {
+                    showToast(`⚠️ ${currentCityName} já está salvo nos favoritos!`);
                     return;
                 }
-                quickStations.push({ id: currentStation, name: currentStationName() });
+                quickStations.push({ id: currentStation, name: currentCityName });
                 localStorage.setItem('vintagePresets', JSON.stringify(quickStations));
                 renderPresetButtons();
-                alert(`✅ ${currentStationName()} salvo no PRESET ${i+1}!`);
+                showToast(`✅ ${currentCityName} salvo no PRESET ${i+1}!`);
             };
         }
         container.appendChild(btn);
     }
 }
+
 function currentStationName() {
     return cities.find(c => normalizeId(c) === currentStation) || "Curitiba";
 }
@@ -1138,6 +1134,7 @@ checkSpeaking();
 initMap();
 renderPresetButtons();
 showToast(`🎙️ Bem-vindo, ${userName}`);
+console.log("✅ Rádio inicializado com nova organização!");
 </script>
 </body>
 </html>
